@@ -4,7 +4,7 @@
 # IMPORTANT: Set the URL of your site.
 # Set to https://<username>.github.io when hosting on GitHub Pages
 # (unless you are using a custom domain).
-url:                   https://dukeenglish.github.io
+url:                   https://DustOfStars.github.io
 
 # IMPORTANT: Set The "base URL" of your site.
 # When your site sits in a subdirectory, set to /<name of directory>
@@ -19,30 +19,30 @@ baseurl:               ''
 lang:                  zh
 
 # The title of your blog. Used in the sidebar and the browser tab.
-title:                 Junyi Li
+title:                 Xiangwei Jia
 
 # A short description (~150 chars) of the page used for the meta description tag.
 # Can use markdown, but no more than one paragraph (enforced by `>`)
 description:           >
-  Junyi Li at the University of Edinburgh
+  Xiangwei Jia at the Fudan University
 
 # A shorter description for the sidebar.
 tagline:               >
-  University of Edinburgh
+  Fudan University
 
 # A list of keywords for your blog.
-keywords:              [李俊毅, 俊毅, ML, DL]
+keywords:              [贾相伟, 相伟, ML, DL]
 
 # Used by jekyll-seo-tag.
 logo:                  /assets/img/taiyangsmall.png
 
 # This should be the same author as first entry in `_data/authors.yml`.
 author:
-  name:                李俊毅
+  name:                贾相伟
   picture:             /assets/img/taiyangsmall.png
   social:
-    email:               '4ljy@163.com'
-    github:              dukeenglish
+    email:               'jiaxiangwei@outlook.com'
+    github:              DustOfStars
 
 # This text will appear in a `<small>` tag in the footer of every page.
 copyright:             >
