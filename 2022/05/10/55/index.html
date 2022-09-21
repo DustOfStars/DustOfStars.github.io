@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="DustOfStars">
 <meta property="og:description" content="SV Verilog对比， 数据类型、自定义类型、字符串类型、接口等">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/.com//%E8%B7%AF%E7%A7%91.png">
+<meta property="og:image" content="http://example.com/2022/05/10/55/%E8%B7%AF%E7%A7%91.png">
 <meta property="article:published_time" content="2022-05-10T13:05:55.000Z">
 <meta property="article:modified_time" content="2022-05-10T13:05:55.000Z">
 <meta property="article:author" content="Jia">
@@ -35,7 +35,7 @@
 <meta property="article:tag" content="System Verilog">
 <meta property="article:tag" content="IC验证">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/.com//%E8%B7%AF%E7%A7%91.png">
+<meta name="twitter:image" content="http://example.com/2022/05/10/55/%E8%B7%AF%E7%A7%91.png">
 
 
 <link rel="canonical" href="http://example.com/2022/05/10/55/">
@@ -303,7 +303,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><img src="/.com//%E8%B7%AF%E7%A7%91.png" alt="路科"></p>
+        <p><img src="/2022/05/10/55/%E8%B7%AF%E7%A7%91.png" alt="路科"></p>
 <h2 id="Verilog："><a href="#Verilog：" class="headerlink" title="Verilog："></a>Verilog：</h2><h3 id="变量类型-veriables"><a href="#变量类型-veriables" class="headerlink" title="变量类型 veriables"></a>变量类型 veriables</h3><h4 id="四值逻辑"><a href="#四值逻辑" class="headerlink" title="四值逻辑"></a>四值逻辑</h4><h5 id="0"><a href="#0" class="headerlink" title="0"></a>0</h5><h5 id="1"><a href="#1" class="headerlink" title="1"></a>1</h5><h5 id="X"><a href="#X" class="headerlink" title="X"></a>X</h5><h6 id="用来捕获设计错误，比如寄存器未初始化"><a href="#用来捕获设计错误，比如寄存器未初始化" class="headerlink" title="用来捕获设计错误，比如寄存器未初始化"></a>用来捕获设计错误，比如寄存器未初始化</h6><h5 id="Z"><a href="#Z" class="headerlink" title="Z"></a>Z</h5><h6 id="用来表示未连接或者三态的设计逻辑"><a href="#用来表示未连接或者三态的设计逻辑" class="headerlink" title="用来表示未连接或者三态的设计逻辑"></a>用来表示未连接或者三态的设计逻辑</h6><p>但是在系统级或者事务级，Z和X很少使用</p>
 <h4 id="reg"><a href="#reg" class="headerlink" title="reg"></a>reg</h4><h5 id="用来描述-逻辑，-integer-用来描述循环变量和计算"><a href="#用来描述-逻辑，-integer-用来描述循环变量和计算" class="headerlink" title="用来描述 逻辑， integer 用来描述循环变量和计算"></a>用来描述 逻辑， integer 用来描述循环变量和计算</h5><h5 id="reg并不一定要被综合为register，它只是用来与线网类型相对，表示存储数据的变量"><a href="#reg并不一定要被综合为register，它只是用来与线网类型相对，表示存储数据的变量" class="headerlink" title="reg并不一定要被综合为register，它只是用来与线网类型相对，表示存储数据的变量"></a>reg并不一定要被综合为register，它只是用来与线网类型相对，表示存储数据的变量</h5><h4 id="integer"><a href="#integer" class="headerlink" title="integer"></a>integer</h4><h5 id="和time类似，像有相同位数的reg一样运转，"><a href="#和time类似，像有相同位数的reg一样运转，" class="headerlink" title="和time类似，像有相同位数的reg一样运转，"></a>和time类似，像有相同位数的reg一样运转，</h5><p>表达式的integer值作为 有符号数 处理， reg 和 time 作为无符号数处理</p>
 <h4 id="time"><a href="#time" class="headerlink" title="time"></a>time</h4><h5 id="和realtime类似，-用来保存测试装置的仿真时间"><a href="#和realtime类似，-用来保存测试装置的仿真时间" class="headerlink" title="和realtime类似， 用来保存测试装置的仿真时间"></a>和realtime类似， 用来保存测试装置的仿真时间</h5><h4 id="real"><a href="#real" class="headerlink" title="real"></a>real</h4><h5 id="在系统模型中使用"><a href="#在系统模型中使用" class="headerlink" title="在系统模型中使用"></a>在系统模型中使用</h5><h4 id="realtime"><a href="#realtime" class="headerlink" title="realtime"></a>realtime</h4><h4 id="变量类型是保存在initial-always-task-function中赋的值"><a href="#变量类型是保存在initial-always-task-function中赋的值" class="headerlink" title="变量类型是保存在initial always task function中赋的值"></a>变量类型是保存在initial always task function中赋的值</h4><h4 id="只能用-过程赋值-来完成"><a href="#只能用-过程赋值-来完成" class="headerlink" title="只能用 过程赋值 来完成"></a>只能用 过程赋值 来完成</h4><h3 id="线网类型-nets"><a href="#线网类型-nets" class="headerlink" title="线网类型 nets"></a>线网类型 nets</h3><h4 id="四值逻辑-1"><a href="#四值逻辑-1" class="headerlink" title="四值逻辑"></a>四值逻辑</h4><h5 id="0-1"><a href="#0-1" class="headerlink" title="0"></a>0</h5><h5 id="1-1"><a href="#1-1" class="headerlink" title="1"></a>1</h5><h5 id="X-1"><a href="#X-1" class="headerlink" title="X"></a>X</h5><h5 id="Z-1"><a href="#Z-1" class="headerlink" title="Z"></a>Z</h5><h4 id="wire"><a href="#wire" class="headerlink" title="wire"></a>wire</h4><h4 id="wor"><a href="#wor" class="headerlink" title="wor"></a>wor</h4><h4 id="wand"><a href="#wand" class="headerlink" title="wand"></a>wand</h4><h4 id="用于建模连接线路，值由-线网驱动器决定"><a href="#用于建模连接线路，值由-线网驱动器决定" class="headerlink" title="用于建模连接线路，值由 线网驱动器决定"></a>用于建模连接线路，值由 线网驱动器决定</h4><h4 id="线网驱动器：可以是门或者模块的实例，也可以是连续赋值的输出"><a href="#线网驱动器：可以是门或者模块的实例，也可以是连续赋值的输出" class="headerlink" title="线网驱动器：可以是门或者模块的实例，也可以是连续赋值的输出"></a>线网驱动器：可以是门或者模块的实例，也可以是连续赋值的输出</h4><h2 id="SV"><a href="#SV" class="headerlink" title="SV :"></a>SV :</h2><p> 在与C交互时，可以使用二值逻辑使接口参数更加简单，<br>因为构建验证驱动组件时，不关注硬件底层逻辑X，Z</p>

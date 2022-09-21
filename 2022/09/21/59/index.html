@@ -27,25 +27,25 @@
 <meta property="og:site_name" content="DustOfStars">
 <meta property="og:description" content="总线协议第一部分，UART：Universal Asynchronous Receiver Transmitter（通用异步收发器）">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/.com//frame_struct.JPG">
-<meta property="og:image" content="http://example.com/.com//shifter.JPG">
-<meta property="og:image" content="http://example.com/.com//diagram.JPG">
-<meta property="og:image" content="http://example.com/.com//workMode.JPG">
-<meta property="og:image" content="http://example.com/.com//regSet.JPG">
-<meta property="og:image" content="http://example.com/.com//uartInit.JPG">
-<meta property="og:image" content="http://example.com/.com//UATRmain.JPG">
-<meta property="og:image" content="http://example.com/.com//uartSend.JPG">
-<meta property="og:image" content="http://example.com/.com//uartRec.JPG">
-<meta property="og:image" content="http://example.com/.com//uartAdd1.JPG">
-<meta property="og:image" content="http://example.com/.com//uartSendStr.JPG">
-<meta property="og:image" content="http://example.com/.com//uartSend.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/frame_struct.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/shifter.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/diagram.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/workMode.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/regSet.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/uartInit.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/UATRmain.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/uartSend.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/uartRec.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/uartAdd1.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/uartSendStr.JPG">
+<meta property="og:image" content="http://example.com/2022/09/21/59/uartSend.JPG">
 <meta property="article:published_time" content="2022-09-21T07:31:59.000Z">
 <meta property="article:modified_time" content="2022-09-21T07:31:59.000Z">
 <meta property="article:author" content="Jia">
 <meta property="article:tag" content="NXP">
 <meta property="article:tag" content="UART">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/.com//frame_struct.JPG">
+<meta name="twitter:image" content="http://example.com/2022/09/21/59/frame_struct.JPG">
 
 
 <link rel="canonical" href="http://example.com/2022/09/21/59/">
@@ -348,7 +348,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="UART帧格式"><a href="#UART帧格式" class="headerlink" title="UART帧格式"></a>UART帧格式</h2><p><img src="/.com//frame_struct.JPG" alt="UART帧格式"></p>
+<h2 id="UART帧格式"><a href="#UART帧格式" class="headerlink" title="UART帧格式"></a>UART帧格式</h2><p><img src="/2022/09/21/59/frame_struct.JPG" alt="UART帧格式"></p>
 <ul>
 <li><input disabled type="checkbox"> 起始位：1bit的0，标志发送开始；因为空闲时为1，所以开始为0；</li>
 <li><input checked disabled type="checkbox"> 数据位： 5-8bit，<strong>先发低位，后发高位</strong>；</li>
@@ -365,7 +365,7 @@
 <h2 id="Exynos4412下的UART控制器"><a href="#Exynos4412下的UART控制器" class="headerlink" title="Exynos4412下的UART控制器"></a>Exynos4412下的UART控制器</h2><blockquote>
 <p>串口的信号一般较弱，通信距离短，容易被干扰，所以增加了一块专有芯片用来增加抗干扰能力，使发送距离更远；(TTL信号转为232信号)</p>
 </blockquote>
-<p><img src="/.com//shifter.JPG" alt="shifter"></p>
+<p><img src="/2022/09/21/59/shifter.JPG" alt="shifter"></p>
 <p>STEPs：</p>
 <ol>
 <li>待发送数据放入FIFO</li>
@@ -373,12 +373,12 @@
 <li>shifter每个bit依次移位到引脚来发送，<strong>先发低位，后发高位</strong>；</li>
 </ol>
 <p><em>接收时顺序相反，RxD –&gt; shifter –&gt; FIFO;</em></p>
-<h3 id="UART控制器的总体框图"><a href="#UART控制器的总体框图" class="headerlink" title="UART控制器的总体框图"></a>UART控制器的总体框图</h3><p><img src="/.com//diagram.JPG" alt="框图"></p>
+<h3 id="UART控制器的总体框图"><a href="#UART控制器的总体框图" class="headerlink" title="UART控制器的总体框图"></a>UART控制器的总体框图</h3><p><img src="/2022/09/21/59/diagram.JPG" alt="框图"></p>
 <p><em><strong>CPU会通过总线，和接收和发送的BUFFer相连，用来读写数据，另外，也和控制单元相连，对控制单元的设置进行修改；</strong></em></p>
 <h2 id="UART寄存器详解"><a href="#UART寄存器详解" class="headerlink" title="UART寄存器详解"></a>UART寄存器详解</h2><blockquote>
 <p>补充一个细节，<strong>回环模式look-back</strong>是在内部将Tx和Rx短接，一般用于测试；</p>
 </blockquote>
-<p><img src="/.com//workMode.JPG" alt="几种工作模式"></p>
+<p><img src="/2022/09/21/59/workMode.JPG" alt="几种工作模式"></p>
 <p>三种工作模式：</p>
 <ol>
 <li>polling  轮询<ul>
@@ -400,27 +400,27 @@
 </li>
 </ol>
 <p><mark>UART编程之前，设置需要的寄存器，以及顺序：</mark></p>
-<p><img src="/.com//regSet.JPG" alt="regSet"></p>
-<h2 id="UART编程"><a href="#UART编程" class="headerlink" title="UART编程"></a>UART编程</h2><h3 id="STEP-1：-串口初始化"><a href="#STEP-1：-串口初始化" class="headerlink" title="STEP 1： 串口初始化"></a>STEP 1： 串口初始化</h3><p><img src="/.com//uartInit.JPG" alt="uartInit"></p>
-<h3 id="STEP-2：-main函数"><a href="#STEP-2：-main函数" class="headerlink" title="STEP 2： main函数"></a>STEP 2： main函数</h3><p><img src="/.com//UATRmain.JPG" alt="UATRmain"></p>
+<p><img src="/2022/09/21/59/regSet.JPG" alt="regSet"></p>
+<h2 id="UART编程"><a href="#UART编程" class="headerlink" title="UART编程"></a>UART编程</h2><h3 id="STEP-1：-串口初始化"><a href="#STEP-1：-串口初始化" class="headerlink" title="STEP 1： 串口初始化"></a>STEP 1： 串口初始化</h3><p><img src="/2022/09/21/59/uartInit.JPG" alt="uartInit"></p>
+<h3 id="STEP-2：-main函数"><a href="#STEP-2：-main函数" class="headerlink" title="STEP 2： main函数"></a>STEP 2： main函数</h3><p><img src="/2022/09/21/59/UATRmain.JPG" alt="UATRmain"></p>
 <h3 id="STEP-3：-收发函数封装"><a href="#STEP-3：-收发函数封装" class="headerlink" title="STEP 3： 收发函数封装"></a>STEP 3： 收发函数封装</h3><ul>
 <li>发送数据：</li>
 </ul>
-<p><img src="/.com//uartSend.JPG" alt="uartSend"></p>
+<p><img src="/2022/09/21/59/uartSend.JPG" alt="uartSend"></p>
 <ul>
 <li>接收数据：</li>
 </ul>
-<p><img src="/.com//uartRec.JPG" alt="uartRec"></p>
+<p><img src="/2022/09/21/59/uartRec.JPG" alt="uartRec"></p>
 <h3 id="STEP-4：-优化"><a href="#STEP-4：-优化" class="headerlink" title="STEP 4： 优化"></a>STEP 4： 优化</h3><blockquote>
 <p>电脑 – &gt; 开发板， 然后开发板收到数据+1，再返回给电脑；</p>
 </blockquote>
-<p><img src="/.com//uartAdd1.JPG" alt="uartAdd1"></p>
+<p><img src="/2022/09/21/59/uartAdd1.JPG" alt="uartAdd1"></p>
 <h2 id="输入输出重定向"><a href="#输入输出重定向" class="headerlink" title="输入输出重定向"></a>输入输出重定向</h2><blockquote>
 <p>这种通过判断发送寄存器是不是空，来把数据放入UART的寄存器中，就是相当于printf重定向到UART串口，而其他操作系统中，是重定向到显卡或者磁盘；</p>
 </blockquote>
 <p>尝试写一个发送字符串的函数：</p>
-<p><img src="/.com//uartSendStr.JPG" alt="uartSendStr"></p>
-<p><img src="/.com//uartSend.JPG" alt="uartSend"></p>
+<p><img src="/2022/09/21/59/uartSendStr.JPG" alt="uartSendStr"></p>
+<p><img src="/2022/09/21/59/uartSend.JPG" alt="uartSend"></p>
 
     </div>
 
