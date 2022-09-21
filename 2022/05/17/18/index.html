@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="覆盖率 、 代码覆盖率 、 功能覆盖率 、 从功能描述到覆盖率">
+<meta property="og:type" content="article">
+<meta property="og:title" content="路科V0P30P33-覆盖率-代码覆盖率-功能覆盖率-从功能描述到覆盖率">
+<meta property="og:url" content="http://example.com/2022/05/17/18/index.html">
+<meta property="og:site_name" content="DustOfStars">
+<meta property="og:description" content="覆盖率 、 代码覆盖率 、 功能覆盖率 、 从功能描述到覆盖率">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/.com//%E8%A6%86%E7%9B%96%E7%8E%87%E5%8F%8D%E9%A6%88%E5%9B%9E%E8%B7%AF.png">
+<meta property="og:image" content="http://example.com/.com//%E8%A6%86%E7%9B%96%E7%8E%87%E5%88%86%E7%B1%BB.png">
+<meta property="og:image" content="http://example.com/.com//%E6%A6%82%E8%BF%B01.png">
+<meta property="og:image" content="http://example.com/.com//%E6%A6%82%E8%BF%B02.png">
+<meta property="og:image" content="http://example.com/.com//%E6%8F%90%E5%8F%96%E6%8E%A5%E5%8F%A3%E5%8A%9F%E8%83%BD%E7%82%B9.png">
+<meta property="og:image" content="http://example.com/.com//%E6%8F%90%E5%8F%96%E5%86%85%E9%83%A8%E5%8A%9F%E8%83%BD%E7%82%B9.png">
+<meta property="og:image" content="http://example.com/.com//%E6%8F%90%E5%8F%96%E5%86%85%E9%83%A8%E5%8A%9F%E8%83%BD%E7%82%B92.png">
+<meta property="og:image" content="http://example.com/.com//%E6%8F%90%E5%8F%96%E7%BB%93%E6%9E%84%E5%8A%9F%E8%83%BD%E7%82%B9.png">
+<meta property="og:image" content="http://example.com/.com//%E6%A0%87%E8%AE%B0%E5%8A%9F%E8%83%BD%E7%82%B9.png">
+<meta property="og:image" content="http://example.com/.com//%E9%AA%8C%E8%AF%81%E5%88%86%E5%B1%82.png">
+<meta property="og:image" content="http://example.com/.com//%E4%BC%98%E5%85%88%E7%BA%A7%E5%88%92%E5%88%86.png">
+<meta property="og:image" content="http://example.com/.com//%E4%BC%98%E5%85%88%E7%BA%A7%E5%88%92%E5%88%862.png">
+<meta property="og:image" content="http://example.com/.com//%E4%BB%8E%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95%E5%88%B0%E5%8A%9F%E8%83%BD%E8%A6%86%E7%9B%96%E7%8E%87.png">
+<meta property="og:image" content="http://example.com/.com//%E8%A6%86%E7%9B%96%E7%8E%87%E5%AE%9E%E7%8E%B0%E7%9A%84%E8%80%83%E9%87%8F.png">
+<meta property="og:image" content="http://example.com/.com//MCDT%E6%B5%8B%E8%AF%95%E6%B8%85%E5%8D%95.png">
+<meta property="og:image" content="http://example.com/.com//MCDT%E6%B5%8B%E8%AF%95%E6%B8%85%E5%8D%952.png">
+<meta property="article:published_time" content="2022-05-17T03:27:18.000Z">
+<meta property="article:modified_time" content="2022-05-17T03:27:18.000Z">
+<meta property="article:author" content="Jia">
+<meta property="article:tag" content="UVM">
+<meta property="article:tag" content="System Verilog">
+<meta property="article:tag" content="IC验证">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/.com//%E8%A6%86%E7%9B%96%E7%8E%87%E5%8F%8D%E9%A6%88%E5%9B%9E%E8%B7%AF.png">
+
+
+<link rel="canonical" href="http://example.com/2022/05/17/18/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/05/17/18/","path":"2022/05/17/18/","title":"路科V0P30P33-覆盖率-代码覆盖率-功能覆盖率-从功能描述到覆盖率"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>路科V0P30P33-覆盖率-代码覆盖率-功能覆盖率-从功能描述到覆盖率 | DustOfStars</title>
+  
+
+
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>
+<!-- 文章加密 -->
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DustOfStars</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">--jxw</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-github"><a href="https://github.com/DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>Github</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">1.</span> <span class="nav-text">覆盖率</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E9%AA%8C%E8%AF%81%E6%95%88%E7%8E%87"><span class="nav-number">1.1.</span> <span class="nav-text">优化验证效率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E7%8E%87%E5%88%86%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">覆盖率分类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">2.</span> <span class="nav-text">代码覆盖率</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%8C%E8%A6%86%E7%9B%96%E7%8E%87%EF%BC%88statement-x2F-line%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">行覆盖率（statement&#x2F;line）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E8%A6%86%E7%9B%96%E7%8E%87%EF%BC%88branch%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">分支覆盖率（branch）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E8%A6%86%E7%9B%96%E7%8E%87%EF%BC%88condition-x2F-expression%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">条件覆盖率（condition&#x2F;expression）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA%E8%A6%86%E7%9B%96%E7%8E%87%EF%BC%88FSM%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">状态机覆盖率（FSM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC%E8%A6%86%E7%9B%96%E7%8E%87%EF%BC%88toggle%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">跳转覆盖率（toggle）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87100-%E7%9A%84%E5%90%AB%E4%B9%89"><span class="nav-number">2.6.</span> <span class="nav-text">代码覆盖率100%的含义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">3.</span> <span class="nav-text">功能覆盖率</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E7%BB%84%EF%BC%88covergroup%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">覆盖组（covergroup）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E7%82%B9%EF%BC%88coverpoint%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">覆盖点（coverpoint）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%93%EF%BC%9A%E5%80%BC%E8%A6%86%E7%9B%96"><span class="nav-number">3.3.</span> <span class="nav-text">仓：值覆盖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%93%EF%BC%9A-%E5%BF%BD%E7%95%A5%E7%B1%BB%E5%9E%8B%E5%92%8C%E9%9D%9E%E6%B3%95%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.4.</span> <span class="nav-text">仓： 忽略类型和非法类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E8%A6%86%E7%9B%96%E7%8E%87-cross"><span class="nav-number">3.5.</span> <span class="nav-text">交叉覆盖率 cross</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%E5%88%B0%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">4.</span> <span class="nav-text">从功能描述到覆盖率</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">4.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E6%8E%A5%E5%8F%A3%E5%8A%9F%E8%83%BD%E7%82%B9"><span class="nav-number">4.2.</span> <span class="nav-text">提取接口功能点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E5%86%85%E9%83%A8%E5%8A%9F%E8%83%BD%E7%82%B9"><span class="nav-number">4.3.</span> <span class="nav-text">提取内部功能点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E7%BB%93%E6%9E%84%E5%8A%9F%E8%83%BD%E7%82%B9"><span class="nav-number">4.4.</span> <span class="nav-text">提取结构功能点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E8%AE%B0%E5%8A%9F%E8%83%BD%E7%82%B9"><span class="nav-number">4.5.</span> <span class="nav-text">标记功能点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E5%88%86%E5%B1%82"><span class="nav-number">4.6.</span> <span class="nav-text">验证分层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E5%88%92%E5%88%86"><span class="nav-number">4.7.</span> <span class="nav-text">优先级划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95%E5%88%B0%E5%8A%9F%E8%83%BD%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">4.8.</span> <span class="nav-text">从随机测试到功能覆盖率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E7%8E%87%E5%AE%9E%E7%8E%B0%E7%9A%84%E8%80%83%E9%87%8F"><span class="nav-number">4.9.</span> <span class="nav-text">覆盖率实现的考量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MCDT%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95%E6%B8%85%E5%8D%95"><span class="nav-number">4.10.</span> <span class="nav-text">MCDT功能测试清单</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jia</p>
+  <div class="site-description" itemprop="description">Go ahead, and believe in yourself.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/DustOfStars" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/17/18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jia">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DustOfStars">
+      <meta itemprop="description" content="Go ahead, and believe in yourself.">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="路科V0P30P33-覆盖率-代码覆盖率-功能覆盖率-从功能描述到覆盖率 | DustOfStars">
+      <meta itemprop="description" content="覆盖率 、 代码覆盖率 、 功能覆盖率 、 从功能描述到覆盖率">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          路科V0P30P33-覆盖率-代码覆盖率-功能覆盖率-从功能描述到覆盖率
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-17 11:27:18" itemprop="dateCreated datePublished" datetime="2022-05-17T11:27:18+08:00">2022-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%B7%AF%E7%A7%91V0/" itemprop="url" rel="index"><span itemprop="name">路科V0</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">覆盖率 、 代码覆盖率 、 功能覆盖率 、 从功能描述到覆盖率</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="覆盖率"><a href="#覆盖率" class="headerlink" title="覆盖率"></a>覆盖率</h1><ul>
+<li>随机测试比定向测试多了很多的可能性，但是需要考虑，什么时候结束验证呢？涉及到<strong>覆盖率</strong>指标的问题。<ul>
+<li>是否所有设计的功能在验证计划中都已经验证了？</li>
+<li>是否代码中的某些部分从未执行过？</li>
+</ul>
+</li>
+<li>覆盖率 用来<strong>衡量设计验证完备性</strong>的通用词语；</li>
+<li><strong>覆盖率工具</strong>会在仿真过程中收集信息，然后进行后续处理并得到<strong>覆盖率报告</strong>。</li>
+<li>通过覆盖率报告找到覆盖率之外的盲区，然后修改现有的测试用例或者创建新的测试来填补这些盲区；</li>
+<li>一直迭代进行，直到覆盖率满足要求；</li>
+</ul>
+<p>覆盖率反馈回路 ：</p>
+<p><img src="/.com//%E8%A6%86%E7%9B%96%E7%8E%87%E5%8F%8D%E9%A6%88%E5%9B%9E%E8%B7%AF.png" alt="覆盖率反馈回路"></p>
+<h2 id="优化验证效率"><a href="#优化验证效率" class="headerlink" title="优化验证效率"></a>优化验证效率</h2><ul>
+<li>通过覆盖率量化验证之后，可以在更复杂的情况下捕捉一些功能特性是否被覆盖：<ul>
+<li>在测试X特性时，Y特性是否同时被使能和测试？功能之间存在关联</li>
+<li>是否可以精简已有的测试来加速仿真？并取得同样的覆盖率。冗余问题</li>
+<li>观察覆盖率在达到一定数值之后，是否停滞不再上升？</li>
+</ul>
+</li>
+<li>覆盖率是用来<strong>衡量验证精度和完备性</strong>的数据指标；</li>
+<li>可以告诉用户哪些结构在仿真时被触发，哪些没有；</li>
+</ul>
+<h2 id="覆盖率分类"><a href="#覆盖率分类" class="headerlink" title="覆盖率分类"></a>覆盖率分类</h2><ul>
+<li>代码覆盖率</li>
+<li>功能覆盖率</li>
+<li>断言覆盖率</li>
+</ul>
+<p><img src="/.com//%E8%A6%86%E7%9B%96%E7%8E%87%E5%88%86%E7%B1%BB.png" alt="覆盖率分类"></p>
+<p>按照覆盖率生成的方法，分为两类：</p>
+<ul>
+<li>隐形生成：<ul>
+<li>代码覆盖率，仿真工具可以自动分析RTL设计代码的执行结果得到代码覆盖率</li>
+</ul>
+</li>
+<li>显性生成：<ul>
+<li>断言覆盖率</li>
+<li>功能覆盖率，需要依照功能描述去定义的覆盖率；</li>
+</ul>
+</li>
+</ul>
+<p>按照覆盖率溯源，分两类：</p>
+<ul>
+<li>从功能描述而来：<ul>
+<li>功能覆盖率</li>
+</ul>
+</li>
+<li>从设计实现而来<ul>
+<li>代码覆盖率</li>
+<li>断言覆盖率</li>
+</ul>
+</li>
+</ul>
+<h1 id="代码覆盖率"><a href="#代码覆盖率" class="headerlink" title="代码覆盖率"></a>代码覆盖率</h1><ul>
+<li>包含未知错误的设计的问题在于它看起来很好，但是绝对不可能知道被验证的设计在功能上是完全正确的；</li>
+<li>即使所有测试平台都成功仿真，但是只要有部分RTL代码未执行，都可能触发功能错误，因此需要代码覆盖率！</li>
+<li>代码覆盖率的优势在于可以由仿真工具自动收集；</li>
+<li>一般只关注设计的代码覆盖率，不关注测试平台的代码覆盖率；</li>
+</ul>
+<h2 id="行覆盖率（statement-x2F-line）"><a href="#行覆盖率（statement-x2F-line）" class="headerlink" title="行覆盖率（statement&#x2F;line）"></a>行覆盖率（statement&#x2F;line）</h2><ul>
+<li>衡量源码哪些行被执行，哪些行没有；</li>
+<li>每一行执行的最小次数也可以设置为一个指标；</li>
+<li>代码覆盖率可以指出在缺乏激励的情况下，某些赋值的代码行没有被执行的情况，也可以指出一些漏洞影响或者无用代码的影响下，一些代码行也无法被执行的情况；</li>
+<li>对于无用代码，即永远不会执行的代码，可以从覆盖率中过滤掉；</li>
+<li>行覆盖率也叫做块覆盖率，块是在灾星单个语句时语句序列；</li>
+<li>比如，只要if为true，就会执行名为acked的块，因此这个块的执行等同于四个单独语句的执行；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (data == <span class="number">1&#x27;b1</span>) <span class="keyword">begin</span>: acked</span><br><span class="line">    as &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    data &lt;= <span class="number">16&#x27;hzzzz</span>;</span><br><span class="line">    bus_rq &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    state &lt;= IDLE;</span><br><span class="line"><span class="keyword">end</span>: acked</span><br></pre></td></tr></table></figure>
+
+<h2 id="分支覆盖率（branch）"><a href="#分支覆盖率（branch）" class="headerlink" title="分支覆盖率（branch）"></a>分支覆盖率（branch）</h2><ul>
+<li>分支覆盖率是用来对条件语句<code>if/else  case  ?:</code>，指出其执行的分支轨迹；</li>
+</ul>
+<h2 id="条件覆盖率（condition-x2F-expression）"><a href="#条件覆盖率（condition-x2F-expression）" class="headerlink" title="条件覆盖率（condition&#x2F;expression）"></a>条件覆盖率（condition&#x2F;expression）</h2><ul>
+<li>条件覆盖率用来衡量一些布尔表达式的各个条件真伪判断的执行轨迹；</li>
+<li>比如下面的if中两个条件是否各自衡量为true、false；</li>
+<li><code>if (parity == ODD || parity == EVEN) begin</code></li>
+</ul>
+<h2 id="状态机覆盖率（FSM）"><a href="#状态机覆盖率（FSM）" class="headerlink" title="状态机覆盖率（FSM）"></a>状态机覆盖率（FSM）</h2><ul>
+<li><strong>仿真工具可以自动识别状态机，因此在收集覆盖率时，可以将覆盖率状态的执行情况监测到</strong>；</li>
+<li>可以反映到每个状态的进入次数、状态之间的跳转次数、以及多个状态的跳转顺序等；</li>
+<li>因为FSM中的每个状态<strong>通常使用case语句中的选项进行编码</strong>，所以任务没有访问到的状态都可以通过未覆盖的语句清楚的识别到；</li>
+</ul>
+<h2 id="跳转覆盖率（toggle）"><a href="#跳转覆盖率（toggle）" class="headerlink" title="跳转覆盖率（toggle）"></a>跳转覆盖率（toggle）</h2><ul>
+<li>用来衡量寄存器跳转次数（0-&gt;1, 1-&gt;0）；</li>
+<li>一般项目会要求模块的端口实现至少一次1到0和一次0到1的跳转；，以保证模块的集成和模块之间的互动；</li>
+<li>也有项目要求所有的寄存器和端口一样，满足跳转的最小次数；</li>
+<li>端口跳转覆盖率常用来测试IP模块之间的基本连接性，比如检查一些输入端口是否没有连接，已经连接的端口的比特位数是否不匹配，一些已连接的输入是否被给定的固定值等；</li>
+</ul>
+<h2 id="代码覆盖率100-的含义"><a href="#代码覆盖率100-的含义" class="headerlink" title="代码覆盖率100%的含义"></a>代码覆盖率100%的含义</h2><ul>
+<li>表明整个设计都已执行；</li>
+<li><strong>表示验证环境运行设计源码的彻底程度，但是没有提供有关验证组件的正确性和完整性的指示</strong>；</li>
+<li>代码覆盖率应该用于帮助识别验证未执行的边界情况或者依赖于设计实现的特性；</li>
+<li>对于未覆盖的场景，考虑更新和添加测试；</li>
+</ul>
+<h1 id="功能覆盖率"><a href="#功能覆盖率" class="headerlink" title="功能覆盖率"></a>功能覆盖率</h1><ul>
+<li>功能验证的目标，在于确定设计有关的功能描述是否都实现了；</li>
+<li>可能存在的不期望的情况：<ul>
+<li>哪些功能没有被实现；</li>
+<li>实现错误；</li>
+<li>哪些没有要求的功能也实现了；</li>
+</ul>
+</li>
+</ul>
+<h2 id="覆盖组（covergroup）"><a href="#覆盖组（covergroup）" class="headerlink" title="覆盖组（covergroup）"></a>覆盖组（covergroup）</h2><ul>
+<li>覆盖组和类相似，在一次定义之后可以多次例化；</li>
+<li><strong>覆盖组含有覆盖点（cover point）、选项（option）、形式参数（argument）和可选触发（trigger event）</strong>；</li>
+<li>一个覆盖组包含的一个或者多个数据点，都是在<strong>同一时间采集</strong>；</li>
+<li><strong>覆盖组可以定义在类里，也可以定义在模块或者程序中</strong>；</li>
+<li>覆盖组可以采集任何可见变量，比如程序或模块变量、接口信号、或者设计中的任何信号；</li>
+<li>在类中的覆盖组也可以采集类的成员变量；</li>
+<li><strong>覆盖组应该定义在适当的抽象层次上</strong>；</li>
+<li>对任何事务的采样都必须<strong>等到数据被待测设计接收到</strong>以后；</li>
+<li>一个<strong>类也可以包含多个覆盖组</strong>，每个覆盖组可以根据需要将它们使能或者禁止；</li>
+<li>内部可以定义多个coverpoint，<strong>如果不在covergroup声明时指定采样事件，那么默认该覆盖组只能依赖于另一个手动采样函数sample()</strong>;</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123;red, green, blue&#125; color;</span><br><span class="line"><span class="keyword">bit</span>[<span class="number">3</span>:<span class="number">0</span>] pixel_adr, pixel_offset, pixel_hue;</span><br><span class="line"><span class="keyword">covergroup</span> g2 @(<span class="keyword">posedge</span> clk);</span><br><span class="line">    Hue: <span class="keyword">coverpoint</span> pixel_hue;</span><br><span class="line">    Offset: <span class="keyword">coverpoint</span> pixel_offset;</span><br><span class="line">    AxC: <span class="keyword">cross</span> color, pixel_adr;    <span class="comment">// cross 2变量</span></span><br><span class="line">    all: <span class="keyword">cross</span> color, Hue, Offset;  <span class="comment">// cross 1变量和2个coverpoint</span></span><br><span class="line"><span class="keyword">endgroup</span></span><br><span class="line"></span><br><span class="line">g2 cg_inst = <span class="keyword">new</span>();</span><br></pre></td></tr></table></figure>
+
+<p>其他：</p>
+<ul>
+<li>更多的时候，将覆盖组定义在类中，从而去覆盖类的成员变量；</li>
+<li>在类中声明covergroup的方式称为<strong>嵌入式覆盖组声明</strong>，以下栗子声明一个覆盖组cov1和它的实例c1;</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> xyz;</span><br><span class="line">    <span class="keyword">bit</span>[<span class="number">3</span>:<span class="number">0</span>] m_x;</span><br><span class="line">    <span class="keyword">int</span> m_y;</span><br><span class="line">    <span class="keyword">bit</span> m_z;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">covergroup</span> cov1 @m_z;</span><br><span class="line">        <span class="keyword">coverpoint</span> m_x;</span><br><span class="line">        <span class="keyword">coverpoint</span> m_y;</span><br><span class="line">    <span class="keyword">endgroup</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="keyword">new</span>();</span><br><span class="line">        cov1 c1 = <span class="keyword">new</span>();</span><br><span class="line">    <span class="keyword">endfunction</span></span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="覆盖点（coverpoint）"><a href="#覆盖点（coverpoint）" class="headerlink" title="覆盖点（coverpoint）"></a>覆盖点（coverpoint）</h2><ul>
+<li>一个covergroup可以包含一个或者多个coverpoint，一个coverpoint可以用来采样数据或者数据的变化；</li>
+<li><strong>一个coverpoint可以对应多个bin（仓）</strong>；</li>
+<li>这些bin可以显性指定，也可以隐性指定；</li>
+<li>coverpoint对数据的采样发生在covergroup采样的时候；</li>
+<li>建议给不同的覆盖点不同的名字，以便于查看；</li>
+<li>有名字的coverpoint可以用来进一步处理，比如<strong>在交叉覆盖率中使用某个coverpoint</strong>；</li>
+<li>可以通过iff在一些情况下禁止coverpoint采集</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">covergroup</span> g4;</span><br><span class="line">    <span class="keyword">coverpoint</span> s0 <span class="keyword">iff</span>(!reset);</span><br><span class="line"><span class="keyword">endgroup</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">covergroup</span> cg (<span class="keyword">ref</span> <span class="keyword">int</span> x, <span class="keyword">ref</span> <span class="keyword">int</span> y, <span class="keyword">input</span> <span class="keyword">int</span> c);</span><br><span class="line">    <span class="keyword">coverpoint</span> x;</span><br><span class="line">    b: <span class="keyword">coverpoint</span> y;</span><br><span class="line">    cx: <span class="keyword">coverpoint</span> x;</span><br><span class="line">    d: <span class="keyword">coverpoint</span> y[<span class="number">31</span>:<span class="number">24</span>];</span><br><span class="line">    <span class="keyword">cross</span> x, y;     <span class="comment">// 创建交叉覆盖率</span></span><br><span class="line"><span class="keyword">endgroup</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="仓：值覆盖"><a href="#仓：值覆盖" class="headerlink" title="仓：值覆盖"></a>仓：值覆盖</h2><ul>
+<li>关键字bins可以用来将每个感兴趣的数值均对应一个独立的bin，或者将所有值对应到同一个bin；</li>
+<li>iff语句也可以用在bin的定义，表示条件为false，在采集该bin的时候，该bin的采样数目不会增长；</li>
+<li>bins除了可以覆盖数值，还可以覆盖数值的变化<ul>
+<li><code>value1 =&gt; value2;</code> </li>
+<li>语法：<code>trans_item[* repeat_range]</code></li>
+<li><code>3[* 5]</code>  表示3&#x3D;&gt;3&#x3D;&gt;3&#x3D;&gt;3&#x3D;&gt;3</li>
+<li><code>3[* 3:5]</code> 表示(3&#x3D;&gt;3&#x3D;&gt;3),(3&#x3D;&gt;3&#x3D;&gt;3&#x3D;&gt;3)或者(3&#x3D;&gt;3&#x3D;&gt;3&#x3D;&gt;3&#x3D;&gt;3)</li>
+</ul>
+</li>
+<li>如果coverpoint没有指定任何bin，则sv会为他自动生成bin，遵循原则：<ul>
+<li>如果变量是枚举类型，则bin的数量是枚举类型的基数（所有枚举值得和）；</li>
+<li><strong>如果变量是整型（位宽为M），则bin的类型是<code>2^M</code>和<code>auto_bin_max</code>的较小值</strong>；</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bit</span> [<span class="number">9</span>:<span class="number">0</span>] v_a;</span><br><span class="line"><span class="keyword">covergroup</span> cg @(<span class="keyword">posedge</span> clk);</span><br><span class="line">    <span class="keyword">coverpoint</span> v_a &#123;</span><br><span class="line">        <span class="keyword">bins</span> a = &#123;[<span class="number">0</span>:<span class="number">63</span>], <span class="number">65</span>&#125;;  <span class="comment">// a是变量，表示在以下条件的话采样</span></span><br><span class="line">        <span class="keyword">bins</span> b[] = &#123;[<span class="number">127</span>:<span class="number">150</span>], [<span class="number">148</span>:<span class="number">191</span>]&#125;;  <span class="comment">//b[]是个数组，表示满足以下条件的话分别采集一次</span></span><br><span class="line">        <span class="keyword">bins</span> c[] = &#123;<span class="number">200</span>, <span class="number">201</span>, <span class="number">202</span>&#125;;</span><br><span class="line">        <span class="keyword">bins</span> d = &#123;[<span class="number">1000</span>:$]&#125;;</span><br><span class="line">        <span class="keyword">bins</span> others[] = <span class="keyword">default</span>;    <span class="comment">// default表示其他的值都采样一次</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endgroup</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="仓：-忽略类型和非法类型"><a href="#仓：-忽略类型和非法类型" class="headerlink" title="仓： 忽略类型和非法类型"></a>仓： 忽略类型和非法类型</h2><ul>
+<li><code>ingnore_bins</code>用来将其排除在有效统计的bin集合之外</li>
+<li><code>illegal_bins</code>用来指出采样的数值为非法，<strong>如果illegal_bins被采样到，那么仿真会报错</strong>！</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">covergroup</span> cg23;</span><br><span class="line">    <span class="keyword">coverpoint</span> a &#123;</span><br><span class="line">        <span class="keyword">ignore_bins</span> ignore_vals = &#123;<span class="number">7</span>, <span class="number">8</span>&#125;;</span><br><span class="line">        <span class="keyword">ignore_bins</span> ignore_trans = (<span class="number">1</span>=&gt;<span class="number">3</span>=&gt;<span class="number">5</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endgroup</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">covergroup</span> cg3;</span><br><span class="line">    <span class="keyword">coverpoint</span> b &#123;</span><br><span class="line">        <span class="keyword">illegal_bins</span> bad_vals = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br><span class="line">        <span class="keyword">illegal_bins</span> bad_trans = (<span class="number">4</span>=&gt;<span class="number">5</span>=&gt;<span class="number">6</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endgroup</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="交叉覆盖率-cross"><a href="#交叉覆盖率-cross" class="headerlink" title="交叉覆盖率 cross"></a>交叉覆盖率 cross</h2><ul>
+<li>covergroup可以在两个或者更多的coverpoint或者变量之间定义交叉覆盖率；</li>
+<li>在对a和b产生交叉覆盖率之前，系统会先为他们隐性生成对应的coverpoint和bin，每个coverpoint都有16个自动产生的bin；</li>
+<li>两个coverpoint交叉产生256个bin；</li>
+<li>注意：<strong>被声明为default、ignore、illegal的bin不会被交叉覆盖率计算</strong>；</li>
+<li><strong>交叉覆盖率只允许在同一个covergroup中定义的覆盖点参与运算</strong>。</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bit</span> [<span class="number">3</span>:<span class="number">0</span>] a, b;</span><br><span class="line"><span class="keyword">covergroup</span> cov @(<span class="keyword">posedge</span> clk);</span><br><span class="line">    aXb : <span class="keyword">cross</span> a, b;</span><br><span class="line"><span class="keyword">endgroup</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] a_var;</span><br><span class="line"><span class="keyword">bit</span> [<span class="number">3</span>:<span class="number">0</span>] b_var;</span><br><span class="line"><span class="keyword">covergroup</span> cov3 @(<span class="keyword">posedge</span> clk);</span><br><span class="line">    A : <span class="keyword">coverpoint</span> a_var &#123;<span class="keyword">bins</span> yy[] = &#123;[<span class="number">0</span>:<span class="number">9</span>]&#125;;&#125;</span><br><span class="line">    CC : <span class="keyword">cross</span> b_var, A;</span><br><span class="line"><span class="keyword">endgroup</span></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="从功能描述到覆盖率"><a href="#从功能描述到覆盖率" class="headerlink" title="从功能描述到覆盖率"></a>从功能描述到覆盖率</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><img src="/.com//%E6%A6%82%E8%BF%B01.png" alt="概述1"></p>
+<p><img src="/.com//%E6%A6%82%E8%BF%B02.png" alt="概述2"></p>
+<h2 id="提取接口功能点"><a href="#提取接口功能点" class="headerlink" title="提取接口功能点"></a>提取接口功能点</h2><p><img src="/.com//%E6%8F%90%E5%8F%96%E6%8E%A5%E5%8F%A3%E5%8A%9F%E8%83%BD%E7%82%B9.png" alt="提取接口功能点"></p>
+<h2 id="提取内部功能点"><a href="#提取内部功能点" class="headerlink" title="提取内部功能点"></a>提取内部功能点</h2><p><img src="/.com//%E6%8F%90%E5%8F%96%E5%86%85%E9%83%A8%E5%8A%9F%E8%83%BD%E7%82%B9.png" alt="提取内部功能点"></p>
+<p><img src="/.com//%E6%8F%90%E5%8F%96%E5%86%85%E9%83%A8%E5%8A%9F%E8%83%BD%E7%82%B92.png" alt="提取内部功能点2"></p>
+<h2 id="提取结构功能点"><a href="#提取结构功能点" class="headerlink" title="提取结构功能点"></a>提取结构功能点</h2><p><img src="/.com//%E6%8F%90%E5%8F%96%E7%BB%93%E6%9E%84%E5%8A%9F%E8%83%BD%E7%82%B9.png" alt="提取结构功能点"></p>
+<h2 id="标记功能点"><a href="#标记功能点" class="headerlink" title="标记功能点"></a>标记功能点</h2><p><img src="/.com//%E6%A0%87%E8%AE%B0%E5%8A%9F%E8%83%BD%E7%82%B9.png" alt="标记功能点"></p>
+<h2 id="验证分层"><a href="#验证分层" class="headerlink" title="验证分层"></a>验证分层</h2><p><img src="/.com//%E9%AA%8C%E8%AF%81%E5%88%86%E5%B1%82.png" alt="验证分层"></p>
+<h2 id="优先级划分"><a href="#优先级划分" class="headerlink" title="优先级划分"></a>优先级划分</h2><p><img src="/.com//%E4%BC%98%E5%85%88%E7%BA%A7%E5%88%92%E5%88%86.png" alt="优先级划分"></p>
+<p><img src="/.com//%E4%BC%98%E5%85%88%E7%BA%A7%E5%88%92%E5%88%862.png" alt="优先级划分2"></p>
+<h2 id="从随机测试到功能覆盖率"><a href="#从随机测试到功能覆盖率" class="headerlink" title="从随机测试到功能覆盖率"></a>从随机测试到功能覆盖率</h2><p><img src="/.com//%E4%BB%8E%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95%E5%88%B0%E5%8A%9F%E8%83%BD%E8%A6%86%E7%9B%96%E7%8E%87.png" alt="从随机测试到功能覆盖率"></p>
+<h2 id="覆盖率实现的考量"><a href="#覆盖率实现的考量" class="headerlink" title="覆盖率实现的考量"></a>覆盖率实现的考量</h2><p><img src="/.com//%E8%A6%86%E7%9B%96%E7%8E%87%E5%AE%9E%E7%8E%B0%E7%9A%84%E8%80%83%E9%87%8F.png" alt="覆盖率实现的考量"></p>
+<h2 id="MCDT功能测试清单"><a href="#MCDT功能测试清单" class="headerlink" title="MCDT功能测试清单"></a>MCDT功能测试清单</h2><p><img src="/.com//MCDT%E6%B5%8B%E8%AF%95%E6%B8%85%E5%8D%95.png" alt="MCDT功能测试清单"></p>
+<p><img src="/.com//MCDT%E6%B5%8B%E8%AF%95%E6%B8%85%E5%8D%952.png" alt="MCDT功能测试清单2"></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div>
+    
+    <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i
+            class="fa fa-paw"></i>再接再厉-------------</div>
+    
+</div>
+
+
+<div class="my_post_copyright">
+    <p><span>本文标题:</span><a href="/2022/05/17/18/">路科V0P30P33-覆盖率-代码覆盖率-功能覆盖率-从功能描述到覆盖率</a></p>
+    <p><span>文章作者:</span><a href="/" title="访问 Jia 的个人博客">Jia</a></p>
+    <p><span>发布时间:</span>2022年05月17日 - 11:05</p>
+    <p><span>最后更新:</span>2022年05月17日 - 11:05</p>
+    <p><span>原始链接:</span><a href="/2022/05/17/18/" title="路科V0P30P33-覆盖率-代码覆盖率-功能覆盖率-从功能描述到覆盖率">http://example.com/2022/05/17/18/</a></p>
+    <p><span>许可协议:</span><i class="fab fa-creative-commons"></i>
+        <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"
+            title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">
+            署名-非商业性使用-禁止演绎 4.0 国际</a>
+        转载请保留原文链接及作者。
+    </p>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/UVM/" rel="tag"><i class="fa fa-tag"></i> UVM</a>
+              <a href="/tags/System-Verilog/" rel="tag"><i class="fa fa-tag"></i> System Verilog</a>
+              <a href="/tags/IC%E9%AA%8C%E8%AF%81/" rel="tag"><i class="fa fa-tag"></i> IC验证</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/15/47/" rel="prev" title="路科V0P26P29-MCDT测试结构-实现激励发生器-监测器和检查器-顶层环境和测试用例">
+                  <i class="fa fa-chevron-left"></i> 路科V0P26P29-MCDT测试结构-实现激励发生器-监测器和检查器-顶层环境和测试用例
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/14/21/" rel="next" title="数组01二分查找">
+                  数组01二分查找 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jia</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">215k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:16</span>
+  </span>
+</div><div>
+<!--添加网站运行时间-->
+<span>小破站已经在风雨中度过了</span>
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    function createtime() {
+        const startTime = '02/11/2021 00:12:55',
+            start = new Date(startTime)
+        let mill = new Date() - start,
+            seconds = Math.floor(mill / 1000),
+            mins = Math.floor(seconds / 60),
+            hours = Math.floor(mins / 60),
+            days = Math.floor(hours / 24)
+        const time = {
+            seconds: seconds - mins * 60,
+            mins: mins - hours * 60,
+            hours: hours - days * 24,
+        }
+        for (const k in time) {
+            time[k] = `${time[k]}`.padStart(2, '0')
+        }
+        document.getElementById("timeDate").innerHTML = ` ${days} 天`
+        document.getElementById("times").innerHTML = ` ${time.hours} 小时 ${time.mins} 分 ${time.seconds} 秒`
+    }
+    setInterval(createtime, 500)
+</script>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: '32px',
+  left: 'unset',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: false
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+</body>
+</html>

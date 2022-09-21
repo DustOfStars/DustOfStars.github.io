@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="线程控制、线程同步、线程通信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="路科V0P23P25线程控制-线程同步-线程通信">
+<meta property="og:url" content="http://example.com/2022/05/15/03/index.html">
+<meta property="og:site_name" content="DustOfStars">
+<meta property="og:description" content="线程控制、线程同步、线程通信">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-15T07:44:03.000Z">
+<meta property="article:modified_time" content="2022-05-15T07:44:03.000Z">
+<meta property="article:author" content="Jia">
+<meta property="article:tag" content="UVM">
+<meta property="article:tag" content="System Verilog">
+<meta property="article:tag" content="IC验证">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/05/15/03/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/05/15/03/","path":"2022/05/15/03/","title":"路科V0P23P25线程控制-线程同步-线程通信"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>路科V0P23P25线程控制-线程同步-线程通信 | DustOfStars</title>
+  
+
+
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>
+<!-- 文章加密 -->
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DustOfStars</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">--jxw</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-github"><a href="https://github.com/DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>Github</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">线程控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">什么是线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">并行线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">时序控制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">2.</span> <span class="nav-text">线程同步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%EF%BC%9Aevent%E4%BA%8B%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">线程同步的第一个类型：event事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E7%9A%84%E7%AC%AC%E4%BA%8C%E4%B8%AA%E7%B1%BB%E5%9E%8B%EF%BC%9A%E6%97%97%E8%AF%ADsemaphore"><span class="nav-number">2.3.</span> <span class="nav-text">线程同步的第二个类型：旗语semaphore</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%97%E8%AF%AD%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">2.3.1.</span> <span class="nav-text">旗语的创建</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1"><span class="nav-number">3.</span> <span class="nav-text">线程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E7%AE%B1%E7%9A%84%E5%86%85%E5%BB%BA%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">信箱的内建方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E4%BF%A1%E7%AE%B1"><span class="nav-number">3.2.</span> <span class="nav-text">参数化信箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E7%AE%B1%E5%92%8C%E9%98%9F%E5%88%97%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.3.</span> <span class="nav-text">信箱和队列的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">3.4.</span> <span class="nav-text">线程通信的比较</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jia</p>
+  <div class="site-description" itemprop="description">Go ahead, and believe in yourself.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/DustOfStars" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/15/03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jia">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DustOfStars">
+      <meta itemprop="description" content="Go ahead, and believe in yourself.">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="路科V0P23P25线程控制-线程同步-线程通信 | DustOfStars">
+      <meta itemprop="description" content="线程控制、线程同步、线程通信">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          路科V0P23P25线程控制-线程同步-线程通信
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-15 15:44:03" itemprop="dateCreated datePublished" datetime="2022-05-15T15:44:03+08:00">2022-05-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%B7%AF%E7%A7%91V0/" itemprop="url" rel="index"><span itemprop="name">路科V0</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">线程控制、线程同步、线程通信</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="线程控制"><a href="#线程控制" class="headerlink" title="线程控制"></a>线程控制</h1><h2 id="什么是线程"><a href="#什么是线程" class="headerlink" title="什么是线程"></a>什么是线程</h2><ul>
+<li>线程是独立运行的程序；</li>
+<li>需要被<strong>触发</strong>，可以结束或者不结束；</li>
+<li>在module中的initial和always，都可以看做<strong>独立的线程</strong>，会在仿真0时刻开始，选择结束或者不结束；</li>
+<li>硬件模型中，由于都是always语句块，所以可以看成是多个独立运行的线程，<strong>他们一直占用着仿真资源，因为不会结束</strong>；</li>
+<li>验证环境中需要由initial语句块去创建，在仿真过程中，验证环境中的对象可以<strong>创建和销毁</strong>，因此验证环境中的资源是动态的。</li>
+<li>验证环境中的initial语句块有两种分组方式，begin..end和fork..join<ul>
+<li><strong>begin..end ： 顺序方式执行</strong></li>
+<li><strong>fork..join ： 并发方式执行</strong></li>
+<li><strong>与fork..join类似的，还有fork..join_any和fork..join_none</strong></li>
+</ul>
+</li>
+<li>线程的执行轨迹是树状结构，任何线程都有父线程；</li>
+<li>父线程可以开辟若干个子线程，父线程可以暂停或者终止子线程；</li>
+<li>子线程终止时，父线程可以继续执行；</li>
+<li><strong>父线程终止时，它的所有子线程都会终止</strong>；</li>
+</ul>
+<h2 id="并行线程"><a href="#并行线程" class="headerlink" title="并行线程"></a>并行线程</h2><ul>
+<li>fork..join : 等待所有子线程结束，才会继续执行后面的；</li>
+<li>fork..join_any : 只要有一个子线程结束(最短的先结束)，就会继续执行后面的；</li>
+<li>fork..join_none : 不需要等待任何子线程结束，就可以继续执行后面的；</li>
+<li><strong>注意</strong> ： 虽然无需等待，但是fork..join_any和fork..join_none执行后面的时候，前面的子线程还在执行；</li>
+<li><strong>如果要等待这些子线程都完成，或者停止这些子线程，可以使用<code>wait fork</code>或者<code>disable fork</code>；</strong></li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fork</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="built_in">$display</span>(<span class="string">&quot;First Block\n&quot;</span>);</span><br><span class="line">        # <span class="number">20</span>ns;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="built_in">$display</span>(<span class="string">&quot;Second Block\n&quot;</span>);</span><br><span class="line">        @eventA;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">join</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> do_test;</span><br><span class="line">    <span class="keyword">fork</span></span><br><span class="line">        exec1();</span><br><span class="line">        exec2();</span><br><span class="line">    <span class="keyword">join_any</span></span><br><span class="line">    <span class="keyword">fork</span></span><br><span class="line">        exec3();</span><br><span class="line">        exec4();</span><br><span class="line">    <span class="keyword">join_none</span></span><br><span class="line">    <span class="keyword">wait</span> <span class="keyword">fork</span>   <span class="comment">//等待所有子线程结束</span></span><br><span class="line"><span class="keyword">endtask</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="时序控制"><a href="#时序控制" class="headerlink" title="时序控制"></a>时序控制</h2><ul>
+<li>SV中可以通过延迟控制或者事件等待来完成时序控制；</li>
+<li>延迟控制通过<code>#</code>完成；   <code>#10 rega = regb;</code></li>
+<li>事件控制（event）通过<code>@</code>完成；<ul>
+<li><code>@r rega = regb;</code></li>
+<li><code>@(posedge clock) rega = regb;</code></li>
+</ul>
+</li>
+<li><code>wait</code>语句可以与事件或者表达式结合，来完成时序控制；<ul>
+<li><code>real AOR[];  initial wait(AOR.size() &gt; 0) ...;</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>测试平台中所有线程都需要同步并交换数据；</li>
+<li>一个线程等待另外一个，比如验证环境需要等待所有激励结束，比较结束才能结束仿真；</li>
+<li>比如监测器需要将数据发送到检查器，检查器又需要从不同的缓存获取数据进行比较；</li>
+</ul>
+<h2 id="线程同步的第一个类型：event事件"><a href="#线程同步的第一个类型：event事件" class="headerlink" title="线程同步的第一个类型：event事件"></a>线程同步的第一个类型：event事件</h2><ul>
+<li>可以通过event声明一个event变量，并且触发它；</li>
+<li>这个event变量可以用来控制多个线程间的同步；一端触发，另一端阻塞等待；</li>
+<li>通过<code>-&gt;</code>操作符触发事件；</li>
+<li>其他等待该事件的线程可以通过<code>@</code>操作符或者<code>wait()</code>来检查event的触发状态；</li>
+<li><code>wait_order()</code>方法： <strong>可以使线程保持等待，直到在参数列表中的事件event按照从左到右的顺序依次完成</strong>；</li>
+<li>如果参数列表中的事件被触发，但是没有按照要求顺序，也会失败；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">event</span> done, blast;</span><br><span class="line"><span class="keyword">event</span> done_too = done;</span><br><span class="line"><span class="keyword">task</span> trigger(<span class="keyword">event</span> ev);</span><br><span class="line">    -&gt; ev;</span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">fork</span></span><br><span class="line">    @ done_too;</span><br><span class="line">    #<span class="number">1</span> trigger(done);</span><br><span class="line"><span class="keyword">join</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">fork</span></span><br><span class="line">    -&gt;blast;</span><br><span class="line">    <span class="keyword">wait</span>(blast<span class="variable">.triggered</span>);</span><br><span class="line"><span class="keyword">join</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// wait_order</span></span><br><span class="line"><span class="keyword">wait_order</span>(a,b,c) <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">$display</span>(<span class="string">&quot;Error: events out of order&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">bit</span> success;</span><br><span class="line"><span class="keyword">wait_order</span>(a,b,c) </span><br><span class="line">    success = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    success = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="线程同步的第二个类型：旗语semaphore"><a href="#线程同步的第二个类型：旗语semaphore" class="headerlink" title="线程同步的第二个类型：旗语semaphore"></a>线程同步的第二个类型：旗语semaphore</h2><ul>
+<li>旗语可以看做打开共享资源大门的钥匙；用于访问控制保护；</li>
+<li>创建旗语时，<strong>会为其分配固定的钥匙数量</strong>；</li>
+<li>使用旗语时，必须先获得钥匙，才能继续执行；</li>
+<li>旗语的钥匙数量可以有多个，等待旗语钥匙的线程也可以有多个；</li>
+<li><strong>旗语通常用于互斥，对共享资源的访问控制，以及基本的同步</strong>；</li>
+</ul>
+<h3 id="旗语的创建"><a href="#旗语的创建" class="headerlink" title="旗语的创建"></a>旗语的创建</h3><ul>
+<li>创建旗语，并为他分配钥匙的方式：<ul>
+<li><code>semaphore sm;</code>   <code>sm = new();</code></li>
+</ul>
+</li>
+<li>创建一个固定钥匙数量的旗语，<code>new(N)</code></li>
+<li>从旗语那里获取一个或者多个钥匙（<strong>阻塞型</strong>）： <code>get(N=1)</code></li>
+<li>将一个或者多个钥匙返回到旗语中： <code>put(N=1)</code></li>
+<li><strong>尝试获取一个或者多个钥匙，而不阻塞</strong>： <code>try_get(N=1)</code></li>
+<li>new函数默认为0,但是可以put超过开始的数量值；</li>
+<li>new()返回旗语的句柄；</li>
+<li>put() : 如果其他进程在等待旗语，则应该在该进程有足够数量钥匙的情况下返回；</li>
+<li>get() : 如果指定数量的钥匙可用，则方法返回并继续执行，如果不足，进程阻塞直到钥匙数目充足；</li>
+<li>旗语的等待队列是FIFO的，先排队的先获得；</li>
+<li>try_get() : 如果指定数目可用，返回正数并继续执行，否则，返回0；</li>
+</ul>
+<h1 id="线程通信"><a href="#线程通信" class="headerlink" title="线程通信"></a>线程通信</h1><blockquote>
+<p>除了event、semaphore之外，还有mailbox信箱</p>
+<p>信箱可以放置任何类型，可以设置尺寸大小，防止存储数据过多占用资源，信箱也是FIFO的</p>
+</blockquote>
+<h2 id="信箱的内建方法"><a href="#信箱的内建方法" class="headerlink" title="信箱的内建方法"></a>信箱的内建方法</h2><ul>
+<li>new() : 创建信箱，默认尺寸bound为0，表示不限制大小，否则限制为最大值N；</li>
+<li>put() : 将信息写入信箱，如果信箱已满，则put被挂起，直到可以有新的空间；</li>
+<li>try_put() : 尝试写入信箱，不发生阻塞；如果满，不阻塞，返回0,否则成功返回1；</li>
+<li>get() : 从信箱中获取信息，并取出</li>
+<li>peek() : 获取信息，但是不取出，只是拷贝，如果信箱为空，peek会挂起，直到有消息；</li>
+<li>try_get()  try_peek() : 非阻塞取出</li>
+<li>num() : 获取信箱信息的数目；</li>
+</ul>
+<h2 id="参数化信箱"><a href="#参数化信箱" class="headerlink" title="参数化信箱"></a>参数化信箱</h2><ul>
+<li>虽然信箱可以存放各种数据类型，但是为了之后用的方便，在声明时最好指定存储类型；</li>
+<li>这种参数化信箱的方式可以在编译时就能检查出类型不匹配的情况；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> mailbox <span class="variable">#(string)</span> s_box;</span><br><span class="line">s_box sm = <span class="keyword">new</span>;</span><br><span class="line"><span class="keyword">string</span> s;</span><br><span class="line">sm<span class="variable">.put</span>(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line"></span><br><span class="line">sm<span class="variable">.get</span>(s);</span><br></pre></td></tr></table></figure>
+
+<h2 id="信箱和队列的区别"><a href="#信箱和队列的区别" class="headerlink" title="信箱和队列的区别"></a>信箱和队列的区别</h2><ul>
+<li>信箱必须通过new例化，但是队列只需要声明即可；</li>
+<li>信箱的存取方法put()和get()是阻塞方法，但是队列的存取方法，push_back()和pop_front()方法是非阻塞的，会立即返回；</li>
+<li>在传递形参时，如果是input方向，信箱类型传递到是句柄，而队列类型则是完成的队列内容的拷贝；</li>
+</ul>
+<h2 id="线程通信的比较"><a href="#线程通信的比较" class="headerlink" title="线程通信的比较"></a>线程通信的比较</h2><ul>
+<li>event ： 最小信息量触发，即单一通知功能，可以用来做事件的触发，也可以多个事件组合起来用作线程同步；</li>
+<li>semaphore : 共享资源的卫士，如果多线程对某一共享资源做访问，则可以使用这个要素；</li>
+<li>mailbox ： 精小的SV原生FIFO，<strong>在线程之间做数据通信或者内部数据缓存</strong>时考虑使用这个元素；</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div>
+    
+    <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i
+            class="fa fa-paw"></i>再接再厉-------------</div>
+    
+</div>
+
+
+<div class="my_post_copyright">
+    <p><span>本文标题:</span><a href="/2022/05/15/03/">路科V0P23P25线程控制-线程同步-线程通信</a></p>
+    <p><span>文章作者:</span><a href="/" title="访问 Jia 的个人博客">Jia</a></p>
+    <p><span>发布时间:</span>2022年05月15日 - 15:05</p>
+    <p><span>最后更新:</span>2022年05月15日 - 15:05</p>
+    <p><span>原始链接:</span><a href="/2022/05/15/03/" title="路科V0P23P25线程控制-线程同步-线程通信">http://example.com/2022/05/15/03/</a></p>
+    <p><span>许可协议:</span><i class="fab fa-creative-commons"></i>
+        <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"
+            title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">
+            署名-非商业性使用-禁止演绎 4.0 国际</a>
+        转载请保留原文链接及作者。
+    </p>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/UVM/" rel="tag"><i class="fa fa-tag"></i> UVM</a>
+              <a href="/tags/System-Verilog/" rel="tag"><i class="fa fa-tag"></i> System Verilog</a>
+              <a href="/tags/IC%E9%AA%8C%E8%AF%81/" rel="tag"><i class="fa fa-tag"></i> IC验证</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/13/17/" rel="prev" title="路科V0P19P22随机变量-随机约束-约束控制-任务和函数">
+                  <i class="fa fa-chevron-left"></i> 路科V0P19P22随机变量-随机约束-约束控制-任务和函数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/15/47/" rel="next" title="路科V0P26P29-MCDT测试结构-实现激励发生器-监测器和检查器-顶层环境和测试用例">
+                  路科V0P26P29-MCDT测试结构-实现激励发生器-监测器和检查器-顶层环境和测试用例 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jia</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">215k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:16</span>
+  </span>
+</div><div>
+<!--添加网站运行时间-->
+<span>小破站已经在风雨中度过了</span>
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    function createtime() {
+        const startTime = '02/11/2021 00:12:55',
+            start = new Date(startTime)
+        let mill = new Date() - start,
+            seconds = Math.floor(mill / 1000),
+            mins = Math.floor(seconds / 60),
+            hours = Math.floor(mins / 60),
+            days = Math.floor(hours / 24)
+        const time = {
+            seconds: seconds - mins * 60,
+            mins: mins - hours * 60,
+            hours: hours - days * 24,
+        }
+        for (const k in time) {
+            time[k] = `${time[k]}`.padStart(2, '0')
+        }
+        document.getElementById("timeDate").innerHTML = ` ${days} 天`
+        document.getElementById("times").innerHTML = ` ${time.hours} 小时 ${time.mins} 分 ${time.seconds} 秒`
+    }
+    setInterval(createtime, 500)
+</script>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: '32px',
+  left: 'unset',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: false
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+</body>
+</html>

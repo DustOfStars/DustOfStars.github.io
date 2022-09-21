@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="模型入口函数，从这边开始，逐步进入训练阶段。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4_模型入口">
+<meta property="og:url" content="http://example.com/2022/04/01/50/index.html">
+<meta property="og:site_name" content="DustOfStars">
+<meta property="og:description" content="模型入口函数，从这边开始，逐步进入训练阶段。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-01T09:56:50.000Z">
+<meta property="article:modified_time" content="2022-04-01T09:56:50.000Z">
+<meta property="article:author" content="Jia">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Torch">
+<meta property="article:tag" content="Model">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/04/01/50/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/04/01/50/","path":"2022/04/01/50/","title":"4_模型入口"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>4_模型入口 | DustOfStars</title>
+  
+
+
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>
+<!-- 文章加密 -->
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DustOfStars</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">--jxw</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-github"><a href="https://github.com/DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>Github</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#model-untils-py-%E5%AD%98%E6%94%BE%E5%8A%9F%E8%83%BD%E7%BB%84%E4%BB%B6%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">model_untils.py 存放功能组件函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8A%A0%E8%BD%BDw2v%E7%94%9F%E6%88%90%E7%9A%84embedding"><span class="nav-number">1.1.</span> <span class="nav-text">1. 加载w2v生成的embedding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data-loader-py-%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">data_loader.py 加载数据的函数</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jia</p>
+  <div class="site-description" itemprop="description">Go ahead, and believe in yourself.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/DustOfStars" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/01/50/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jia">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DustOfStars">
+      <meta itemprop="description" content="Go ahead, and believe in yourself.">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="4_模型入口 | DustOfStars">
+      <meta itemprop="description" content="模型入口函数，从这边开始，逐步进入训练阶段。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          4_模型入口
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-01 17:56:50" itemprop="dateCreated datePublished" datetime="2022-04-01T17:56:50+08:00">2022-04-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/Torch/" itemprop="url" rel="index"><span itemprop="name">Torch</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/Torch/Model/" itemprop="url" rel="index"><span itemprop="name">Model</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">模型入口函数，从这边开始，逐步进入训练阶段。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>第四步：模型入口</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> models.model_utils <span class="keyword">import</span> get_embedding_matrix_and_vocab</span><br><span class="line"><span class="keyword">from</span> src.classic_models.training.trainer <span class="keyword">import</span> Trainer</span><br><span class="line"><span class="keyword">from</span> src.classic_models.training.data_loader <span class="keyword">import</span> load_and_cache_examples</span><br><span class="line"></span><br><span class="line">sys.path.append(<span class="string">&quot;./&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">init_logger</span>():</span><br><span class="line">    logging.basicConfig(</span><br><span class="line">        <span class="built_in">format</span>=<span class="string">&quot;%(asctime)s - %(levelname)s - %(name)s -   %(message)s&quot;</span>,</span><br><span class="line">        datefmt=<span class="string">&quot;%m/%d/%Y %H:%M:%S&quot;</span>,</span><br><span class="line">        level=logging.INFO,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">set_seed</span>(<span class="params">args</span>):</span><br><span class="line">    random.seed(args.seed)</span><br><span class="line">    np.random.seed(args.seed)</span><br><span class="line">    torch.manual_seed(args.seed)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> args.no_cuda <span class="keyword">and</span> torch.cuda.is_available():</span><br><span class="line">        torch.cuda.manual_seed_all(args.seed)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>(<span class="params">args</span>):</span><br><span class="line">    init_logger()</span><br><span class="line">    set_seed(args)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># load vocab and w2v</span></span><br><span class="line">    vocab_list, vector_list = get_embedding_matrix_and_vocab(</span><br><span class="line">        args.w2v_file, skip_first_line=<span class="literal">True</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    train_dataset = load_and_cache_examples(args, mode=<span class="string">&quot;train&quot;</span>, vocab_list=vocab_list)</span><br><span class="line">    dev_dataset = load_and_cache_examples(args, mode=<span class="string">&quot;dev&quot;</span>, vocab_list=vocab_list)</span><br><span class="line">    test_dataset = load_and_cache_examples(args, mode=<span class="string">&quot;test&quot;</span>, vocab_list=vocab_list)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;train_dataset: &quot;</span>, <span class="built_in">len</span>(train_dataset))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;dev_dataset: &quot;</span>, <span class="built_in">len</span>(dev_dataset))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;test_dataset: &quot;</span>, <span class="built_in">len</span>(test_dataset))</span><br><span class="line"></span><br><span class="line">    trainer = Trainer(args, train_dataset, dev_dataset, test_dataset)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> args.do_train:</span><br><span class="line">        trainer.train()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> args.do_eval:</span><br><span class="line">        trainer.load_model()</span><br><span class="line">        trainer.evaluate(<span class="string">&quot;dev&quot;</span>)</span><br><span class="line"></span><br><span class="line">        trainer.evaluate(<span class="string">&quot;test&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">python src/classic_models/training/main.py --data_dir ./datasets/phase_1/splits/fold_0 </span></span><br><span class="line"><span class="string">--label_file_level_1 datasets/phase_1/labels_level_1.txt </span></span><br><span class="line"><span class="string">--label_file_level_2 datasets/phase_1/labels_level_2.txt </span></span><br><span class="line"><span class="string">--task daguan --random_init_w2v --encoder lstm --aggregator max_pool </span></span><br><span class="line"><span class="string">--model_dir ./experiments/outputs/daguan/lstm_0815_1 --do_train </span></span><br><span class="line"><span class="string">--do_eval --train_batch_size 32 --num_train_epochs 50 </span></span><br><span class="line"><span class="string">--embeddings_learning_rate 6e-4 --learning_rate 20e-4 </span></span><br><span class="line"><span class="string">--classifier_learning_rate 20e-4 --warmup_steps 200 --max_seq_len 128 </span></span><br><span class="line"><span class="string">--hidden_dim 256 --embed_dim 256 </span></span><br><span class="line"><span class="string">--w2v_file resources/word2vec/dim_256/w2v.vectors </span></span><br><span class="line"><span class="string">--dropout_rate 0.2 --metric_key_for_early_stop &quot;macro avg__f1-score__level_2&quot; --logging_steps 400 --patience 5 </span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    parser = argparse.ArgumentParser()</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--task&quot;</span>, default=<span class="string">&quot;daguan&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, <span class="built_in">help</span>=<span class="string">&quot;The name of the task to train&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--model_dir&quot;</span>,</span><br><span class="line">        default=<span class="string">&quot;/data2/code/DaguanFengxian/baseline/experiments/outputs/lstm_max_pool_wv256_epoch100&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Path to save, load models&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--data_dir&quot;</span>,</span><br><span class="line">        default=<span class="string">&quot;/data2/nlpData/daguanfengxian/phase_1/splits/fold_0&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;The input dataload dir&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--label_file_level_1&quot;</span>,</span><br><span class="line">        default=<span class="string">&quot;/data2/nlpData/daguanfengxian/phase_1/labels_level_1.txt&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Label file for level 1 label&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--label_file_level_2&quot;</span>,</span><br><span class="line">        default=<span class="string">&quot;/data2/nlpData/daguanfengxian/phase_1/labels_level_2.txt&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Label file for level 2 label&quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--seed&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">41</span>, <span class="built_in">help</span>=<span class="string">&quot;random seed for initialization&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--train_batch_size&quot;</span>, default=<span class="number">32</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, <span class="built_in">help</span>=<span class="string">&quot;Batch size for training.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--eval_batch_size&quot;</span>, default=<span class="number">64</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, <span class="built_in">help</span>=<span class="string">&quot;Batch size for evaluation.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--max_seq_len&quot;</span>,</span><br><span class="line">        default=<span class="number">128</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">int</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;The maximum total input sequence length after tokenization.&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--num_train_epochs&quot;</span>,</span><br><span class="line">        default=<span class="number">100.0</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">float</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Total number of training epochs to perform.&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--weight_decay&quot;</span>, default=<span class="number">0.0</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, <span class="built_in">help</span>=<span class="string">&quot;Weight decay if we apply some.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--gradient_accumulation_steps&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">int</span>,</span><br><span class="line">        default=<span class="number">1</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Number of updates steps to accumulate before performing a backward/update pass.&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--adam_epsilon&quot;</span>, default=<span class="number">1e-8</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, <span class="built_in">help</span>=<span class="string">&quot;Epsilon for Adam optimizer.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--max_grad_norm&quot;</span>, default=<span class="number">1.0</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, <span class="built_in">help</span>=<span class="string">&quot;Max gradient norm.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--max_steps&quot;</span>,</span><br><span class="line">        default=-<span class="number">1</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">int</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;If &gt; 0: set total number of training steps to perform. Override num_train_epochs.&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--warmup_steps&quot;</span>, default=<span class="number">200</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, <span class="built_in">help</span>=<span class="string">&quot;Linear warmup over warmup_steps.&quot;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--logging_steps&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">400</span>, <span class="built_in">help</span>=<span class="string">&quot;Log every X updates steps.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--save_steps&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">int</span>,</span><br><span class="line">        default=<span class="number">200</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Save checkpoint every X updates steps.&quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--do_train&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;Whether to run training.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--do_eval&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;Whether to run eval on the test set.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--no_cuda&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;Avoid using CUDA when available&quot;</span></span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># ----------------------------------------------------------------------</span></span><br><span class="line">    <span class="comment"># embedding: 随机初始化；</span></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--random_init_w2v&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;是否直接随机初始化embedding； &quot;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--encoder&quot;</span>,</span><br><span class="line">        default=<span class="string">&quot;lstm&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Model type selected in the list: [textcnn, lstm] &quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--aggregator&quot;</span>,</span><br><span class="line">        default=<span class="string">&quot;max_pool&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Model type selected in the list: [slf_attn_pool, max_pool, avg_pool, dr_pool, ] &quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--embed_dim&quot;</span>, default=<span class="number">256</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, <span class="built_in">help</span>=<span class="string">&quot;dims for embedding layer.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--hidden_dim&quot;</span>, default=<span class="number">256</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, <span class="built_in">help</span>=<span class="string">&quot;dims for intermediate layers.&quot;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--embeddings_learning_rate&quot;</span>,</span><br><span class="line">        default=<span class="number">6e-4</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">float</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;The learning rate for Adam.&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--learning_rate&quot;</span>, default=<span class="number">20e-4</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, <span class="built_in">help</span>=<span class="string">&quot;The learning rate for Adam.&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--classifier_learning_rate&quot;</span>,</span><br><span class="line">        default=<span class="number">20e-4</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">float</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;The learning rate for Adam.&quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--w2v_file&quot;</span>,</span><br><span class="line">        default=<span class="string">&quot;/data2/nlpData/daguanfengxian/word2vec/dim_256_sg_0_hs_1_epochs_30/w2v.vectors&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;path to pretrained word2vec file&quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(<span class="string">&quot;--dropout_rate&quot;</span>, default=<span class="number">0.2</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, <span class="built_in">help</span>=<span class="string">&quot;dropout_rate &quot;</span>)</span><br><span class="line"></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--patience&quot;</span>, default=<span class="number">5</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, <span class="built_in">help</span>=<span class="string">&quot;patience for early stopping &quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--metric_key_for_early_stop&quot;</span>,</span><br><span class="line">        default=<span class="string">&quot;macro avg__f1-score__level_2&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;metric name for early stopping &quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># prediction_output_file</span></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--prediction_output_file&quot;</span>,</span><br><span class="line">        default=<span class="literal">None</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;file for writing out the predictions &quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 针对不均衡样本</span></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--class_weights_level_1&quot;</span>,</span><br><span class="line">        default=<span class="literal">None</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;class_weights, written in string like &#x27;1.0,2.0,2.0,5.0,200.0,300.0,400.0,500.0,500.0&#x27; &quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--class_weights_level_2&quot;</span>,</span><br><span class="line">        default=<span class="literal">None</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;class_weights, written in string like &#x27;0.828,1.241,1.465,1.622,1.963,2.002,2.173,2.507,2.564,2.572,2.707,4.244,4.469,4.953,5.460,5.693,6.477,6.694,7.174,7.804,8.648,8.988,9.090,10.06,10.25,11.94,15.53,25.80,32.65,48.48,50.0,80.0,84.21,88.88,100.0&#x27; &quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    parser.add_argument(<span class="string">&quot;--use_focal_loss&quot;</span>, default=<span class="string">&quot;True&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;use focal loss&quot;</span>)</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;--focal_loss_gamma&quot;</span>, default=<span class="number">2.0</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, <span class="built_in">help</span>=<span class="string">&quot;gamma in focal loss&quot;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># ----------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    main(args)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>这一部分非常需要展开来看，先从models&#x2F;model_untils.py开始：</strong></p>
+</blockquote>
+<h2 id="model-untils-py-存放功能组件函数"><a href="#model-untils-py-存放功能组件函数" class="headerlink" title="model_untils.py 存放功能组件函数"></a>model_untils.py 存放功能组件函数</h2><h3 id="1-加载w2v生成的embedding"><a href="#1-加载w2v生成的embedding" class="headerlink" title="1. 加载w2v生成的embedding"></a>1. 加载w2v生成的embedding</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_embedding_matrix_and_vocab</span>(<span class="params">w2v_file, skip_first_line=<span class="literal">True</span>, include_special_tokens=<span class="literal">True</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Construct embedding matrix</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        embed_dic : word-embedding dictionary</span></span><br><span class="line"><span class="string">        skip_first_line : 是否跳过第一行</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        embedding_matrix: return embedding matrix (numpy)</span></span><br><span class="line"><span class="string">        embedding_matrix: return embedding matrix</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    embedding_dim = <span class="literal">None</span></span><br><span class="line">    <span class="comment"># 先遍历一次，得到一个vocab list 和向量list</span></span><br><span class="line">    vocab_list = []</span><br><span class="line">    vector_list = []</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(w2v_file, <span class="string">&#x27;r&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f_in:</span><br><span class="line">        <span class="keyword">for</span> i, line <span class="keyword">in</span> tqdm.tqdm(<span class="built_in">enumerate</span>(f_in)):</span><br><span class="line">            <span class="keyword">if</span> skip_first_line:</span><br><span class="line">                <span class="keyword">if</span> i == <span class="number">0</span>:</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">            line = line.strip()</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> line:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            line = line.split(<span class="string">&quot; &quot;</span>)</span><br><span class="line">            w_ = line[<span class="number">0</span>]</span><br><span class="line">            vec_ = line[<span class="number">1</span>:]</span><br><span class="line">            vec_ = [<span class="built_in">float</span>(w.strip()) <span class="keyword">for</span> w <span class="keyword">in</span> vec_]</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> embedding_dim == <span class="literal">None</span>:</span><br><span class="line">                embedding_dim = <span class="built_in">len</span>(vec_)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">assert</span> embedding_dim == <span class="built_in">len</span>(vec_)</span><br><span class="line"></span><br><span class="line">            vocab_list.append(w_)</span><br><span class="line">            vector_list.append(vec_)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 添加两个特殊字符：PAD和UNK</span></span><br><span class="line">    <span class="keyword">if</span> include_special_tokens:</span><br><span class="line">        vocab_list = [<span class="string">&#x27;pad&#x27;</span>, <span class="string">&#x27;unk&#x27;</span>] + vocab_list</span><br><span class="line">        <span class="comment"># 随机初始化两个向量</span></span><br><span class="line">        pad_vec_ = (np.random.rand(embedding_dim).astype(np.float32) * <span class="number">0.05</span>).tolist()</span><br><span class="line">        unk_vec_ = (np.random.rand(embedding_dim).astype(np.float32) * <span class="number">0.05</span>).tolist()</span><br><span class="line">        vector_list = [pad_vec_, unk_vec_] + vector_list</span><br><span class="line">    <span class="keyword">return</span> vocab_list, vector_list</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>models&#x2F;training&#x2F;data_loader.py 部分</p>
+</blockquote>
+<h2 id="data-loader-py-加载数据的函数"><a href="#data-loader-py-加载数据的函数" class="headerlink" title="data_loader.py 加载数据的函数"></a>data_loader.py 加载数据的函数</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">load_and_cache_examples</span>(<span class="params">args, mode, vocab_list=<span class="literal">None</span></span>):</span><br><span class="line">    processor = processors[args.task](args)</span><br><span class="line"></span><br><span class="line">    cached_features_file = os.path.join(</span><br><span class="line">        args.data_dir, <span class="string">&quot;cached_&#123;&#125;_&#123;&#125;_&#123;&#125;&quot;</span>.<span class="built_in">format</span>(mode, args.task, args.max_seq_len)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> os.path.exists(cached_features_file):</span><br><span class="line">        logger.info(<span class="string">&quot;Loading features from cached file %s&quot;</span>, cached_features_file)</span><br><span class="line">        features = torch.load(cached_features_file)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        logger.info(<span class="string">&quot;Creating features from dataset file at %s&quot;</span>, args.data_dir)</span><br><span class="line">        <span class="keyword">if</span> mode == <span class="string">&quot;train&quot;</span>:</span><br><span class="line">            examples = processor.get_examples(<span class="string">&quot;train&quot;</span>)</span><br><span class="line">        <span class="keyword">elif</span> mode == <span class="string">&quot;dev&quot;</span>:</span><br><span class="line">            examples = processor.get_examples(<span class="string">&quot;dev&quot;</span>)</span><br><span class="line">        <span class="keyword">elif</span> mode == <span class="string">&quot;test&quot;</span>:</span><br><span class="line">            examples = processor.get_examples(<span class="string">&quot;test&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">&quot;For mode, Only train, dev, test is available&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Use cross entropy ignore index as padding label id so that only real label ids contribute to the loss later</span></span><br><span class="line">        features = convert_examples_to_features(</span><br><span class="line">            examples, args.max_seq_len, vocab_list=vocab_list</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        logger.info(<span class="string">&quot;Saving features into cached file %s&quot;</span>, cached_features_file)</span><br><span class="line">        torch.save(features, cached_features_file)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Convert to Tensors and build dataset</span></span><br><span class="line">    all_input_ids = torch.tensor([f.input_ids <span class="keyword">for</span> f <span class="keyword">in</span> features], dtype=torch.long)</span><br><span class="line">    all_attention_mask = torch.tensor(</span><br><span class="line">        [f.attention_mask <span class="keyword">for</span> f <span class="keyword">in</span> features], dtype=torch.long</span><br><span class="line">    )</span><br><span class="line">    all_label_id_level_1s = torch.tensor(</span><br><span class="line">        [f.label_id_level_1 <span class="keyword">for</span> f <span class="keyword">in</span> features], dtype=torch.long</span><br><span class="line">    )</span><br><span class="line">    all_label_id_level_2s = torch.tensor(</span><br><span class="line">        [f.label_id_level_2 <span class="keyword">for</span> f <span class="keyword">in</span> features], dtype=torch.long</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    dataset = TensorDataset(</span><br><span class="line">        all_input_ids,</span><br><span class="line">        all_attention_mask,</span><br><span class="line">        all_label_id_level_1s,</span><br><span class="line">        all_label_id_level_2s,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dataset</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div>
+    
+    <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i
+            class="fa fa-paw"></i>再接再厉-------------</div>
+    
+</div>
+
+
+<div class="my_post_copyright">
+    <p><span>本文标题:</span><a href="/2022/04/01/50/">4_模型入口</a></p>
+    <p><span>文章作者:</span><a href="/" title="访问 Jia 的个人博客">Jia</a></p>
+    <p><span>发布时间:</span>2022年04月01日 - 17:04</p>
+    <p><span>最后更新:</span>2022年04月01日 - 17:04</p>
+    <p><span>原始链接:</span><a href="/2022/04/01/50/" title="4_模型入口">http://example.com/2022/04/01/50/</a></p>
+    <p><span>许可协议:</span><i class="fab fa-creative-commons"></i>
+        <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"
+            title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">
+            署名-非商业性使用-禁止演绎 4.0 国际</a>
+        转载请保留原文链接及作者。
+    </p>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+              <a href="/tags/NLP/" rel="tag"><i class="fa fa-tag"></i> NLP</a>
+              <a href="/tags/Torch/" rel="tag"><i class="fa fa-tag"></i> Torch</a>
+              <a href="/tags/Model/" rel="tag"><i class="fa fa-tag"></i> Model</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/30/02/" rel="prev" title="3_lable词表制作">
+                  <i class="fa fa-chevron-left"></i> 3_lable词表制作
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/01/29/" rel="next" title="基础准备1_Numpy">
+                  基础准备1_Numpy <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jia</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">215k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:16</span>
+  </span>
+</div><div>
+<!--添加网站运行时间-->
+<span>小破站已经在风雨中度过了</span>
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    function createtime() {
+        const startTime = '02/11/2021 00:12:55',
+            start = new Date(startTime)
+        let mill = new Date() - start,
+            seconds = Math.floor(mill / 1000),
+            mins = Math.floor(seconds / 60),
+            hours = Math.floor(mins / 60),
+            days = Math.floor(hours / 24)
+        const time = {
+            seconds: seconds - mins * 60,
+            mins: mins - hours * 60,
+            hours: hours - days * 24,
+        }
+        for (const k in time) {
+            time[k] = `${time[k]}`.padStart(2, '0')
+        }
+        document.getElementById("timeDate").innerHTML = ` ${days} 天`
+        document.getElementById("times").innerHTML = ` ${time.hours} 小时 ${time.mins} 分 ${time.seconds} 秒`
+    }
+    setInterval(createtime, 500)
+</script>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: '32px',
+  left: 'unset',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: false
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+</body>
+</html>

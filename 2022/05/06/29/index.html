@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="芯片验证漫游指南3验证的方法：从本章开始，我们将系统介绍验证的各种方法。之所以用一章的篇幅介绍验证的方法和工具，一方面是因为目前验证方法的分支及其工具种类繁多，另一方面是希望读者在系统了解验证方法和工具后，可以在开展验证时有一整套工具箱，根据设计的特点选用不同的验证方法，最终取得满意的效果。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="芯片验证漫游指南3验证的方法">
+<meta property="og:url" content="http://example.com/2022/05/06/29/index.html">
+<meta property="og:site_name" content="DustOfStars">
+<meta property="og:description" content="芯片验证漫游指南3验证的方法：从本章开始，我们将系统介绍验证的各种方法。之所以用一章的篇幅介绍验证的方法和工具，一方面是因为目前验证方法的分支及其工具种类繁多，另一方面是希望读者在系统了解验证方法和工具后，可以在开展验证时有一整套工具箱，根据设计的特点选用不同的验证方法，最终取得满意的效果。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/.com//%E5%AE%9A%E5%90%91%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//C%E4%BB%A3%E7%A0%81%E7%9A%84%E5%9E%82%E7%9B%B4%E5%A4%8D%E7%94%A8%E6%96%B9%E6%A1%88.png">
+<meta property="og:image" content="http://example.com/.com//%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E9%9A%8F%E6%9C%BA%E7%BA%A6%E6%9D%9F%E7%9A%84%E6%8E%A7%E5%88%B6%E5%92%8C%E5%8F%8D%E9%A6%88%E5%9B%A0%E7%B4%A0.png">
+<meta property="og:image" content="http://example.com/.com//%E5%9F%BA%E4%BA%8E%E8%A6%86%E7%9B%96%E7%8E%87%E9%A9%B1%E5%8A%A8%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E5%9F%BA%E4%BA%8ETLM%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E5%9B%BE3.9%20%E8%AE%BE%E8%AE%A1%E5%92%8C%E9%AA%8C%E8%AF%81%E5%85%B3%E4%BA%8E%E5%8A%9F%E8%83%BD%E7%9A%84%E4%B8%8D%E5%90%8C%E5%85%B3%E6%B3%A8%E8%A7%92%E5%BA%A6.png">
+<meta property="og:image" content="http://example.com/.com//%E6%94%AF%E6%8C%81%E6%96%AD%E8%A8%80%E7%9A%84%E8%AF%AD%E8%A8%80%E5%92%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E6%96%AD%E8%A8%80%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.png">
+<meta property="og:image" content="http://example.com/.com//%E8%B7%A8%E6%97%B6%E9%92%9F%E5%9F%9F%E6%A3%80%E6%9F%A5.png">
+<meta property="og:image" content="http://example.com/.com//%E5%B1%9E%E6%80%A7%E6%A3%80%E6%9F%A5%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E5%8F%AF%E5%8F%8A%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4.png">
+<meta property="og:image" content="http://example.com/.com//%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81%E5%9C%A8%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E4%B8%AD%E5%AF%BB%E6%89%BE%E5%8F%8D%E4%BE%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81%E7%9A%84%E5%B7%A5%E5%85%B7%E5%92%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E8%99%9A%E6%8B%9F%E5%BB%BA%E6%A8%A1%E7%9A%84%E8%A6%81%E7%B4%A0.png">
+<meta property="og:image" content="http://example.com/.com//FPGA%E4%B8%8E%E6%A8%A1%E6%8B%9F%E5%99%A8%E7%9A%84%E6%AF%94%E8%BE%83.png">
+<meta property="og:image" content="http://example.com/.com//%E7%A7%BB%E5%8A%A8%E7%A1%AC%E4%BB%B6%E9%A2%86%E5%9F%9F%E7%9A%84%E6%8A%80%E6%9C%AF%E7%BC%BA%E5%8F%A3.png">
+<meta property="og:image" content="http://example.com/.com//%E7%A1%AC%E4%BB%B6%E5%92%8C%E8%BD%AF%E4%BB%B6%E9%87%87%E7%94%A8%E7%9A%84%E8%8A%82%E8%83%BD%E6%8A%80%E6%9C%AF.png">
+<meta property="og:image" content="http://example.com/.com//%E8%8A%82%E8%83%BD%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E4%B8%8D%E5%90%8C%E5%8A%9F%E8%80%97%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E7%9A%84%E6%AF%94%E8%BE%83.png">
+<meta property="og:image" content="http://example.com/.com//%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E5%AD%A6%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/.com//%E4%B8%8D%E5%90%8C%E9%AA%8C%E8%AF%81%E6%96%B9%E6%B3%95%E4%B9%8B%E9%97%B4%E7%9A%84%E8%81%94%E7%B3%BB.png">
+<meta property="article:published_time" content="2022-05-06T14:31:29.000Z">
+<meta property="article:modified_time" content="2022-05-06T14:31:29.000Z">
+<meta property="article:author" content="Jia">
+<meta property="article:tag" content="UVM">
+<meta property="article:tag" content="System Verilog">
+<meta property="article:tag" content="IC验证">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/.com//%E5%AE%9A%E5%90%91%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png">
+
+
+<link rel="canonical" href="http://example.com/2022/05/06/29/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/05/06/29/","path":"2022/05/06/29/","title":"芯片验证漫游指南3验证的方法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>芯片验证漫游指南3验证的方法 | DustOfStars</title>
+  
+
+
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>
+<!-- 文章加密 -->
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DustOfStars</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">--jxw</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-github"><a href="https://github.com/DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>Github</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%8A%A8%E6%80%81%E4%BB%BF%E7%9C%9F"><span class="nav-number">1.</span> <span class="nav-text">1 动态仿真</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-1-%E5%AE%9A%E5%90%91%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">1.1 定向测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-2-%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">1.2 随机测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%9F%BA%E4%BA%8E%E8%A6%86%E7%9B%96%E7%8E%87%E9%A9%B1%E5%8A%A8%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81"><span class="nav-number">3.1.</span> <span class="nav-text">1.3 基于覆盖率驱动的随机验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E5%9F%BA%E4%BA%8ETLM%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81"><span class="nav-number">3.2.</span> <span class="nav-text">1.4 基于TLM的随机验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-%E6%96%AD%E8%A8%80%E6%A3%80%E6%9F%A5"><span class="nav-number">3.3.</span> <span class="nav-text">1.5 断言检查</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E9%9D%99%E6%80%81%E6%A3%80%E6%9F%A5"><span class="nav-number">4.</span> <span class="nav-text">2 静态检查</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E8%AF%AD%E6%B3%95%E6%A3%80%E6%9F%A5"><span class="nav-number">4.1.</span> <span class="nav-text">2.1 语法检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E8%AF%AD%E4%B9%89%E6%A3%80%E6%9F%A5"><span class="nav-number">4.2.</span> <span class="nav-text">2.2 语义检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E8%B7%A8%E6%97%B6%E9%92%9F%E5%9F%9F%E6%A3%80%E6%9F%A5"><span class="nav-number">4.3.</span> <span class="nav-text">2.3 跨时钟域检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81"><span class="nav-number">4.4.</span> <span class="nav-text">2.4 形式验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"><span class="nav-number">5.</span> <span class="nav-text">3 开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Vim%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"><span class="nav-number">5.1.</span> <span class="nav-text">3.1 Vim开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E5%95%86%E4%B8%9ASV%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E2%80%94%E2%80%94DVT"><span class="nav-number">5.2.</span> <span class="nav-text">3.2 商业SV开发环境——DVT</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E8%99%9A%E6%8B%9F%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.</span> <span class="nav-text">4 虚拟模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F"><span class="nav-number">7.</span> <span class="nav-text">5 硬件加速</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E6%95%88%E8%83%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">8.</span> <span class="nav-text">6 效能验证</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-%E5%8A%9F%E7%8E%87%E5%92%8C%E8%83%BD%E9%87%8F"><span class="nav-number">8.1.</span> <span class="nav-text">6.1 功率和能量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-%E9%9D%99%E6%80%81%E5%8A%9F%E8%80%97%E5%92%8C%E5%8A%A8%E6%80%81%E5%8A%9F%E8%80%97"><span class="nav-number">8.2.</span> <span class="nav-text">6.2 静态功耗和动态功耗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-%E8%8A%82%E8%83%BD%E6%8A%80%E6%9C%AF"><span class="nav-number">8.3.</span> <span class="nav-text">6.3 节能技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-%E6%95%88%E8%83%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">8.4.</span> <span class="nav-text">6.4 效能验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-5-%E5%8A%9F%E8%80%97%E9%A2%84%E6%B5%8B%E4%B8%8E%E4%BC%98%E5%8C%96"><span class="nav-number">8.5.</span> <span class="nav-text">6.5 功耗预测与优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E6%80%A7%E8%83%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">9.</span> <span class="nav-text">7 性能验证</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#7-1-%E8%AE%BE%E5%AE%9A%E7%9B%AE%E6%A0%87"><span class="nav-number">9.1.</span> <span class="nav-text">7.1 设定目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-2-%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83"><span class="nav-number">9.2.</span> <span class="nav-text">7.2 测试环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-3-%E9%AA%8C%E8%AF%81%E6%96%B9%E6%B3%95"><span class="nav-number">9.3.</span> <span class="nav-text">7.3 验证方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E8%B6%8B%E5%8A%BF%E5%B1%95%E6%9C%9B"><span class="nav-number">10.</span> <span class="nav-text">8 趋势展望</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#8-1-%E6%8A%80%E6%9C%AF%E4%B9%8B%E9%97%B4%E7%9A%84%E6%A8%AA%E5%90%91%E8%B7%A8%E8%B6%8A"><span class="nav-number">10.1.</span> <span class="nav-text">8.1 技术之间的横向跨越</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-2-%E5%B1%82%E6%AC%A1%E4%B9%8B%E9%97%B4%E7%9A%84%E7%BA%B5%E5%90%91%E5%A4%8D%E7%94%A8"><span class="nav-number">10.2.</span> <span class="nav-text">8.2 层次之间的纵向复用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-%E4%BD%9C%E8%80%85%E7%BB%93%E6%9D%9F%E8%AF%AD"><span class="nav-number">11.</span> <span class="nav-text">9 作者结束语</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jia</p>
+  <div class="site-description" itemprop="description">Go ahead, and believe in yourself.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/DustOfStars" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/06/29/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jia">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DustOfStars">
+      <meta itemprop="description" content="Go ahead, and believe in yourself.">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="芯片验证漫游指南3验证的方法 | DustOfStars">
+      <meta itemprop="description" content="芯片验证漫游指南3验证的方法：从本章开始，我们将系统介绍验证的各种方法。之所以用一章的篇幅介绍验证的方法和工具，一方面是因为目前验证方法的分支及其工具种类繁多，另一方面是希望读者在系统了解验证方法和工具后，可以在开展验证时有一整套工具箱，根据设计的特点选用不同的验证方法，最终取得满意的效果。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          芯片验证漫游指南3验证的方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-06 22:31:29" itemprop="dateCreated datePublished" datetime="2022-05-06T22:31:29+08:00">2022-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/IC%E9%AA%8C%E8%AF%81/" itemprop="url" rel="index"><span itemprop="name">IC验证</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>20k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>18 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">芯片验证漫游指南3验证的方法：从本章开始，我们将系统介绍验证的各种方法。之所以用一章的篇幅介绍验证的方法和工具，一方面是因为目前验证方法的分支及其工具种类繁多，另一方面是希望读者在系统了解验证方法和工具后，可以在开展验证时有一整套工具箱，根据设计的特点选用不同的验证方法，最终取得满意的效果。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>到了目前的阶段，已经无法依赖单一的工具、语言或方法来达到验证的完备性。在实际的验证工作中，需要综合使用多种语言、方法、工具实现此目的。不同的语言、方法、脚本和工具之间没有绝对的优劣之分。比如，<strong>仿真验证协同形式验证一起完善功能覆盖率，也可以通过语言和脚本之间的整合完成一项验证流程</strong>。总而言之，作为一名有经验的工程师，需要掌握现有的各种方法和工具，通过合理的选择，“保质、高效、低耗”地完成验证任务。所以，我们在这里将验证方法分为若干类，梳理目前主流的验证方法和工具。</p>
+<p>主要的验证方法包括：</p>
+<ul>
+<li>动态仿真（dynamic simulation）；</li>
+<li>静态检查（formal check）；</li>
+<li>虚拟模型（virtual prototype）；</li>
+<li>硬件加速（hardware acceleration）；</li>
+<li>电源功耗（power consumption）；</li>
+<li>性能评估（performance evaluation）。</li>
+</ul>
+<p>基于此，我们引入一节“开发环境”，介绍日常的编码环境。所谓“工欲善其事，必先利其器”，一个应手的开发环境，是迈向高效的一步。</p>
+<h1 id="1-动态仿真"><a href="#1-动态仿真" class="headerlink" title="1 动态仿真"></a>1 动态仿真</h1><p>动态仿真（dynamic<br>simulation）: 最常见的验证方式——，是<strong>通过测试序列和激励生成器给入待验设计适当的激励，随着仿真进程的推进，判断输出是否符合预期</strong>。简而言之，我们需要<strong>仿真器</strong>来配合这一项工作，验证人员也需要查看<strong>比较结果和仿真波形</strong>，最终判定测试用例是否通过。按激励生成方式和检查方式，可以将动态仿真进一步划分为：</p>
+<ul>
+<li>定向测试（directed test）；</li>
+<li>随机测试（random test）；</li>
+<li>参考模型检查（reference model check）；</li>
+<li>断言检查（assertion check）。</li>
+</ul>
+<p>参考模型一般伴随着定向测试或随机测试，所以我们接下来着重了解定向测试、随机测试和断言检查。</p>
+<h1 id="1-1-定向测试"><a href="#1-1-定向测试" class="headerlink" title="1.1 定向测试"></a>1.1 定向测试</h1><p>定向测试 ： 指的是<strong>激励内容在仿真之前已经决定下来，测试用例给出的激励序列不会在下一次提交任务时改变</strong>。</p>
+<p>我们日常通过C&#x2F;C++代码来实现子系统级或芯片系统级的测试，这是因为待验设计往往包含处理器，而且从硅后测试复用的角度来看，我们也倾向于运用C代码来编写高层次的测试用例。从图3.2可以看出，测试用例经过编译，转换为硬件存储器可以读入的文件（一般为二进制格式，主要包含地址和数据两部分）。待验设计经过上电复位（power up and reset），从存储器中读取二进制文件，处理器将二进制数据译码（decoding）为指令和数据，进行运算或存储访问。定向测试最终的数据比较分为两种情况：</p>
+<ul>
+<li><strong>通过内置的C代码进行数据正确性检查</strong>；</li>
+<li><strong>通过外置的参考模型或者其他检查器来进行信号一致性检查</strong>。</li>
+</ul>
+<p><img src="/.com//%E5%AE%9A%E5%90%91%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png" alt="定向测试流程"></p>
+<p>有时我们考虑直接将第三方提供的可执行文件或二进制文件作为激励源交给存储器，这就省略了C代码编译的步骤，但这需要相应的运行环境兼容。</p>
+<p>将上述定向测试流程与实际项目进行对比，如图3.3所示，<strong>测试用例可以通过C代码交给处理器进行硬件行为的仿真检查。如果模块验证环境中缺少处理器，如何在这一级实现C代码的垂直复用（从模块级到芯片系统级）呢</strong>？</p>
+<p>可以考虑下面的步骤：</p>
+<ul>
+<li>将C代码交给转换器将其转换为文本命令格式；</li>
+<li>文本命令格式可以被总线翻译器识别进而转换为总线上的读写操作。</li>
+</ul>
+<p><img src="/.com//C%E4%BB%A3%E7%A0%81%E7%9A%84%E5%9E%82%E7%9B%B4%E5%A4%8D%E7%94%A8%E6%96%B9%E6%A1%88.png" alt="C代码的垂直复用方案"></p>
+<p>上面的步骤中需要引入转换器实现复用，也可以考虑将转换器和总线翻译器通过标准的SystermVerilog C-DPI接口，从而实现良好的复用性。关于如何应用C-DPI接口，读者可以在17.1节获取更多的进行<br>转换细节。</p>
+<p>定向测试一般应用在模块测试的早期或者在系统级芯片测试场景中，它适合于测试设计的基本功能，能直接翻译出验证人员想要的场景。它的<strong>缺陷也很明显，就是每一个定向测试用例在通过之后的重复仿真是冗余的，因为这样无法产生新的测试序列，也不会带来更多的覆盖率</strong>。不过，正因为它的激励序列确定性（determinacy），<strong>定向测试可以用来构成基本测试表，在验证前期完成设计的基本功能检查</strong>。</p>
+<h1 id="1-2-随机测试"><a href="#1-2-随机测试" class="headerlink" title="1.2 随机测试"></a>1.2 随机测试</h1><p>与定向测试序列相对的是<strong>随机序列（random sequence）。随机序列通过预先定义的约束，每次随机产生合理的数值，通过激励产生器给出测试序列。图3.4可以说明，与定向测试相比，随机测试可以直接<br>通过激励生成器发送测试序列</strong>。</p>
+<p>产生随机数的方法有很多种，并且有很多语言可以实现。但考虑到灵活地给随机绑定一些约束时，我们就需要特定的语言提供这样的属性，目前常用的语言有SystemVerilog和e语言。从图3.5来自Wilson2014年的调查数据来看，SystemVerilog的使用率大致已经上升到了75%左右。</p>
+<p><img src="/.com//%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png" alt="随机测试流程"></p>
+<p><strong>约束实际上是决定随机激励能否符合接口协议的关键，也是朝向验证合理状态空间的关键。随机约束生成器一般通过静态约束或动态反馈约束给出每一轮的激励</strong>。从图3.6可以看出，在实际的验证环境中，往往有很多对随机约束起控制和反馈作用的因素，它们分别是：</p>
+<ul>
+<li><strong>静态随机约束</strong>。即默认的约束，一般与激励一起定义，不随测试而变化。</li>
+<li>反馈的动态随机约束。在测试过程中通过上一轮的结果来对下一轮随机序列给予反馈，通过额外的偏置约束（biasing constraint）给出更小的随机域（random region）。</li>
+<li><strong>待验设计的功能验证开关</strong>。待验设计的功能点有时可以通过测试序列来关联，进而从该序列是否要验证某一项功能来决定某一组随机约束是否生效。</li>
+<li><strong>激励的结构成员</strong>。随机激励的成员一般分为接口成员（与设计进行交互）和成员间的逻辑变量（决定成员之间数值关系的变量）。</li>
+<li>验证环境的配置参数。如果验证环境是可配置的，那么这些配置参数也可能会影响序列的产生。</li>
+<li><strong>验证环境中不同激励组件之间的同步通信</strong>。如果验证环境中包含多个激励组件，那么要实现这些随机组件之间的协同，就需要考虑通过同步通信（synchronization communication）来实现。</li>
+</ul>
+<p><img src="/.com//%E9%9A%8F%E6%9C%BA%E7%BA%A6%E6%9D%9F%E7%9A%84%E6%8E%A7%E5%88%B6%E5%92%8C%E5%8F%8D%E9%A6%88%E5%9B%A0%E7%B4%A0.png" alt="随机约束的控制和反馈因素"></p>
+<h2 id="1-3-基于覆盖率驱动的随机验证"><a href="#1-3-基于覆盖率驱动的随机验证" class="headerlink" title="1.3 基于覆盖率驱动的随机验证"></a>1.3 基于覆盖率驱动的随机验证</h2><p>目前常用的一种随机验证方式是基于覆盖率驱动的，这种方式与3.1.2节提到的影响随机生成的因素<strong>“反馈的动态随机约束”一样，有着类似的反馈控制原理</strong>。从图3.7可以看出，<strong>与常用随机约束验证方式不同的一点是，覆盖率收集器在每次测试中都通过监视器来收集覆盖率（主要指功能覆盖率），将其与已有的覆盖率数据库进行合并，同时根据现有的覆盖率数据库为下一次随机约束给出反馈。这些反馈被用来进一步缩窄随机约束域，使其偏置产生一些序列，覆盖那些未知的功能测试点</strong>。</p>
+<p><img src="/.com//%E5%9F%BA%E4%BA%8E%E8%A6%86%E7%9B%96%E7%8E%87%E9%A9%B1%E5%8A%A8%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B.png" alt="基于覆盖率驱动的随机验证流程"></p>
+<h2 id="1-4-基于TLM的随机验证"><a href="#1-4-基于TLM的随机验证" class="headerlink" title="1.4 基于TLM的随机验证"></a>1.4 基于TLM的随机验证</h2><p>测试用例可以指定每一次激励的数据内容，也可以在较高层次上指定每一次激励数据包（data packet）的内容。我们在2.1节中介绍了通过TLM在产品定义早期对设计建立模型。<strong>在抽象层次上，TLM比硬件时序行为更高一级，被用来描述设计或验证环境。基于TLM的随机验证方式，指的是在随机环境中使用的最小颗粒是 TLM 级别的数据包。该激励数据包不止包含一个时钟周期给出的激励，而是在更长的时间范围内（一般为一次完整的数据操作，例如完整的数据读写或数据包传输）定义更多且有内在联系的数据</strong>。</p>
+<p>TLM验证带来的<strong>好处是，验证人员可以更便捷地描述一些测试场景，更贴近真实的用例</strong>。比如硅后系统测试和固件开发，是基于系统级别的，它们专注的并非单一模块的某一项功能，而是子系统或整个系统的复杂工作模式。从图3.8可以看到，TLM测试抽象级较高，需要由TLM2RTL激励生成器做进一步的转换。将TLM激励生成器进一步放大，可以看到它内部的一些转换模块，包括读写操作、复位操作、中断操作和其他操作。<strong>这些方法一般是根据TLM操作命令经过转换去调用的，我们将这样的激励生成器称为总线功能模型</strong>（BFM,Bus Functional Model）。</p>
+<p><strong>BFM的作用是将高抽象级的TLM命令转换为低抽象级的硬件端口时序</strong>。进一步看，在高抽象级到低抽象级的转换中，除了数据抽象度在降低外，激励所用的时间也在转换中被施加到待测接口上。因此，要完成一项 TLM 命令的转换，经常需要数十个甚至数百个时钟周期。</p>
+<p><img src="/.com//%E5%9F%BA%E4%BA%8ETLM%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B.png" alt="基于TLM的随机验证流程"></p>
+<h2 id="1-5-断言检查"><a href="#1-5-断言检查" class="headerlink" title="1.5 断言检查"></a>1.5 断言检查</h2><p>影响验证产出的一个重要因素是<strong>如何准确地描述功能</strong>。如图3.9所示，清晰的描述可以帮助设计人员更方便地实现设计功能，验证人员也需要检查各种可能的行为是否符合预期。</p>
+<p>断言（assertion）提供了这样的特性，它善于针对某一特定的逻辑或时序进行预设，一旦设计的实际行为不符合断言的描述，则给出检查报告。</p>
+<p><img src="/.com//%E5%9B%BE3.9%20%E8%AE%BE%E8%AE%A1%E5%92%8C%E9%AA%8C%E8%AF%81%E5%85%B3%E4%BA%8E%E5%8A%9F%E8%83%BD%E7%9A%84%E4%B8%8D%E5%90%8C%E5%85%B3%E6%B3%A8%E8%A7%92%E5%BA%A6.png" alt="图3.9 设计和验证关于功能的不同关注角度"></p>
+<p>断言本身不限定于某一种语言或者工具，它的特性可以准确地描述出设计的预期行为。所以有多种实现断言的方法和工具，在过去的20年间，这些被业界支持的基于断言的验证方法和工具如图3.10所示。</p>
+<p><img src="/.com//%E6%94%AF%E6%8C%81%E6%96%AD%E8%A8%80%E7%9A%84%E8%AF%AD%E8%A8%80%E5%92%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.png" alt="支持断言的语言和工具的发展历程"></p>
+<p>在这里，我们按照断言方法不同的运用将它们分为如下几类：</p>
+<ul>
+<li>商业开发的断言IP，可用来插入到HDL中做检查，例如CheckWare（0-In&#x2F;Mentor）。</li>
+<li>专门开发的断言语言，例如PSL（Property Specification Language）。</li>
+<li>广义的验证模块，不依赖于特定的语言或工具，例如OVL（Open Verification Language&#x2F;Accellera），这些验证库中含有多个常用的验证模块，可用来在设计中例化。</li>
+<li>根据广义的验证语言描述而使用其他语言实现的验证库，例如按照OVL实现的QVL（Questa Verification Library&#x2F;Mentor）和 OVA（OpenVera Assertion checker library&#x2F;Synopsys）。</li>
+<li>扩展某一种语言的特性，延伸出断言的功能，例如SVA（SystemVerilog Assertion）。</li>
+</ul>
+<p>可以在验证平台中使用断言，也可以插入到设计中使用断言。<strong>断言可以同时为验证人员和设计人员所用</strong>。使用断言的优势在于以下几个方面：</p>
+<ul>
+<li>由于断言的位置更贴近于不同功能点的源码位置，这使得相应检查的功能点发生错误时能更快、更清晰地定位出错误源。</li>
+<li>断言自身可以表达更长的时序，<strong>覆盖任意长度的功能时序</strong>，这使得它可以在更高的抽象级别描述设计行为。</li>
+<li><strong>断言也有覆盖率的功能</strong>，通过断言覆盖率可以建立量化数据来衡量验证进度。</li>
+<li>断言可以被直接置入到设计中（无论是设计人员置入还是验证人员置入），这使得断言可以在不同的层次上得到复用，使得它有更久的生命周期和验证延展。</li>
+</ul>
+<p>这里谈到了断言的复用性，实际上断言的应用场景非常多，且它便捷的即插即用特性使得有多种商业断言 IP 可供植入到验证环境中。下面通过图3.11说明断言应用的场景及其垂直复用的特性。从应用场景来看，典型的断言场景包括：</p>
+<ul>
+<li>集成连接。例如，片上网络多个发起端和目标端之间的访问路径检查，或者系统集成中各个模块之间的连接关系。</li>
+<li>总线协议。针对工业标准总线，有商业验证 IP 可以协助验证设计是否按照总线协议实施。</li>
+<li>仲裁机制。仲裁机制中的各种模式通过检查来保证仲裁执行的合理。</li>
+<li>数据一致性。对于存储单元，数据的一致性检查可以通过检查端口读写来预期数据的一致性。</li>
+<li>数据进出。对于队列设计，也可以建立模型来检查断言。</li>
+<li>状态机。检查状态机的跳转是否正常。</li>
+<li>输入限定。基于假设的输入限定可以通过断言来判断输入是否符合预期，这对错误源排查也有帮助。</li>
+<li>自定义断言。用来检查各个设计的细节，通常这些细节属于设计人员和验证人员关注的功能焦点。</li>
+</ul>
+<p><img src="/.com//%E6%96%AD%E8%A8%80%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.png" alt="断言的应用场景"></p>
+<p>从复用性来看，<strong>断言可以实现从模块级到子系统级再到芯片系统级的垂直复用</strong>。从图3.11可以看出，从单元1在模块级验证时插入的断言“数据进出”和“状态机”，在子系统级和芯片系统级两个环境都可以保持监测检查状态。这一点要<strong>归功于断言可以作为非综合模块被植入到设计中，或者通过绑定的形式嵌入到设计中（不影响设计结构）。在子系统中，新的断言部分“子系统集成”又可以用来检查从单元1与从单元2之间的集成关系，该检查在芯片系统中也可以保留下来</strong>。</p>
+<h1 id="2-静态检查"><a href="#2-静态检查" class="headerlink" title="2 静态检查"></a>2 静态检查</h1><p>与动态仿真相对应的是静态检查，它<strong>本身不需要仿真、波形激励，验证人员通过工具的辅助即可以发现设计中存在的问题</strong>。静态检查可细分出更多种类，它们关注的领域各不相同，我们将这些方法概括为：</p>
+<ul>
+<li>语法检查（syntax check）；</li>
+<li>语义检查（linting check）；</li>
+<li>跨时钟域检查（CDC,Cross-clock Domain Check）；</li>
+<li>形式验证（formal verification）。</li>
+</ul>
+<h2 id="2-1-语法检查"><a href="#2-1-语法检查" class="headerlink" title="2.1 语法检查"></a>2.1 语法检查</h2><p>如大多数编译器（compiler）自带的功能一样，验证工具<strong>一旦需要建立模型（无论是针对动态仿真还是静态检查的模型），都需要编译器对目标语言提供语法检查</strong>。仿真编译器会帮助检查语法错误，例如<strong>拼写、声明、引用、例化、连接、定义等常见的语法错误</strong>。不同仿真工具对语言标准的解释也可能存在偏差，所以使用不同厂商工具提供的编译器时需注意以下几点：</p>
+<ul>
+<li>某些不常见的语法使用，在编译器A中可以通过，却不见得在编译器B中也可以通过，这种差别通常跟仿真器的特性和支持有关。如果在设计验证中使用了不同的工具，那么我们要做的应该是让代码（无论是设计代码还是验证代码）满足所有工具的要求，确保它们跟工具<br>之间保持良好的语法兼容。</li>
+<li>语言本身有不同年份的标准，所以需在编译过程中注意加注不同的选项。假如编译器默认按照VHDL93标准来编译VHDL文件，那么当显式声明文件为VHDL87格式时，需要额外加注编译选项。</li>
+<li>除了语法检查，编译器也提供其他选项来检查设计代码风格是否符合可综合规范。建议在编译时添加这些选项，以帮助检查设计中较明显的漏洞。</li>
+<li>值得注意的是，目前 SystemVerilog2012中的标准并没有全部被编译器支持，而且不同工具的支持程度不尽相同。如果准备使用一个较“偏门”的语言特性，在实现它之前可以查看工具支持文档，或者查看编译结果来获知该特性是否被支持。</li>
+</ul>
+<p>对初步认识仿真工具的人而言，不同编译器对同一项语法错误给出的错误提示可能也不相同。这里我们给出的建议是：</p>
+<ul>
+<li>认真阅读错误信息。没错，请你认真阅读错误信息。</li>
+<li>在认真阅读无果的情况下，可以根据错误信息的代码，通过工具命令结合错误代码来查看错误信息的具体解释。</li>
+<li>如果经过前两个步骤仍然无法解决，请找一位有经验的工程师帮你一起检查错误，并且给你一些如何理解错误、查找语法错误点的方法。</li>
+</ul>
+<h2 id="2-2-语义检查"><a href="#2-2-语义检查" class="headerlink" title="2.2 语义检查"></a>2.2 语义检查</h2><p>和语法检查相比，语义检查是在<strong>设计可行性</strong>上做深入检查的（当然前提也是首先通过了语法检查）。语义检查是通过专用的工具来协助完成的，如0-In（Mentor）和Spyglass。</p>
+<p>语义检查的范围包括：</p>
+<ul>
+<li>常见的设计错误；</li>
+<li>影响<strong>覆盖率收敛</strong>的问题；</li>
+<li>可能会产生X值以及受其影响的设计部分。</li>
+</ul>
+<p>进一步细化这些检查项，它们会具体检查以下设计方面：</p>
+<ul>
+<li>验证收敛性检查<ul>
+<li>无法达到的逻辑部分</li>
+<li>无法跳转到的状态机状态</li>
+<li>无法完成的状态机跳转逻辑</li>
+</ul>
+</li>
+<li>硅效用检查<ul>
+<li>寄存器被固定赋值</li>
+<li>寄存器未初始化</li>
+<li><strong>X值的传播</strong></li>
+</ul>
+</li>
+<li>功能问题检查<ul>
+<li>状态机检查</li>
+<li>总线检查</li>
+<li>case语句检查</li>
+<li>数学逻辑检查</li>
+</ul>
+</li>
+</ul>
+<p><strong>这些静态检查最大的便捷性在于，可以在早期发现一些功能实现以外的设计问题，而且也有助于完善设计代码，提高有效覆盖率以及RTL与网表的逻辑一致性</strong>（例如寄存器未初始化或者固定赋值）。语义检查最显著的两个优势在于：</p>
+<ul>
+<li>不需要验证环境。设计人员可以在发布设计版本前用语义工具检查修改设计中的问题，这对在仿真之前扫清基本障碍、保证设计质量很有帮助。</li>
+<li>不需要写断言。这与接下来介绍的形式验证有关；<strong>语义检查无关乎设计从功能描述到实现的翻译准确度，所以不需要断言参与进来</strong>。</li>
+</ul>
+<h2 id="2-3-跨时钟域检查"><a href="#2-3-跨时钟域检查" class="headerlink" title="2.3 跨时钟域检查"></a>2.3 跨时钟域检查</h2><p>大多数复杂的设计都拥有不止一个时钟，<strong>多个时钟之间也常表现为异步的关系</strong>。<strong>设计中的不同功能模块如果被不同的时钟驱动，就会形成不同的时钟域（clock domain）</strong>。单一时钟域模块的设计方式和验证环境较为简单，而拥有多时钟域的硬件，其跨时钟域的逻辑通信就需要<strong>考虑同步问题</strong>。在这里，用来验证这些设计要求的过程称为跨时钟域检查。</p>
+<p>需要同步是因为考虑到不同时钟域的信号采样问题，当时钟域A的信号进入时钟域B被采样时，<strong>每个周期都有相对时钟B不同的延迟，这种随机性可能导致建立时间或保持时间无法满足，进而导致不可预期的功能失败</strong>。</p>
+<p>这种跨时钟域问题无法通过常规的验证方法来分析，例如动态仿真，也不能被静态时序分析（static timing analysis）判断出来。而这里通过静态的跨时钟域检查就可以分析这一问题。如图3.12所示，通过该方法，可以在早期的 RTL 阶段识别出跨时钟域的通信电路上是否有合适的同步处理，所以，跨时钟域检查（CDC）是为了保证所有信号都能得到正确的同步。目前支持CDC检查的商业工具有Spyglass和0-In（Mentor）等。</p>
+<p><img src="/.com//%E8%B7%A8%E6%97%B6%E9%92%9F%E5%9F%9F%E6%A3%80%E6%9F%A5.png" alt="跨时钟域检查"></p>
+<h2 id="2-4-形式验证"><a href="#2-4-形式验证" class="headerlink" title="2.4 形式验证"></a>2.4 形式验证</h2><p>形式验证分为两种方式：</p>
+<ul>
+<li><strong>等价检查</strong>（EC,Equivalence Check）。用来保证两个电路的行为是等价的，可用来检查不同抽象级的电路是否一致，例如RTL级和网表。</li>
+<li><strong>属性检查</strong>（PC,Property Check），又称为模型检查（MC,Model Check）。电路的行为通过验证语言来描述其属性（property），<strong>随后通过静态方式证明在所有状态空间下都满足该条件，否则举出反例</strong>（counter example）证明设计行为不符合属性描述（property description）。</li>
+</ul>
+<p>我们这里介绍属性检查，即通过验证语言（PSL、SVA）来描述设计行为，用断言（assertion）结合静态工具进行空间穷举，证明设计行为同属性描述保持一致。属性检查的流程通常如图3.13所示。</p>
+<p><img src="/.com//%E5%B1%9E%E6%80%A7%E6%A3%80%E6%9F%A5%E6%B5%81%E7%A8%8B.png" alt="属性检查流程"></p>
+<p>在动态仿真验证中，我们是通过生成各种测试序列来访问设计中的状态（state）的，<strong>在理论上，所有可以跳转的设计状态总和被称为可及状态空间</strong>（reachable state space）。遍历可及状态空间的所有状态对动态仿真而言是非常大的挑战，这种通过访问状态、检查结果的方式，<strong>需要覆盖率反馈来衡量可及状态空间还有多少状态没有被访问</strong>。</p>
+<p><strong>动态仿真验证的方式实际上很难穷举所有可能的序列去完全覆盖可及状态空间，而形式验证可以通过数学方式来穷举出所有的状态空间，彻底验证设计</strong>。从图3.14可以看到，在仿真过程中，通过随机和覆盖率反馈的形式，可以产生不同的测试序列来访问状态空间，直到发现新的缺陷。这是一种实用的测试办法，但另一方面，动态仿真验证无法确定设计中不存在缺陷，因为图中其他隐藏缺陷依然存在尚未被探索到的状态空间内。</p>
+<p><img src="/.com//%E5%8F%AF%E5%8F%8A%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4.png" alt="可及状态空间"></p>
+<p>形式验证可以通过数学的方法遍历状态空间，进而证明设计行为符合属性描述。<strong>在遍历过程中，一旦遇到反例，形式验证工具便会停下来，报出反例情景，让用户核对错误是否属实，再考虑修改设计或者进一步约束属性使其更精确地描述设计行为</strong>。从图3.15中可以看到，在大量的状态空间中，形式验证工具只需要针对某一项属性描述举出反例，即可报告给验证人员，而并不需要穷举所有的反例。待设计缺陷被确认、修正之后，验证人员可以继续通过工具来对设计属性进行检查。</p>
+<p><img src="/.com//%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81%E5%9C%A8%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E4%B8%AD%E5%AF%BB%E6%89%BE%E5%8F%8D%E4%BE%8B.png" alt="形式验证在状态空间中寻找反例"></p>
+<p>像上面所讲的将属性描述（由断言构成）与设计结合进行一致性检查的方法，自提出到现在已超过20年了，期间有不同的商业工具提供支持，如OneSpin、0-In和Jasper等。图3.16概括了这些工具的发展历程。</p>
+<p><img src="/.com//%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81%E7%9A%84%E5%B7%A5%E5%85%B7%E5%92%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.png" alt="形式验证的工具和语言的发展历程"></p>
+<h1 id="3-开发环境"><a href="#3-开发环境" class="headerlink" title="3 开发环境"></a>3 开发环境</h1><p>介绍一下验证人员日常编码SV的开发环境。</p>
+<h2 id="3-1-Vim开发环境"><a href="#3-1-Vim开发环境" class="headerlink" title="3.1 Vim开发环境"></a>3.1 Vim开发环境</h2><h2 id="3-2-商业SV开发环境——DVT"><a href="#3-2-商业SV开发环境——DVT" class="headerlink" title="3.2 商业SV开发环境——DVT"></a>3.2 商业SV开发环境——DVT</h2><p>在语言编辑和调试的基础上，DVT的测试平台语义检查器（testbench linter）可以通过静态代码分析，发现不合适的语句、代码风格、无用语句、性能问题以及与OVM&#x2F;UVM相悖的使用方式。它可以通过改进验证代码的可靠性和可维护性来协助验证人员更好地完成<br>验证任务。与之相比，普通的编译器往往只会检查代码是否符合语言规范，不会给出代码可靠性和可维护性的报告，也无法进一步给出建议以使代码与方法学保持一致。此外，DVT自带的文档生成器可以用来从代码中的注释自动生成HTML文档。这种方式使得设计验证人员花费更少的精力便可得到一份结构良好的设计和验证文档，文档的内容包含类和成员介绍、继承树、设计结构、UML类图和验证框架等。</p>
+<h1 id="4-虚拟模型"><a href="#4-虚拟模型" class="headerlink" title="4 虚拟模型"></a>4 虚拟模型</h1><p>虚拟模型即<strong>高抽象级的硬件模型</strong>，软件模型可依赖虚拟模型在早期开发，并将反馈交给硬件设计。这种反馈在以往的瀑布模式开发周期中是无法实现的，因为软件的开发往往需要等到硬件设计制造完成之后才能展开。通过虚拟模型，硬件可以更早地获取软件反馈而对设计进行修改。这种硬件和软件更紧密的协作方式，可以体现更多的优势，比如利用虚拟模型获取的性能数据可以对硬件早期结构提供参考意见，或者判断硬件和软件的协同任务是否满足功耗目标。在目前多核的手机移动平台上，将不同的任务合理分配到多核上以取得更好性能的需求日益增长，这种软件层面的评估就可以在虚拟建模阶段完成。目前，我们<strong>通过多项虚拟建模的技术例如协同设计、协同仿真和验证，试图在早期发现设计缺陷，以便在相对容易实施的阶段完成这些缺陷的修改</strong>。如图3.17所示，通过这种将设计问题更早暴露出来的方式，可以达到芯片成功流片的目标，满足市场越来越紧迫的窗口需求。</p>
+<p><img src="/.com//%E8%99%9A%E6%8B%9F%E5%BB%BA%E6%A8%A1%E7%9A%84%E8%A6%81%E7%B4%A0.png" alt="虚拟建模的要素"></p>
+<p>广义的虚拟建模包括一系列的验证技术，如仿真（simulation）、模拟（emulation）和FPGA，而目前的现状是，验证人员往往综合使用这些方法获得更好的效果。在这里，我们<strong>将虚拟模型限定于仿真（simulation），而将模拟和 FPGA 归类为硬件加速技术</strong>，我们将在3.5节详细介绍硬件加速技术。那么，虚拟建模的优点有哪些呢？</p>
+<ul>
+<li>在早期通过软件测试发现硬件和软件的问题。这种方式可以提前进行软件开发，更早暴露软件和硬件之间的协作问题或功能边界定义不清晰的问题，在模块 RTL 阶段就发现和修改缺陷。</li>
+<li>软件反馈进入硅前开发周期。软件和硬件的紧密协作使得软件也参与到了硬件结构定义和实现的工作中。</li>
+<li>减少硬件协同软件的验证工作。虚拟模型使得硬件设计有源可寻，同时软件的早期进入也可以帮助硬件完成一些难以通过仿真完成的系统测试。</li>
+<li>为用户建立硅前平台模型。早期的系统模型一旦经过软件测试，就可以为用户提供上层开发的环境。</li>
+<li>硅后平台的参照模型。硅前平台模型有更多可见的内部结构，这些细节在物理芯片上是观察不到的。</li>
+</ul>
+<p>虚拟建模是一项不断完善和发展的技术，正被广泛运用到芯片设计验证领域。那么，主要的虚拟建模平台有哪些呢？目前工业界一致推广利用TLM（Transaction Level Models）建立抽象模型，而TLM也已经发展到了TLM 2.0标准。主要的EDA建模仿真工具支持基于TLM 2.0的SystemC和UVM，我们将支持SystemC建模的仿真工具分为下面两种：</p>
+<ul>
+<li>仿真器（simulator）。它们支持SystemC的编译和仿真。由于SystemC可以纵深硬件抽象度，所以模型既可以拥有TLM端口，也可以拥有硬件信号端口。如果模型在边界上规定了信号时序，那么可以将端口信号添加到波形窗口中查看，也可以通过断点的方式来调试SystemC模型。</li>
+<li>专用的虚拟建模平台（virtual prototyping platforms）。这些平台专门服务于虚拟建模和仿真。从抽象级来看，它们的视野显著高于 RTL 仿真；从开发链来看，它们从更早期的产品定义阶段开始。这些虚拟建模平台主要的特性包括结构设计和评测、软硬件之间的权衡分析、早期的性能和功耗评估、软件集成测试、为 RTL 验证提供参考模型。不同 EDA 厂商提供的平台有 First Encounter（Cadence）、Vista（Mentor）和Virtualizer（Synopsys）等。</li>
+</ul>
+<p>那么在这些平台上，虚拟模型建立的方式是什么呢？实际上，虚拟模型的建立与RTL建模类似，只是抽象层次变高了，或者代码量变少了（但不见得变简单了，这要看逻辑实现的细节程度）。芯片中各子模块对应不同的软件驱动库、应用库，要尽可能在系统建模中囊括各子模块 TLM 模型，这样才会给软件提供更贴近实际的环境（即可以将硅后开发的软件先在虚拟平台上测试）。在虚拟建模平台上，可以通过可视化界面和自动化方式集成已备好的模块。在集成过程中，我们将模型分为两个类别：</p>
+<ul>
+<li>自建虚拟模型（即对照自定义硬件建立的虚拟模型）；</li>
+<li>商业第三方IP（这些虚拟模型IP对应硬件IP模块，完善的商业IP交付包囊括多个设计验证部分，包括RTL、SystemC和验证平台等）。</li>
+</ul>
+<p>此外，虚拟模型可以作为参考模型参与到RTL仿真中，这种SystemC同RTL的协同仿真模式包括：</p>
+<ul>
+<li>协同设计（co-design）。将SystemC模型集成到现有的设计当中，作为暂时替代设计的一部分。<strong>对此种设计的要求是，虚拟模型的边界接口应有合适的时序与相邻模块完成信号交互</strong>。</li>
+<li>协同验证（co-verification）。将虚拟模型作为参考模型集成在验证环境中，该方法也减轻了验证人员的负担。</li>
+</ul>
+<p>越来越多的公司应用虚拟建模来尽可能地提前软件开发时间，同时此种方法对现有工作方式提出了挑战，比如团队学习，如何在硬件设计流程引入该方法，如何衡量虚拟建模的长远价值和人力额外投入，如何将虚拟模型团队同设计验证团队整合，等等。这需要团队整体看到它的优势并愿意为之改变，将它的优势更好地发挥出来。</p>
+<h1 id="5-硬件加速"><a href="#5-硬件加速" class="headerlink" title="5 硬件加速"></a>5 硬件加速</h1><p>动态仿真和静态检查方法各自具有优势，然而它们都不具备的一个优势是<strong>速度</strong>。尤其是在SoC的设计体量越来越大时，仿真速度成为制约验证进度的重要障碍。由于仿真速度的限制，一些真实的用例无法在RTL级仿真很快地呈现结果，这种困难在硅后软件测试发现问题反馈给硬件团队时更加明显，因为通常这意味着硬件团队需要将耗时（仿真时间）很长的软件进行分析，找到可能的问题点，拆分软件场景，进而在硬件仿真上尝试重现问题。</p>
+<p>仿真速度的限制使得无法通过仿真在早期测试软件，这一任务一般交给其他两种方法：</p>
+<ul>
+<li>虚拟模型平台（virtual prototype platform）；</li>
+<li>硬件加速（hardware acceleration）。</li>
+</ul>
+<p>虚拟模型平台的一项优势是可以<strong>在硬件设计之前建立硬件模型，并通过集成来生成虚拟模型平台</strong>，当然，这也意味着新的工作量和技能学习。</p>
+<p>那么，硬件加速的流程是什么呢？<strong>一般需要等到硬件设计初步稳定，进而将其映射到可配置的平台上。设计的数字电路部分可以通过更高的时钟频率（受限的，无法达到真实芯片频率）来仿真，这种方式比RTL仿真速度已有质的提升</strong>，稍后我们比较速度的提升优势。</p>
+<p>目前，业界主要的硬件加速方式分为两种，<strong>即FPGA和专用的模拟器（emulator）</strong>。实际上，专用模拟器仍然是基于FPGA的定制产品，只不过比起商用的FGPA（Xilinx、Altera）在硬件加速方面还有其他显著的优点：</p>
+<ul>
+<li>内部可编程单元网络的连接方式不同于商用FPGA，这使得它在综合布线效率上面显著优于FPGA，而且对内部可编程单元的利用率也高于FPGA。</li>
+<li>外部连接的方式不同于FPGA，这使得它可以通过多路复用技术实现片上存储共享，而不再像FPGA一样需要定制的存储器。同时，通过扩大I&#x2F;O引脚数目扩展器件之间的通信带宽，确保模拟器之间的通信速度不成为瓶颈。</li>
+<li>智能的数据采集和内置追踪存储器的特性，使被映射到模拟器平台的所有逻辑单元在理论上都是可见的。这种采集方式在一开始建立平台时就可以通过定义采集信号列表来修改内部走线，同时不降低模拟速度。</li>
+</ul>
+<p>模拟器的这些特点与FPGA可以显著地区分开，在实际工作中，F<strong>PGA和模拟器使用的场景也有所不同。FPGA原型验证主要是针对小型设计或单独的IP，而模拟器则用来面向更大、更复杂的SoC设计。</strong>FPGA主要为软件开发提供平台，而模拟器则是为了硬件和软件协同验证和整个系统的测试。最近10年，模拟平台技术日趋完，使用便利性越来越好，从而越来越多的公司开始考虑使用模拟器。这主要是基于以下因素：</p>
+<ul>
+<li>更快的平台建立时间；</li>
+<li>更快的编译综合时间（从RTL到仿真运行）；</li>
+<li>良好的调试条件，如信号可追踪、波形可保存、设置断点等；</li>
+<li>模拟器的高存储量、资源可裁剪，同时支持多任务；</li>
+<li>通过云端购买使用流量使用远程服务，而不再像FPGA需要一次性购买，降低了开发投入成本；</li>
+<li>易于操作。</li>
+</ul>
+<p>FPGA与模拟器在各方面的对比展示于表3.1中。<br><img src="/.com//FPGA%E4%B8%8E%E6%A8%A1%E6%8B%9F%E5%99%A8%E7%9A%84%E6%AF%94%E8%BE%83.png" alt="FPGA与模拟器的比较"></p>
+<p>目前业界的硬件加速标准并未达成一致，主流的三家公司实现硬件加速的具体技术也各有特点。我们在上面提到的模拟器（emulator），通过将设计逻辑映射到可编程单元的方式，主要有Veloce（Mentor）和 ZeBu（Synopsys）。Veloce 通过定制的可编程单元（非常类似于FPGA）、不同的内部连接网络结构以及透明的可调试电路实现其模拟器功能。平台上的每一块模拟器芯片都可用来模拟一部分的设计逻辑，而整个芯片的功能则通过集成各个模拟器芯片实现片间快速通信。ZeBu不一样的地方在于它直接采用FPGA，而且将透明的可调式电路技术和其他特性实现到FPGA中，多个FPGA进一步组成完整的模拟器功能。Cadence公司的仿真加速器（simulation accelerator）Palladium显得与众不同，作为独立的加速器平台，其内部包含数量巨大的简单处理器，每一块处理器又可以仿真一部分设计逻辑，将运算结果在它们之间传递。看起来，这些处理器的运算速度低于我们的桌面处理器，但由于成千上万个小的处理器并行工作，实际的仿真速率远超独立处理器的表现。同时，这些独立的小型处理器支持透明化的调试方式。</p>
+<p>模拟器的高速性能使得其有望同真实世界中的电路交流，但需要注意速率差异的问题。假设我们要设计一个USB器件，可能会将物理层的USB与模拟器相连，进而与计算机或其他器件相连。这时候，我们将模拟器与真实世界的应用器件连接，随之而来的问题是，真实世界的频率高于模拟器的频率。<strong>我们需要为它们之间的频率差异搭建降速同步的桥接（speed bridge），通过主动降低快速端的速度并缓存快速端的数据，适配两端的数据交换</strong>。</p>
+<p>如果要将RTL验证平台移植到模拟平台上，<strong>可以将硬件部分迁移到模拟平台，同时将验证环境继续运行在仿真平台一侧，这种方式称为联合仿真（co-simulation）</strong>。硬件的激励由仿真平台或真实世界的接口给入。<strong>硬件加速受到的限制是，它们没有办法像RTL仿真一样透明地观察硬件信号和内部逻辑，也无法随时设置断点调试硬件</strong>。在联合仿真平台中，加速因子最大的受限因素在于仿真平台的运行速度，以及它与模拟平台之间通信的频率。</p>
+<p>因此，在构建一个联合加速平台时，需要考虑的是：</p>
+<ul>
+<li>尽可能地将验证平台实现为可综合的，这样有助于它们被移植到模拟平台上，从而减少模拟平台与仿真平台的通信需求。</li>
+<li>如果仍然有一些验证组件无法被移植到模拟平台上，那么需要考虑如何使仿真平台与模拟平台之间的通信速度变得更快，或者使通信次数更少。通过TLM通信方式提高每次通信的信息量从而减少它们之间需要同步的次数，是值得采用的加速方法。</li>
+</ul>
+<h1 id="6-效能验证"><a href="#6-效能验证" class="headerlink" title="6 效能验证"></a>6 效能验证</h1><p>在 PC 时代，少有人将处理器功耗提上验证的日程，因为大家对处理器性能的关注多于对功耗的考虑。我们十多前年使用2G的功能手机，“超长待机”一词渐渐作为广告主打语进入用户的视线，这得益于硬件本身的低功耗（对性能本身的要求不太突出）和大容量的电池。到了智能手机时代，随着对桌面办公和娱乐的移动化的需求增加，手持设备（手机）需要提供桌面机的性能，这催生了智能手机市场过去几年的蓬勃发展。软件对硬件性能日趋增长的要求，以及移动网络数据传输性能的不断提高，都在促进着硬件性能的革新。在移动时代，硬件提升性能的方式主要表现为以下几种：</p>
+<ul>
+<li>提升原有处理器性能、存储器空间、数据总线带宽或者采取多核处理方式。</li>
+<li>增加额外的协处理单元或新的功能模块（如Video&#x2F;GPU单元）。</li>
+<li>在后端允许的情况下提高工作时钟频率。</li>
+<li>提升工艺制程。</li>
+</ul>
+<p>总体上看，随着性能的提升，能耗也会逐步提高，这在过去的PC时代不是一个显著问题，但移动时代越发要求硬件的性能提升，同时要求能耗也可以接受。</p>
+<p>本节以移动芯片为例，讨论目前对性能（performance）和效能（power consumption）的权衡。在图3.18中，无线通信技术被标注上了1G、2G、3G和4G。香农定律预测，传输性能每8个月提升一倍；摩尔定律指出，晶体管的单位密度每18个月提升一倍，处理器的性能也因此大约提升一倍。预测指出，电池生产商每10年左右将能源密度提升一倍，而存储器的性能大约每12年提升一倍。那么，从不同器件的性能增长差异来看，这也揭示了移动硬件的技术缺口：</p>
+<ul>
+<li>处理器和存储器之间的带宽缺口。即处理器的性能同存储器的带宽缺口的差距逐步增大，进而存储性能无法满足运算性能。</li>
+<li>效能缺口。传输和运算速率双双大幅提升，使得功耗迅速增长，但由于电池技术受限，使得功耗成为了瓶颈之一。</li>
+<li>算法复杂度缺口。传输速率超过运算速率的涨幅，需要更多的处理器来并行完成越来越复杂的算法。</li>
+</ul>
+<p><img src="/.com//%E7%A7%BB%E5%8A%A8%E7%A1%AC%E4%BB%B6%E9%A2%86%E5%9F%9F%E7%9A%84%E6%8A%80%E6%9C%AF%E7%BC%BA%E5%8F%A3.png" alt="移动硬件领域的技术缺口"></p>
+<p>上面讲述的技术缺口与目前硬件提升性能的方式大致保持吻合，接下来主要就如何解决效能缺口入手，讨论目前主流的效能验证方式。</p>
+<h2 id="6-1-功率和能量"><a href="#6-1-功率和能量" class="headerlink" title="6.1 功率和能量"></a>6.1 功率和能量</h2><p>首先我们引入基本的概念，功率和能量在日常器件效能讨论中经常会提起，它们是两个关联的术语。</p>
+<p>功率&#x3D;能量&#x2F;时间（单位：瓦）</p>
+<p>能量&#x3D;功率×时间（单位：焦）</p>
+<p>有时候，我们设法降低功率，能耗随之降低，但这不是绝对的，有些任务在高速高功率情况下可以用更短时间完成，而且实际功耗要比在低速低功率情况下更少。例如，<strong>如果静态功耗可以忽略，一个任务需要固定的时钟周期数完成，那么无论时钟快慢，它消耗的能量是一样的；当静态功耗无法忽略时（例如目前最先进的工艺制程已大致在7nm），反倒是时钟更快、功率更高的情况下完成这项任务更高效</strong>。所以，效能的验证和评估实际上就是对能量利用效率的优化途径。</p>
+<h2 id="6-2-静态功耗和动态功耗"><a href="#6-2-静态功耗和动态功耗" class="headerlink" title="6.2 静态功耗和动态功耗"></a>6.2 静态功耗和动态功耗</h2><p>从上面的例子我们知道，如果要考虑功耗，需要考虑两部分即<strong>静态功耗和动态功耗</strong>，总功耗如下：</p>
+<p><em>总功耗&#x3D;开关功耗+短路功耗+静态功耗</em></p>
+<p>这里<strong>开关功耗和短路功耗构成了动态功耗的部分</strong>。</p>
+<p><em>开关功耗&#x3D;C·V·V·F</em></p>
+<p>其中，C是负载电容，V是电压，F是频率。</p>
+<p><em>短路功耗&#x3D;V·I（短路）</em></p>
+<p>I（短路）为在开关切换过程中<strong>N极和P极同时有效时发生的短路电流</strong>。</p>
+<p><em>静态功耗&#x3D;V·I（漏电）</em></p>
+<p>静态功耗（或漏电功耗）则是晶体管在电路稳定时出现的漏电造成的功耗。</p>
+<h2 id="6-3-节能技术"><a href="#6-3-节能技术" class="headerlink" title="6.3 节能技术"></a>6.3 节能技术</h2><p>移动芯片节能（省电）技术是全方位的改进流程，从工艺制程到电路、封装到模块设计、SoC 设计、系统和应用软件开发，等等，整个环节都需要有效利用能量。表3.2是从芯片硬件和软件方面所采用的节能技术（省去工艺制程）。</p>
+<p><img src="/.com//%E7%A1%AC%E4%BB%B6%E5%92%8C%E8%BD%AF%E4%BB%B6%E9%87%87%E7%94%A8%E7%9A%84%E8%8A%82%E8%83%BD%E6%8A%80%E6%9C%AF.png" alt="硬件和软件采用的节能技术"></p>
+<p>与之前介绍过的硬件设计流程类似，节能的设计流程（见图3.19）也是从规划到实施最后到集成的。面对越来越复杂的系统，实用的方式还是从系统设计开始，逐步分解到电路设计，我们先从硬件层面考虑如何实现低功耗设计。</p>
+<p><img src="/.com//%E8%8A%82%E8%83%BD%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B.png" alt="节能的设计流程"></p>
+<h2 id="6-4-效能验证"><a href="#6-4-效能验证" class="headerlink" title="6.4 效能验证"></a>6.4 效能验证</h2><p>这里主要针对硅前设计阶段进行效能验证，涉及的流程分为两部分：</p>
+<ul>
+<li><strong>功能验证</strong>。主要采用PA（Power Aware）方式，包括UPF（Unified Power Format）和CPF（Comment Power Format）。通过与仿真器结合，模拟电源域的开关进行设计检查。</li>
+<li><strong>功耗预测与优化</strong>。使用第三方功耗分析工具，结合仿真数据（FSDB&#x2F;VCD&#x2F;SAIF），进行功耗预测并给出分析结果。</li>
+</ul>
+<p>PA（Power Aware）效能设计流程</p>
+<p>UPF&#x2F;CPF这两种功耗格式较为类似，可以将它们的应用阶段分为4个部分：</p>
+<ul>
+<li>规定功耗格式文件，指定电源掉电、触发隔离和状态保持等行为，以及它们的控制信号。</li>
+<li>RTL仿真（门级仿真也可以支持）除了要保证功能正确，还要进行低功耗逻辑和断电控制功能验证，检查状态丢失、分离和保持。</li>
+<li>逻辑功能检查和等价性检查（带有UPF&#x2F;CPF插入的单元）。</li>
+<li>逻辑综合和DFT（带有UPF&#x2F;CPF插入的单元）。</li>
+</ul>
+<p>对于硅前验证阶段，验证人员接触到的主要是RTL仿真。我们一般采取的策略是：</p>
+<ul>
+<li>进行非效能的RTL仿真（不带PA）。</li>
+<li>在RTL功能仿真通过的情况下，进行PA仿真。</li>
+<li>在门级仿真阶段，如果时间允许，可以在后期进行门级PA仿真。</li>
+</ul>
+<h2 id="6-5-功耗预测与优化"><a href="#6-5-功耗预测与优化" class="headerlink" title="6.5 功耗预测与优化"></a>6.5 功耗预测与优化</h2><p>一般我们期望尽早获取功耗的估测信息，而这一期望与芯片开发过程相悖，因为往往在流片以后的软件开发阶段测量出来的功耗是更准确的。但是，<strong>等到流片之后才去测量功耗，低功耗设计的成本就很大了</strong>，这是因为一方面这使我们试错的成本增加，另一方面产品效能优化迭代的周期也变长了。所以，我们希望在硅前设计阶段甚至规划阶段（TLM虚拟模型）估测出芯片功耗，分析出可以降低功耗的设计方法。这里，我们将目光落在RTL和门级阶段，通过现有的功耗设计平台，在早期进行功耗估算、低功耗设计、电源效率提升等事务。</p>
+<p>简而言之，目前使用这些工具都是为了查看、估算、分析和降低功耗，通过在 RTL级和门级功耗数据指标和报告，为设计和验证人员提供计算和跟踪功耗的方法。现有的功耗预测分析工具包括PowerArtist（Ansys）、Spyglass Power（Synopsys）、PrimeTime PX（Synopsys）和Redhawk（Ansys）等。我们通过对实际项目中不同工具的比较，提供如表3.3所示的建议。<br><img src="/.com//%E4%B8%8D%E5%90%8C%E5%8A%9F%E8%80%97%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E7%9A%84%E6%AF%94%E8%BE%83.png" alt="不同功耗分析工具的比较"></p>
+<p>在硅前验证阶段，目前相对容易做到的是<strong>运用PA设计流程进行相应的RTL仿真和后端流程</strong>。通过仿真器进行 PA 仿真，在保证原有功能实现的情况下，进一步检查低功耗逻辑和断电控制功能。对于功耗预测与优化，有几点因素值得考虑：</p>
+<ul>
+<li>工具的评估和选择：不同的工具有不同的适应场景和性能。</li>
+<li>如何将功耗分析与优化纳入项目流程：对于低功耗芯片设计，功耗分析的方向值得提上项目日程。</li>
+<li>如何量化功耗优化成果：一方面需要考虑如何选取合适的测试场景来模拟芯片的实际应用，另一方面也需要<strong>选择合适的仿真时间窗口作为分析的数据来源</strong>。</li>
+<li>对比分析不同代芯片的功耗，并给出节省功耗的建议：基于前几代芯片的实际功耗数据，利用功耗估测协助低功耗设计，再通过实际芯片的数据给出反馈，进一步修正估测数据。这种收敛方式有助于更准确的功耗预测。</li>
+</ul>
+<h1 id="7-性能验证"><a href="#7-性能验证" class="headerlink" title="7 性能验证"></a>7 性能验证</h1><p>在了解效能验证之后，我们来了解性能（performance）验证。性能验证中离不开大量的运算和数据传输。之前提到，<strong>硅前RTL验证的瓶颈之一在于仿真速度，且这一因素到了芯片级仿真阶段被进一步放大</strong>。在产品定义过程中，对系统的运算和数据传输都有要求，在产品实现阶段尽早地得出一些性能有关数据，不但可以帮助提前验证硬件性能是否满足要求，还可以在进度允许的情况下修改硬件设计完善其性能。这种<strong>将性能测试提前的方式也使硅前验证与硅后测试采用一致的测试用例，从而得出可比对的性能数据</strong>。</p>
+<p>性能验证用来衡量一个系统在特定工作负载下的响应能力和稳定性，同时性能报告也可以用来分析和优化系统的质量标准，例如可靠性和资源使用能力。性能验证是实用的计算机科学工程方法，在软件工程测试中分类较多，如负载测试（load testing）、压力测试（stress testing）、浸泡测试（soak testing）、尖峰冲击测试（spike testing）、配置测试（configuration testing）和隔断测试（isolation testing）等。</p>
+<p>在硅前验证阶段，目前性能验证还是一个新颖的概念，一方面是因为业界对这一测试还没有形成统一标准，另一方面是因为性能验证更多地是在衡量指标，与验证（判断设计是否与功能描述一致）本身的聚焦不太重合。但对一些性能要求严格的硬件设计，我们确实希望在更早期就得出一些数据，最好能够赶上给设计做出反馈并加以完善，以此降低开发成本。所以，这要求我们能够自己先定义出硅前性能验证的目标、环境和方法。</p>
+<h2 id="7-1-设定目标"><a href="#7-1-设定目标" class="headerlink" title="7.1 设定目标"></a>7.1 设定目标</h2><p>目前我们对性能验证的考虑主要侧重在<strong>负载测试和压力测试方面</strong>，完成下面的目标：</p>
+<ul>
+<li>证明系统（或者子系统）的性能是否符合产品要求。</li>
+<li>衡量哪一部分的子系统会成为整个系统或者某些特性要求的瓶颈。</li>
+</ul>
+<p>开始性能测试之前，首先问一问自己“为什么要进行性能验证”，因为只有朝着明确的性能目标前进，才能得出下面的关键测试数据：</p>
+<ul>
+<li>数据并发量（concurrency）&#x2F;吞吐量（throughput）。测试数据并发量是系统整体性能的考量，因为在某一个时间段，多个子系统会并行工作，共享一些网络和内存资源；测试吞吐量是围绕一条完整的数据通路测算出它的最大吞吐量或传输速率，例如测试USB的传输速率。</li>
+<li><strong>响应时间</strong>。这集中体现在处理器访问寄存器和存储器的读写回路延迟，也适用于其他协处理器或者DMA（Direct Memory Access）。</li>
+</ul>
+<p>在性能验证计划中描述测试方式和场景是一个难点，性能指标应出现在功能描述文档中。在实际项目中，虽然我们不能很好地知道软件使用硬件的场景以及软件如何调度各个硬件模块，但可以先着眼于单个子系统的性能测试，或者通过测试单一的数据链路找到最薄弱的节点，这种方式可以将问题的复杂性降低到可理解并且可描述测试场景的难度。</p>
+<h2 id="7-2-测试环境"><a href="#7-2-测试环境" class="headerlink" title="7.2 测试环境"></a>7.2 测试环境</h2><p>如果测试环境贴近用户实际使用的情况，我们得出的数据会更加真实有意义。然而在硅前硬件实现阶段，我们与用户之间存在不小的距离。退而求其次，我们希望<strong>和固件开发团队合作，找到一些典型的子系统应用场景，通过仿真来观察子系统的性能</strong>。为了将测试的成本降低，尽可能选择原有的验证环境，<strong>以动态的环境配置嵌入监视系统性能的组件</strong>。这些组件根据其特征分为：</p>
+<ul>
+<li><strong>在线监视</strong>（online monitoring）。一般将监视器（monitor）绑定到目标模块或总线上，动态监测目标的运算处理量或数据传输速度。</li>
+<li><strong>线下分析</strong>（offline analysis）。将监视到的数据记录下来，通过线下的脚本分析，绘制出性能的波动曲线。</li>
+</ul>
+<h2 id="7-3-验证方法"><a href="#7-3-验证方法" class="headerlink" title="7.3 验证方法"></a>7.3 验证方法</h2><p>从性能验证流程来看，我们可以考虑参照微软的性能测试方法学流程（见图3.20），它包括以下步骤：</p>
+<p><img src="/.com//%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E5%AD%A6%E6%B5%81%E7%A8%8B.png" alt="性能测试方法学流程"></p>
+<ol>
+<li>构建验证环境：一般利用现有的功能验证环境，通过更新使其能够完成性能检测和分析的任务。</li>
+<li>决定性能验收标准：在测试前限定反馈时间、吞吐量、资源利用率等验收标准。一般而言，对于硅前测试，我们可以测出反馈时间和吞吐量，而资源利用率是一个系统概念，较难测试。</li>
+<li>制定计划和测试用例：需要与系统人员、固件人员一起列出重要的测试场景，同时建立可以衡量性能的标准。</li>
+<li>配置测试环境：如果环境足够灵活，可以在回归测试（regression test）中打开或关闭性能检测功能，以此平衡性能测试可能带来的仿真效率降低。</li>
+<li>开发用例和测试：开发测试用例，检测带验模块，收集性能检测数据。</li>
+<li>分析结果、报告和再测试：分析测试数据，提交性能报告，如果硬件性能与计划的性能之间有缺口，做出硬件修改。再次测试，直到硬件性能符合预期、满足验收标准。</li>
+</ol>
+<p>如前面提到的，实际项目中的性能测试除了不规范和较难实现以外，还缺少明确的验收标准。这使得不同验证人员编写的测试用例与实际应用各有不同，检查性能的标准也不同。目前，我们通过下面一些形式实现性能验证：</p>
+<ul>
+<li>在芯片网络结构的端点处（network terminal）绑定总线协议的监测器，以此在网络核心处检测芯片整体的通信情况，计算网络的实时吞吐量，以及单个挂接的子系统的数据传输速率。</li>
+<li>将一些 RTL 仿真较为耗时的测试用例迁移到硬件加速平台，利用模拟器来完成性能测试。</li>
+<li>为测试用例提供一些宏定义，实现高密度数据传输，以此保证有足够的数据吞吐，来测试数据传输的峰值。</li>
+</ul>
+<h1 id="8-趋势展望"><a href="#8-趋势展望" class="headerlink" title="8 趋势展望"></a>8 趋势展望</h1><p>目前主要的验证方法包括<strong>动态仿真、形式验证和硬件加速</strong>。如何选择验证方法，是否可以构建一个可复用的验证平台实现不同验证方法的跨越，是接下来我们关心的问题。设计的尺寸和复杂度的不断增长，即使可以利用IP缩短设计时间，但是更多模块之间的互动场景也要求<strong>更充分地验证这些状态空间</strong>。目前仿真技术的瓶颈在于速度，总结这几年项目的切身感受，笔者认为在仿真中，除了需要 EDA 厂商提供加速方式以外，也需要项目自身结合实际情况使仿真实现轻量化，<br>以进一步为仿真提速。</p>
+<p><strong>形式验证可以穷尽检验一些设计属性</strong>。对于合适尺寸的IP，只需要一些时间和运算资源，就可以穷尽检验出设计属性是否满足。例如一个32位的乘法器，动态验证可能需要几年的时间穷举出所有可能的情况，形式验证往往几分钟到数小时的时间就可以了。<strong>形式验证随着系统的复杂度提高、状态空间的急剧增长，运行速度也在不断下降</strong>。相比较而言，IP是适合形式验证的设计尺寸。</p>
+<p>学术和工业领域对形式验证的算法研究非常活跃，但还需解决的问题是，使用者<strong>对形式验证语言依旧不精通</strong>。<strong>使用者需要保证属性描述精确地反映了设计的功能，同时属性描述的总和能够对应一个设计的所有功能，只有满足了这两点，才有足够信心确信形式验证的完备性</strong>。目前，我们可以通过 EDA 厂商提供的可复用的断言库来实现高层次的属性描述，弥补我们对断言描述本身的知识缺乏。此外，形式验证让我们“不那么放心”的一点是，<strong>它无法像仿真一样为我们提供一个动态的行为</strong>，而验证人员又需要“眼见为实”来亲自判断设计的实际行为是否正确。所以，如果采取形式验证，那么建议的一种方式是<strong>以动态仿真作为辅助手段完成基本的功能检查</strong>。</p>
+<p>硬件加速的历史更悠久，可以回溯到20世纪80年代中期到90年代中后期。在RTL仿真还未被推出和广泛使用之前，占据验证市场的还是门级硬件模拟技术。随着 Verilog 和VHDL语言的推出及自动逻辑综合技术的应用，RTL仿真就逐渐取代了硬件加速技术。这一技术更迭的背后，关键因素还是速度，因为那一时期的设计还不足以复杂到仿真器性能无法满足的情况。而在20年后的今天，硬件加速技术显然又有着收复失地的趋势，三大主流工具商都提供各自的硬件加速解决方案。硬件加速的速度优势还是相当明显的。动态仿真的性能平均保持在1kHz，硬件模拟技术大致在1MHz，而FPGA在10MHz左右。无论硬件模拟还是 FPGA，都比动态仿真的速度提高不少。通过更快速的验证技术，我们才有可能抵消设计的复杂度增长和测试代码不断增大的体量。那么，硬件加速技术是不是未来的主流呢？仍然不是绝对的。目前硬件加速技术也有自己的不足，比如：</p>
+<ul>
+<li><strong>编译时间较长</strong>。硬件加速需要额外的逻辑综合和硬件映射的时间，然而综合、布局、布线和映射在动态仿真中是不必要的环节。</li>
+<li><strong>调试手段少且慢</strong>。最新的硬件加速技术可实现记录、修改或等待信号等常用的调试手段，然而由于技术限制，添加或修改新的信号仍然需要再次编译，消耗大量时间。此外，受限于可用的存储量，我们<strong>无法记录所有层次的信号，只能选择性地记录某些信号在某一段时间内的行为</strong>。从调试流程上来看，硬件加速技术仍然无法达到动态仿真的易调试程度。这么看来，尽管在速度上硬件加速有显著的优势，但<strong>动态仿真和形式验证在调试层也有其优点</strong>。</li>
+</ul>
+<p>那么，实际工作中我们如何选择这些技术呢？一般地，我们倾向于以下方式：</p>
+<ul>
+<li><strong>在模块级或 IP 级验证中，更多使用动态仿真和形式验证</strong>，尽量将缺陷率曲线更快、更多地收敛在这一层次。</li>
+<li>在芯片系统级验证过程中，使用动态仿真测试模块之间的集成关系。</li>
+<li>对于耗时长的测试用例，如固件启动测试、性能测试、大规模数据存储测试等，在系统测试阶段使用硬件加速以更快地得到结果。</li>
+</ul>
+<p>从验证平台搭建和复用的角度出发，需要考虑如何实现一个可以横跨这三种技术的可复用平台。通过一个统一平台，自如地在这三种技术之间实现横向跨越，完成从模块级到子系统级再到芯片级验证的纵向复用，将是接下来实现技术融合和验证复用的方向。</p>
+<p>为探讨这一方向，我们就下面两个问题展开论述：</p>
+<ul>
+<li>不同技术之间的验证平台横向跨越；</li>
+<li>不同层次之间的验证平台纵向复用。</li>
+</ul>
+<h2 id="8-1-技术之间的横向跨越"><a href="#8-1-技术之间的横向跨越" class="headerlink" title="8.1 技术之间的横向跨越"></a>8.1 技术之间的横向跨越</h2><p>在解决横向跨越问题之前，需要理解为什么有这样的需求。从图3.21可以看到，这三种技术之间有着共通的技术桥接、共同的一些核心基础技术：</p>
+<ul>
+<li>我们的核心基础技术有验证 IP、覆盖率、调试和软件驱动测试。三种验证方法构建于这些基础上，如它们都需要提供调试接口，也需要提供各自的覆盖率来完成验证。</li>
+<li><strong>形式验证和动态仿真之间，可以通过断言和 X-prop 技术来桥接，这两种验证方法都可以利用这些技术实施验证</strong>。</li>
+<li>在动态仿真和硬件加速之间，可以通过软硬件协同验证的方式实现这两种技术的桥接。</li>
+<li>对于断言VIP，可以利用它完成形式验证，或者植入到动态仿真环境中。一些可以综合的断言VIP，也可以移植到硬件加速平台中继续完成验证任务。</li>
+</ul>
+<p><img src="/.com//%E4%B8%8D%E5%90%8C%E9%AA%8C%E8%AF%81%E6%96%B9%E6%B3%95%E4%B9%8B%E9%97%B4%E7%9A%84%E8%81%94%E7%B3%BB.png" alt="不同验证方法之间的联系"></p>
+<p>那么，如何基于这些项目实际中的桥接设计出可以合并的数据库和通用的验证平台就成为了关键。但对于这两点，目前三大工具厂商还缺乏一种完整的解决方案。例如，验证的覆盖率数据库如何在三种技术中实现互通和合并？如何定义出合理的结构完成形式验证平台到动态仿真平台的复用？什么样的动态仿真平台才可以顺利移植到硬件加速平台上？这些都还是有待解决的问题。</p>
+<h2 id="8-2-层次之间的纵向复用"><a href="#8-2-层次之间的纵向复用" class="headerlink" title="8.2 层次之间的纵向复用"></a>8.2 层次之间的纵向复用</h2><p>在不同验证层次之间进行复用，我们也会遇到实际的痛点。例如，随机约束的仿真方法（SystemVerilog,UVM&#x2F;OVM或Specman&#x2F;e）适合于模块级和子系统级验证，而定向测试方法（C&#x2F;C++）则适用于子系统级和芯片系统级的验证过程。在这里，我们看到子系统级验证有两种可能的验证方法，我们需要考虑是选择其中一种还是两者兼具？如何实现模块级随机测试到子系统级随机测试的复用？如何实现子系统级定向测试到芯片系统级的定向测试复用？又比如，通过何种方式实现从随机约束测试到定向测试的复用？只有完成层次之间的垂直复用，验证的时间成本和人力成本才会降低，验证效率才会进一步提高。</p>
+<p>面对目前这三种主流验证技术，我们需要从验证效率出发，合理选择使用这些技术，实现技术之间的横向跨越和层次之间的垂直复用，在不断提速的SoC集成设计过程中保持加速，与设计实现共同飞跃。</p>
+<h1 id="9-作者结束语"><a href="#9-作者结束语" class="headerlink" title="9 作者结束语"></a>9 作者结束语</h1><blockquote>
+<p>关于验证方法，其实在笔者多年的技术世界观中，曾一度认为只有随机测试和形式验证才能拯救设计漏洞。但后来发现，每一种验证方法都有其在各自领域、特定验证场景中的优势。尤其是，SoC在最近几年已经完美地翻越了10亿门的篱笆，让传统的仿真在这样大的庞然大物面前如临大敌。如何解决验证的完备性与速度之间的冲突，已经成为选择验证方法的重要考量标准。项目进度的不断压缩，对硬件和软件联合仿真提出更严格的要求，也为虚拟模型和硬件加速等新兴技术开拓了市场。</p>
+<p>本书的主要内容着眼于动态仿真技术。这项技术在过去的20年一直是验证领域的主流，也是读者在验证领域亲密接触的对象。在本书出版的同时，硬件加速技术正以更快的步伐走入验证世界，读者需要对这些验证方法做好准备。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div>
+    
+    <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i
+            class="fa fa-paw"></i>再接再厉-------------</div>
+    
+</div>
+
+
+<div class="my_post_copyright">
+    <p><span>本文标题:</span><a href="/2022/05/06/29/">芯片验证漫游指南3验证的方法</a></p>
+    <p><span>文章作者:</span><a href="/" title="访问 Jia 的个人博客">Jia</a></p>
+    <p><span>发布时间:</span>2022年05月06日 - 22:05</p>
+    <p><span>最后更新:</span>2022年05月06日 - 22:05</p>
+    <p><span>原始链接:</span><a href="/2022/05/06/29/" title="芯片验证漫游指南3验证的方法">http://example.com/2022/05/06/29/</a></p>
+    <p><span>许可协议:</span><i class="fab fa-creative-commons"></i>
+        <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"
+            title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">
+            署名-非商业性使用-禁止演绎 4.0 国际</a>
+        转载请保留原文链接及作者。
+    </p>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/UVM/" rel="tag"><i class="fa fa-tag"></i> UVM</a>
+              <a href="/tags/System-Verilog/" rel="tag"><i class="fa fa-tag"></i> System Verilog</a>
+              <a href="/tags/IC%E9%AA%8C%E8%AF%81/" rel="tag"><i class="fa fa-tag"></i> IC验证</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/06/06/" rel="prev" title="芯片验证漫游指南2验证的策略">
+                  <i class="fa fa-chevron-left"></i> 芯片验证漫游指南2验证的策略
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/08/19/" rel="next" title="芯片验证漫游指南4验证的计划">
+                  芯片验证漫游指南4验证的计划 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jia</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">215k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:16</span>
+  </span>
+</div><div>
+<!--添加网站运行时间-->
+<span>小破站已经在风雨中度过了</span>
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    function createtime() {
+        const startTime = '02/11/2021 00:12:55',
+            start = new Date(startTime)
+        let mill = new Date() - start,
+            seconds = Math.floor(mill / 1000),
+            mins = Math.floor(seconds / 60),
+            hours = Math.floor(mins / 60),
+            days = Math.floor(hours / 24)
+        const time = {
+            seconds: seconds - mins * 60,
+            mins: mins - hours * 60,
+            hours: hours - days * 24,
+        }
+        for (const k in time) {
+            time[k] = `${time[k]}`.padStart(2, '0')
+        }
+        document.getElementById("timeDate").innerHTML = ` ${days} 天`
+        document.getElementById("times").innerHTML = ` ${time.hours} 小时 ${time.mins} 分 ${time.seconds} 秒`
+    }
+    setInterval(createtime, 500)
+</script>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: '32px',
+  left: 'unset',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: false
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+</body>
+</html>
