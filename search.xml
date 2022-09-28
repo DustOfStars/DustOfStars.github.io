@@ -1515,7 +1515,7 @@
       </tags>
   </entry>
   <entry>
-    <title>数组05螺旋矩阵Ⅱ</title>
+    <title>数组06--总结</title>
     <url>/2022/09/28/01/</url>
     <content><![CDATA[<h1 id="数组06–总结"><a href="#数组06–总结" class="headerlink" title="数组06–总结"></a>数组06–总结</h1><h2 id="数组的理论基础"><a href="#数组的理论基础" class="headerlink" title="数组的理论基础"></a>数组的理论基础</h2><blockquote>
 <p><strong>数组是存放在内存连续空间上的相同类型的数据的集合</strong>；</p>
