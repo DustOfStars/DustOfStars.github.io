@@ -38,6 +38,15 @@
   </url>
   
   <url>
+    <loc>http://example.com/2022/09/28/02/</loc>
+    
+    <lastmod>2022-09-28</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/2022/09/28/01/</loc>
     
     <lastmod>2022-09-28</lastmod>
@@ -879,6 +888,13 @@
   
   <url>
     <loc>http://example.com/tags/IC%E9%AA%8C%E8%AF%81/</loc>
+    <lastmod>2022-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/tags/%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/</loc>
     <lastmod>2022-09-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
