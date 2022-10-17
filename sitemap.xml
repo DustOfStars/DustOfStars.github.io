@@ -11,6 +11,15 @@
   </url>
   
   <url>
+    <loc>http://example.com/categories/index.html</loc>
+    
+    <lastmod>2022-10-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/sitemap/index.html</loc>
     
     <lastmod>2022-10-17</lastmod>
@@ -29,7 +38,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/categories/index.html</loc>
+    <loc>http://example.com/2022/10/17/01/</loc>
     
     <lastmod>2022-10-17</lastmod>
     
@@ -721,6 +730,13 @@
   </url>
   
   <url>
+    <loc>http://example.com/tags/UART/</loc>
+    <lastmod>2022-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/tags/vim/</loc>
     <lastmod>2022-10-17</lastmod>
     <changefreq>weekly</changefreq>
@@ -771,13 +787,6 @@
   
   <url>
     <loc>http://example.com/tags/ARM/</loc>
-    <lastmod>2022-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.com/tags/UART/</loc>
     <lastmod>2022-10-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
