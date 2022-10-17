@@ -38,6 +38,15 @@
   </url>
   
   <url>
+    <loc>http://example.com/2022/10/17/02/</loc>
+    
+    <lastmod>2022-10-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/2022/10/17/01/</loc>
     
     <lastmod>2022-10-17</lastmod>
@@ -991,14 +1000,14 @@
   </url>
   
   <url>
-    <loc>http://example.com/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/</loc>
+    <loc>http://example.com/categories/STL/forward-list/</loc>
     <lastmod>2022-10-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://example.com/categories/STL/forward-list/</loc>
+    <loc>http://example.com/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/</loc>
     <lastmod>2022-10-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

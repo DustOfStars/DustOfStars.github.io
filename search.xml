@@ -551,6 +551,131 @@
       </tags>
   </entry>
   <entry>
+    <title>UART总结</title>
+    <url>/2022/10/17/02/</url>
+    <content><![CDATA[<h1 id="总线协议-–-UART"><a href="#总线协议-–-UART" class="headerlink" title="总线协议 – UART"></a>总线协议 – UART</h1><h2 id="一、-UART简介"><a href="#一、-UART简介" class="headerlink" title="一、 UART简介"></a>一、 UART简介</h2><blockquote>
+<p>UART: Universal Asynchronous Receiver Transmitter（通用异步收发器），</p>
+<p>通用的<em>串行、异步</em>通信总线，它有<strong>两条</strong>数据线，实现<strong>全双工</strong>发送和接收。</p>
+</blockquote>
+<h3 id="1-1-通信基础"><a href="#1-1-通信基础" class="headerlink" title="1.1 通信基础"></a>1.1 通信基础</h3><p>串行、并行：</p>
+<ul>
+<li>并行通信：总线在传递数据的时候，可以一次性收发多个位的数据。并行虽然快，但是要考虑多个线的<em>资源占用</em>，以及多条线<em>互相干扰</em>的问题；</li>
+<li>串行通信：每一位数据逐次传递；（<strong>IIC\SPI都是串行通信</strong>）</li>
+</ul>
+<p>单工、双工：</p>
+<ul>
+<li>单工通信：只能是单向的，<mark>发送器给接收器发送数据</mark>，而不能反过来；</li>
+<li>双工通信：可以是A到B，也可以是B到A；<ul>
+<li>半双工：不能同时发生；只有一根线，发送时就不能接收；</li>
+<li>全双工：可以同时发送和接收，有两根线；</li>
+</ul>
+</li>
+</ul>
+<p>波特率：</p>
+<ul>
+<li><p>波特率：描述UART通信速度，单位<strong>bps</strong>，(bit per second)，每秒传送的bit的数量；</p>
+<ul>
+<li>每秒的波特数，波特等于单个信号包含的码元数量</li>
+</ul>
+</li>
+<li><p>比特率：是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，每秒传送数据就越多。</p>
+</li>
+<li><p>波特率：表示每秒钟传送码元符号的个数，是衡量数据传送速率的指标。</p>
+<ul>
+<li>在信息传输通道中，携带数据信息的信号单元叫码元，每秒钟通过信道传输的码元数称为码元传输速率，简称<strong>波特率</strong>。波特率是传输通道频宽的指标。</li>
+<li>比特率&#x3D;波特率x单个调制状态对应的二进制位数</li>
+<li>两相调制(单个调制状态对应1个二进制位)的比特率等于波特率;四相调制(单个调制状态对应2个二进制位)的比特率为波特率的两倍;八相调制(单个调制状态对应3个二进制位)的比特率为波特率的三倍;依次类推。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-UART帧格式"><a href="#1-2-UART帧格式" class="headerlink" title="1.2 UART帧格式"></a>1.2 UART帧格式</h3><p><img src="/2022/10/17/02/frame_struct.JPG" alt="UART帧格式"></p>
+<ul>
+<li><input disabled type="checkbox"> 起始位：1bit的0，标志发送开始；因为空闲时为1，所以开始为0；</li>
+<li><input checked disabled type="checkbox"> 数据位： 5-8bit，<strong>先发低位，后发高位</strong>；</li>
+<li><input disabled type="checkbox"> 校验位：可有可无；奇偶校验，是校验奇数还是偶数个1； </li>
+<li><input disabled type="checkbox"> 停止位：高电平1；</li>
+<li><input disabled type="checkbox"> 空闲位：</li>
+</ul>
+<blockquote>
+<p>注意： UART<strong>空闲</strong>的时候，用<strong>高电平</strong>表示；</p>
+<p>串口协议从低位先发，最后发高位；</p>
+<p><mark>串口每次都只发一个byte，下一个byte又重新开始起始位，是因为它是<strong>异步的</strong>，发送方和接收方的时钟不是同一个，防止由于时钟不同步导致误差累积；</mark></p>
+<p>IIC和SPI都是同步通信，可以发多个字节；</p>
+</blockquote>
+<h3 id="1-3-Tx-amp-Rx"><a href="#1-3-Tx-amp-Rx" class="headerlink" title="1.3 Tx &amp; Rx"></a>1.3 Tx &amp; Rx</h3><blockquote>
+<p>串口的信号一般较弱，通信距离短，容易被干扰，所以增加了一块专有芯片用来增加抗干扰能力，使发送距离更远；(TTL信号转为232信号)</p>
+</blockquote>
+<p>发送STEPs：</p>
+<ol>
+<li>待发送数据放入FIFO</li>
+<li>增加了UART协议的各种头，比如起始和校验，然后拷贝放入shifter；</li>
+<li>shifter每个bit依次移位到引脚来发送，<strong>先发低位，后发高位</strong>；</li>
+</ol>
+<p><em>即发送时：      FIFO –&gt; shifter –&gt; TxD;</em></p>
+<p><em>接收时顺序相反，RxD –&gt; shifter –&gt; FIFO;</em></p>
+<h3 id="1-4-UART工作模式"><a href="#1-4-UART工作模式" class="headerlink" title="1.4 UART工作模式"></a>1.4 UART工作模式</h3><p><em><strong>CPU会通过总线，和接收和发送的BUFFer相连，用来读写数据，另外，也和控制单元相连，对控制单元的设置进行修改；</strong></em></p>
+<blockquote>
+<p>look-back: <strong>回环模式look-back</strong>是在内部将Tx和Rx短接，一般用于测试；</p>
+</blockquote>
+<p><img src="/2022/10/17/02/workMode.JPG" alt="几种工作模式"></p>
+<p>三种常见的工作模式：</p>
+<ol>
+<li>polling  轮询<ul>
+<li>CPU不断地对FIFO进行访问，查询需要的数据有没有发过来；</li>
+<li>CPU的状态： 工作 –&gt; 轮询 –&gt; 工作 –&gt; 轮询 …</li>
+<li>直到查找到需要的数据；</li>
+<li>费时费力，消耗资源</li>
+</ul>
+</li>
+<li>interrupt  中断<ul>
+<li>CPU和FIFO约定，CPU<strong>不主动</strong>去查询，当FIFO收到数据要发送过来的时候，给CPU发送<strong>中断信号</strong>，CPU中断当前工作，接收FIFO的数据；</li>
+<li><strong>比polling模式省资源</strong>；</li>
+</ul>
+</li>
+<li>DMA  直接存储器访问<ul>
+<li>CPU收到FIFO的数据，最终也是要放入某一块内存中去使用的；</li>
+<li>DMA模式<strong>跳过CPU</strong>，当FIFO数据过来时，直接放入需要的内存中；</li>
+</ul>
+</li>
+</ol>
+<h2 id="二、-polling模式实验（以qn9090为例）"><a href="#二、-polling模式实验（以qn9090为例）" class="headerlink" title="二、 polling模式实验（以qn9090为例）"></a>二、 polling模式实验（以qn9090为例）</h2><h3 id="2-1-主函数"><a href="#2-1-主函数" class="headerlink" title="2.1 主函数"></a>2.1 主函数</h3><blockquote>
+<p>usart_polling.c</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> ch;</span><br><span class="line">    <span class="type">usart_config_t</span> config;                              <span class="comment">// 配置波特率、帧格式、上升下降沿、奇偶校验、停止位等</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);                    <span class="comment">// 使用默认配置，传入config的引用</span></span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;    <span class="comment">// 客制化usart配置</span></span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);           <span class="comment">// 使用config和外部时钟初始化USART实例，其中外部时钟只在设置波特率时使用</span></span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);    <span class="comment">// 将数组中的值写入</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                     <span class="comment">// 数据逐个从FIFORD读入ch，这里只读入一位</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                    <span class="comment">// 数据逐个从ch写入FIFOWR，这里只读入一位，等待TX进入IDLE模式结束</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-只接收一个char"><a href="#2-2-只接收一个char" class="headerlink" title="2.2 只接收一个char"></a>2.2 只接收一个char</h3><p>实验结果：</p>
+<p><img src="/2022/10/17/02/%E5%8D%95%E5%AD%97%E7%AC%A6%E5%AE%9E%E9%AA%8C.jpg" alt="单字符实验"></p>
+<h2 id="接收字符串"><a href="#接收字符串" class="headerlink" title="接收字符串"></a>接收字符串</h2><p>原始代码修改为接收一个定长5的array，代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> <span class="built_in">array</span>[<span class="number">6</span>];</span><br><span class="line">    <span class="type">usart_config_t</span> config;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);</span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;</span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);</span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实验结果：</p>
+<p><img src="/2022/10/17/02/%E5%AE%9A%E9%95%BFarray%E5%AE%9E%E9%AA%8C.jpg" alt="定长array实验"></p>
+<h2 id="三、补充"><a href="#三、补充" class="headerlink" title="三、补充"></a>三、补充</h2><h3 id="3-1-SDK中典型使用"><a href="#3-1-SDK中典型使用" class="headerlink" title="3.1 SDK中典型使用"></a>3.1 SDK中典型使用</h3><p>在NXP的QN9090的SDK中，提供了丰富的示例：</p>
+<ul>
+<li>polling method 收发</li>
+<li>interrupt method 收发</li>
+<li>ringbuffer接收数据</li>
+<li>DMA method 收发</li>
+</ul>
+<p>文档 ： <code>MCUXpresso SDK API Reference Manual.pdf</code></p>
+<p><img src="/2022/10/17/02/%E5%85%B8%E5%9E%8B%E7%A4%BA%E4%BE%8B.jpg" alt="典型示例"></p>
+<h3 id="3-2-串口的工作原理"><a href="#3-2-串口的工作原理" class="headerlink" title="3.2 串口的工作原理"></a>3.2 串口的工作原理</h3><p>一个byte的数据，如何转为串口输出的bit？ 通过移位寄存器原理实现</p>
+<p>移位寄存器原理：</p>
+<p><img src="/2022/10/17/02/%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8.jpg" alt="移位寄存器"></p>
+<p>初始状态： A3A2A1A0＝ 1011</p>
+<p>然后Q3的输出，是在每个时钟节拍，按照这个先后顺序，把A3A2A1A0串行的输出出去。(小端)</p>
+<p>其实利用的就是D触发器的特性。</p>
+<p>如果我们使用8位的移位寄存器，就可以利用8个clk的时间，发一组8bit的数据通过一根导线传输出去。</p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>UART</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Vim使用</title>
     <url>/2022/04/05/20/</url>
     <content><![CDATA[<h1 id="Vim使用"><a href="#Vim使用" class="headerlink" title="Vim使用"></a>Vim使用</h1><p>本周学习了小彭老师的vim教程，很受启发，学习记录在这。</p>
