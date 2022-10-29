@@ -309,37 +309,6 @@
       </tags>
   </entry>
   <entry>
-    <title>STL开篇</title>
-    <url>/2022/03/22/57/</url>
-    <content><![CDATA[<h1 id="STL开篇"><a href="#STL开篇" class="headerlink" title="STL开篇"></a>STL开篇</h1><p>STL 实际上，是一套封装好的C++模板类。提供通用的模板类和函数，用来高性能的实现常用的算法和数据结构，比如：向量vector、链表、队列、栈。</p>
-<p>STL 做到了数据结构和算法的分离，比如：vector的底层是顺序表（数组），list的底层为双向链表，deque的底层是循环队列，set的底层是红黑树，hash_set的底层是哈希表。</p>
-<p>C++ STL 的核心包括三个组件：</p>
-<ul>
-<li>容器（Containers）:容器用来管理<strong>某同一类对象</strong>的集合。C++的各种容器类型，比如：deque、list、vector、map等。</li>
-<li>算法（Algorithms）：算法作用于容器。提供执行各种操作的方式，包括对容器内容执行初始化、排序、搜索和转换等操作；</li>
-<li>迭代器（iterators）：迭代器用于遍历对象集合的元素，这些集合可能是容器，也可能是容器的子集。</li>
-</ul>
-<h2 id="一个简单的vector示例"><a href="#一个简单的vector示例" class="headerlink" title="一个简单的vector示例"></a>一个简单的vector示例</h2><p>vecotr和数组非常相似，唯一不同的是，vector在需要扩展大小的时候，会自动处理它的存储需求！</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; vec;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;vec的原始大小： &quot;</span> &lt;&lt; vec.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        vec.<span class="built_in">push_back</span>(i + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;vec扩展后大小： &quot;</span> &lt;&lt; vec.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;vec[&quot;</span> &lt;&lt; i &lt;&lt; <span class="string">&quot;] 的值是：&quot;</span> &lt;&lt; vec[i] &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用迭代器iterator访问值</span></span><br><span class="line">    vector&lt;<span class="type">int</span>&gt;::iterator v = vec.<span class="built_in">begin</span>();</span><br><span class="line">    <span class="keyword">while</span> (v != vec.<span class="built_in">end</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;迭代器*v的值：&quot;</span> &lt;&lt; *v &lt;&lt; endl;</span><br><span class="line">        v++;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; *vec.<span class="built_in">begin</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="vector的常用函数："><a href="#vector的常用函数：" class="headerlink" title="vector的常用函数："></a>vector的常用函数：</h2><ul>
-<li>push_back(): 向vector的末尾插入值，如有必要，会扩展向量的大小；</li>
-<li>size(): 显示向量的大小；</li>
-<li>begin(): 返回一个指向向量开头的<strong>迭代器</strong>；</li>
-<li>end(): 返回一个指向向量结尾的<strong>迭代器</strong></li>
-<li>vector<int>::iterator v &#x3D; vec.begin();</int></li>
-</ul>
-]]></content>
-      <categories>
-        <category>STL</category>
-      </categories>
-      <tags>
-        <tag>STL</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Thread协议基础</title>
     <url>/2022/08/02/05/</url>
     <content><![CDATA[<h2 id="General-Thread-introduction"><a href="#General-Thread-introduction" class="headerlink" title="General Thread introduction"></a>General Thread introduction</h2><h3 id="1-1-家用无线网络的要求"><a href="#1-1-家用无线网络的要求" class="headerlink" title="1.1 家用无线网络的要求"></a>1.1 家用无线网络的要求</h3><p>✔低功耗</p>
@@ -4857,6 +4826,37 @@
         <tag>UVM</tag>
         <tag>System Verilog</tag>
         <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>STL开篇</title>
+    <url>/2022/03/22/57/</url>
+    <content><![CDATA[<h1 id="STL开篇"><a href="#STL开篇" class="headerlink" title="STL开篇"></a>STL开篇</h1><p>STL 实际上，是一套封装好的C++模板类。提供通用的模板类和函数，用来高性能的实现常用的算法和数据结构，比如：向量vector、链表、队列、栈。</p>
+<p>STL 做到了数据结构和算法的分离，比如：vector的底层是顺序表（数组），list的底层为双向链表，deque的底层是循环队列，set的底层是红黑树，hash_set的底层是哈希表。</p>
+<p>C++ STL 的核心包括三个组件：</p>
+<ul>
+<li>容器（Containers）:容器用来管理<strong>某同一类对象</strong>的集合。C++的各种容器类型，比如：deque、list、vector、map等。</li>
+<li>算法（Algorithms）：算法作用于容器。提供执行各种操作的方式，包括对容器内容执行初始化、排序、搜索和转换等操作；</li>
+<li>迭代器（iterators）：迭代器用于遍历对象集合的元素，这些集合可能是容器，也可能是容器的子集。</li>
+</ul>
+<h2 id="一个简单的vector示例"><a href="#一个简单的vector示例" class="headerlink" title="一个简单的vector示例"></a>一个简单的vector示例</h2><p>vecotr和数组非常相似，唯一不同的是，vector在需要扩展大小的时候，会自动处理它的存储需求！</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; vec;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;vec的原始大小： &quot;</span> &lt;&lt; vec.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        vec.<span class="built_in">push_back</span>(i + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;vec扩展后大小： &quot;</span> &lt;&lt; vec.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;vec[&quot;</span> &lt;&lt; i &lt;&lt; <span class="string">&quot;] 的值是：&quot;</span> &lt;&lt; vec[i] &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用迭代器iterator访问值</span></span><br><span class="line">    vector&lt;<span class="type">int</span>&gt;::iterator v = vec.<span class="built_in">begin</span>();</span><br><span class="line">    <span class="keyword">while</span> (v != vec.<span class="built_in">end</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;迭代器*v的值：&quot;</span> &lt;&lt; *v &lt;&lt; endl;</span><br><span class="line">        v++;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; *vec.<span class="built_in">begin</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="vector的常用函数："><a href="#vector的常用函数：" class="headerlink" title="vector的常用函数："></a>vector的常用函数：</h2><ul>
+<li>push_back(): 向vector的末尾插入值，如有必要，会扩展向量的大小；</li>
+<li>size(): 显示向量的大小；</li>
+<li>begin(): 返回一个指向向量开头的<strong>迭代器</strong>；</li>
+<li>end(): 返回一个指向向量结尾的<strong>迭代器</strong></li>
+<li>vector<int>::iterator v &#x3D; vec.begin();</int></li>
+</ul>
+]]></content>
+      <categories>
+        <category>STL</category>
+      </categories>
+      <tags>
+        <tag>STL</tag>
       </tags>
   </entry>
   <entry>
