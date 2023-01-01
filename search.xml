@@ -5560,6 +5560,58 @@
       </tags>
   </entry>
   <entry>
+    <title>路科V0P1SV学习</title>
+    <url>/2022/05/09/06/</url>
+    <content><![CDATA[<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1k7411H7Jo?spm_id_from=333.337.search-card.all.click">Bilibili</a></p>
+</blockquote>
+<p>几个必备技术要求：</p>
+<ul>
+<li>动态验证技术<ul>
+<li>代码覆盖率</li>
+<li>功能覆盖率</li>
+<li>断言</li>
+<li>随机约束</li>
+</ul>
+</li>
+<li>静态验证技术<ul>
+<li>人工的形式验证（属性检查）</li>
+<li>自动的形式验证</li>
+</ul>
+</li>
+<li>硬件加速技术<ul>
+<li>Emulation以及FPGA原型开发</li>
+</ul>
+</li>
+</ul>
+<p>背景要求：</p>
+<ul>
+<li>课程：<ul>
+<li>数字电路</li>
+<li>Verilog</li>
+<li>C&#x2F;C++</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2022/05/09/06/%E5%8A%A8%E6%80%81%E9%AA%8C%E8%AF%81%E6%8A%80%E6%9C%AF.png" alt="动态验证技术"></p>
+<p><img src="/2022/05/09/06/%E9%9D%99%E6%80%81%E9%AA%8C%E8%AF%81%E6%8A%80%E6%9C%AF.png" alt="静态验证技术"></p>
+<p><img src="/2022/05/09/06/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F.png" alt="硬件加速"></p>
+<p><img src="/2022/05/09/06/QuestaSim%E4%BB%BF%E7%9C%9F%E5%99%A8.png" alt="QuestaSim仿真器"></p>
+<p><img src="/2022/05/09/06/%E5%A4%A7%E8%B1%A1%E8%A3%85%E8%BF%9B%E5%86%B0%E7%AE%B1lab.png" alt="大象装进冰箱lab"></p>
+<p><img src="/2022/05/09/06/%E8%B5%84%E6%96%99%E4%B9%A6.png" alt="资料书"></p>
+<p><img src="/2022/05/09/06/DVT%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.png" alt="DVT集成开发环境"></p>
+<p><img src="/2022/05/09/06/%E5%85%B6%E4%BB%96%E8%AF%BE%E7%A8%8B.png" alt="其他课程"></p>
+]]></content>
+      <categories>
+        <category>路科V0</category>
+      </categories>
+      <tags>
+        <tag>UVM</tag>
+        <tag>System Verilog</tag>
+        <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>路科V0P23P25线程控制-线程同步-线程通信</title>
     <url>/2022/05/15/03/</url>
     <content><![CDATA[<h1 id="线程控制"><a href="#线程控制" class="headerlink" title="线程控制"></a>线程控制</h1><h2 id="什么是线程"><a href="#什么是线程" class="headerlink" title="什么是线程"></a>什么是线程</h2><ul>
@@ -5668,58 +5720,6 @@
 <li>semaphore : 共享资源的卫士，如果多线程对某一共享资源做访问，则可以使用这个要素；</li>
 <li>mailbox ： 精小的SV原生FIFO，<strong>在线程之间做数据通信或者内部数据缓存</strong>时考虑使用这个元素；</li>
 </ul>
-]]></content>
-      <categories>
-        <category>路科V0</category>
-      </categories>
-      <tags>
-        <tag>UVM</tag>
-        <tag>System Verilog</tag>
-        <tag>IC验证</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>路科V0P1SV学习</title>
-    <url>/2022/05/09/06/</url>
-    <content><![CDATA[<blockquote>
-<p><a href="https://www.bilibili.com/video/BV1k7411H7Jo?spm_id_from=333.337.search-card.all.click">Bilibili</a></p>
-</blockquote>
-<p>几个必备技术要求：</p>
-<ul>
-<li>动态验证技术<ul>
-<li>代码覆盖率</li>
-<li>功能覆盖率</li>
-<li>断言</li>
-<li>随机约束</li>
-</ul>
-</li>
-<li>静态验证技术<ul>
-<li>人工的形式验证（属性检查）</li>
-<li>自动的形式验证</li>
-</ul>
-</li>
-<li>硬件加速技术<ul>
-<li>Emulation以及FPGA原型开发</li>
-</ul>
-</li>
-</ul>
-<p>背景要求：</p>
-<ul>
-<li>课程：<ul>
-<li>数字电路</li>
-<li>Verilog</li>
-<li>C&#x2F;C++</li>
-</ul>
-</li>
-</ul>
-<p><img src="/2022/05/09/06/%E5%8A%A8%E6%80%81%E9%AA%8C%E8%AF%81%E6%8A%80%E6%9C%AF.png" alt="动态验证技术"></p>
-<p><img src="/2022/05/09/06/%E9%9D%99%E6%80%81%E9%AA%8C%E8%AF%81%E6%8A%80%E6%9C%AF.png" alt="静态验证技术"></p>
-<p><img src="/2022/05/09/06/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F.png" alt="硬件加速"></p>
-<p><img src="/2022/05/09/06/QuestaSim%E4%BB%BF%E7%9C%9F%E5%99%A8.png" alt="QuestaSim仿真器"></p>
-<p><img src="/2022/05/09/06/%E5%A4%A7%E8%B1%A1%E8%A3%85%E8%BF%9B%E5%86%B0%E7%AE%B1lab.png" alt="大象装进冰箱lab"></p>
-<p><img src="/2022/05/09/06/%E8%B5%84%E6%96%99%E4%B9%A6.png" alt="资料书"></p>
-<p><img src="/2022/05/09/06/DVT%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.png" alt="DVT集成开发环境"></p>
-<p><img src="/2022/05/09/06/%E5%85%B6%E4%BB%96%E8%AF%BE%E7%A8%8B.png" alt="其他课程"></p>
 ]]></content>
       <categories>
         <category>路科V0</category>
