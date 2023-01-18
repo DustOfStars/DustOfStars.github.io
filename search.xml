@@ -1106,6 +1106,67 @@
       </tags>
   </entry>
   <entry>
+    <title>嵌入式系统1--简介</title>
+    <url>/2022/09/01/08/</url>
+    <content><![CDATA[<h1 id="嵌入式系统1–简介"><a href="#嵌入式系统1–简介" class="headerlink" title="嵌入式系统1–简介"></a>嵌入式系统1–简介</h1><h2 id="实时操作系统"><a href="#实时操作系统" class="headerlink" title="实时操作系统"></a>实时操作系统</h2><p>是不是RTOS，由<strong>任务调度策略</strong>决定：</p>
+<ul>
+<li>Windows等OS不是实时操作系统，因为，CPU为任务分配时间片，到了时间不管有没有执行完都换下一个任务，所有任务都有机会运行到，是<strong>时间线轮转策略</strong>；</li>
+<li>RTOS有uCosⅡ、VxWorks等，CPU对多个任务分配优先级，执行完一个才执行下一个，是<strong>基于优先级的调度策略</strong>；</li>
+</ul>
+<h2 id="硬件最小系统"><a href="#硬件最小系统" class="headerlink" title="硬件最小系统"></a>硬件最小系统</h2><ul>
+<li>处理器<ul>
+<li>51</li>
+<li>arm</li>
+<li>powerpc</li>
+<li>MIPS</li>
+</ul>
+</li>
+<li>电源电路</li>
+<li>复位电路</li>
+<li>时钟电路</li>
+<li>存储电路<ul>
+<li>RAM：掉电丢失<ul>
+<li>SRAM</li>
+<li>DRAM：需要周期性刷新，不然不断电也丢数据</li>
+</ul>
+</li>
+<li>ROM：只读，不能写，掉电不丢失<ul>
+<li>PROM：只能写一次</li>
+<li>EPROM：可擦除，所以可写入多次，写入前必须擦除，擦除需要紫外线；</li>
+<li>EEPROM：先擦后写，电可擦除，容量小，2k左右</li>
+</ul>
+</li>
+<li>FLASH:多次写入，先擦后写<ul>
+<li>NORFlash</li>
+<li>NANDFlash</li>
+<li>EMMC</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="嵌入式软件开发模式"><a href="#嵌入式软件开发模式" class="headerlink" title="嵌入式软件开发模式"></a>嵌入式软件开发模式</h2><ul>
+<li>开发主机（Host） — 也叫<strong>上位机</strong><ul>
+<li>代码编写、编译</li>
+</ul>
+</li>
+<li>目标板（Target） — 也叫<strong>下位机</strong><ul>
+<li>代码运行</li>
+</ul>
+</li>
+<li>连接介质</li>
+</ul>
+<p><img src="/2022/09/01/08/1.PNG"></p>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+      </categories>
+      <tags>
+        <tag>嵌入式</tag>
+        <tag>ARM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>嵌入式系统2--开发板介绍</title>
     <url>/2022/09/01/18/</url>
     <content><![CDATA[<h1 id="嵌入式系统2–开发板介绍"><a href="#嵌入式系统2–开发板介绍" class="headerlink" title="嵌入式系统2–开发板介绍"></a>嵌入式系统2–开发板介绍</h1><h2 id="T-PAD开发板简介"><a href="#T-PAD开发板简介" class="headerlink" title="T-PAD开发板简介"></a>T-PAD开发板简介</h2><p>核心板+底板：</p>
@@ -1245,67 +1306,6 @@
       <tags>
         <tag>NXP</tag>
         <tag>UART</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>嵌入式系统1--简介</title>
-    <url>/2022/09/01/08/</url>
-    <content><![CDATA[<h1 id="嵌入式系统1–简介"><a href="#嵌入式系统1–简介" class="headerlink" title="嵌入式系统1–简介"></a>嵌入式系统1–简介</h1><h2 id="实时操作系统"><a href="#实时操作系统" class="headerlink" title="实时操作系统"></a>实时操作系统</h2><p>是不是RTOS，由<strong>任务调度策略</strong>决定：</p>
-<ul>
-<li>Windows等OS不是实时操作系统，因为，CPU为任务分配时间片，到了时间不管有没有执行完都换下一个任务，所有任务都有机会运行到，是<strong>时间线轮转策略</strong>；</li>
-<li>RTOS有uCosⅡ、VxWorks等，CPU对多个任务分配优先级，执行完一个才执行下一个，是<strong>基于优先级的调度策略</strong>；</li>
-</ul>
-<h2 id="硬件最小系统"><a href="#硬件最小系统" class="headerlink" title="硬件最小系统"></a>硬件最小系统</h2><ul>
-<li>处理器<ul>
-<li>51</li>
-<li>arm</li>
-<li>powerpc</li>
-<li>MIPS</li>
-</ul>
-</li>
-<li>电源电路</li>
-<li>复位电路</li>
-<li>时钟电路</li>
-<li>存储电路<ul>
-<li>RAM：掉电丢失<ul>
-<li>SRAM</li>
-<li>DRAM：需要周期性刷新，不然不断电也丢数据</li>
-</ul>
-</li>
-<li>ROM：只读，不能写，掉电不丢失<ul>
-<li>PROM：只能写一次</li>
-<li>EPROM：可擦除，所以可写入多次，写入前必须擦除，擦除需要紫外线；</li>
-<li>EEPROM：先擦后写，电可擦除，容量小，2k左右</li>
-</ul>
-</li>
-<li>FLASH:多次写入，先擦后写<ul>
-<li>NORFlash</li>
-<li>NANDFlash</li>
-<li>EMMC</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="嵌入式软件开发模式"><a href="#嵌入式软件开发模式" class="headerlink" title="嵌入式软件开发模式"></a>嵌入式软件开发模式</h2><ul>
-<li>开发主机（Host） — 也叫<strong>上位机</strong><ul>
-<li>代码编写、编译</li>
-</ul>
-</li>
-<li>目标板（Target） — 也叫<strong>下位机</strong><ul>
-<li>代码运行</li>
-</ul>
-</li>
-<li>连接介质</li>
-</ul>
-<p><img src="/2022/09/01/08/1.PNG"></p>
-]]></content>
-      <categories>
-        <category>嵌入式</category>
-      </categories>
-      <tags>
-        <tag>嵌入式</tag>
-        <tag>ARM</tag>
       </tags>
   </entry>
   <entry>
