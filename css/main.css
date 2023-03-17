@@ -883,7 +883,7 @@ pre code {
 }
 .pdfobject-container iframe,
 .pdfobject-container embed {
-  height: 500px;
+  height: 800px;
   width: 100%;
 }
 .post-body .tabs {
@@ -2726,7 +2726,7 @@ mark.search-keyword {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #8b82ff;
+  background: #b17d4f;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
