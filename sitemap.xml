@@ -741,21 +741,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/Leetcode/</loc>
-    <lastmod>2023-03-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.com/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/</loc>
-    <lastmod>2023-03-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.com/tags/%E7%A7%BB%E9%99%A4%E9%93%BE%E8%A1%A8%E5%85%83%E7%B4%A0/</loc>
+    <loc>http://example.com/tags/PDF/</loc>
     <lastmod>2023-03-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -839,7 +825,21 @@
   </url>
   
   <url>
+    <loc>http://example.com/tags/Leetcode/</loc>
+    <lastmod>2023-03-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/</loc>
+    <lastmod>2023-03-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/</loc>
     <lastmod>2023-03-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -943,6 +943,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>http://example.com/tags/%E7%A7%BB%E9%99%A4%E9%93%BE%E8%A1%A8%E5%85%83%E7%B4%A0/</loc>
+    <lastmod>2023-03-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -981,7 +988,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/categories/Leetcode/</loc>
+    <loc>http://example.com/categories/PDF/</loc>
     <lastmod>2023-03-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1031,6 +1038,13 @@
   
   <url>
     <loc>http://example.com/categories/%E6%95%B0%E5%AD%97IC/</loc>
+    <lastmod>2023-03-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/categories/Leetcode/</loc>
     <lastmod>2023-03-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
