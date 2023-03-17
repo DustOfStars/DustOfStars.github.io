@@ -340,9 +340,9 @@
       </tags>
   </entry>
   <entry>
-    <title>TESTPDF</title>
+    <title>TEST</title>
     <url>/2023/03/17/09/</url>
-    <content><![CDATA[<div class="pdf-container" data-target="/TEST.pdf" data-height="800px"></div>
+    <content><![CDATA[<div class="pdf-container" data-target="./TEST.pdf" data-height="1024px"></div>
 ]]></content>
       <categories>
         <category>Leetcode</category>
