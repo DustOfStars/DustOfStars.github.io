@@ -1118,6 +1118,344 @@
       </tags>
   </entry>
   <entry>
+    <title>代码解读之GPIO_Adapter</title>
+    <url>/2023/03/20/38/</url>
+    <content><![CDATA[<h1 id="读fsl-adapter-gpio-c-和-h-代码"><a href="#读fsl-adapter-gpio-c-和-h-代码" class="headerlink" title="读fsl_adapter_gpio.c 和 .h 代码"></a>读fsl_adapter_gpio.c 和 .h 代码</h1><h2 id="1-fsl-adapter-gpio-c"><a href="#1-fsl-adapter-gpio-c" class="headerlink" title="1. fsl_adapter_gpio.c"></a>1. fsl_adapter_gpio.c</h2><p>这个代码是一个包含头文件并定义与MCU中的GPIO（通用输入&#x2F;输出）功能相关的一些宏的 C 源文件。它是为 NXP 公司制造的特定MCU编写的。</p>
+<p>该文件包含以下头文件：</p>
+<ul>
+<li>fsl_device_registers.h：包含设备特定的寄存器定义。</li>
+<li>fsl_gpio.h：提供用于GPIO操作的API函数。</li>
+<li>fsl_port.h：提供用于PORT（端口控制和中断）操作的API函数。</li>
+<li>fsl_adapter_gpio.h：提供用于GPIO操作的适配器功能。<br>该文件还定义了一个组件ID，<code>tools</code>使用它。</li>
+</ul>
+<p>该代码定义了两个宏：</p>
+<ul>
+<li>HAL_GPIO_CLZ(x)：计算32位数字x中前导零的数量，该数量用于确定GPIO引脚的bit位置。此宏的实现取决于用于编译代码的工具链。</li>
+<li>HAL_GPIO_BSR(x)：根据GPIO引脚掩码的值计算GPIO引脚的bit位置。此宏使用 HAL_GPIO_CLZ(x) 宏计算掩码中前导零的数量，然后从31中减去结果（因为GPIO引脚编号是从LSB到MSB进行计数）。</li>
+</ul>
+<h3 id="1-1-结构体hal-gpio-pin-t-和-hal-gpio-state-t"><a href="#1-1-结构体hal-gpio-pin-t-和-hal-gpio-state-t" class="headerlink" title="1.1 结构体hal_gpio_pin_t 和 hal_gpio_state_t"></a>1.1 结构体<code>hal_gpio_pin_t</code> 和 <code>hal_gpio_state_t</code></h3><p>这些结构体定义了单片机中GPIO引脚的引脚配置和状态。</p>
+<p><code>hal_gpio_pin_t</code>结构体用于配置GPIO引脚的属性，具有以下字段：</p>
+<ul>
+<li>port：一个整数值（0-7），指定引脚的PORT编号。</li>
+<li>reserved：值为0的位域，用于填充。</li>
+<li>pin：一个整数值（0-31），指定指定PORT内的引脚编号。</li>
+<li>direction：一个整数值（0或1），<strong>指定引脚的方向（输入或输出）</strong>。</li>
+<li>trigger：一个整数值（0-7），<strong>指定在引脚上启用中断时的触发条件</strong>。</li>
+<li>reserved2：值为0的位域，用于填充。</li>
+</ul>
+<p><code>hal_gpio_state_t</code>结构体用于存储GPIO引脚的状态，具有以下字段：</p>
+<ul>
+<li>next：指向链表中下一个元素的指针。</li>
+<li>callback：<strong>指向回调函数的函数指针，当引脚上的中断被触发时将执行该函数</strong>。</li>
+<li>callbackParam：指向<strong>将传递给回调函数的数据的指针</strong>。</li>
+<li>direction：一个整数值（0或1），指定引脚的方向（输入或输出）。</li>
+<li>level：一个整数值（0或1），指定引脚的当前逻辑电平。</li>
+<li>port：一个整数值（0-7），指定引脚的PORT编号。</li>
+<li>pin：一个整数值（0-31），指定指定PORT内的引脚编号。</li>
+<li>trigger：一个整数值（0-7），指定在引脚上启用中断时的触发条件。</li>
+</ul>
+<h3 id="1-2-静态变量-static-GPIO-Type-const-s-GpioPort-和-static-hal-gpio-state-t-s-GpioHead"><a href="#1-2-静态变量-static-GPIO-Type-const-s-GpioPort-和-static-hal-gpio-state-t-s-GpioHead" class="headerlink" title="1.2 静态变量 static GPIO_Type *const s_GpioPort[] 和 static hal_gpio_state_t *s_GpioHead;"></a>1.2 静态变量 static GPIO_Type <code>*const s_GpioPort[]</code> 和 static hal_gpio_state_t <code>*s_GpioHead</code>;</h3><p>这个部分定义了函数的原型，这些函数将在源文件中使用，但在这种情况下没有原型。</p>
+<p>该部分还定义了一些静态变量：</p>
+<ul>
+<li><p>s_GpioPort：<u>指向GPIO_Type结构体指针的数组。每个指针对应微控制器中的一个GPIO端口</u>。</p>
+</li>
+<li><p>s_GpioHead：指向<code>hal_gpio_state_t</code>结构体链表的头部的指针。<strong>此链表用于跟踪MCU中所有GPIO引脚的状态</strong>。</p>
+</li>
+</ul>
+<h3 id="1-3-函数-static-void-HAL-GpioInterruptHandle-uint8-t-port"><a href="#1-3-函数-static-void-HAL-GpioInterruptHandle-uint8-t-port" class="headerlink" title="1.3 函数 static void HAL_GpioInterruptHandle(uint8_t port)"></a>1.3 函数 static void HAL_GpioInterruptHandle(uint8_t port)</h3><p>这段代码片段是一个GPIO（通用输入&#x2F;输出）驱动程序的C实现。代码定义了两个数据结构，<code>hal_gpio_pin_t</code>和<code>hal_gpio_state_t</code>，它们分别<strong>包含有关引脚配置和状态的信息</strong>。代码还定义了几个函数<strong>来处理中断和添加&#x2F;删除GPIO状态节点的链接列表</strong>。</p>
+<ul>
+<li><p><code>HAL_GpioInterruptHandle</code>函数：&#x3D;&#x3D;通过迭代GPIO状态节点的链表并检查指定port上的任何pin是否触发了中断来处理GPIO中断。如果引脚发生中断，则该函数执行与该引脚相关联的回调函数&#x3D;&#x3D;。</p>
+</li>
+<li><p><code>HAL_GpioConflictSearch</code>函数：搜索GPIO状态节点的链表，**<u>以检查引脚是否与已注册的引脚冲突</u>**。仅当定义了<code>HAL_GPIO_CONFLICT_CHECK_ENABLE</code>宏并将其设置为大于零的值时，才使用此函数。</p>
+</li>
+<li><p><code>HAL_GpioAddItem</code>函数：将新的GPIO状态节点添加到链接列表中。该函数首先检查新节点是否与已注册的引脚发生冲突，然后再将其添加到列表中。</p>
+</li>
+<li><p><code>HAL_GpioRemoveItem</code>函数：从链接列表中删除GPIO状态节点。该函数通过遍历列表以查找指定的节点并将其删除。</p>
+</li>
+</ul>
+<p>总的来说，这段代码片段提供了GPIO驱动程序的基本实现，可用于配置和控制微控制器上的GPIO引脚。</p>
+<p>这是<code>HAL_GpioInterruptHandle</code>函数的函数实现，该函数&#x3D;&#x3D;负责处理GPIO中断&#x3D;&#x3D;。</p>
+<ol>
+<li><p>该函数接受一个参数<code>port</code>，该参数是发生中断的端口号。该函数首先遍历GPIO引脚状态结构的链表，以找到与端口号相对应的结构。如果找不到一个合适的结构，则函数将简单地返回。</p>
+</li>
+<li><p>接下来，该函数使用<code>GPIO_GpioGetInterruptFlags</code>或<code>GPIO_PortGetInterruptFlags</code>函数**<u>检索在指定端口上发生的引脚中断的集合</u><strong>，具体取决于芯片是否具有每个引脚的个别GPIO中断标志。然后，</strong>该函数清除引发中断的引脚的中断标志**。</p>
+</li>
+<li><p>然后，该函数再次遍历GPIO引脚状态结构的链表，这次检查每个结构以查看它是否对应于触发中断的引脚之一。如果找到匹配项，则函数调用与引脚关联的回调函数来处理中断。</p>
+</li>
+<li><p>最后，该函数通过清除刚刚处理的引脚的中断标志来更新触发中断的引脚中断集。如果没有更多的中断需要处理，该函数将返回。</p>
+</li>
+</ol>
+<h3 id="1-4-函数-static-hal-gpio-status-t-HAL-GpioConflictSearch-hal-gpio-state-t-head-uint8-t-port-uint8-t-pin"><a href="#1-4-函数-static-hal-gpio-status-t-HAL-GpioConflictSearch-hal-gpio-state-t-head-uint8-t-port-uint8-t-pin" class="headerlink" title="1.4 函数 static hal_gpio_status_t HAL_GpioConflictSearch(hal_gpio_state_t *head, uint8_t port, uint8_t pin)"></a>1.4 函数 static hal_gpio_status_t HAL_GpioConflictSearch(hal_gpio_state_t *head, uint8_t port, uint8_t pin)</h3><p>这段代码定义了一个函数<code>HAL_GpioConflictSearch</code>，它通过遍历<code>hal_gpio_state_t</code>结构体的链表来**<u>查找指定的端口和引脚与链表中现有的端口和引脚是否有冲突</u>**。</p>
+<ol>
+<li><p>该函数需要链表的头部（head）、端口号（port）和引脚号（pin）作为输入。</p>
+</li>
+<li><p>然后，它使用while循环遍历链表，检查是否有<code>hal_gpio_state_t</code>结构体的端口和引脚与输入的相同。</p>
+</li>
+<li><p>如果找到匹配的<code>hal_gpio_state_t</code>结构体，则该函数返回<code>kStatus_HAL_GpioPinConflict</code>，表示存在冲突。如果没有找到匹配的结构体，则函数返回<code>kStatus_HAL_GpioSuccess</code>，表示不存在冲突。</p>
+</li>
+</ol>
+<p>当预处理宏<code>HAL_GPIO_CONFLICT_CHECK_ENABLE</code>被定义且其值大于零时，才会编译此函数。</p>
+<p>预处理指令，用于检查宏<code>HAL_GPIO_CONFLICT_CHECK_ENABLE</code>是否被定义，并且其值大于0。</p>
+<p>如果该宏被定义并且其值大于0，那么<code>#if</code>和<code>#endif</code>语句中的代码将会被编译，否则将被跳过。</p>
+<h3 id="1-5-函数-static-hal-gpio-status-t-HAL-GpioAddItem-hal-gpio-state-t-head-hal-gpio-state-t-node"><a href="#1-5-函数-static-hal-gpio-status-t-HAL-GpioAddItem-hal-gpio-state-t-head-hal-gpio-state-t-node" class="headerlink" title="1.5 函数 static hal_gpio_status_t HAL_GpioAddItem(hal_gpio_state_t **head, hal_gpio_state_t *node)"></a>1.5 函数 static hal_gpio_status_t HAL_GpioAddItem(hal_gpio_state_t **head, hal_gpio_state_t *node)</h3><p>这个函数**<u>将一个新的 GPIO 引脚添加到 GPIO 引脚的链表中</u>**。它把链表头的指针和要添加的新 GPIO 引脚的指针作为输入参数。</p>
+<p>该函数<strong>首先禁用全局中断</strong>，然后<strong>检查链表是否为空</strong>。</p>
+<ol>
+<li>如果它是空的，新的 GPIO 引脚将添加为链表的第一个元素。</li>
+<li>否则，函数通过搜索链表来检查新的 GPIO 引脚是否与任何现有 GPIO 引脚冲突。</li>
+<li>如果找到冲突，函数会重新启用全局中断并返回指示 GPIO 引脚冲突的错误状态。</li>
+<li>如果没有发现冲突，则在链接列表的末尾添加新的 GPIO 引脚，并返回成功状态。</li>
+<li>最后，在返回之前，该函数启用全局中断。</li>
+</ol>
+<h3 id="1-6-函数-static-hal-gpio-status-t-HAL-GpioRemoveItem-hal-gpio-state-t-head-hal-gpio-state-t-node"><a href="#1-6-函数-static-hal-gpio-status-t-HAL-GpioRemoveItem-hal-gpio-state-t-head-hal-gpio-state-t-node" class="headerlink" title="1.6 函数 static hal_gpio_status_t HAL_GpioRemoveItem(hal_gpio_state_t **head, hal_gpio_state_t *node)"></a>1.6 函数 static hal_gpio_status_t HAL_GpioRemoveItem(hal_gpio_state_t **head, hal_gpio_state_t *node)</h3><p>此函数从 GPIO 引脚的链表中移除一个节点。它以列表的头<code>**head</code>和要移除的节点 <code>*node</code>作为输入，二者都是指向 <code>hal_gpio_state_t</code> 结构的指针。</p>
+<p>该函数通过使用 <code>DisableGlobalIRQ() </code>函数<strong>禁用中断</strong>并将 <code>PRIMASK</code> 寄存器的值存储在 <code>regPrimask</code> 中来启动。然后它使用 while 循环<strong>遍历列表，查找要删除的节点</strong>。一旦找到，它会更新指针以从列表中删除节点。如果要移除的节点是列表的头，则会更新 *head。</p>
+<p>最后，该函数使用 <code>EnableGlobalIRQ(regPrimask)</code> <strong>启用中断，并返回</strong> <code>kStatus_HAL_GpioSuccess</code>。</p>
+<h3 id="1-7-GPIOX-INT1-IRQHandler-和-GPIOX-INT0-IRQHandler"><a href="#1-7-GPIOX-INT1-IRQHandler-和-GPIOX-INT0-IRQHandler" class="headerlink" title="1.7 GPIOX_INT1_IRQHandler() 和 GPIOX_INT0_IRQHandler()"></a>1.7 GPIOX_INT1_IRQHandler() 和 GPIOX_INT0_IRQHandler()</h3><p>这些是设备上每个GPIO端口的中断处理程序函数。</p>
+<p>它们是为了没有专门为每个GPIO端口提供中断处理程序的平台而实现的，这由 <code>FSL_FEATURE_PORT_HAS_NO_INTERRUPT</code> 宏指示。</p>
+<p>对于每个GPIO端口，定义了两个中断处理程序，<code>GPIOX_INT0_IRQHandler()</code>和<code>GPIOX_INT1_IRQHandler()</code>。</p>
+<ul>
+<li><code>GPIOX_INT0_IRQHandler()</code>函数是端口的<strong>实际中断处理程序</strong>，并调用<code>HAL_GpioInterruptHandle()</code>函数来处理中断。</li>
+<li><code>GPIOX_INT1_IRQHandler()</code>函数是<strong>中断优先级配置的占位符</strong>，它只调用<code>GPIOX_INT0_IRQHandler()</code>函数。</li>
+</ul>
+<p><code>SDK_ISR_EXIT_BARRIER</code>宏用于<strong>在退出中断处理程序之前添加障碍，以确保在从中断返回之前完成所有存储器访问</strong>。</p>
+<h3 id="1-8-PORTX-IRQHandler"><a href="#1-8-PORTX-IRQHandler" class="headerlink" title="1.8 PORTX_IRQHandler()"></a>1.8 PORTX_IRQHandler()</h3><p>这是一系列针对 GPIO 端口的中断处理函数。</p>
+<p>根据所使用的特定微控制器，这些功能将以前缀 GPIO 或 PORT 命名。 如果微控制器具有 GPIO 的“无中断”<code>FSL_FEATURE_PORT_HAS_NO_INTERRUPT</code>功能，则中断处理程序将使用 GPIO 前缀并具有类似 <code>GPIOA_INT0_IRQHandler()</code> 的名称。否则，中断处理程序将使用 PORT 前缀并具有类似于 <code>PORTA_IRQHandler() </code>的名称。 </p>
+<p>每个中断处理函数负责处理特定 GPIO 端口的中断。例如，<code>GPIOA_INT0_IRQHandler() </code>处理端口 A、引脚 0 的中断。 在每个中断处理函数中，<code>HAL_GpioInterruptHandle() </code><strong>以端口号作为参数被调用</strong>。此函数负责查找触发中断的引脚并调用任何已注册的回调。 **<u>&#x3D;&#x3D;<code>SDK_ISR_EXIT_BARRIER</code> 宏用于标记中断处理函数的结束。这是一种防止编译器在从中断返回后生成代码的方法，这可能会导致系统堆栈或中断处理出现问题&#x3D;&#x3D;</u>**。</p>
+<h3 id="1-9-函数-void-HAL-GpioPreInit-void"><a href="#1-9-函数-void-HAL-GpioPreInit-void" class="headerlink" title="1.9 函数 void HAL_GpioPreInit(void)"></a>1.9 函数 void HAL_GpioPreInit(void)</h3><p>函数 <code>HAL_GpioPreInit()</code> 将全局指针 <code>s_GpioHead</code> 初始化为 <code>NULL</code>，用作包含每个已配置 GPIO 引脚的 GPIO 状态信息的链表的头部。</p>
+<p>此函数通常在 GPIO 驱动程序初始化期间调用，**<u>在添加或配置任何 GPIO 引脚之前</u>**。</p>
+<h3 id="1-10-函数-hal-gpio-status-t-HAL-GpioInit-hal-gpio-handle-t-gpioHandle-hal-gpio-pin-config-t-pinConfig"><a href="#1-10-函数-hal-gpio-status-t-HAL-GpioInit-hal-gpio-handle-t-gpioHandle-hal-gpio-pin-config-t-pinConfig" class="headerlink" title="1.10 函数 hal_gpio_status_t HAL_GpioInit(hal_gpio_handle_t gpioHandle, hal_gpio_pin_config_t *pinConfig)"></a>1.10 函数 hal_gpio_status_t HAL_GpioInit(hal_gpio_handle_t gpioHandle, hal_gpio_pin_config_t *pinConfig)</h3><p>**<u>这是用提供的配置，初始化GPIO引脚的功能实现</u>**。</p>
+<p><em><u><strong>该函数使用<code>gpioHandle</code>参数表示GPIO引脚的句柄和使用<code>pinConfig</code>参数表示引脚的配置的指针。</strong></u></em></p>
+<p>该函数首先断言<code>gpioHandle</code>和<code>pinConfig</code>参数不为null，并且<code>gpioHandle</code>参数的大小至少与<code>hal_gpio_state_t</code>结构的大小一样。然后将<code>gpioHandle</code>参数转换为指向<code>hal_gpio_state_t</code>结构的指针<code>gpioState</code>，该结构包含有关GPIO引脚状态的信息。</p>
+<ol>
+<li><p>如果启用冲突检查<code>HAL_GPIO_CONFLICT_CHECK_ENABLE</code>，则该函数搜索GPIO引脚的链表，以确保指定端口和引脚没有冲突。如果发现冲突，则该函数返回<code>kStatus_HAL_GpioPinConflict</code>。</p>
+</li>
+<li><p>然后，该函数使用<code>HAL_GpioAddItem</code>函数将GPIO引脚添加到GPIO引脚的链表中，<u><strong>并使用<code>GPIO_PinInit</code>函数设置GPIO方向和其他配置选项</strong></u>。</p>
+</li>
+<li><p>最后，如果初始化成功，该函数返回<code>kStatus_HAL_GpioSuccess</code>。</p>
+</li>
+</ol>
+<h3 id="1-11-函数-hal-gpio-status-t-HAL-GpioDeinit-hal-gpio-handle-t-gpioHandle"><a href="#1-11-函数-hal-gpio-status-t-HAL-GpioDeinit-hal-gpio-handle-t-gpioHandle" class="headerlink" title="1.11 函数 hal_gpio_status_t HAL_GpioDeinit(hal_gpio_handle_t gpioHandle)"></a>1.11 函数 hal_gpio_status_t HAL_GpioDeinit(hal_gpio_handle_t gpioHandle)</h3><p>此函数负责**&#x3D;&#x3D;取消初始化 GPIO 引脚&#x3D;&#x3D;**。</p>
+<p>它接收 GPIO 引脚的句柄，该句柄是在使用 <code>HAL_GpioInit</code> 函数初始化引脚时获得的。 </p>
+<ol>
+<li>首先，该函数使用断言检查输入 <code>gpioHandle</code> 是否不为 <code>NULL</code>。 </li>
+<li>接下来，它使用 <code>gpioHandle</code> 获取指向 <code>GPIO</code> 状态结构的指针。</li>
+<li>然后，如果 GPIO 引脚配置为输入引脚，则该函数通过使用 <code>kHAL_GpioInterruptDisable</code> 参数调用 <code>HAL_GpioSetTriggerMode</code> 来**<u>&#x3D;&#x3D;禁用其中断触发模式&#x3D;&#x3D;</u>**。 </li>
+<li>最后，函数使用<code>HAL_GpioRemoveItem</code>函数从链表<code>s_GpioHead</code>中移除<code>GPIO管脚状态</code>，返回<code>kStatus_HAL_GpioSuccess</code>表示操作成功。</li>
+</ol>
+<h3 id="1-12-函数-hal-gpio-status-t-HAL-GpioGetInput-hal-gpio-handle-t-gpioHandle-uint8-t-pinState"><a href="#1-12-函数-hal-gpio-status-t-HAL-GpioGetInput-hal-gpio-handle-t-gpioHandle-uint8-t-pinState" class="headerlink" title="1.12 函数 hal_gpio_status_t HAL_GpioGetInput(hal_gpio_handle_t gpioHandle, uint8_t *pinState)"></a>1.12 函数 hal_gpio_status_t HAL_GpioGetInput(hal_gpio_handle_t gpioHandle, uint8_t *pinState)</h3><p>**<u>&#x3D;&#x3D;此函数获取配置为输入的 GPIO 引脚的当前状态&#x3D;&#x3D;</u>**。</p>
+<p>它需要一个 GPIO 引脚的句柄（表示为 <code>hal_gpio_handle_t</code> 类型）和一个指向变量的指针来<strong>存储引脚状态</strong>。 </p>
+<p>在函数内部，它首先断言 gpioHandle 和 pinState 参数不为 NULL。**<u>&#x3D;&#x3D;然后它将 gpioHandle 转换为 hal_gpio_state_t 类型并使用 <code>GPIO_PinRead</code> 函数读取引脚状态。 GPIO_PinRead函数返回一个uint32_t类型，转换为uint8_t类型存储在<code>pinState</code>变量中。&#x3D;&#x3D;</u>**最后函数返回kStatus_HAL_GpioSuccess表示操作成功。</p>
+<h3 id="1-13-函数-hal-gpio-status-t-HAL-GpioSetOutput-hal-gpio-handle-t-gpioHandle-uint8-t-pinState"><a href="#1-13-函数-hal-gpio-status-t-HAL-GpioSetOutput-hal-gpio-handle-t-gpioHandle-uint8-t-pinState" class="headerlink" title="1.13 函数 hal_gpio_status_t HAL_GpioSetOutput(hal_gpio_handle_t gpioHandle, uint8_t pinState)"></a>1.13 函数 hal_gpio_status_t HAL_GpioSetOutput(hal_gpio_handle_t gpioHandle, uint8_t pinState)</h3><p>**<u>此函数设置 GPIO 引脚的输出状态</u>**。</p>
+<p>它将要配置的 GPIO 引脚的句柄和<strong>指定要设置的输出状态（高电平或低电平）的值作为输入</strong>。 </p>
+<p>该函数首先检查 GPIO 句柄是否为 NULL。然后它将句柄转换为 hal_gpio_state_t 指针并使用它来获取 GPIO 端口和引脚号。</p>
+<p>最后，它使用 <code>GPIO_PinWrite</code> 函数设置 GPIO 引脚的输出状态，**<u>该函数将 GPIO 端口、引脚号和输出值作为输入</u>**。 该函数返回一个状态代码以指示操作是否成功。</p>
+<h3 id="1-14-函数-hal-gpio-status-t-HAL-GpioInstallCallback-hal-gpio-handle-t-gpioHandle，-hal-gpio-callback-t-callback-void-callbackParam"><a href="#1-14-函数-hal-gpio-status-t-HAL-GpioInstallCallback-hal-gpio-handle-t-gpioHandle，-hal-gpio-callback-t-callback-void-callbackParam" class="headerlink" title="1.14 函数 hal_gpio_status_t HAL_GpioInstallCallback(hal_gpio_handle_t gpioHandle， hal_gpio_callback_t callback, void *callbackParam)"></a>1.14 函数 hal_gpio_status_t HAL_GpioInstallCallback(hal_gpio_handle_t gpioHandle， hal_gpio_callback_t callback, void *callbackParam)</h3><p>**<u>&#x3D;&#x3D;此函数将回调函数及其关联参数安装到给定句柄指定的 GPIO 引脚&#x3D;&#x3D;</u>**。 </p>
+<p>该函数接受三个参数： </p>
+<ul>
+<li><code>gpioHandle</code>：<u>将要安装其回调函数的 GPIO 引脚</u>的句柄。 </li>
+<li><code>callback</code>：指向将要安装的回调函数的<u>函数指针</u>。 </li>
+<li><code>callbackParam</code>：指向<u>将要传递给回调函数的参数</u>的空指针。</li>
+</ul>
+<p>该函数首先断言 gpioHandle 不为 NULL。然后它将句柄转换为 <code>hal_gpio_state_t</code> 指针，**<u>并将 hal_gpio_state_t 结构的 <code>callbackParam</code> 和 <code>callback</code> 字段分别设置为 callbackParam 和 callback 的值。</u>**</p>
+<p>最后，该函数返回 kStatus_HAL_GpioSuccess。 </p>
+<p>安装回调函数后，<u><em>当在 GPIO 引脚上触发中断时，GPIO 驱动程序可以调用它</em></u>。 </p>
+<p>GPIO 驱动在回调函数被调用时会将 <code>callbackParam</code> 参数传给回调函数。</p>
+<p><strong>应用程序可以使用此参数将上下文信息传递给回调函数</strong>。</p>
+<h3 id="1-15-函数-hal-gpio-status-t-HAL-GpioGetTriggerMode-hal-gpio-handle-t-gpioHandle-hal-gpio-interrupt-trigger-t-gpioTrigger"><a href="#1-15-函数-hal-gpio-status-t-HAL-GpioGetTriggerMode-hal-gpio-handle-t-gpioHandle-hal-gpio-interrupt-trigger-t-gpioTrigger" class="headerlink" title="1.15 函数 hal_gpio_status_t HAL_GpioGetTriggerMode(hal_gpio_handle_t gpioHandle, hal_gpio_interrupt_trigger_t *gpioTrigger)"></a>1.15 函数 hal_gpio_status_t HAL_GpioGetTriggerMode(hal_gpio_handle_t gpioHandle, hal_gpio_interrupt_trigger_t *gpioTrigger)</h3><p>**<u>&#x3D;&#x3D;该函数用于获取某个GPIO引脚的中断触发方式&#x3D;&#x3D;</u>**。</p>
+<p>该函数有两个参数：gpioHandle 和 gpioTrigger。 </p>
+<ul>
+<li>gpioHandle是GPIO引脚的句柄，用于标识GPIO引脚。</li>
+<li>gpioTrigger 是一个<strong>指向 <code>hal_gpio_interrupt_trigger_t</code> 类型变量的指针，将用于返回 GPIO 引脚的中断触发模式</strong>。</li>
+</ul>
+<p>该函数首先检查 gpioHandle 参数是否有效。然后它将 gpioHandle 参数转换为指向 hal_gpio_state_t 结构的指针，该结构是 GPIO 驱动程序的内部状态结构。</p>
+<p>**<u>&#x3D;&#x3D;然后该函数检查 GPIO 引脚是否配置为输入引脚，如果不是，则返回错误&#x3D;&#x3D;</u>**。 </p>
+<p>最后，**<u>&#x3D;&#x3D;该函数从 <code>hal_gpio_state_t</code> 结构中获取 GPIO 引脚的中断触发模式，并将其存储在 gpioTrigger 参数中&#x3D;&#x3D;</u>**。</p>
+<p>如果函数成功完成，它会返回 kStatus_HAL_GpioSuccess。</p>
+<h3 id="1-16-函数-hal-gpio-status-t-HAL-GpioSetTriggerMode-hal-gpio-handle-t-gpioHandle-hal-gpio-interrupt-trigger-t-gpioTrigger"><a href="#1-16-函数-hal-gpio-status-t-HAL-GpioSetTriggerMode-hal-gpio-handle-t-gpioHandle-hal-gpio-interrupt-trigger-t-gpioTrigger" class="headerlink" title="1.16 函数 hal_gpio_status_t HAL_GpioSetTriggerMode(hal_gpio_handle_t gpioHandle, hal_gpio_interrupt_trigger_t gpioTrigger)"></a>1.16 函数 hal_gpio_status_t HAL_GpioSetTriggerMode(hal_gpio_handle_t gpioHandle, hal_gpio_interrupt_trigger_t gpioTrigger)</h3><p>此函数设置 GPIO 引脚的中断触发模式。</p>
+<p>它接受 GPIO 引脚的句柄，以及所需的中断触发模式。</p>
+<ol>
+<li>该函数首先检查引脚的方向是否未设置为输出，**<u><em>因为中断触发只能用于输入引脚</em></u>**。</li>
+<li>然后它将给定的触发模式映射到硬件平台的相应中断配置值。**<u>它设置 GPIO 引脚的触发模式，并在 NVIC（嵌套向量中断控制器）中启用相应的中断</u>**，优先级为 <code>HAL_GPIO_ISR_PRIORITY</code>（可能在代码库的其他地方定义）。</li>
+<li>最后，它返回一个状态代码，指示操作是成功还是遇到错误。</li>
+</ol>
+<h3 id="1-17-函数-hal-gpio-status-t-HAL-GpioWakeUpSetting-hal-gpio-handle-t-gpioHandle-uint8-t-enable"><a href="#1-17-函数-hal-gpio-status-t-HAL-GpioWakeUpSetting-hal-gpio-handle-t-gpioHandle-uint8-t-enable" class="headerlink" title="1.17 函数 hal_gpio_status_t HAL_GpioWakeUpSetting(hal_gpio_handle_t gpioHandle, uint8_t enable)"></a>1.17 函数 hal_gpio_status_t HAL_GpioWakeUpSetting(hal_gpio_handle_t gpioHandle, uint8_t enable)</h3><p><strong><u>&#x3D;&#x3D;该函数是 GPIO 驱动程序的一部分，用于启用&#x2F;禁用 GPIO 引脚的唤醒功能。&#x3D;&#x3D;</u></strong></p>
+<p>当设备处于低功耗模式时，如果特定 GPIO 引脚上的唤醒功能已启用，则它可以被该引脚上的信号唤醒。 </p>
+<p>该函数有两个参数，一个 GPIO 句柄和一个启用标志。 </p>
+<blockquote>
+<p>GPIO 句柄用于标识要配置的特定 GPIO 引脚，而启用标志用于指定是启用还是禁用唤醒功能。 </p>
+</blockquote>
+<ol>
+<li>该函数首先断言 GPIO 句柄不为 NULL。</li>
+<li>**<u>然后检查GPIO引脚方向是否输出。如果输出方向，则返回错误</u>**。</li>
+<li>然后它检查启用标志是否为 0，这意味着禁用唤醒功能。如果启用标志为 0，则返回错误。否则，它返回成功。</li>
+</ol>
+<p>总的来说，该函数用于配置GPIO引脚的唤醒功能，确保输入参数有效。</p>
+<h3 id="1-18-函数-hal-gpio-status-t-HAL-GpioEnterLowpower-hal-gpio-handle-t-gpioHandle"><a href="#1-18-函数-hal-gpio-status-t-HAL-GpioEnterLowpower-hal-gpio-handle-t-gpioHandle" class="headerlink" title="1.18 函数 hal_gpio_status_t HAL_GpioEnterLowpower(hal_gpio_handle_t gpioHandle)"></a>1.18 函数 hal_gpio_status_t HAL_GpioEnterLowpower(hal_gpio_handle_t gpioHandle)</h3><p><code>HAL_GpioEnterLowpower</code> 的实现似乎是一个placeholder占位符函数，它返回<code>kStatus_HAL_GpioSuccess</code>而不执行任何实际操作。</p>
+<p><strong><u>&#x3D;&#x3D;此函数很可能旨在由 HAL 库的用户实现，以提供特定于其应用程序的低功耗功能。&#x3D;&#x3D;</u></strong></p>
+<h3 id="1-19-函数-hal-gpio-status-t-HAL-GpioExitLowpower-hal-gpio-handle-t-gpioHandle"><a href="#1-19-函数-hal-gpio-status-t-HAL-GpioExitLowpower-hal-gpio-handle-t-gpioHandle" class="headerlink" title="1.19 函数 hal_gpio_status_t HAL_GpioExitLowpower(hal_gpio_handle_t gpioHandle)"></a>1.19 函数 hal_gpio_status_t HAL_GpioExitLowpower(hal_gpio_handle_t gpioHandle)</h3><p>**<u>&#x3D;&#x3D;此函数负责在退出低功耗模式后将 GPIO 引脚恢复为之前的配置&#x3D;&#x3D;</u>**。</p>
+<p>它以一个 GPIO 句柄作为输入并返回一个状态代码，指示操作是否成功。 </p>
+<ul>
+<li>该函数首先断言 GPIO 句柄有效。</li>
+<li>然后它从句柄中检索 GPIO 状态，并使用引脚方向（输入或输出）和默认值 0 初始化一个新的 GPIO 引脚配置对象。 <ul>
+<li>如果之前将引脚配置为输出，则新配置对象中的引脚方向将设置为输出。</li>
+</ul>
+</li>
+<li>然后，该函数使用 <code>GPIO_PinInit</code> 函数使用新配置初始化 GPIO 引脚。 <ul>
+<li>如果该引脚之前被配置为输入，则该函数调用 <code>HAL_GpioSetTriggerMode</code> 函数来**<u>恢复进入低功耗模式之前设置的中断触发模式</u>**。</li>
+</ul>
+</li>
+<li>最后，函数返回一个状态码，表示操作成功。</li>
+</ul>
+<h2 id="2-fsl-adapter-gpio-h"><a href="#2-fsl-adapter-gpio-h" class="headerlink" title="2.  fsl_adapter_gpio.h"></a>2.  fsl_adapter_gpio.h</h2><h3 id="2-1-引言"><a href="#2-1-引言" class="headerlink" title="2.1. 引言"></a>2.1. 引言</h3><p>这是用于 GPIO（通用输入&#x2F;输出）接口的 HAL（硬件抽象层）头文件的开头。它从许可证和标题保护开始。 </p>
+<ul>
+<li>header包括 <code>fsl_common.h</code>，它是在不同 SDK（软件开发工具包）组件之间共享的通用实用函数、结构和宏的集合。</li>
+<li>此外，如果定义了 <code>SDK_OS_FREE_RTOS</code>，它会包含 <code>FreeRTOS.h</code>，这是 FreeRTOS 操作系统的头文件。 </li>
+<li>header guard 定义为 <code>HAL_GPIO_H</code> 以防止多次包含同一头文件。</li>
+</ul>
+<p>头文件为 GPIO 适配器提供定义和结构，它是位于供应商 (NXP) 提供的低级 GPIO 驱动程序之上的抽象层。 该文件提供了以下定义： </p>
+<ul>
+<li>GPIO适配器版本 </li>
+<li>GPIO 冲突检查使能 </li>
+<li>GPIO适配器句柄大小 </li>
+<li>GPIO句柄定义宏 </li>
+<li>GPIO 适配器 ISR 优先级 </li>
+<li>GPIO 句柄类型 (hal_gpio_handle_t) </li>
+<li>GPIO回调函数类型(hal_gpio_callback_t) </li>
+<li>GPIO 中断触发类型 (hal_gpio_interrupt_trigger_t) </li>
+<li>GPIO 状态代码 (hal_gpio_status_t) </li>
+<li>GPIO 方向类型 (hal_gpio_direction_t) </li>
+<li>GPIO 引脚配置结构 (hal_gpio_pin_config_t)</li>
+</ul>
+<p>这个头文件定义了 GPIO 适配器，它是一个抽象 GPIO 接口的硬件特定细节的驱动程序。驱动程序提供 API 来配置和控制设备的 GPIO 引脚，例如**<u>设置引脚的方向、读取或写入其值以及在引脚上启用中断</u>**。 该文件以一些标准 C 语言定义开头，包括 GPIO 适配器句柄、回调函数、中断触发器、状态和方向的类型定义。这些类型在整个 GPIO 适配器驱动程序 API 中使用，以提供清晰一致的接口。 </p>
+<p>该文件还定义了一些宏，包括 GPIO 适配器驱动程序的版本号、GPIO 适配器句柄的大小以及启用或禁用 GPIO 冲突检查的标志。 最后，该文件包括 <code>fsl_common.h</code> 头文件，它提供了在 Freescale&#x2F;NXP SDK 软件中使用的通用宏和定义，以及 <code>FreeRTOS.h</code> 头文件，它为正在使用的 FreeRTOS 操作系统提供 API。</p>
+<p>这是 GPIO（通用输入&#x2F;输出）适配器的头文件，用于配置和控制MCU上的 GPIO 引脚。 该文件定义了几种类型，包括 <code>hal_gpio_handle_t</code>、<code>hal_gpio_callback_t</code>、<code>hal_gpio_interrupt_trigger_t</code>、<code>hal_gpio_status_t</code>、<code>hal_gpio_direction_t </code>和 <code>hal_gpio_pin_config_t</code>。 </p>
+<ul>
+<li><code>hal_gpio_handle_t</code>是指向GPIO适配器句柄的指针，</li>
+<li><code>hal_gpio_callback_t</code>是用于回调的函数指针，</li>
+<li><code>hal_gpio_interrupt_trigger_t</code>定义了中断触发器，</li>
+<li><code>hal_gpio_status_t</code>定义了GPIO适配器的状态，</li>
+<li><code>hal_gpio_direction_t</code>定义了GPIO引脚的方向，</li>
+<li><code>hal_gpio_pin_config_t</code>是一个保存配置的结构GPIO 引脚的设置。</li>
+</ul>
+<p>头文件还包含宏，例如 </p>
+<ul>
+<li><code>FSL_GPIO_ADAPTER_VERSION</code> 指示驱动程序的版本，<code>HAL_GPIO_CONFLICT_CHECK_ENABLE</code> 启用&#x2F;禁用 GPIO 冲突检查，以及</li>
+<li><code>HAL_GPIO_HANDLE_SIZE </code>定义 GPIO 适配器句柄的大小。 </li>
+<li>此外，头文件定义了一个宏 <code>GPIO_HANDLE_DEFINE</code> 来定义一个 4 字节对齐的 GPIO 句柄</li>
+<li>和一个宏 <code>HAL_GPIO_ISR_PRIORITY</code> 来定义 GPIO ISR（中断服务程序）的优先级。</li>
+</ul>
+<h3 id="2-2-预先初始化引脚-void-HAL-GpioPreInit-void"><a href="#2-2-预先初始化引脚-void-HAL-GpioPreInit-void" class="headerlink" title="2.2 预先初始化引脚 void HAL_GpioPreInit(void)"></a>2.2 预先初始化引脚 void HAL_GpioPreInit(void)</h3><p>此函数初始化位于内存的 <code>.bss</code> 部分中的静态变量。这通常由 IDE 自动完成，但如果在自动清理 <code>.bss</code> 部分之前使用 GPIO 适配器，则可以使用此功能。 用户通常不需要调用此 API。代码注释中提供了一个示例来演示如何使用它。</p>
+<ul>
+<li>首先，调用 HAL_GpioPreInit() 函数，</li>
+<li>然后使用 GPIO_HANDLE_DEFINE 宏定义 GPIO 句柄。</li>
+<li>然后，使用所需的 GPIO 引脚配置定义并初始化 hal_gpio_pin_config_t 结构。</li>
+<li>最后，调用 HAL_GpioInit() 函数以使用先前定义的 GPIO 句柄以指定配置初始化 GPIO 引脚。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">HAL_GpioPreInit();</span><br><span class="line">GPIO_HANDLE_DEFINE(g_GpioHandle);</span><br><span class="line"><span class="type">hal_gpio_pin_config_t</span> config;</span><br><span class="line">    config.direction = kHAL_GpioDirectionOut;</span><br><span class="line">    config.port = <span class="number">0</span>;</span><br><span class="line">    config.pin = <span class="number">0</span>;</span><br><span class="line">    config.level = <span class="number">0</span>;</span><br><span class="line">HAL_GpioInit((<span class="type">hal_gpio_handle_t</span>)g_GpioHandle, &amp;config);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-3-初始化-hal-gpio-status-t-HAL-GpioInit-hal-gpio-handle-t-gpioHandle-hal-gpio-pin-config-t-pinConfig"><a href="#2-3-初始化-hal-gpio-status-t-HAL-GpioInit-hal-gpio-handle-t-gpioHandle-hal-gpio-pin-config-t-pinConfig" class="headerlink" title="2.3 初始化 hal_gpio_status_t HAL_GpioInit(hal_gpio_handle_t gpioHandle, hal_gpio_pin_config_t *pinConfig);"></a>2.3 初始化 hal_gpio_status_t HAL_GpioInit(hal_gpio_handle_t gpioHandle, hal_gpio_pin_config_t *pinConfig);</h3><p>这是 GPIO（通用输入&#x2F;输出）模块中的一个函数，它使用**<u>&#x3D;&#x3D;用户定义的设置初始化 GPIO 实例&#x3D;&#x3D;</u>**。该函数有两个参数： </p>
+<ul>
+<li>gpioHandle：指向调用者分配的大小为<code>HAL_GPIO_HANDLE_SIZE</code>的内存空间的指针。句柄应该是 4 字节对齐的。用户可以通过两种方式定义句柄：<ul>
+<li>使用 <code>GPIO_HANDLE_DEFINE(gpioHandle) </code></li>
+<li>或 <code>uint32_t gpioHandle[((HAL_GPIO_HANDLE_SIZE + sizeof(uint32_t) - 1U) / sizeof(uint32_t))]</code></li>
+</ul>
+</li>
+<li><code>pinConfig</code>：指向 <code>hal_gpio_pin_config_t</code> 类型的用户定义配置结构的指针，**<u>该结构保存 GPIO 的配置。该结构有四个字段</u>**： <ul>
+<li>direction：GPIO的方向，输出可以设置为<code>kHAL_GpioDirectionOut</code>，输入可以设置为<code>kHAL_GpioDirectionIn</code>。 </li>
+<li>port：GPIO 端口号。 </li>
+<li>pin：GPIO 引脚号。 </li>
+<li>level：**<u>GPIO的初始值，可设置为0或1</u>**。</li>
+</ul>
+</li>
+<li>该函数返回以下状态代码之一： <ul>
+<li>kStatus_HAL_GpioError：初始化 GPIO 时发生错误。 </li>
+<li>kStatus_HAL_GpioPinConflict：pinConfig 传递的pin 和port 对已经初始化，所以conflict。</li>
+<li>kStatus_HAL_GpioSuccess：GPIO 初始化成功。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">GPIO_HANDLE_DEFINE(g_GpioHandle);</span><br><span class="line"><span class="type">hal_gpio_pin_config_t</span> config;</span><br><span class="line">config.direction = kHAL_GpioDirectionOut;</span><br><span class="line">config.port = <span class="number">0</span>;</span><br><span class="line">config.pin = <span class="number">0</span>;</span><br><span class="line">config.level = <span class="number">0</span>;</span><br><span class="line">HAL_GpioInit((<span class="type">hal_gpio_handle_t</span>)g_GpioHandle, &amp;config);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-4-取消初始化-HAL-GpioDeinit-hal-gpio-handle-t-gpioHandle"><a href="#2-4-取消初始化-HAL-GpioDeinit-hal-gpio-handle-t-gpioHandle" class="headerlink" title="2.4 取消初始化 HAL_GpioDeinit(hal_gpio_handle_t gpioHandle)"></a>2.4 取消初始化 HAL_GpioDeinit(hal_gpio_handle_t gpioHandle)</h3><p><code>HAL_GpioDeinit</code> 函数用于取消初始化 GPIO 实例。**<u>&#x3D;&#x3D;它禁用触发模式&#x3D;&#x3D;</u>**。 </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">hal_gpio_status_t</span> <span class="title function_">HAL_GpioDeinit</span><span class="params">(<span class="type">hal_gpio_handle_t</span> gpioHandle)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>gpioHandle：GPIO句柄指针。句柄应该是 4 字节对齐的，因为某些设备不支持未对齐的访问。</li>
+</ul>
+<p>如果 GPIO 去初始化成功，该函数返回 kStatus_HAL_GpioSuccess。</p>
+<h3 id="2-5-获取输入引脚状态-HAL-GpioGetInput"><a href="#2-5-获取输入引脚状态-HAL-GpioGetInput" class="headerlink" title="2.5 获取输入引脚状态 HAL_GpioGetInput()"></a>2.5 获取输入引脚状态 HAL_GpioGetInput()</h3><p>此函数用于获取输入 GPIO 引脚的当前状态。通过 pinState 指针参数读取并返回引脚状态。 这是一个示例用法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">GPIO_HANDLE_DEFINE(g_GpioHandle);</span><br><span class="line"><span class="type">uint8_t</span> pinState;</span><br><span class="line">HAL_GpioInit((<span class="type">hal_gpio_handle_t</span>)g_GpioHandle, &amp;config);</span><br><span class="line">HAL_GpioGetInput((<span class="type">hal_gpio_handle_t</span>)g_GpioHandle, &amp;pinState);</span><br></pre></td></tr></table></figure>
+
+<p><strong>&#x3D;&#x3D;<u>在此示例中，已使用 <code>HAL_GpioInit() </code>初始化 GPIO 引脚，然后使用 <code>HAL_GpioGetInput() </code>读取引脚的当前状态。引脚的当前状态通过 <code>pinState</code> 指针参数返回。</u>&#x3D;&#x3D;</strong></p>
+<h3 id="2-6-设置输出电平HAL-GpioSetOutput"><a href="#2-6-设置输出电平HAL-GpioSetOutput" class="headerlink" title="2.6 设置输出电平HAL_GpioSetOutput"></a>2.6 设置输出电平HAL_GpioSetOutput</h3><p>这是 <code>HAL_GpioSetOutput</code> 函数的函数定义。此函数**<u>&#x3D;&#x3D;将 GPIO 引脚的电压电平设置为指定值&#x3D;&#x3D;</u>**。下面简单解释一下参数和返回值： </p>
+<ul>
+<li>gpioHandle：这是一个指向GPIO句柄对象的指针，表示设备上的一个特定的GPIO引脚。句柄应该是 4 字节对齐的，以确保正确的内存访问。 </li>
+<li>pinState：这是一个 8 位无符号整数，表示 GPIO 引脚的所需电压电平。值为 0 表示低电压电平，而值为 1 表示高电压电平。 </li>
+<li>返回值：该函数返回一个hal_gpio_status_t类型的值，代表操作成功或失败。如果操作成功，函数返回 kStatus_HAL_GpioSuccess。</li>
+</ul>
+<h3 id="2-7-获取Pin中断触发模式-HAL-GpioGetTriggerMode"><a href="#2-7-获取Pin中断触发模式-HAL-GpioGetTriggerMode" class="headerlink" title="2.7 获取Pin中断触发模式 HAL_GpioGetTriggerMode"></a>2.7 获取Pin中断触发模式 HAL_GpioGetTriggerMode</h3><p>函数 <code>HAL_GpioGetTriggerMode</code> **<u>&#x3D;&#x3D;获取引脚中断触发模式&#x3D;&#x3D;</u>**。</p>
+<p>触发模式由枚举类型<code>hal_gpio_interrupt_trigger_t</code>表示，可以是以下值之一: </p>
+<ul>
+<li>kHAL_GpioInterruptTriggerLowLevel：低电平触发中断 </li>
+<li>kHAL_GpioInterruptTriggerHighLevel：高电平触发中断 </li>
+<li>kHAL_GpioInterruptTriggerRisingEdge：上升沿触发中断 </li>
+<li>kHAL_GpioInterruptTriggerFallingEdge：下降沿触发中断 </li>
+<li>kHAL_GpioInterruptTriggerEitherEdge：在任一边沿触发中断</li>
+</ul>
+<p>**<u>&#x3D;&#x3D;如果引脚配置为输出，函数返回 kStatus_HAL_GpioError&#x3D;&#x3D;</u>**。 </p>
+<p>该函数有两个参数： </p>
+<ul>
+<li>gpioHandle：GPIO句柄指针。 </li>
+<li>gpioTrigger：保存管脚触发模式值的指针。</li>
+</ul>
+<p>该函数返回以下状态代码之一： </p>
+<ul>
+<li>kStatus_HAL_GpioSuccess：引脚触发模式已成功检索。 </li>
+<li>kStatus_HAL_GpioError：引脚配置为输出。</li>
+</ul>
+<h3 id="2-8-设置触发模式-HAL-GpioSetTriggerMode"><a href="#2-8-设置触发模式-HAL-GpioSetTriggerMode" class="headerlink" title="2.8 设置触发模式 HAL_GpioSetTriggerMode"></a>2.8 设置触发模式 HAL_GpioSetTriggerMode</h3><p>HAL_Gpio* 函数是硬件抽象层 (HAL) 库的一部分，用于与微控制器上的 GPIO（通用输入&#x2F;输出）引脚进行交互。 GPIO 引脚可用于多种用途，例如控制 LED 或读取按钮按下情况。 </p>
+<ul>
+<li>HAL_GpioPreInit() 函数用于初始化位于 .bss 部分的静态变量。该变量将用于存储 GPIO 引脚的配置信息。通常不需要此功能，仅在某些情况下使用，例如在 .bss 部分被 IDE 自动清理之前使用 GPIO 适配器时。 </li>
+<li>HAL_GpioInit() 函数使用 GPIO 句柄和用户配置结构初始化 GPIO 实例。用户可以配置配置结构来设置引脚方向（输入或输出）、端口号、引脚号和初始引脚电平。 gpioHandle参数是一个指向调用者分配的内存空间的指针，用于存储GPIO实例的信息。 </li>
+<li>HAL_GpioDeinit() 函数通过禁用触发模式来取消初始化 GPIO 实例。当不再需要 GPIO 引脚时，应调用此函数。 </li>
+<li>HAL_GpioGetInput() 函数获取输入 GPIO 引脚的电压电平。电压电平在 pinState 参数中返回。 </li>
+<li>HAL_GpioSetOutput() 函数设置输出 GPIO 引脚的电压电平。所需的电压电平在 pinState 参数中传递。 </li>
+<li>HAL_GpioGetTriggerMode() 函数获取 GPIO 引脚的中断触发模式。触发模式决定了是什么导致在引脚上产生中断，例如上升沿或下降沿。触发模式在 gpioTrigger 参数中返回。 </li>
+<li>HAL_GpioSetTriggerMode() 函数设置 GPIO 引脚的中断触发模式。所需的触发模式在 gpioTrigger 参数中传递。</li>
+</ul>
+<h3 id="2-9-HAL-GpioInstallCallback"><a href="#2-9-HAL-GpioInstallCallback" class="headerlink" title="2.9 HAL_GpioInstallCallback()"></a>2.9 HAL_GpioInstallCallback()</h3><p>该函数用于**<u>为GPIO模块安装一个回调函数及其对应的参数</u>**。</p>
+<p>当引脚状态中断发生时，驱动会通过调用已安装的回调函数通知上层。 GPIO管脚状态可以通过回调函数内部调用函数<code>HAL_GpioGetInput()</code>获取。 该函数采用三个参数： </p>
+<ul>
+<li>gpioHandle：GPIO句柄指针。 </li>
+<li>callback：要安装的回调函数。 </li>
+<li>callbackParam：回调函数的参数。</li>
+</ul>
+<p>该函数返回一个状态代码，指示回调是否已成功安装。如果成功，返回值为 kStatus_HAL_GpioSuccess。</p>
+<h3 id="2-10-HAL-GpioWakeUpSetting"><a href="#2-10-HAL-GpioWakeUpSetting" class="headerlink" title="2.10 HAL_GpioWakeUpSetting()"></a>2.10 HAL_GpioWakeUpSetting()</h3><p><code>HAL_GpioWakeUpSetting</code> 函数**<u>&#x3D;&#x3D;启用或禁用 GPIO 唤醒功能&#x3D;&#x3D;</u>**。</p>
+<p>此功能允许系统**<u>通过 GPIO 引脚状态的变化从低功耗模式唤醒</u>**。 </p>
+<p>该函数采用 gpioHandle 参数，该参数是指向 GPIO 句柄的指针。句柄应该是 4 字节对齐的，因为某些设备不支持未对齐的访问。 </p>
+<p>enable 参数是一个布尔值，指示是启用还是禁用唤醒功能。值 1 启用该功能，而值 0 禁用它。 </p>
+<p>该函数返回一个 hal_gpio_status_t 状态码，其中 kStatus_HAL_GpioSuccess 表示成功，kStatus_HAL_GpioError 表示发生错误。</p>
+<h3 id="2-11-HAL-GpioEnterLowpower"><a href="#2-11-HAL-GpioEnterLowpower" class="headerlink" title="2.11 HAL_GpioEnterLowpower()"></a>2.11 HAL_GpioEnterLowpower()</h3><p>根据提供的函数定义，函数 HAL_GpioEnterLowpower() 用于准备进入低功耗。但是，函数定义中并未指定为低功耗准备所采取的确切步骤。该**<u>&#x3D;&#x3D;函数很可能会执行必要的步骤将 GPIO 模块置于低功耗状态&#x3D;&#x3D;</u>**，例如禁用未使用的引脚或将时钟频率设置为较低的值。</p>
+<p>在定义此函数的 HAL 库的文档或源代码中可能会提供更多信息。</p>
+<h3 id="2-12-HAL-GpioExitLowpower"><a href="#2-12-HAL-GpioExitLowpower" class="headerlink" title="2.12 HAL_GpioExitLowpower()"></a>2.12 HAL_GpioExitLowpower()</h3><p>这两个函数 HAL_GpioEnterLowpower 和 HAL_GpioExitLowpower 似乎是用于管理低功耗的更大系统的一部分。 GPIO 模块用于控制系统的唤醒行为，这些函数可能分别用于准备 GPIO 模块进入低功耗模式和从低功耗模式恢复。 </p>
+<p>HAL_GpioEnterLowpower 可以执行诸如禁用 GPIO 中断、将 GPIO 引脚设置为低功耗状态或降低 GPIO 模块的时钟频率以节省电量等操作。 </p>
+<p>HAL_GpioExitLowpower 可能会执行 HAL_GpioEnterLowpower 的反向操作，例如恢复 GPIO 中断，将 GPIO 引脚恢复到之前的状态，或者提高 GPIO 模块的时钟频率以恢复正常操作。 </p>
+<p>总体而言，这些功能似乎是用于管理功耗和唤醒行为的更大系统的一部分，而不是独立的 GPIO 功能。</p>
+]]></content>
+      <categories>
+        <category>嵌入式， 代码解读</category>
+      </categories>
+      <tags>
+        <tag>嵌入式</tag>
+        <tag>代码解读</tag>
+        <tag>GPIO</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>基础准备1_Numpy</title>
     <url>/2022/04/01/29/</url>
     <content><![CDATA[<h2 id="0-Numpy的随机数"><a href="#0-Numpy的随机数" class="headerlink" title="0. Numpy的随机数"></a>0. Numpy的随机数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">随机数</span></span><br><span class="line"><span class="string">numpy.random.rand() 产生一个[0,1)之间的随机数, 包含0不包含1</span></span><br><span class="line"><span class="string">numpy.random.randn() 产生一个标准正态分布的随机数 np.random.randn(2,4)</span></span><br><span class="line"><span class="string">np.random.normal(loc=0.0, scale=1.0, size=None)  参数loc决定均值，参数scale决定标准差，参数size决定数量</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.randint(low, high=None, size=None, dtype=&#x27;l&#x27;) 产生一个或多个随机整数，范围区间为[low, high)   np.random.randint(-5,5,size=(2,2))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.random_sample(size=None)</span></span><br><span class="line"><span class="string">numpy.random.random(size=None)</span></span><br><span class="line"><span class="string">numpy.random.ranf(size=None)</span></span><br><span class="line"><span class="string">numpy.random.sample(size=None) 都是产生[0,1)之间的随机数</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">np.random.choice(5,size=(3,2)) 产生一个或多个随机整数，范围区间为[0,5)   np.random.choice([1,2,3,4,5],size=(3,2))</span></span><br><span class="line"><span class="string">demo_list = [&#x27;lenovo&#x27;, &#x27;sansumg&#x27;,&#x27;moto&#x27;,&#x27;xiaomi&#x27;, &#x27;iphone&#x27;]</span></span><br><span class="line"><span class="string">np.random.choice(demo_list,size=(3,3), p=[0.1,0.6,0.1,0.1,0.1])    注意p的长度必须和demo_list的长度一致,且p的和为1</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.seed() 设置随机数种子</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
