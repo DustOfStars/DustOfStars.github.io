@@ -1587,6 +1587,108 @@
       </tags>
   </entry>
   <entry>
+    <title>嵌入式common</title>
+    <url>/2023/03/21/42/</url>
+    <content><![CDATA[<h1 id="startup-c是做什么的？"><a href="#startup-c是做什么的？" class="headerlink" title="startup.c是做什么的？"></a>startup.c是做什么的？</h1><p>startup.c通常是指嵌入式系统中的启动代码，它的主要作用是<strong>初始化系统并启动应用程序</strong>。</p>
+<p>在启动过程中，会进行一些初始化操作，如设置堆栈、复制数据段、清零BSS段、设置中断向量表等。此外，startup.c还会加载应用程序，将控制转移到应用程序的入口处，开始执行应用程序的功能。</p>
+<p>因此，startup.c非常重要，涉及到整个系统的启动和运行。不同的嵌入式平台和芯片厂商会有不同的startup.c代码，但它们的基本逻辑和流程是类似的。</p>
+<h1 id="启动文件为什么会比main先启动？"><a href="#启动文件为什么会比main先启动？" class="headerlink" title="启动文件为什么会比main先启动？"></a>启动文件为什么会比main先启动？</h1><p>这个问题总结起来就是CPU启动时根据外部boot引脚状态从(<strong>起始地址+0x4</strong>)地址加载数据，赋值给PC(<strong>执行程序寄存器，r15</strong>)，而编译器将<code>startup.s</code>文件中的<strong>ResetHander函数的地址编译到(起始地址+0x4)内部</strong>，所以startup.s被先调用。</p>
+<p>详细的解释需要参考Cortex-M系列的知识，下面来详细说明。首先参考STM32F1x的手册2.4启动配置这句话</p>
+<img src="https://pic1.zhimg.com/50/v2-2e5c249ab76e390a9e582c37e4b0aba3_720w.jpg?source=1940ef5c" data-caption data-size="normal" data-rawwidth="1213" data-rawheight="119" class="origin_image zh-lightbox-thumb" width="1213" data-original="https://pic1.zhimg.com/v2-2e5c249ab76e390a9e582c37e4b0aba3_r.jpg?source=1940ef5c">
+
+<p>那么就可以理解从0x04地址执行代码，这是由芯片设计时规定的，至于如何实现就是集成电路相关的知识了，这里不在说明，那么就是第二个问题，ResetHander如何被编译到0x04偏移地址的，这就涉及中断向量表的知识，下面来自于&lt;Cortex-M3权威指南&gt;关于异常的说明章节。</p>
+<img src="https://pic1.zhimg.com/50/v2-f20a9e9511c6df3a64db9be45b2a8710_720w.jpg?source=1940ef5c" data-caption data-size="normal" data-rawwidth="1289" data-rawheight="534" data-default-watermark-src="https://pic1.zhimg.com/50/v2-30a6353a8582f2c2b3aa1298f3ac59c3_720w.jpg?source=1940ef5c" class="origin_image zh-lightbox-thumb" width="1289" data-original="https://pica.zhimg.com/v2-f20a9e9511c6df3a64db9be45b2a8710_r.jpg?source=1940ef5c">
+
+<p>从上面可以看出，<strong>在0x04偏移地址中定位的就是复位向量</strong>，而在代码startup.s中，就可以看到</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">__Vectors       DCD     __initial_sp               ; Top of Stack</span><br><span class="line">                DCD     Reset_Handler              ; Reset Handler</span><br><span class="line">                DCD     NMI_Handler                ; NMI Handler</span><br><span class="line">                ...</span><br><span class="line">__Vectors_End</span><br></pre></td></tr></table></figure>
+
+<p>也就是说由内核特性和STM芯片的定义，<strong>上电时的入口地址一定是Reset_Handler</strong>，而Reset_Handler就放置在在启动文件startup.s中，这就是启动文件startup.s比main先调用的总的原因.</p>
+<p>简略回答： startup比main更先调用，确实和编译器设置有关，但更多的是程序本来如此。</p>
+<p>详细回答：背景知识程序的生成步骤一般分成四步 preprocess(.c) -&gt; compile(.S) -&gt; assemble (.o) -&gt; link，具体可阅读 The Four Stages of Compiling a C Program 。</p>
+<p>Linker Script的基本知识： Simple Linker Script Example具体例子下面的截图是Atmel SAMD10D14AM的souce code，第一张是 Linker Script (samd10d14am_flash.ld)，第二张是 Startup file (startup_samd10.c)。接下来解释highlight部分的含义。</p>
+<img src="https://picx.zhimg.com/50/v2-52138c1fa6536fabc081b364d8044619_720w.jpg?source=1940ef5c" data-size="normal" data-rawwidth="868" data-rawheight="477" data-default-watermark-src="https://pica.zhimg.com/50/v2-4afd7ce25c84fe1b9b95b959264292aa_720w.jpg?source=1940ef5c" class="origin_image zh-lightbox-thumb" width="868" data-original="https://pic1.zhimg.com/v2-52138c1fa6536fabc081b364d8044619_r.jpg?source=1940ef5c">
+Linker Script
+
+<img src="https://pic1.zhimg.com/50/v2-a571c5379d301d831a96446f8c56c10a_720w.jpg?source=1940ef5c" data-size="normal" data-rawwidth="790" data-rawheight="482" data-default-watermark-src="https://picx.zhimg.com/50/v2-4a734839eec7f0c9f8fb2cebee129d8e_720w.jpg?source=1940ef5c" class="origin_image zh-lightbox-thumb" width="790" data-original="https://picx.zhimg.com/v2-a571c5379d301d831a96446f8c56c10a_r.jpg?source=1940ef5c">
+Vector Table
+
+<p>Vectors就是所谓Exception Table。对于ARM处理器Cortex M系列，<strong>Table的第一条是Stack Pointer的地址，第二条就是最重要的ISR for reset的地址</strong>。</p>
+<p>左边的Linker Script指定把 section(“.vector”) 放在生成程序的.text代码段，一般也就是flash的起始地址。从keyword MEMORY的定义来看，flash rom的起始地址是0x00000000，大小是0x00000800 (16K)，刚好符合官方文档的描述 <a href="https://web.eecs.umich.edu/~prabal/teaching/resources/eecs373/ARM_Cortex_AppNote179.pdf">https://web.eecs.umich.edu/~prabal/teaching/resources/eecs373/ARM_Cortex_AppNote179.pdf</a> </p>
+<blockquote>
+<p>1.1 Nested Vectored Interrupt Controller (NVIC)The initial stack pointer and the address of the reset handler must be located at 0x0 and 0x4 respectively. These values are then loaded into the appropriate CPU registers at reset.</p>
+</blockquote>
+<p><em><strong>Reset_Handler()这个ISR就是CPU power on或者reset后的第一个routine，里面会先做一些简单初始化，比如Intialize the C libray（这样我们才能在后头的代码里直接用strcpy()等常见函数），最后跳往我们最熟悉的main()。</strong></em></p>
+<p>其余的ISR都是optional，可以留白，会自动被Dummy_Handler填充，因为keyword weak。结论启动文件startup比main()先启动，是因为程序的启动顺序就是这样的，**CPU power on &#x2F; reset -&gt; Reset_Handler() -&gt; main()**。</p>
+<h1 id="BSS段是做什么的？"><a href="#BSS段是做什么的？" class="headerlink" title="BSS段是做什么的？"></a>BSS段是做什么的？</h1><p>BSS段（Block Started by Symbol）是指<strong>程序中未被初始化的全局变量和静态变量所占用的一段内存空间</strong>。在程序加载运行时，操作系统会自动分配一块内存空间用于存放BSS段。</p>
+<p><strong>BSS段中的变量被默认初始化为0</strong>，因此，在程序编写中不需要为它们显式地赋初值。BSS段对于节省内存空间和程序运行效率都有很大的帮助。这是因为，程序中的未初始化变量会在BSS段中被统一地设置为0，而不需要在程序中存储这些变量的具体值。这样，在程序执行过程中，<strong>BSS段所占空间可以被多次重用并动态分配，从而使得程序的内存利用率更高</strong>。</p>
+<h1 id="RAM中的各个段"><a href="#RAM中的各个段" class="headerlink" title="RAM中的各个段"></a>RAM中的各个段</h1><h2 id="RAM内存"><a href="#RAM内存" class="headerlink" title="RAM内存"></a>RAM内存</h2><p>RAM内存包括：</p>
+<ul>
+<li>代码段（text）</li>
+<li>数据段(data)</li>
+<li>bss段</li>
+<li>堆栈段（head stack）</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/93b610051ee31e5e9467f77af3b3acc5.png" alt="image.png"></p>
+<h2 id="编译器编译结果分析"><a href="#编译器编译结果分析" class="headerlink" title="编译器编译结果分析"></a>编译器编译结果分析</h2><p><img src="https://img-blog.csdnimg.cn/2021081811425533.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdndWNoYW8=,size_16,color_FFFFFF,t_70"></p>
+<p>编译结果有代码段（text）、数据段(data)、bss段。</p>
+<ul>
+<li>代码段（.text）是可<strong>执行指令的集合</strong>；</li>
+<li>数据段 (.data) 表示<strong>已经初始化不为0的存放在静态区的数据（全局 or 静态）</strong>。</li>
+<li>.bss段 表示未初始化的或为0的存放在静态区的数据（全局 or 静态）。</li>
+</ul>
+<p>从可执行程序的角度来说，如果一个数据未被初始化，就不需要为其分配空间，所以.data 和.bss 的区别就是： <strong>.bss 并不占用可执行文件的大小，仅仅记录需要用多少空间来存储这些未初始化的数据，而不分配实际空间</strong>。</p>
+<p>所以代码段（text）、数据段(data)这两者相加共同构成可执行文件的大小，dec也就是文件大小(hex也是文件大小，只不过是16进制表示的)。</p>
+<h2 id="堆栈"><a href="#堆栈" class="headerlink" title="堆栈"></a>堆栈</h2><h3 id="堆-heap"><a href="#堆-heap" class="headerlink" title="堆 heap"></a>堆 heap</h3><p><strong>堆保存函数内部动态分配（malloc 或 new）的内存，是另外一种用来保存程序信息的数据结构。</strong><br>堆是先进先出（FIFO）数据结构。堆的地址空间是向上增加，即当堆上保存的数据越多，堆的地址越高。动态内存分配。<br>注意：<strong>堆内存需要程序员手动管理内存，通常适用于较大的内存分配，如频繁的分配较小的内存，容易导致内存碎片化</strong>。</p>
+<h3 id="栈-stack"><a href="#栈-stack" class="headerlink" title="栈 stack"></a>栈 stack</h3><p><strong>栈保存函数的局部变量（不包括 static 修饰的变量），参数以及返回值</strong>。是一种后进先出（LIFO）的数据结构。<br>在调用函数或过程后，系统会清除栈上保存的局部变量、函数调用信息及其他信息。<br>栈的另外一个重要特征是，它的地址空间 向下减少，即当栈上保存的数据越多，栈的地址越低。<strong>静态内存分配</strong>。</p>
+<blockquote>
+<p><em><strong>注意：由于栈的空间通常比较小，一般 linux 程序只有几 M，故局部变量，函数入参应该避免出现超大栈内存使用，比如超大结构体，数组等，避免出现 stack overflow。</strong></em></p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>段名</th>
+<th>存储属性</th>
+<th>内存分配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>代码段<br>.text</td>
+<td>存放可执行程序的指令，存储态和运行态都有</td>
+<td>静态</td>
+</tr>
+<tr>
+<td>数据段<br>.data</td>
+<td>存放已初始化（非零初始化的全局变量和静态局部变量）的数据，存储态和运行态都有</td>
+<td>静态</td>
+</tr>
+<tr>
+<td>bss段<br>.bss</td>
+<td>存放未初始化（未初始化或者0初始化的全局变量和静态局部变量）的数据，存储态和运行态都有</td>
+<td>静态</td>
+</tr>
+<tr>
+<td>堆<br>heap</td>
+<td>动态分配内存，需要通过malloc手动申请，free手动释放，适合大块内存。容易造成内存泄漏和内存碎片。运行态才有</td>
+<td>动态</td>
+</tr>
+<tr>
+<td>栈<br>stack</td>
+<td>存放函数局部变量和参数以及返回值，函数返回后，由操作系统立即回收。栈空间不大，使用不当容易栈溢出。运行态才有</td>
+<td>静态</td>
+</tr>
+</tbody></table>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line">using namespace <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> a = <span class="number">0</span>;<span class="comment">//初始化的全局变量:保存在数据段</span></span><br><span class="line"><span class="type">char</span> *p1;<span class="comment">//未初始化的全局变量:保存在BSS段</span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> b;<span class="comment">//未初始化的局部变量:保存在栈上</span></span><br><span class="line">    <span class="type">char</span> s[] = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line">    <span class="comment">/* &quot;abc&quot;为字符串常量保存在常量区；数组保存在栈上，</span></span><br><span class="line"><span class="comment">    并将常量区的&quot;abc\0&quot;复制到该数组中。这个数组可以随意修改而不会有任何隐患，</span></span><br><span class="line"><span class="comment">    而&quot;123&quot;这个字符串依然会保留在静态区中。</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"> </span><br><span class="line">    <span class="type">char</span> *p2;<span class="comment">//p2保存在栈上</span></span><br><span class="line">    <span class="type">char</span> *p3 = <span class="string">&quot;123456&quot;</span>;<span class="comment">//p3保存在栈上，&quot;123456\0&quot;保存在data区的read-only部分</span></span><br><span class="line">    <span class="comment">//注意：如果令p3[1] = 9; 则程序崩溃，指针可以访问但不允许改变常量区的内容</span></span><br><span class="line">    <span class="comment">/* 声明了一个指针p3并指向&quot;123456\0&quot;在静态区中的地址，事实上，p3应该声明为</span></span><br><span class="line"><span class="comment">    char const *，以免可以通过p3[i]=&#x27;\n&#x27;这一类的语法去修改这个字符串的内容。如果这样做了，在支持“常量区”的系统中可能会导致异常，在“合并相同字符串”的编译方法下会导致其它地方的字符串常量古怪地发生变化。</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> c = <span class="number">0</span>;<span class="comment">//初始化的静态局部变量:保存在数据区（数据段）</span></span><br><span class="line"> </span><br><span class="line">    p1 = (<span class="type">char</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">char</span>) * <span class="number">10</span>);<span class="comment">//分配的10字节区域保存在堆上</span></span><br><span class="line">    p2 = (<span class="type">char</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">char</span>) * <span class="number">20</span>);<span class="comment">//分配的20字节区域保存在堆上</span></span><br><span class="line"> </span><br><span class="line">    <span class="built_in">strcpy</span>(p1, <span class="string">&quot;123456&quot;</span>);</span><br><span class="line">    <span class="comment">//&quot;123456\0&quot;放在常量区，编译器可能会将它与p3所指向&quot;123456&quot;优化成一个地方</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+        <category>代码解读</category>
+      </categories>
+      <tags>
+        <tag>嵌入式</tag>
+        <tag>代码解读</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>嵌入式系统1--简介</title>
     <url>/2022/09/01/08/</url>
     <content><![CDATA[<h1 id="嵌入式系统1–简介"><a href="#嵌入式系统1–简介" class="headerlink" title="嵌入式系统1–简介"></a>嵌入式系统1–简介</h1><h2 id="实时操作系统"><a href="#实时操作系统" class="headerlink" title="实时操作系统"></a>实时操作系统</h2><p>是不是RTOS，由<strong>任务调度策略</strong>决定：</p>
