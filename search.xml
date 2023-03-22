@@ -1106,6 +1106,64 @@
       </tags>
   </entry>
   <entry>
+    <title>&lt;嵌入式&gt; -- 从一个HelloWorld开始</title>
+    <url>/2023/03/22/43/</url>
+    <content><![CDATA[<h1 id="主程序"><a href="#主程序" class="headerlink" title="主程序"></a>主程序</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;fsl_device_registers.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;fsl_debug_console.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;board.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;pin_mux.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdbool.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;clock_config.h&quot;</span></span></span><br><span class="line"><span class="comment">/*******************************************************************************</span></span><br><span class="line"><span class="comment"> * Definitions</span></span><br><span class="line"><span class="comment"> ******************************************************************************/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*******************************************************************************</span></span><br><span class="line"><span class="comment"> * Prototypes</span></span><br><span class="line"><span class="comment"> ******************************************************************************/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*******************************************************************************</span></span><br><span class="line"><span class="comment"> * Code</span></span><br><span class="line"><span class="comment"> ******************************************************************************/</span></span><br><span class="line"><span class="comment">/*!</span></span><br><span class="line"><span class="comment"> * @brief Main function</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init board hardware. */</span></span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line"></span><br><span class="line">    PRINTF(<span class="string">&quot;hello world.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ch = GETCHAR();</span><br><span class="line">        PUTCHAR(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>有个很有意思的，这里的三个文件刚好填满 board 这个文件夹！</p>
+<h1 id="初始化硬件板–BOARD-InitPins"><a href="#初始化硬件板–BOARD-InitPins" class="headerlink" title="初始化硬件板–BOARD_InitPins()"></a>初始化硬件板–BOARD_InitPins()</h1><blockquote>
+<p>BOARD_InitPins() 是在 pin_mux.h 中定义的，所以看看 pin_mux.h 中有什么好玩的！</p>
+</blockquote>
+<h2 id="pin-mux-h"><a href="#pin-mux-h" class="headerlink" title="pin_mux.h"></a>pin_mux.h</h2><p>这是一个头文件，用于使用 MCUXpresso 配置工具为微控制器配置引脚复用和电气特性。</p>
+<p>它提供了一个函数来初始化微控制器使用的引脚，可以在启动期间调用。 该文件定义了用于配置引脚电气特性的宏常量 <code>SOPT5_LPUART0ODE_0b0</code>、<code>SOPT5_LPUART0RXSRC_0b0</code> 和 <code>SOPT5_LPUART0TXSRC_0b00</code>。 </p>
+<p>头文件由包含保护 (<code>#ifndef _PIN_MUX_H_</code>) 保护，确保它在编译单元中仅包含一次。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0ODE_0b0 0x00u    <span class="comment">/*LPUART0开漏禁用*/</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0RXSRC_0b0 0x00u  <span class="comment">/*LPUART0接收数据源选择：LPUART_RX pin */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0TXSRC_0b00 0x00u <span class="comment">/*LPUART0发送数据源选择：LPUART_TX pin */</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>声明了两个函数：</p>
+<ul>
+<li>void BOARD_InitPins(void);  配置引脚routing和可选引脚电气特性</li>
+<li>void BOARD_InitBootPins(void);  初始化启动引脚；</li>
+</ul>
+<h2 id="pin-mux-c"><a href="#pin-mux-c" class="headerlink" title="pin_mux.c"></a>pin_mux.c</h2><h3 id="包含头文件"><a href="#包含头文件" class="headerlink" title="包含头文件"></a>包含头文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;fsl_common.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;fsl_port.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;pin_mux.h&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="函数BOARD-InitPins"><a href="#函数BOARD-InitPins" class="headerlink" title="函数BOARD_InitPins()"></a>函数BOARD_InitPins()</h3><p>显示的代码片段正在初始化微控制器上的引脚。具体来说，<strong>它正在配置C端口上的两个引脚（42和43），以分别作为LPUART0模块的接收和发送引脚</strong>。</p>
+<p>代码还将LPUART0传输数据源设置为LPUART0_TX引脚，将接收数据源设置为LPUART_RX引脚。此外，它还禁用了LPUART0模块上的开漏。</p>
+<p>引脚初始化流程：</p>
+<ol>
+<li>CLOCK_EnableClock(kCLOCK_PortC);  &#x2F;&#x2F; <strong>端口C时钟门控制：时钟使能</strong>！</li>
+<li>PORT_SetPinMux(PORTC, 6U, kPORT_MuxAlt4);  &#x2F;&#x2F; <strong>PortC 6 是 Pin42，配置为可选功能4：Rx</strong></li>
+<li>PORT_SetPinMux(PORTC, 7U, kPORT_MuxAlt4);  &#x2F;&#x2F; 配置Tx</li>
+<li>SIM-&gt;SOPT5 &#x3D; ((SIM-&gt;SOPT5 &amp; …   &#x2F;&#x2F; 配置LPUART0的Tx和Rx的数据源选择，选择上面选的Tx、Rx引脚，并且LPUART0引脚关闭开漏功能</li>
+</ol>
+<h3 id="函数-BOARD-InitBootPins"><a href="#函数-BOARD-InitBootPins" class="headerlink" title="函数 BOARD_InitBootPins()"></a>函数 BOARD_InitBootPins()</h3><p>只是调用 BOARD_InitPins() 函数，进行引脚初始化！</p>
+<h1 id="初始化硬件板–BOARD-BootClockRUN"><a href="#初始化硬件板–BOARD-BootClockRUN" class="headerlink" title="初始化硬件板–BOARD_BootClockRUN()"></a>初始化硬件板–BOARD_BootClockRUN()</h1><blockquote>
+<p>BOARD_BootClockRUN() 在 clock_config.h 中声明，来学！</p>
+</blockquote>
+<h1 id="初始化硬件板–BOARD-InitDebugConsole"><a href="#初始化硬件板–BOARD-InitDebugConsole" class="headerlink" title="初始化硬件板–BOARD_InitDebugConsole()"></a>初始化硬件板–BOARD_InitDebugConsole()</h1><blockquote>
+<p>BOARD_InitDebugConsole()  在 board.h 中声明</p>
+</blockquote>
+<p>上拉 (Pull-up) 和下拉 (Pull-down) 是指在数字电路中使用电阻将输入或输出引脚连接到电源或地，以确保在没有输入信号的情况下，引脚保持在一个已知状态。具体来说，上拉是指将引脚连接到电源（通常是高电平），下拉是指将引脚连接到地（通常是低电平）。在某些情况下，还可以使用弱上拉或弱下拉，即使用较大阻值的电阻。</p>
+<p>开漏 (Open-Drain) 和推挽 (Push-Pull) 是指输出引脚的驱动方式。<strong>开漏输出只能将引脚拉到低电平，而不能将其拉到高电平，而推挽输出可以将引脚驱动到高电平或低电平。</strong>在使用开漏输出时，还需要在输出引脚和电源之间连接一个上拉电阻，以确保输出引脚能够被拉到高电平。</p>
+<p>开漏输出通常用于需要将多个设备连接到同一个总线上的情况，而推挽输出则更适用于需要直接驱动其他器件的情况。</p>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+        <category>代码解读</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>嵌入式</tag>
+        <tag>代码解读</tag>
+        <tag>BOARD</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>代码解读之GPIO_Adapter</title>
     <url>/2023/03/20/38/</url>
     <content><![CDATA[<h1 id="读fsl-adapter-gpio-c-和-h-代码"><a href="#读fsl-adapter-gpio-c-和-h-代码" class="headerlink" title="读fsl_adapter_gpio.c 和 .h 代码"></a>读fsl_adapter_gpio.c 和 .h 代码</h1><h2 id="1-fsl-adapter-gpio-c"><a href="#1-fsl-adapter-gpio-c" class="headerlink" title="1. fsl_adapter_gpio.c"></a>1. fsl_adapter_gpio.c</h2><p>这个代码是一个包含头文件并定义与MCU中的GPIO（通用输入&#x2F;输出）功能相关的一些宏的 C 源文件。它是为 NXP 公司制造的特定MCU编写的。</p>
