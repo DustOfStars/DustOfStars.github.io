@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="DustOfStars">
 <meta property="og:description" content="KW38点灯大师哈哈哈.">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/03/24/42/light.gif">
+<meta property="og:image" content="http://example.com/2023/03/24/42/light2.gif">
 <meta property="article:published_time" content="2023-03-24T09:06:42.000Z">
 <meta property="article:modified_time" content="2023-03-24T09:06:42.000Z">
 <meta property="article:author" content="Jia">
@@ -35,7 +35,7 @@
 <meta property="article:tag" content="嵌入式">
 <meta property="article:tag" content="LED">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2023/03/24/42/light.gif">
+<meta name="twitter:image" content="http://example.com/2023/03/24/42/light2.gif">
 
 
 <link rel="canonical" href="http://example.com/2023/03/24/42/">
@@ -295,7 +295,7 @@
         <h1 id="KW38点灯大师"><a href="#KW38点灯大师" class="headerlink" title="KW38点灯大师"></a>KW38点灯大师</h1><blockquote>
 <p>frdmkw38_gpio_led_output   工程</p>
 </blockquote>
-<p><img src="/2023/03/24/42/light.gif" alt="light"></p>
+<p><img src="/2023/03/24/42/light2.gif" alt="light"></p>
 <h2 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* Define the init structure for the output LED pin*/</span></span><br><span class="line">    <span class="type">gpio_pin_config_t</span> led_config = &#123;</span><br><span class="line">        kGPIO_DigitalOutput,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Board pin, clock, debug console init */</span></span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Print a note to terminal. */</span></span><br><span class="line">    PRINTF(<span class="string">&quot;\r\n GPIO Driver example\r\n&quot;</span>);</span><br><span class="line">    PRINTF(<span class="string">&quot;\r\n The LED is blinking.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init output LED GPIO. */</span></span><br><span class="line">    GPIO_PinInit(BOARD_LED_GPIO, BOARD_LED_GPIO_PIN, &amp;led_config);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        delay();</span><br><span class="line">        GPIO_PortToggle(BOARD_LED_GPIO, <span class="number">1u</span> &lt;&lt; BOARD_LED_GPIO_PIN);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <blockquote>
