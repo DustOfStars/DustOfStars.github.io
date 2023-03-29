@@ -38,6 +38,15 @@
   </url>
   
   <url>
+    <loc>http://example.com/2023/03/29/43/</loc>
+    
+    <lastmod>2023-03-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/2023/03/24/42/</loc>
     
     <lastmod>2023-03-24</lastmod>
@@ -877,6 +886,13 @@
   </url>
   
   <url>
+    <loc>http://example.com/tags/GPIO%E4%B8%AD%E6%96%AD/</loc>
+    <lastmod>2023-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/tags/pyTorch/</loc>
     <lastmod>2023-03-29</lastmod>
     <changefreq>weekly</changefreq>
@@ -1145,14 +1161,14 @@
   </url>
   
   <url>
-    <loc>http://example.com/categories/%E6%95%B0%E5%AD%97IC/</loc>
+    <loc>http://example.com/categories/STL/vector/</loc>
     <lastmod>2023-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://example.com/categories/STL/vector/</loc>
+    <loc>http://example.com/categories/%E6%95%B0%E5%AD%97IC/</loc>
     <lastmod>2023-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1195,6 +1211,13 @@
   
   <url>
     <loc>http://example.com/categories/%E8%B7%AF%E7%A7%91V0/</loc>
+    <lastmod>2023-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB/%E4%B8%AD%E6%96%AD/</loc>
     <lastmod>2023-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
