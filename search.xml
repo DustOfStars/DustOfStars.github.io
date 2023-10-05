@@ -568,6 +568,483 @@
       </tags>
   </entry>
   <entry>
+    <title>UART总结</title>
+    <url>/2022/10/17/02/</url>
+    <content><![CDATA[<h1 id="总线协议-–-UART"><a href="#总线协议-–-UART" class="headerlink" title="总线协议 – UART"></a>总线协议 – UART</h1><h2 id="一、-UART简介"><a href="#一、-UART简介" class="headerlink" title="一、 UART简介"></a>一、 UART简介</h2><blockquote>
+<p>UART: Universal Asynchronous Receiver Transmitter（通用异步收发器），</p>
+<p>通用的<em>串行、异步</em>通信总线，它有<strong>两条</strong>数据线，实现<strong>全双工</strong>发送和接收。</p>
+</blockquote>
+<h3 id="1-1-通信基础"><a href="#1-1-通信基础" class="headerlink" title="1.1 通信基础"></a>1.1 通信基础</h3><p>串行、并行：</p>
+<ul>
+<li>并行通信：总线在传递数据的时候，可以一次性收发多个位的数据。并行虽然快，但是要考虑多个线的<em>资源占用</em>，以及多条线<em>互相干扰</em>的问题；</li>
+<li>串行通信：每一位数据逐次传递；（<strong>IIC\SPI都是串行通信</strong>）</li>
+</ul>
+<p>单工、双工：</p>
+<ul>
+<li>单工通信：只能是单向的，<mark>发送器给接收器发送数据</mark>，而不能反过来；</li>
+<li>双工通信：可以是A到B，也可以是B到A；<ul>
+<li>半双工：不能同时发生；只有一根线，发送时就不能接收；</li>
+<li>全双工：可以同时发送和接收，有两根线；</li>
+</ul>
+</li>
+</ul>
+<p>波特率：</p>
+<ul>
+<li><p>波特率：描述UART通信速度，单位<strong>bps</strong>，(bit per second)，每秒传送的bit的数量；</p>
+<ul>
+<li>每秒的波特数，波特等于单个信号包含的码元数量</li>
+</ul>
+</li>
+<li><p>比特率：是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，每秒传送数据就越多。</p>
+</li>
+<li><p>波特率：表示每秒钟传送码元符号的个数，是衡量数据传送速率的指标。</p>
+<ul>
+<li>在信息传输通道中，携带数据信息的信号单元叫码元，每秒钟通过信道传输的码元数称为码元传输速率，简称<strong>波特率</strong>。波特率是传输通道频宽的指标。</li>
+<li>比特率&#x3D;波特率x单个调制状态对应的二进制位数</li>
+<li>两相调制(单个调制状态对应1个二进制位)的比特率等于波特率;四相调制(单个调制状态对应2个二进制位)的比特率为波特率的两倍;八相调制(单个调制状态对应3个二进制位)的比特率为波特率的三倍;依次类推。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-UART帧格式"><a href="#1-2-UART帧格式" class="headerlink" title="1.2 UART帧格式"></a>1.2 UART帧格式</h3><p><img src="/2022/10/17/02/frame_struct.JPG" alt="UART帧格式"></p>
+<ul>
+<li><input disabled type="checkbox"> 起始位：1bit的0，标志发送开始；因为空闲时为1，所以开始为0；</li>
+<li><input checked disabled type="checkbox"> 数据位： 5-8bit，<strong>先发低位，后发高位</strong>；</li>
+<li><input disabled type="checkbox"> 校验位：可有可无；奇偶校验，是校验奇数还是偶数个1； </li>
+<li><input disabled type="checkbox"> 停止位：高电平1；</li>
+<li><input disabled type="checkbox"> 空闲位：</li>
+</ul>
+<blockquote>
+<p>注意： UART<strong>空闲</strong>的时候，用<strong>高电平</strong>表示；</p>
+<p>串口协议从低位先发，最后发高位；</p>
+<p><mark>串口每次都只发一个byte，下一个byte又重新开始起始位，是因为它是<strong>异步的</strong>，发送方和接收方的时钟不是同一个，防止由于时钟不同步导致误差累积；</mark></p>
+<p>IIC和SPI都是同步通信，可以发多个字节；</p>
+</blockquote>
+<h3 id="1-3-Tx-amp-Rx"><a href="#1-3-Tx-amp-Rx" class="headerlink" title="1.3 Tx &amp; Rx"></a>1.3 Tx &amp; Rx</h3><blockquote>
+<p>串口的信号一般较弱，通信距离短，容易被干扰，所以增加了一块专有芯片用来增加抗干扰能力，使发送距离更远；(TTL信号转为232信号)</p>
+</blockquote>
+<p>发送STEPs：</p>
+<ol>
+<li>待发送数据放入FIFO</li>
+<li>增加了UART协议的各种头，比如起始和校验，然后拷贝放入shifter；</li>
+<li>shifter每个bit依次移位到引脚来发送，<strong>先发低位，后发高位</strong>；</li>
+</ol>
+<p><em>即发送时：      FIFO –&gt; shifter –&gt; TxD;</em></p>
+<p><em>接收时顺序相反，RxD –&gt; shifter –&gt; FIFO;</em></p>
+<h3 id="1-4-UART工作模式"><a href="#1-4-UART工作模式" class="headerlink" title="1.4 UART工作模式"></a>1.4 UART工作模式</h3><p><em><strong>CPU会通过总线，和接收和发送的BUFFer相连，用来读写数据，另外，也和控制单元相连，对控制单元的设置进行修改；</strong></em></p>
+<blockquote>
+<p>look-back: <strong>回环模式look-back</strong>是在内部将Tx和Rx短接，一般用于测试；</p>
+</blockquote>
+<p><img src="/2022/10/17/02/workMode.JPG" alt="几种工作模式"></p>
+<p>三种常见的工作模式：</p>
+<ol>
+<li>polling  轮询<ul>
+<li>CPU不断地对FIFO进行访问，查询需要的数据有没有发过来；</li>
+<li>CPU的状态： 工作 –&gt; 轮询 –&gt; 工作 –&gt; 轮询 …</li>
+<li>直到查找到需要的数据；</li>
+<li>费时费力，消耗资源</li>
+</ul>
+</li>
+<li>interrupt  中断<ul>
+<li>CPU和FIFO约定，CPU<strong>不主动</strong>去查询，当FIFO收到数据要发送过来的时候，给CPU发送<strong>中断信号</strong>，CPU中断当前工作，接收FIFO的数据；</li>
+<li><strong>比polling模式省资源</strong>；</li>
+</ul>
+</li>
+<li>DMA  直接存储器访问<ul>
+<li>CPU收到FIFO的数据，最终也是要放入某一块内存中去使用的；</li>
+<li>DMA模式<strong>跳过CPU</strong>，当FIFO数据过来时，直接放入需要的内存中；</li>
+</ul>
+</li>
+</ol>
+<h2 id="二、-polling模式实验（以qn9090为例）"><a href="#二、-polling模式实验（以qn9090为例）" class="headerlink" title="二、 polling模式实验（以qn9090为例）"></a>二、 polling模式实验（以qn9090为例）</h2><h3 id="2-1-主函数"><a href="#2-1-主函数" class="headerlink" title="2.1 主函数"></a>2.1 主函数</h3><blockquote>
+<p>usart_polling.c</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> ch;</span><br><span class="line">    <span class="type">usart_config_t</span> config;                              <span class="comment">// 配置波特率、帧格式、上升下降沿、奇偶校验、停止位等</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);                    <span class="comment">// 使用默认配置，传入config的引用</span></span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;    <span class="comment">// 客制化usart配置</span></span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);           <span class="comment">// 使用config和外部时钟初始化USART实例，其中外部时钟只在设置波特率时使用</span></span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);    <span class="comment">// 将数组中的值写入</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                     <span class="comment">// 数据逐个从FIFORD读入ch，这里只读入一位</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                    <span class="comment">// 数据逐个从ch写入FIFOWR，这里只读入一位，等待TX进入IDLE模式结束</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-只接收一个char"><a href="#2-2-只接收一个char" class="headerlink" title="2.2 只接收一个char"></a>2.2 只接收一个char</h3><p>实验结果：</p>
+<p><img src="/2022/10/17/02/%E5%8D%95%E5%AD%97%E7%AC%A6%E5%AE%9E%E9%AA%8C.jpg" alt="单字符实验"></p>
+<h2 id="接收字符串"><a href="#接收字符串" class="headerlink" title="接收字符串"></a>接收字符串</h2><p>原始代码修改为接收一个定长5的array，代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> <span class="built_in">array</span>[<span class="number">6</span>];</span><br><span class="line">    <span class="type">usart_config_t</span> config;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);</span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;</span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);</span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实验结果：</p>
+<p><img src="/2022/10/17/02/%E5%AE%9A%E9%95%BFarray%E5%AE%9E%E9%AA%8C.jpg" alt="定长array实验"></p>
+<h2 id="三、补充"><a href="#三、补充" class="headerlink" title="三、补充"></a>三、补充</h2><h3 id="3-1-SDK中典型使用"><a href="#3-1-SDK中典型使用" class="headerlink" title="3.1 SDK中典型使用"></a>3.1 SDK中典型使用</h3><p>在NXP的QN9090的SDK中，提供了丰富的示例：</p>
+<ul>
+<li>polling method 收发</li>
+<li>interrupt method 收发</li>
+<li>ringbuffer接收数据</li>
+<li>DMA method 收发</li>
+</ul>
+<p>文档 ： <code>MCUXpresso SDK API Reference Manual.pdf</code></p>
+<p><img src="/2022/10/17/02/%E5%85%B8%E5%9E%8B%E7%A4%BA%E4%BE%8B.jpg" alt="典型示例"></p>
+<h3 id="3-2-串口的工作原理"><a href="#3-2-串口的工作原理" class="headerlink" title="3.2 串口的工作原理"></a>3.2 串口的工作原理</h3><p>一个byte的数据，如何转为串口输出的bit？ 通过移位寄存器原理实现</p>
+<p>移位寄存器原理：</p>
+<p><img src="/2022/10/17/02/%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8.jpg" alt="移位寄存器"></p>
+<p>初始状态： A3A2A1A0＝ 1011</p>
+<p>然后Q3的输出，是在每个时钟节拍，按照这个先后顺序，把A3A2A1A0串行的输出出去。(小端)</p>
+<p>其实利用的就是D触发器的特性。</p>
+<p>如果我们使用8位的移位寄存器，就可以利用8个clk的时间，发一组8bit的数据通过一根导线传输出去。</p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>UART</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Vim使用</title>
+    <url>/2022/04/05/20/</url>
+    <content><![CDATA[<h1 id="Vim使用"><a href="#Vim使用" class="headerlink" title="Vim使用"></a>Vim使用</h1><p>本周学习了小彭老师的vim教程，很受启发，学习记录在这。</p>
+<blockquote>
+<p><strong>先放链接：</strong></p>
+<p><a href="https://www.bilibili.com/video/BV1H44y1V7DW?spm_id_from=333.999.0.0" title="小彭老师B站链接">【Vim插件整合包】C++&#x2F;Python自动补全，模糊查找文件，编译CMake工程等</a></p>
+</blockquote>
+<ul>
+<li>F4  &#x3D;&#x3D; :wa 保存文件</li>
+<li>F5      cmake多文件运行</li>
+<li>F7      单文件运行</li>
+<li>F8      打开一个外部shell</li>
+<li>F8 执行完命令之后，按Ctrl+D退出shell，回到文件中</li>
+<li>F9      打开nerdtree</li>
+<li>ctrl + T  打开&#x2F;关闭终端</li>
+<li>ctrl + \  ctrl + n 终端进入普通模式，可选中</li>
+<li>ctrl + w + “” 在终端中粘贴；如果来自别的寄存器a，则ctrl + w + “a</li>
+<li>可视模式按y复制，按p粘贴，按u撤销，按ctrl+r恢复撤销，按x删除单个字符，按dw删除单词，按dd删除行</li>
+<li>Z   &#x3D;&#x3D; ZZ 保存并退出</li>
+<li>Q         直接退出所有窗口</li>
+<li>F10      快速修改error</li>
+<li>ctrl + ww 切换窗口</li>
+<li>ctrl + wk 或者 wj 上下切换窗口</li>
+<li>:split  和  :vsplit 分割窗口</li>
+<li>普通模式 gq 快速修复</li>
+<li>普通模式 gf 格式化代码</li>
+<li>gd 跳转到定义</li>
+<li>gD 跳转到声明</li>
+<li>gr 跳转到引用</li>
+<li>gy 跳转到类型定义</li>
+<li>gI 跳转到函数实现</li>
+<li>gn 重命名当前光标下的变量名</li>
+<li>g + tab  查找命令表</li>
+<li>gci   批量注释和反注释</li>
+<li>K  查看当前光标下的symbol的文档</li>
+<li>ctrl + i 或者 ctrl + o 光标跳转到上一次、下一次的位置</li>
+<li>然后，不同的窗口之间切换，F2 F3</li>
+<li>:Git blame 显示每一行的提交信息</li>
+<li>空格 + g   打开所有当前git仓库中的文件</li>
+<li>空格 + s   相当于git status</li>
+<li>空格 + h   显示最近打开过的文件</li>
+<li>空格 + b   显示目前已经打开的所有文件</li>
+<li>空格 + l    搜索已打开文件中的内容</li>
+<li>空格 + o    只在当前文件中搜索</li>
+<li>空格 + r   在目前没打开的文件中搜索name</li>
+<li>% 跳转到匹配的括号</li>
+</ul>
+<p>一些可以修改的运行tasks配置：</p>
+<ul>
+<li>位置： <code>~/.vim/tasks.ini</code></li>
+</ul>
+]]></content>
+      <categories>
+        <category>工具</category>
+        <category>vim</category>
+      </categories>
+      <tags>
+        <tag>vim</tag>
+        <tag>工具</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ZigBeePRO-Fundamentals_Training</title>
+    <url>/2022/07/28/05/</url>
+    <content><![CDATA[<h1 id="1-ZigBeePRO-Fundamentals-Training"><a href="#1-ZigBeePRO-Fundamentals-Training" class="headerlink" title="1_ZigBeePRO-Fundamentals_Training"></a>1_ZigBeePRO-Fundamentals_Training</h1><h2 id="0-Agend"><a href="#0-Agend" class="headerlink" title="0 Agend"></a>0 Agend</h2><ul>
+<li>Zigbee Basics</li>
+<li>Zigbee Architecture</li>
+<li>ZigBee PRO Networks</li>
+<li>ZigBee Profiles, Devices and Clusters</li>
+<li>Network Commissioning</li>
+<li>Network Security</li>
+</ul>
+<h3 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h3><ul>
+<li>低功耗：将传输范围限制在0-10m line-of-sight.</li>
+<li>ZigBee 通常用于需要较长电池寿命和安全网络的<strong>低数据速率</strong>应用。</li>
+<li>ZigBee 的定义速率为 250 Kbit&#x2F;s，最适合来自传感器或输入设备的间歇性数据传输intermittent data transmissions</li>
+<li>10 kbps to 115 kbps data throughput </li>
+<li>10 to 75 m coverage range</li>
+</ul>
+<ul>
+<li>Up to 100 collocated networks</li>
+</ul>
+<ul>
+<li>Up to 2 years of battery life on standard alkaline  batteries</li>
+</ul>
+<h2 id="1-Basic"><a href="#1-Basic" class="headerlink" title="1. Basic"></a>1. Basic</h2><h3 id="1-1-ZigBee的理想应用"><a href="#1-1-ZigBee的理想应用" class="headerlink" title="1.1 ZigBee的理想应用"></a>1.1 ZigBee的理想应用</h3><ul>
+<li>点对点cable  replacement（例如，无线鼠标、遥控器、玩具） </li>
+<li>安全系统（例如，火灾和入侵者）</li>
+<li>环境控制（例如，供暖和空调）</li>
+<li>医院病人监控</li>
+<li>照明控制</li>
+<li>家庭自动化（例如，家庭娱乐、门、大门、窗帘和百叶窗）</li>
+<li>自动抄表 (AMR)</li>
+<li>工业自动化（例如，工厂监控）</li>
+</ul>
+<p><img src="/2022/07/28/05/different.PNG" alt="different"></p>
+<h2 id="2-Architecture"><a href="#2-Architecture" class="headerlink" title="2. Architecture"></a>2. Architecture</h2><h3 id="2-1-适用于-ZigBee-堆栈的-OSI-模型"><a href="#2-1-适用于-ZigBee-堆栈的-OSI-模型" class="headerlink" title="2.1 适用于 ZigBee 堆栈的 OSI 模型"></a>2.1 适用于 ZigBee 堆栈的 OSI 模型</h3><p><img src="/2022/07/28/05/OSI.PNG" alt="OSI"></p>
+<h3 id="2-2-软件架构"><a href="#2-2-软件架构" class="headerlink" title="2.2 软件架构"></a>2.2 软件架构</h3><p><img src="/2022/07/28/05/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84.jpg" alt="软件架构"></p>
+<h2 id="3-ZigBee-Pro-Networks"><a href="#3-ZigBee-Pro-Networks" class="headerlink" title="3. ZigBee Pro Networks"></a>3. ZigBee Pro Networks</h2><h3 id="3-1-网络节点"><a href="#3-1-网络节点" class="headerlink" title="3.1 网络节点"></a>3.1 网络节点</h3><ul>
+<li>Coordinator ：<ul>
+<li>每个网络都必须有一个Co-ordinator；</li>
+<li>开启整个网络；</li>
+<li>允许子节点通过它加入网络；</li>
+<li>能作为父节点，允许有children Coordinator；</li>
+</ul>
+</li>
+<li>Router ： <ul>
+<li>网络可以有多个router；</li>
+<li>router有路由能力；</li>
+<li>允许其他节点通过它加入网络；</li>
+<li>能作为parent，也能作为child；</li>
+</ul>
+</li>
+<li>End Device ： <ul>
+<li>网络可以有很多终端设备；</li>
+<li>只有收发数据的能力；</li>
+<li>不能做parents，不能有child；</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-Network-Identity"><a href="#3-2-Network-Identity" class="headerlink" title="3.2 Network Identity"></a>3.2 Network Identity</h3><ul>
+<li>PAN ID<ul>
+<li>16位的值，叫做PAN ID （Personal Area Network Identifier).</li>
+<li>网络运行时，由Cooridnator随机选择；</li>
+<li>新安装的网络生成的PAN ID可能与同一radio channel同一neighborhood的已有的网络存在冲突；</li>
+</ul>
+</li>
+<li>Extended PAN ID： 64位的值，叫做EPID；</li>
+</ul>
+<h3 id="3-2-Network-Addressing"><a href="#3-2-Network-Addressing" class="headerlink" title="3.2 Network Addressing"></a>3.2 Network Addressing</h3><ul>
+<li>IEEE (MAC) 地址：<ul>
+<li>这是一个 64 位地址，由 IEEE 分配，唯一标识设备</li>
+<li>在 ZigBee 网络中，有时称为“extended”地址。</li>
+</ul>
+</li>
+<li>网络地址：<ul>
+<li>此16位地址标识网络中的节点</li>
+<li>有时称为“short”地址。</li>
+<li>当节点首次加入网络时，由父节点动态分配为随机 16 位值。</li>
+</ul>
+</li>
+<li>协调器始终拥有网络地址 0x0000</li>
+</ul>
+<h3 id="3-3-NerghborTables"><a href="#3-3-NerghborTables" class="headerlink" title="3.3 NerghborTables"></a>3.3 NerghborTables</h3><blockquote>
+<p>路由节点（Router 或 Coordinator）保存有关其相邻节点的信息，该信息存储在 Neighbor 表中，其中包含节点的直接子节点的条目.</p>
+</blockquote>
+<h3 id="3-4-网络创建的过程"><a href="#3-4-网络创建的过程" class="headerlink" title="3.4 网络创建的过程"></a>3.4 网络创建的过程</h3><ol>
+<li>初始化IEEE 802.15.4 stack</li>
+<li>创建PAN Coordinator</li>
+<li>设置网络的PAN ID</li>
+<li>设置PAN Coordinator的short地址；</li>
+<li>选择radio frequency channel</li>
+<li>start网络</li>
+<li>加入其他设备</li>
+<li>开始传输数据</li>
+</ol>
+<h3 id="3-5-Descriptors"><a href="#3-5-Descriptors" class="headerlink" title="3.5 Descriptors"></a>3.5 Descriptors</h3><ul>
+<li>Node Descriptor<ul>
+<li>类型（End Device, Router or Coordinator) </li>
+<li>使用的频段（868 MHz、902 MHz 或 2400 MHHz）</li>
+</ul>
+</li>
+<li>Node Power Descriptor<ul>
+<li>Power mode</li>
+<li>Available power sources</li>
+</ul>
+</li>
+<li>Simple Descriptor<ul>
+<li>The endpoint on which the application communicates</li>
+<li>Lists of input and output clusters</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-ZIGBEE-PROFILES-DEVICES-AND-CLUSTER"><a href="#4-ZIGBEE-PROFILES-DEVICES-AND-CLUSTER" class="headerlink" title="4. ZIGBEE PROFILES, DEVICES AND CLUSTER"></a>4. ZIGBEE PROFILES, DEVICES AND CLUSTER</h2><h3 id="4-1-ZigBee-Endpoints"><a href="#4-1-ZigBee-Endpoints" class="headerlink" title="4.1 ZigBee Endpoints"></a>4.1 ZigBee Endpoints</h3><ul>
+<li>一个设备可以运行多个应用程序或同一应用程序的多个实例</li>
+<li>endpoint是为应用程序实例提供通信端口的软件实体</li>
+<li>endpoint number用于在向node发送消息时标识目标应用程序</li>
+<li>256 个endpoints，编号0 到 255：<ul>
+<li>0 保留给 ZDO（ZigBee Device Objects</li>
+<li>1 到 240 可用于应用程序实例</li>
+<li>241 到 254 保留，242 保留给 ZigBee Green Power</li>
+<li>255 用于广播到所有应用程序实例</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-2-Application-Profiles"><a href="#4-2-Application-Profiles" class="headerlink" title="4.2 Application Profiles"></a>4.2 Application Profiles</h3><ul>
+<li>应用程序配置文件定义了一组设备，这些设备可以一起用于实现特定市场领域的应用程序——例如：<ul>
+<li>照明系统的开&#x2F;关 switch、调光开关和占用传感器用于光照系统；</li>
+</ul>
+</li>
+<li>ZigBee 联盟定义了许多“公共”配置文件-例如：<ul>
+<li>智能能源</li>
+<li>家庭自动化</li>
+</ul>
+</li>
+<li><strong>公共配置文件确保来自不同制造商的 ZigBee 设备的互操作性</strong> -例如：<ul>
+<li>允许一个供应商的开关与另一个供应商的灯具（包含负载控制器）一起工作</li>
+</ul>
+</li>
+<li>可互操作的产品必须经过测试和认证，以符合相关的 ZigBee 应用规范</li>
+</ul>
+<h3 id="4-3-Device-Types"><a href="#4-3-Device-Types" class="headerlink" title="4.3 Device Types"></a>4.3 Device Types</h3><ul>
+<li>ZigBee 配置文件（例如家庭自动化）包含许多设备类型</li>
+<li>设备类型是：<ul>
+<li>对应于功能设备的软件实体（例如可调光）</li>
+<li>在节点上作为具有相应端点的应用程序实施</li>
+</ul>
+</li>
+<li>设备类型由许多功能“集群”支持：<ul>
+<li>一些集群是强制性的（例如基本集群），一些是可选的</li>
+<li>一些集群是特定于配置文件的</li>
+<li>一些集群由配置文件共享并来自 ZigBee Cluster Library (ZCL)</li>
+</ul>
+</li>
+<li>在设备结构中启用了所需的集群</li>
+<li>可以在同一节点上实现多个设备类型（或同一设备类型的多个实例）</li>
+</ul>
+<h3 id="4-4-Clusters-and-Attributes"><a href="#4-4-Clusters-and-Attributes" class="headerlink" title="4.4 Clusters and Attributes"></a>4.4 Clusters and Attributes</h3><ul>
+<li>集群是最小的功能构建块，对应于特定功能（例如开&#x2F;关、可调光、恒温器</li>
+<li>集群包含<strong>属性和用于与它们交互的命令</strong></li>
+<li>属性是保存的<strong>数据实体</strong>（例如温度）在设备上并且可以在设备之间进行通信</li>
+<li>例如，恒温器集群包含与以下相关的属性：<ul>
+<li>当前温度</li>
+<li>最低温度</li>
+<li>最高温度</li>
+</ul>
+</li>
+<li>ZigBee 联盟已经定义了标准集群：<ul>
+<li>在 ZigBee Cluster Library(ZCL)中收集的一组常见集群</li>
+<li>作为公共应用程序配置文件一部分的特定集群，例如智能能源</li>
+</ul>
+</li>
+<li>一个集群有两种形式——<strong>客户端和服务端</strong>——存在于两个通信设备上</li>
+</ul>
+<h3 id="4-5-Cluster-Servers-and-Clients"><a href="#4-5-Cluster-Servers-and-Clients" class="headerlink" title="4.5 Cluster Servers and Clients"></a>4.5 Cluster Servers and Clients</h3><p>一个集群有两种形式，服务器和客户端：</p>
+<ul>
+<li>Cluster Server：<strong>用于存储属性并接收命令来操作它们</strong></li>
+<li>Cluster Client：用于通过<strong>发送命令</strong>来操作相应集群server中的属性（通常是“写”命令设置属性值，“读”命令获取属性值）</li>
+</ul>
+<h2 id="5-NETWORK-COMMISSIONING"><a href="#5-NETWORK-COMMISSIONING" class="headerlink" title="5. NETWORK COMMISSIONING"></a>5. NETWORK COMMISSIONING</h2><h3 id="5-1-Service-Discovery-服务发现"><a href="#5-1-Service-Discovery-服务发现" class="headerlink" title="5.1 Service Discovery  服务发现"></a>5.1 Service Discovery  服务发现</h3><ul>
+<li>允许加入设备找到与之操作的兼容节点（例如，调光开关可能需要找到可调光）</li>
+<li>有关节点的信息保存在节点的“descriptors”中<ul>
+<li>根据兼容的集群进行匹配</li>
+<li>集群信息是保存在节点上的简单描述符中</li>
+</ul>
+</li>
+<li>加入节点broadcast一个匹配描述符请求（Match Descriptor Request），列出感兴趣的集群</li>
+<li>具有相关集群的节点单播unicast一个Match Descriptor Response，包含地址和端点信息<ul>
+<li>加入节点可能会收到多个响应</li>
+<li>加入节点上的应用程序，必须确定它将与哪个响应节点一起工作</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2022/07/28/05/Service%20Discovery.PNG" alt="Service Discovery"></p>
+<h3 id="5-2-Direct-Addressing-Grouping-and-Binding-直接寻址、分组和绑定"><a href="#5-2-Direct-Addressing-Grouping-and-Binding-直接寻址、分组和绑定" class="headerlink" title="5.2 Direct Addressing, Grouping and Binding 直接寻址、分组和绑定"></a>5.2 Direct Addressing, Grouping and Binding 直接寻址、分组和绑定</h3><p>节点可以通过直接寻址、分组或绑定与compatible node进行通信：</p>
+<ul>
+<li>Direct Addressing 涉及使用其地址向各个节点发送消息。</li>
+<li>Grouping 涉及创建具有关联 16 位组地址的一组节点：<ul>
+<li>Group Table保存在每个远程（目标）节点</li>
+<li>此表包含节点所属组的组的地址</li>
+<li>组的消息发送到相应的组地址</li>
+<li>当一个group的消息已经receive，仅当组地址在表中时才接受此消息</li>
+</ul>
+</li>
+<li>Binding 涉及创建一组预定义的链接或与远程节点的绑定：<ul>
+<li>将本地端点（应用程序）与远程节点上的端点（应用程序）绑定</li>
+<li>包含这些链路的绑定表保存在本地（源）节点上</li>
+<li>来自本地端点的所有后续通信都自动发送到绑定的远程端点</li>
+<li>可以本地或远程创建绑定</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-3-Sending-Data-Packets-by-Direct-Addressing-通过直接寻址发送数据包"><a href="#5-3-Sending-Data-Packets-by-Direct-Addressing-通过直接寻址发送数据包" class="headerlink" title="5.3 Sending Data Packets by Direct Addressing 通过直接寻址发送数据包"></a>5.3 Sending Data Packets by Direct Addressing 通过直接寻址发送数据包</h3><p><img src="/2022/07/28/05/send.PNG" alt="send"></p>
+<h3 id="5-4-Sending-Data-Packets-by-Group-Addressing-通过组寻址发送数据包"><a href="#5-4-Sending-Data-Packets-by-Group-Addressing-通过组寻址发送数据包" class="headerlink" title="5.4 Sending Data Packets by Group Addressing  通过组寻址发送数据包"></a>5.4 Sending Data Packets by Group Addressing  通过组寻址发送数据包</h3><p>要在group中包括node，必须使用“Add Group”命令将group address添加到node上的“Group Table”中。</p>
+<h3 id="5-5-Local-and-Remote-Binding"><a href="#5-5-Local-and-Remote-Binding" class="headerlink" title="5.5 Local and Remote Binding"></a>5.5 Local and Remote Binding</h3><h4 id="Local-Binding"><a href="#Local-Binding" class="headerlink" title="Local Binding"></a>Local Binding</h4><p>Local device writes details of bound endpoint into its Binding Table.</p>
+<p><img src="/2022/07/28/05/local.PNG" alt="local"></p>
+<h4 id="Remote-Binding-Watch-Trap"><a href="#Remote-Binding-Watch-Trap" class="headerlink" title="Remote Binding(Watch,  Trap)"></a>Remote Binding(Watch,  Trap)</h4><p>Local device requests remote devices to write its details into their Binding Tables.</p>
+<p><img src="/2022/07/28/05/remote.PNG" alt="remote"></p>
+<h3 id="5-6-Sending-Data-Packets-to-Bound-Endpoints"><a href="#5-6-Sending-Data-Packets-to-Bound-Endpoints" class="headerlink" title="5.6 Sending Data Packets to Bound Endpoints"></a>5.6 Sending Data Packets to Bound Endpoints</h3><p><img src="/2022/07/28/05/send2.PNG" alt="send2"></p>
+<h3 id="5-6-Attribute-Reporting"><a href="#5-6-Attribute-Reporting" class="headerlink" title="5.6 Attribute Reporting"></a>5.6 Attribute Reporting</h3><ul>
+<li>一个节点可能需要向另一个节点发送regular&#x2F;periodic报告。比如，一个开&#x2F;关灯将其状态报告给Control Bridge（用于物联网）</li>
+<li>属性报告涉及从集群服务器主动向客户端发送属性值（而不是客户端轮询polling服务器）： <ul>
+<li>减少网络流量</li>
+<li>允许休眠服务器报告唤醒时的属性值</li>
+</ul>
+</li>
+<li>“属性报告”可以通过以下方式发出：<ul>
+<li>通过用户应用程序中的函数调用（在服务器设备上）</li>
+<li>由 ZCL 自动发出</li>
+</ul>
+</li>
+<li>自动属性报告涉及两种机制：<ul>
+<li>报告由属性值变化触发</li>
+<li>定期为属性发布报告</li>
+<li>这些机制可以同时运行</li>
+</ul>
+</li>
+</ul>
+<p>必须首先使用Configure Reporting命令配置属性报告。</p>
+<h2 id="6-NETWORK-SECURITY"><a href="#6-NETWORK-SECURITY" class="headerlink" title="6. NETWORK SECURITY"></a>6. NETWORK SECURITY</h2><h2 id="6-1-Security-Schemes-安全方案"><a href="#6-1-Security-Schemes-安全方案" class="headerlink" title="6.1 Security Schemes 安全方案"></a>6.1 Security Schemes 安全方案</h2><p>安全措施由信任中心管理：</p>
+<ul>
+<li>Trust Center Policy 信任中心策略<ul>
+<li>White Listing白名单：仅允许预定义的“友好”节点加入网络</li>
+<li>Security Key Distribution安全密钥分发：生成和传输用于加密的密钥</li>
+</ul>
+</li>
+<li>Encryption Schemes加密方案<ul>
+<li>高度安全的基于 AES 的加密系统</li>
+<li>128 位加密密钥</li>
+<li>可应用于两个级别：<ul>
+<li>Network Level网络级别：相同的“网络密钥”用于所有网络通信</li>
+<li>Application Level应用级别（可选）：每对应用程序之间的唯一“Link key”</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-Network-Key-Provisioning"><a href="#6-2-Network-Key-Provisioning" class="headerlink" title="6.2 Network Key Provisioning"></a>6.2 Network Key Provisioning</h3><ul>
+<li>下图说明了从Trust Centre到joining node的Network Key的提供。</li>
+<li>该过程假定预配置的Link Key（全局或唯一）可用。</li>
+<li>使用唯一link key，Trust Centre检查其是否具有与joining node的 MAC 地址相对应的密钥。</li>
+</ul>
+<p><img src="/2022/07/28/05/key.PNG" alt="key"></p>
+<h3 id="6-3-Application-level-Security"><a href="#6-3-Application-level-Security" class="headerlink" title="6.3 Application-level Security"></a>6.3 Application-level Security</h3><ul>
+<li>可以为一对节点设置</li>
+<li>允许两个节点之间的专用通信，使用application link key进行加密&#x2F;解密</li>
+<li>link key是唯一的，一对节点独占的</li>
+<li>link key由信任中心颁发：<ul>
+<li>来自 TC 的一个请求节点链接密钥</li>
+<li>TC 将密钥发送到两个节点</li>
+<li>密钥的传输使用Network Key和TC和target node中间的link key加密（如果适用的话）</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2022/07/28/05/Application-level.png" alt="Application-level"></p>
+<h3 id="6-4-Data-Encryption-x2F-Decryption-in-Stack"><a href="#6-4-Data-Encryption-x2F-Decryption-in-Stack" class="headerlink" title="6.4 Data Encryption&#x2F;Decryption in Stack"></a>6.4 Data Encryption&#x2F;Decryption in Stack</h3><p><img src="/2022/07/28/05/Encryption_Decryption.png" alt="Encryption_Decryption"></p>
+<h2 id="7-ZIGBEE-CERTIFICATION"><a href="#7-ZIGBEE-CERTIFICATION" class="headerlink" title="7. ZIGBEE CERTIFICATION"></a>7. ZIGBEE CERTIFICATION</h2><p>Zigbee 3.0</p>
+<ul>
+<li>完整的 loT solution — 从mesh network到允许智能对象协同工作的通用语言。</li>
+<li>Zigbee增加了用户和开发人员的选择和灵活性;并让人们相信产品和服务将协同工作。</li>
+<li>Zigbee服务于智能家居和商业建筑市场。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>NXP</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>ZigBee</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hello World</title>
     <url>/2021/03/18/57/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
@@ -1873,483 +2350,6 @@ Vector Table
         <tag>数组</tag>
         <tag>双指针</tag>
         <tag>有序数组的平方</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>UART总结</title>
-    <url>/2022/10/17/02/</url>
-    <content><![CDATA[<h1 id="总线协议-–-UART"><a href="#总线协议-–-UART" class="headerlink" title="总线协议 – UART"></a>总线协议 – UART</h1><h2 id="一、-UART简介"><a href="#一、-UART简介" class="headerlink" title="一、 UART简介"></a>一、 UART简介</h2><blockquote>
-<p>UART: Universal Asynchronous Receiver Transmitter（通用异步收发器），</p>
-<p>通用的<em>串行、异步</em>通信总线，它有<strong>两条</strong>数据线，实现<strong>全双工</strong>发送和接收。</p>
-</blockquote>
-<h3 id="1-1-通信基础"><a href="#1-1-通信基础" class="headerlink" title="1.1 通信基础"></a>1.1 通信基础</h3><p>串行、并行：</p>
-<ul>
-<li>并行通信：总线在传递数据的时候，可以一次性收发多个位的数据。并行虽然快，但是要考虑多个线的<em>资源占用</em>，以及多条线<em>互相干扰</em>的问题；</li>
-<li>串行通信：每一位数据逐次传递；（<strong>IIC\SPI都是串行通信</strong>）</li>
-</ul>
-<p>单工、双工：</p>
-<ul>
-<li>单工通信：只能是单向的，<mark>发送器给接收器发送数据</mark>，而不能反过来；</li>
-<li>双工通信：可以是A到B，也可以是B到A；<ul>
-<li>半双工：不能同时发生；只有一根线，发送时就不能接收；</li>
-<li>全双工：可以同时发送和接收，有两根线；</li>
-</ul>
-</li>
-</ul>
-<p>波特率：</p>
-<ul>
-<li><p>波特率：描述UART通信速度，单位<strong>bps</strong>，(bit per second)，每秒传送的bit的数量；</p>
-<ul>
-<li>每秒的波特数，波特等于单个信号包含的码元数量</li>
-</ul>
-</li>
-<li><p>比特率：是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，每秒传送数据就越多。</p>
-</li>
-<li><p>波特率：表示每秒钟传送码元符号的个数，是衡量数据传送速率的指标。</p>
-<ul>
-<li>在信息传输通道中，携带数据信息的信号单元叫码元，每秒钟通过信道传输的码元数称为码元传输速率，简称<strong>波特率</strong>。波特率是传输通道频宽的指标。</li>
-<li>比特率&#x3D;波特率x单个调制状态对应的二进制位数</li>
-<li>两相调制(单个调制状态对应1个二进制位)的比特率等于波特率;四相调制(单个调制状态对应2个二进制位)的比特率为波特率的两倍;八相调制(单个调制状态对应3个二进制位)的比特率为波特率的三倍;依次类推。</li>
-</ul>
-</li>
-</ul>
-<h3 id="1-2-UART帧格式"><a href="#1-2-UART帧格式" class="headerlink" title="1.2 UART帧格式"></a>1.2 UART帧格式</h3><p><img src="/2022/10/17/02/frame_struct.JPG" alt="UART帧格式"></p>
-<ul>
-<li><input disabled type="checkbox"> 起始位：1bit的0，标志发送开始；因为空闲时为1，所以开始为0；</li>
-<li><input checked disabled type="checkbox"> 数据位： 5-8bit，<strong>先发低位，后发高位</strong>；</li>
-<li><input disabled type="checkbox"> 校验位：可有可无；奇偶校验，是校验奇数还是偶数个1； </li>
-<li><input disabled type="checkbox"> 停止位：高电平1；</li>
-<li><input disabled type="checkbox"> 空闲位：</li>
-</ul>
-<blockquote>
-<p>注意： UART<strong>空闲</strong>的时候，用<strong>高电平</strong>表示；</p>
-<p>串口协议从低位先发，最后发高位；</p>
-<p><mark>串口每次都只发一个byte，下一个byte又重新开始起始位，是因为它是<strong>异步的</strong>，发送方和接收方的时钟不是同一个，防止由于时钟不同步导致误差累积；</mark></p>
-<p>IIC和SPI都是同步通信，可以发多个字节；</p>
-</blockquote>
-<h3 id="1-3-Tx-amp-Rx"><a href="#1-3-Tx-amp-Rx" class="headerlink" title="1.3 Tx &amp; Rx"></a>1.3 Tx &amp; Rx</h3><blockquote>
-<p>串口的信号一般较弱，通信距离短，容易被干扰，所以增加了一块专有芯片用来增加抗干扰能力，使发送距离更远；(TTL信号转为232信号)</p>
-</blockquote>
-<p>发送STEPs：</p>
-<ol>
-<li>待发送数据放入FIFO</li>
-<li>增加了UART协议的各种头，比如起始和校验，然后拷贝放入shifter；</li>
-<li>shifter每个bit依次移位到引脚来发送，<strong>先发低位，后发高位</strong>；</li>
-</ol>
-<p><em>即发送时：      FIFO –&gt; shifter –&gt; TxD;</em></p>
-<p><em>接收时顺序相反，RxD –&gt; shifter –&gt; FIFO;</em></p>
-<h3 id="1-4-UART工作模式"><a href="#1-4-UART工作模式" class="headerlink" title="1.4 UART工作模式"></a>1.4 UART工作模式</h3><p><em><strong>CPU会通过总线，和接收和发送的BUFFer相连，用来读写数据，另外，也和控制单元相连，对控制单元的设置进行修改；</strong></em></p>
-<blockquote>
-<p>look-back: <strong>回环模式look-back</strong>是在内部将Tx和Rx短接，一般用于测试；</p>
-</blockquote>
-<p><img src="/2022/10/17/02/workMode.JPG" alt="几种工作模式"></p>
-<p>三种常见的工作模式：</p>
-<ol>
-<li>polling  轮询<ul>
-<li>CPU不断地对FIFO进行访问，查询需要的数据有没有发过来；</li>
-<li>CPU的状态： 工作 –&gt; 轮询 –&gt; 工作 –&gt; 轮询 …</li>
-<li>直到查找到需要的数据；</li>
-<li>费时费力，消耗资源</li>
-</ul>
-</li>
-<li>interrupt  中断<ul>
-<li>CPU和FIFO约定，CPU<strong>不主动</strong>去查询，当FIFO收到数据要发送过来的时候，给CPU发送<strong>中断信号</strong>，CPU中断当前工作，接收FIFO的数据；</li>
-<li><strong>比polling模式省资源</strong>；</li>
-</ul>
-</li>
-<li>DMA  直接存储器访问<ul>
-<li>CPU收到FIFO的数据，最终也是要放入某一块内存中去使用的；</li>
-<li>DMA模式<strong>跳过CPU</strong>，当FIFO数据过来时，直接放入需要的内存中；</li>
-</ul>
-</li>
-</ol>
-<h2 id="二、-polling模式实验（以qn9090为例）"><a href="#二、-polling模式实验（以qn9090为例）" class="headerlink" title="二、 polling模式实验（以qn9090为例）"></a>二、 polling模式实验（以qn9090为例）</h2><h3 id="2-1-主函数"><a href="#2-1-主函数" class="headerlink" title="2.1 主函数"></a>2.1 主函数</h3><blockquote>
-<p>usart_polling.c</p>
-</blockquote>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> ch;</span><br><span class="line">    <span class="type">usart_config_t</span> config;                              <span class="comment">// 配置波特率、帧格式、上升下降沿、奇偶校验、停止位等</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);                    <span class="comment">// 使用默认配置，传入config的引用</span></span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;    <span class="comment">// 客制化usart配置</span></span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);           <span class="comment">// 使用config和外部时钟初始化USART实例，其中外部时钟只在设置波特率时使用</span></span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);    <span class="comment">// 将数组中的值写入</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                     <span class="comment">// 数据逐个从FIFORD读入ch，这里只读入一位</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                    <span class="comment">// 数据逐个从ch写入FIFOWR，这里只读入一位，等待TX进入IDLE模式结束</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-2-只接收一个char"><a href="#2-2-只接收一个char" class="headerlink" title="2.2 只接收一个char"></a>2.2 只接收一个char</h3><p>实验结果：</p>
-<p><img src="/2022/10/17/02/%E5%8D%95%E5%AD%97%E7%AC%A6%E5%AE%9E%E9%AA%8C.jpg" alt="单字符实验"></p>
-<h2 id="接收字符串"><a href="#接收字符串" class="headerlink" title="接收字符串"></a>接收字符串</h2><p>原始代码修改为接收一个定长5的array，代码：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> <span class="built_in">array</span>[<span class="number">6</span>];</span><br><span class="line">    <span class="type">usart_config_t</span> config;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);</span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;</span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);</span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>实验结果：</p>
-<p><img src="/2022/10/17/02/%E5%AE%9A%E9%95%BFarray%E5%AE%9E%E9%AA%8C.jpg" alt="定长array实验"></p>
-<h2 id="三、补充"><a href="#三、补充" class="headerlink" title="三、补充"></a>三、补充</h2><h3 id="3-1-SDK中典型使用"><a href="#3-1-SDK中典型使用" class="headerlink" title="3.1 SDK中典型使用"></a>3.1 SDK中典型使用</h3><p>在NXP的QN9090的SDK中，提供了丰富的示例：</p>
-<ul>
-<li>polling method 收发</li>
-<li>interrupt method 收发</li>
-<li>ringbuffer接收数据</li>
-<li>DMA method 收发</li>
-</ul>
-<p>文档 ： <code>MCUXpresso SDK API Reference Manual.pdf</code></p>
-<p><img src="/2022/10/17/02/%E5%85%B8%E5%9E%8B%E7%A4%BA%E4%BE%8B.jpg" alt="典型示例"></p>
-<h3 id="3-2-串口的工作原理"><a href="#3-2-串口的工作原理" class="headerlink" title="3.2 串口的工作原理"></a>3.2 串口的工作原理</h3><p>一个byte的数据，如何转为串口输出的bit？ 通过移位寄存器原理实现</p>
-<p>移位寄存器原理：</p>
-<p><img src="/2022/10/17/02/%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8.jpg" alt="移位寄存器"></p>
-<p>初始状态： A3A2A1A0＝ 1011</p>
-<p>然后Q3的输出，是在每个时钟节拍，按照这个先后顺序，把A3A2A1A0串行的输出出去。(小端)</p>
-<p>其实利用的就是D触发器的特性。</p>
-<p>如果我们使用8位的移位寄存器，就可以利用8个clk的时间，发一组8bit的数据通过一根导线传输出去。</p>
-]]></content>
-      <categories>
-        <category>NXP</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>UART</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Vim使用</title>
-    <url>/2022/04/05/20/</url>
-    <content><![CDATA[<h1 id="Vim使用"><a href="#Vim使用" class="headerlink" title="Vim使用"></a>Vim使用</h1><p>本周学习了小彭老师的vim教程，很受启发，学习记录在这。</p>
-<blockquote>
-<p><strong>先放链接：</strong></p>
-<p><a href="https://www.bilibili.com/video/BV1H44y1V7DW?spm_id_from=333.999.0.0" title="小彭老师B站链接">【Vim插件整合包】C++&#x2F;Python自动补全，模糊查找文件，编译CMake工程等</a></p>
-</blockquote>
-<ul>
-<li>F4  &#x3D;&#x3D; :wa 保存文件</li>
-<li>F5      cmake多文件运行</li>
-<li>F7      单文件运行</li>
-<li>F8      打开一个外部shell</li>
-<li>F8 执行完命令之后，按Ctrl+D退出shell，回到文件中</li>
-<li>F9      打开nerdtree</li>
-<li>ctrl + T  打开&#x2F;关闭终端</li>
-<li>ctrl + \  ctrl + n 终端进入普通模式，可选中</li>
-<li>ctrl + w + “” 在终端中粘贴；如果来自别的寄存器a，则ctrl + w + “a</li>
-<li>可视模式按y复制，按p粘贴，按u撤销，按ctrl+r恢复撤销，按x删除单个字符，按dw删除单词，按dd删除行</li>
-<li>Z   &#x3D;&#x3D; ZZ 保存并退出</li>
-<li>Q         直接退出所有窗口</li>
-<li>F10      快速修改error</li>
-<li>ctrl + ww 切换窗口</li>
-<li>ctrl + wk 或者 wj 上下切换窗口</li>
-<li>:split  和  :vsplit 分割窗口</li>
-<li>普通模式 gq 快速修复</li>
-<li>普通模式 gf 格式化代码</li>
-<li>gd 跳转到定义</li>
-<li>gD 跳转到声明</li>
-<li>gr 跳转到引用</li>
-<li>gy 跳转到类型定义</li>
-<li>gI 跳转到函数实现</li>
-<li>gn 重命名当前光标下的变量名</li>
-<li>g + tab  查找命令表</li>
-<li>gci   批量注释和反注释</li>
-<li>K  查看当前光标下的symbol的文档</li>
-<li>ctrl + i 或者 ctrl + o 光标跳转到上一次、下一次的位置</li>
-<li>然后，不同的窗口之间切换，F2 F3</li>
-<li>:Git blame 显示每一行的提交信息</li>
-<li>空格 + g   打开所有当前git仓库中的文件</li>
-<li>空格 + s   相当于git status</li>
-<li>空格 + h   显示最近打开过的文件</li>
-<li>空格 + b   显示目前已经打开的所有文件</li>
-<li>空格 + l    搜索已打开文件中的内容</li>
-<li>空格 + o    只在当前文件中搜索</li>
-<li>空格 + r   在目前没打开的文件中搜索name</li>
-<li>% 跳转到匹配的括号</li>
-</ul>
-<p>一些可以修改的运行tasks配置：</p>
-<ul>
-<li>位置： <code>~/.vim/tasks.ini</code></li>
-</ul>
-]]></content>
-      <categories>
-        <category>工具</category>
-        <category>vim</category>
-      </categories>
-      <tags>
-        <tag>vim</tag>
-        <tag>工具</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ZigBeePRO-Fundamentals_Training</title>
-    <url>/2022/07/28/05/</url>
-    <content><![CDATA[<h1 id="1-ZigBeePRO-Fundamentals-Training"><a href="#1-ZigBeePRO-Fundamentals-Training" class="headerlink" title="1_ZigBeePRO-Fundamentals_Training"></a>1_ZigBeePRO-Fundamentals_Training</h1><h2 id="0-Agend"><a href="#0-Agend" class="headerlink" title="0 Agend"></a>0 Agend</h2><ul>
-<li>Zigbee Basics</li>
-<li>Zigbee Architecture</li>
-<li>ZigBee PRO Networks</li>
-<li>ZigBee Profiles, Devices and Clusters</li>
-<li>Network Commissioning</li>
-<li>Network Security</li>
-</ul>
-<h3 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h3><ul>
-<li>低功耗：将传输范围限制在0-10m line-of-sight.</li>
-<li>ZigBee 通常用于需要较长电池寿命和安全网络的<strong>低数据速率</strong>应用。</li>
-<li>ZigBee 的定义速率为 250 Kbit&#x2F;s，最适合来自传感器或输入设备的间歇性数据传输intermittent data transmissions</li>
-<li>10 kbps to 115 kbps data throughput </li>
-<li>10 to 75 m coverage range</li>
-</ul>
-<ul>
-<li>Up to 100 collocated networks</li>
-</ul>
-<ul>
-<li>Up to 2 years of battery life on standard alkaline  batteries</li>
-</ul>
-<h2 id="1-Basic"><a href="#1-Basic" class="headerlink" title="1. Basic"></a>1. Basic</h2><h3 id="1-1-ZigBee的理想应用"><a href="#1-1-ZigBee的理想应用" class="headerlink" title="1.1 ZigBee的理想应用"></a>1.1 ZigBee的理想应用</h3><ul>
-<li>点对点cable  replacement（例如，无线鼠标、遥控器、玩具） </li>
-<li>安全系统（例如，火灾和入侵者）</li>
-<li>环境控制（例如，供暖和空调）</li>
-<li>医院病人监控</li>
-<li>照明控制</li>
-<li>家庭自动化（例如，家庭娱乐、门、大门、窗帘和百叶窗）</li>
-<li>自动抄表 (AMR)</li>
-<li>工业自动化（例如，工厂监控）</li>
-</ul>
-<p><img src="/2022/07/28/05/different.PNG" alt="different"></p>
-<h2 id="2-Architecture"><a href="#2-Architecture" class="headerlink" title="2. Architecture"></a>2. Architecture</h2><h3 id="2-1-适用于-ZigBee-堆栈的-OSI-模型"><a href="#2-1-适用于-ZigBee-堆栈的-OSI-模型" class="headerlink" title="2.1 适用于 ZigBee 堆栈的 OSI 模型"></a>2.1 适用于 ZigBee 堆栈的 OSI 模型</h3><p><img src="/2022/07/28/05/OSI.PNG" alt="OSI"></p>
-<h3 id="2-2-软件架构"><a href="#2-2-软件架构" class="headerlink" title="2.2 软件架构"></a>2.2 软件架构</h3><p><img src="/2022/07/28/05/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84.jpg" alt="软件架构"></p>
-<h2 id="3-ZigBee-Pro-Networks"><a href="#3-ZigBee-Pro-Networks" class="headerlink" title="3. ZigBee Pro Networks"></a>3. ZigBee Pro Networks</h2><h3 id="3-1-网络节点"><a href="#3-1-网络节点" class="headerlink" title="3.1 网络节点"></a>3.1 网络节点</h3><ul>
-<li>Coordinator ：<ul>
-<li>每个网络都必须有一个Co-ordinator；</li>
-<li>开启整个网络；</li>
-<li>允许子节点通过它加入网络；</li>
-<li>能作为父节点，允许有children Coordinator；</li>
-</ul>
-</li>
-<li>Router ： <ul>
-<li>网络可以有多个router；</li>
-<li>router有路由能力；</li>
-<li>允许其他节点通过它加入网络；</li>
-<li>能作为parent，也能作为child；</li>
-</ul>
-</li>
-<li>End Device ： <ul>
-<li>网络可以有很多终端设备；</li>
-<li>只有收发数据的能力；</li>
-<li>不能做parents，不能有child；</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-2-Network-Identity"><a href="#3-2-Network-Identity" class="headerlink" title="3.2 Network Identity"></a>3.2 Network Identity</h3><ul>
-<li>PAN ID<ul>
-<li>16位的值，叫做PAN ID （Personal Area Network Identifier).</li>
-<li>网络运行时，由Cooridnator随机选择；</li>
-<li>新安装的网络生成的PAN ID可能与同一radio channel同一neighborhood的已有的网络存在冲突；</li>
-</ul>
-</li>
-<li>Extended PAN ID： 64位的值，叫做EPID；</li>
-</ul>
-<h3 id="3-2-Network-Addressing"><a href="#3-2-Network-Addressing" class="headerlink" title="3.2 Network Addressing"></a>3.2 Network Addressing</h3><ul>
-<li>IEEE (MAC) 地址：<ul>
-<li>这是一个 64 位地址，由 IEEE 分配，唯一标识设备</li>
-<li>在 ZigBee 网络中，有时称为“extended”地址。</li>
-</ul>
-</li>
-<li>网络地址：<ul>
-<li>此16位地址标识网络中的节点</li>
-<li>有时称为“short”地址。</li>
-<li>当节点首次加入网络时，由父节点动态分配为随机 16 位值。</li>
-</ul>
-</li>
-<li>协调器始终拥有网络地址 0x0000</li>
-</ul>
-<h3 id="3-3-NerghborTables"><a href="#3-3-NerghborTables" class="headerlink" title="3.3 NerghborTables"></a>3.3 NerghborTables</h3><blockquote>
-<p>路由节点（Router 或 Coordinator）保存有关其相邻节点的信息，该信息存储在 Neighbor 表中，其中包含节点的直接子节点的条目.</p>
-</blockquote>
-<h3 id="3-4-网络创建的过程"><a href="#3-4-网络创建的过程" class="headerlink" title="3.4 网络创建的过程"></a>3.4 网络创建的过程</h3><ol>
-<li>初始化IEEE 802.15.4 stack</li>
-<li>创建PAN Coordinator</li>
-<li>设置网络的PAN ID</li>
-<li>设置PAN Coordinator的short地址；</li>
-<li>选择radio frequency channel</li>
-<li>start网络</li>
-<li>加入其他设备</li>
-<li>开始传输数据</li>
-</ol>
-<h3 id="3-5-Descriptors"><a href="#3-5-Descriptors" class="headerlink" title="3.5 Descriptors"></a>3.5 Descriptors</h3><ul>
-<li>Node Descriptor<ul>
-<li>类型（End Device, Router or Coordinator) </li>
-<li>使用的频段（868 MHz、902 MHz 或 2400 MHHz）</li>
-</ul>
-</li>
-<li>Node Power Descriptor<ul>
-<li>Power mode</li>
-<li>Available power sources</li>
-</ul>
-</li>
-<li>Simple Descriptor<ul>
-<li>The endpoint on which the application communicates</li>
-<li>Lists of input and output clusters</li>
-</ul>
-</li>
-</ul>
-<h2 id="4-ZIGBEE-PROFILES-DEVICES-AND-CLUSTER"><a href="#4-ZIGBEE-PROFILES-DEVICES-AND-CLUSTER" class="headerlink" title="4. ZIGBEE PROFILES, DEVICES AND CLUSTER"></a>4. ZIGBEE PROFILES, DEVICES AND CLUSTER</h2><h3 id="4-1-ZigBee-Endpoints"><a href="#4-1-ZigBee-Endpoints" class="headerlink" title="4.1 ZigBee Endpoints"></a>4.1 ZigBee Endpoints</h3><ul>
-<li>一个设备可以运行多个应用程序或同一应用程序的多个实例</li>
-<li>endpoint是为应用程序实例提供通信端口的软件实体</li>
-<li>endpoint number用于在向node发送消息时标识目标应用程序</li>
-<li>256 个endpoints，编号0 到 255：<ul>
-<li>0 保留给 ZDO（ZigBee Device Objects</li>
-<li>1 到 240 可用于应用程序实例</li>
-<li>241 到 254 保留，242 保留给 ZigBee Green Power</li>
-<li>255 用于广播到所有应用程序实例</li>
-</ul>
-</li>
-</ul>
-<h3 id="4-2-Application-Profiles"><a href="#4-2-Application-Profiles" class="headerlink" title="4.2 Application Profiles"></a>4.2 Application Profiles</h3><ul>
-<li>应用程序配置文件定义了一组设备，这些设备可以一起用于实现特定市场领域的应用程序——例如：<ul>
-<li>照明系统的开&#x2F;关 switch、调光开关和占用传感器用于光照系统；</li>
-</ul>
-</li>
-<li>ZigBee 联盟定义了许多“公共”配置文件-例如：<ul>
-<li>智能能源</li>
-<li>家庭自动化</li>
-</ul>
-</li>
-<li><strong>公共配置文件确保来自不同制造商的 ZigBee 设备的互操作性</strong> -例如：<ul>
-<li>允许一个供应商的开关与另一个供应商的灯具（包含负载控制器）一起工作</li>
-</ul>
-</li>
-<li>可互操作的产品必须经过测试和认证，以符合相关的 ZigBee 应用规范</li>
-</ul>
-<h3 id="4-3-Device-Types"><a href="#4-3-Device-Types" class="headerlink" title="4.3 Device Types"></a>4.3 Device Types</h3><ul>
-<li>ZigBee 配置文件（例如家庭自动化）包含许多设备类型</li>
-<li>设备类型是：<ul>
-<li>对应于功能设备的软件实体（例如可调光）</li>
-<li>在节点上作为具有相应端点的应用程序实施</li>
-</ul>
-</li>
-<li>设备类型由许多功能“集群”支持：<ul>
-<li>一些集群是强制性的（例如基本集群），一些是可选的</li>
-<li>一些集群是特定于配置文件的</li>
-<li>一些集群由配置文件共享并来自 ZigBee Cluster Library (ZCL)</li>
-</ul>
-</li>
-<li>在设备结构中启用了所需的集群</li>
-<li>可以在同一节点上实现多个设备类型（或同一设备类型的多个实例）</li>
-</ul>
-<h3 id="4-4-Clusters-and-Attributes"><a href="#4-4-Clusters-and-Attributes" class="headerlink" title="4.4 Clusters and Attributes"></a>4.4 Clusters and Attributes</h3><ul>
-<li>集群是最小的功能构建块，对应于特定功能（例如开&#x2F;关、可调光、恒温器</li>
-<li>集群包含<strong>属性和用于与它们交互的命令</strong></li>
-<li>属性是保存的<strong>数据实体</strong>（例如温度）在设备上并且可以在设备之间进行通信</li>
-<li>例如，恒温器集群包含与以下相关的属性：<ul>
-<li>当前温度</li>
-<li>最低温度</li>
-<li>最高温度</li>
-</ul>
-</li>
-<li>ZigBee 联盟已经定义了标准集群：<ul>
-<li>在 ZigBee Cluster Library(ZCL)中收集的一组常见集群</li>
-<li>作为公共应用程序配置文件一部分的特定集群，例如智能能源</li>
-</ul>
-</li>
-<li>一个集群有两种形式——<strong>客户端和服务端</strong>——存在于两个通信设备上</li>
-</ul>
-<h3 id="4-5-Cluster-Servers-and-Clients"><a href="#4-5-Cluster-Servers-and-Clients" class="headerlink" title="4.5 Cluster Servers and Clients"></a>4.5 Cluster Servers and Clients</h3><p>一个集群有两种形式，服务器和客户端：</p>
-<ul>
-<li>Cluster Server：<strong>用于存储属性并接收命令来操作它们</strong></li>
-<li>Cluster Client：用于通过<strong>发送命令</strong>来操作相应集群server中的属性（通常是“写”命令设置属性值，“读”命令获取属性值）</li>
-</ul>
-<h2 id="5-NETWORK-COMMISSIONING"><a href="#5-NETWORK-COMMISSIONING" class="headerlink" title="5. NETWORK COMMISSIONING"></a>5. NETWORK COMMISSIONING</h2><h3 id="5-1-Service-Discovery-服务发现"><a href="#5-1-Service-Discovery-服务发现" class="headerlink" title="5.1 Service Discovery  服务发现"></a>5.1 Service Discovery  服务发现</h3><ul>
-<li>允许加入设备找到与之操作的兼容节点（例如，调光开关可能需要找到可调光）</li>
-<li>有关节点的信息保存在节点的“descriptors”中<ul>
-<li>根据兼容的集群进行匹配</li>
-<li>集群信息是保存在节点上的简单描述符中</li>
-</ul>
-</li>
-<li>加入节点broadcast一个匹配描述符请求（Match Descriptor Request），列出感兴趣的集群</li>
-<li>具有相关集群的节点单播unicast一个Match Descriptor Response，包含地址和端点信息<ul>
-<li>加入节点可能会收到多个响应</li>
-<li>加入节点上的应用程序，必须确定它将与哪个响应节点一起工作</li>
-</ul>
-</li>
-</ul>
-<p><img src="/2022/07/28/05/Service%20Discovery.PNG" alt="Service Discovery"></p>
-<h3 id="5-2-Direct-Addressing-Grouping-and-Binding-直接寻址、分组和绑定"><a href="#5-2-Direct-Addressing-Grouping-and-Binding-直接寻址、分组和绑定" class="headerlink" title="5.2 Direct Addressing, Grouping and Binding 直接寻址、分组和绑定"></a>5.2 Direct Addressing, Grouping and Binding 直接寻址、分组和绑定</h3><p>节点可以通过直接寻址、分组或绑定与compatible node进行通信：</p>
-<ul>
-<li>Direct Addressing 涉及使用其地址向各个节点发送消息。</li>
-<li>Grouping 涉及创建具有关联 16 位组地址的一组节点：<ul>
-<li>Group Table保存在每个远程（目标）节点</li>
-<li>此表包含节点所属组的组的地址</li>
-<li>组的消息发送到相应的组地址</li>
-<li>当一个group的消息已经receive，仅当组地址在表中时才接受此消息</li>
-</ul>
-</li>
-<li>Binding 涉及创建一组预定义的链接或与远程节点的绑定：<ul>
-<li>将本地端点（应用程序）与远程节点上的端点（应用程序）绑定</li>
-<li>包含这些链路的绑定表保存在本地（源）节点上</li>
-<li>来自本地端点的所有后续通信都自动发送到绑定的远程端点</li>
-<li>可以本地或远程创建绑定</li>
-</ul>
-</li>
-</ul>
-<h3 id="5-3-Sending-Data-Packets-by-Direct-Addressing-通过直接寻址发送数据包"><a href="#5-3-Sending-Data-Packets-by-Direct-Addressing-通过直接寻址发送数据包" class="headerlink" title="5.3 Sending Data Packets by Direct Addressing 通过直接寻址发送数据包"></a>5.3 Sending Data Packets by Direct Addressing 通过直接寻址发送数据包</h3><p><img src="/2022/07/28/05/send.PNG" alt="send"></p>
-<h3 id="5-4-Sending-Data-Packets-by-Group-Addressing-通过组寻址发送数据包"><a href="#5-4-Sending-Data-Packets-by-Group-Addressing-通过组寻址发送数据包" class="headerlink" title="5.4 Sending Data Packets by Group Addressing  通过组寻址发送数据包"></a>5.4 Sending Data Packets by Group Addressing  通过组寻址发送数据包</h3><p>要在group中包括node，必须使用“Add Group”命令将group address添加到node上的“Group Table”中。</p>
-<h3 id="5-5-Local-and-Remote-Binding"><a href="#5-5-Local-and-Remote-Binding" class="headerlink" title="5.5 Local and Remote Binding"></a>5.5 Local and Remote Binding</h3><h4 id="Local-Binding"><a href="#Local-Binding" class="headerlink" title="Local Binding"></a>Local Binding</h4><p>Local device writes details of bound endpoint into its Binding Table.</p>
-<p><img src="/2022/07/28/05/local.PNG" alt="local"></p>
-<h4 id="Remote-Binding-Watch-Trap"><a href="#Remote-Binding-Watch-Trap" class="headerlink" title="Remote Binding(Watch,  Trap)"></a>Remote Binding(Watch,  Trap)</h4><p>Local device requests remote devices to write its details into their Binding Tables.</p>
-<p><img src="/2022/07/28/05/remote.PNG" alt="remote"></p>
-<h3 id="5-6-Sending-Data-Packets-to-Bound-Endpoints"><a href="#5-6-Sending-Data-Packets-to-Bound-Endpoints" class="headerlink" title="5.6 Sending Data Packets to Bound Endpoints"></a>5.6 Sending Data Packets to Bound Endpoints</h3><p><img src="/2022/07/28/05/send2.PNG" alt="send2"></p>
-<h3 id="5-6-Attribute-Reporting"><a href="#5-6-Attribute-Reporting" class="headerlink" title="5.6 Attribute Reporting"></a>5.6 Attribute Reporting</h3><ul>
-<li>一个节点可能需要向另一个节点发送regular&#x2F;periodic报告。比如，一个开&#x2F;关灯将其状态报告给Control Bridge（用于物联网）</li>
-<li>属性报告涉及从集群服务器主动向客户端发送属性值（而不是客户端轮询polling服务器）： <ul>
-<li>减少网络流量</li>
-<li>允许休眠服务器报告唤醒时的属性值</li>
-</ul>
-</li>
-<li>“属性报告”可以通过以下方式发出：<ul>
-<li>通过用户应用程序中的函数调用（在服务器设备上）</li>
-<li>由 ZCL 自动发出</li>
-</ul>
-</li>
-<li>自动属性报告涉及两种机制：<ul>
-<li>报告由属性值变化触发</li>
-<li>定期为属性发布报告</li>
-<li>这些机制可以同时运行</li>
-</ul>
-</li>
-</ul>
-<p>必须首先使用Configure Reporting命令配置属性报告。</p>
-<h2 id="6-NETWORK-SECURITY"><a href="#6-NETWORK-SECURITY" class="headerlink" title="6. NETWORK SECURITY"></a>6. NETWORK SECURITY</h2><h2 id="6-1-Security-Schemes-安全方案"><a href="#6-1-Security-Schemes-安全方案" class="headerlink" title="6.1 Security Schemes 安全方案"></a>6.1 Security Schemes 安全方案</h2><p>安全措施由信任中心管理：</p>
-<ul>
-<li>Trust Center Policy 信任中心策略<ul>
-<li>White Listing白名单：仅允许预定义的“友好”节点加入网络</li>
-<li>Security Key Distribution安全密钥分发：生成和传输用于加密的密钥</li>
-</ul>
-</li>
-<li>Encryption Schemes加密方案<ul>
-<li>高度安全的基于 AES 的加密系统</li>
-<li>128 位加密密钥</li>
-<li>可应用于两个级别：<ul>
-<li>Network Level网络级别：相同的“网络密钥”用于所有网络通信</li>
-<li>Application Level应用级别（可选）：每对应用程序之间的唯一“Link key”</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="6-2-Network-Key-Provisioning"><a href="#6-2-Network-Key-Provisioning" class="headerlink" title="6.2 Network Key Provisioning"></a>6.2 Network Key Provisioning</h3><ul>
-<li>下图说明了从Trust Centre到joining node的Network Key的提供。</li>
-<li>该过程假定预配置的Link Key（全局或唯一）可用。</li>
-<li>使用唯一link key，Trust Centre检查其是否具有与joining node的 MAC 地址相对应的密钥。</li>
-</ul>
-<p><img src="/2022/07/28/05/key.PNG" alt="key"></p>
-<h3 id="6-3-Application-level-Security"><a href="#6-3-Application-level-Security" class="headerlink" title="6.3 Application-level Security"></a>6.3 Application-level Security</h3><ul>
-<li>可以为一对节点设置</li>
-<li>允许两个节点之间的专用通信，使用application link key进行加密&#x2F;解密</li>
-<li>link key是唯一的，一对节点独占的</li>
-<li>link key由信任中心颁发：<ul>
-<li>来自 TC 的一个请求节点链接密钥</li>
-<li>TC 将密钥发送到两个节点</li>
-<li>密钥的传输使用Network Key和TC和target node中间的link key加密（如果适用的话）</li>
-</ul>
-</li>
-</ul>
-<p><img src="/2022/07/28/05/Application-level.png" alt="Application-level"></p>
-<h3 id="6-4-Data-Encryption-x2F-Decryption-in-Stack"><a href="#6-4-Data-Encryption-x2F-Decryption-in-Stack" class="headerlink" title="6.4 Data Encryption&#x2F;Decryption in Stack"></a>6.4 Data Encryption&#x2F;Decryption in Stack</h3><p><img src="/2022/07/28/05/Encryption_Decryption.png" alt="Encryption_Decryption"></p>
-<h2 id="7-ZIGBEE-CERTIFICATION"><a href="#7-ZIGBEE-CERTIFICATION" class="headerlink" title="7. ZIGBEE CERTIFICATION"></a>7. ZIGBEE CERTIFICATION</h2><p>Zigbee 3.0</p>
-<ul>
-<li>完整的 loT solution — 从mesh network到允许智能对象协同工作的通用语言。</li>
-<li>Zigbee增加了用户和开发人员的选择和灵活性;并让人们相信产品和服务将协同工作。</li>
-<li>Zigbee服务于智能家居和商业建筑市场。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>NXP</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>ZigBee</tag>
       </tags>
   </entry>
   <entry>
