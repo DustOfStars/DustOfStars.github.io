@@ -1,6 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>总线协议之 -- UART</title>
+    <url>/2022/09/21/59/</url>
+    <content><![CDATA[<h1 id="总线协议之-–-UART"><a href="#总线协议之-–-UART" class="headerlink" title="总线协议之 – UART"></a>总线协议之 – UART</h1><h2 id="UART简介"><a href="#UART简介" class="headerlink" title="UART简介"></a>UART简介</h2><blockquote>
+<p>UART: Universal Asynchronous Receiver Transmitter（通用异步收发器），</p>
+<p>通用的<em>串行、异步</em>通信总线，它有<strong>两条</strong>数据线，实现<strong>全双工</strong>发送和接收。</p>
+</blockquote>
+<h3 id="通信基础"><a href="#通信基础" class="headerlink" title="通信基础"></a>通信基础</h3><p>串行、并行：</p>
+<ul>
+<li>并行通信：总线在传递数据的时候，可以一次性收发多个位的数据。并行虽然快，但是要考虑多个线的<em>资源占用</em>，以及多条线<em>互相干扰</em>的问题；</li>
+<li>串行通信：每一位数据逐次传递；（<strong>IIC\SPI都是串行通信</strong>）</li>
+</ul>
+<p>单工、双工：</p>
+<ul>
+<li>单工通信：只能是单向的，<mark>发送器给接收器发送数据</mark>，而不能反过来；</li>
+<li>双工通信：可以是A到B，也可以是B到A；<ul>
+<li>半双工：不能同时发生；只有一根线，发送时就不能接收；</li>
+<li>全双工：可以同时发送和接收，有两根线；</li>
+</ul>
+</li>
+</ul>
+<p>波特率：</p>
+<ul>
+<li><p>波特率：描述UART通信速度，单位<strong>bps</strong>，(bit per second)，每秒传送的bit的数量；</p>
+<ul>
+<li>每秒的波特数，波特等于单个信号包含的码元数量</li>
+</ul>
+</li>
+<li><p>比特率：是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，每秒传送数据就越多。</p>
+</li>
+<li><p>波特率：表示每秒钟传送码元符号的个数，是衡量数据传送速率的指标。</p>
+<ul>
+<li>在信息传输通道中，携带数据信息的信号单元叫码元，每秒钟通过信道传输的码元数称为码元传输速率，简称<strong>波特率</strong>。波特率是传输通道频宽的指标。</li>
+<li>比特率&#x3D;波特率x单个调制状态对应的二进制位数</li>
+<li>两相调制(单个调制状态对应1个二进制位)的比特率等于波特率;四相调制(单个调制状态对应2个二进制位)的比特率为波特率的两倍;八相调制(单个调制状态对应3个二进制位)的比特率为波特率的三倍;依次类推。</li>
+</ul>
+</li>
+</ul>
+<h2 id="UART帧格式"><a href="#UART帧格式" class="headerlink" title="UART帧格式"></a>UART帧格式</h2><p><img src="/2022/09/21/59/frame_struct.JPG" alt="UART帧格式"></p>
+<ul>
+<li><input disabled type="checkbox"> 起始位：1bit的0，标志发送开始；因为空闲时为1，所以开始为0；</li>
+<li><input checked disabled type="checkbox"> 数据位： 5-8bit，<strong>先发低位，后发高位</strong>；</li>
+<li><input disabled type="checkbox"> 校验位：可有可无；奇偶校验，是校验奇数还是偶数个1； </li>
+<li><input disabled type="checkbox"> 停止位：高电平1；</li>
+<li><input disabled type="checkbox"> 空闲位：</li>
+</ul>
+<blockquote>
+<p>注意： UART<strong>空闲</strong>的时候，用<strong>高电平</strong>表示；</p>
+<p>串口协议从低位先发，最后发高位；</p>
+<p><mark>串口每次都只发一个byte，下一个byte又重新开始起始位，是因为它是<strong>异步的</strong>，发送方和接收方的时钟不是同一个，防止由于时钟不同步导致误差累积；</mark></p>
+<p>IIC和SPI都是同步通信，可以发多个字节；</p>
+</blockquote>
+<h2 id="Exynos4412下的UART控制器"><a href="#Exynos4412下的UART控制器" class="headerlink" title="Exynos4412下的UART控制器"></a>Exynos4412下的UART控制器</h2><blockquote>
+<p>串口的信号一般较弱，通信距离短，容易被干扰，所以增加了一块专有芯片用来增加抗干扰能力，使发送距离更远；(TTL信号转为232信号)</p>
+</blockquote>
+<p><img src="/2022/09/21/59/shifter.JPG" alt="shifter"></p>
+<p>STEPs：</p>
+<ol>
+<li>待发送数据放入FIFO</li>
+<li>增加了UART协议的各种头，比如起始和校验，然后拷贝放入shifter；</li>
+<li>shifter每个bit依次移位到引脚来发送，<strong>先发低位，后发高位</strong>；</li>
+</ol>
+<p><em>接收时顺序相反，RxD –&gt; shifter –&gt; FIFO;</em></p>
+<h3 id="UART控制器的总体框图"><a href="#UART控制器的总体框图" class="headerlink" title="UART控制器的总体框图"></a>UART控制器的总体框图</h3><p><img src="/2022/09/21/59/diagram.JPG" alt="框图"></p>
+<p><em><strong>CPU会通过总线，和接收和发送的BUFFer相连，用来读写数据，另外，也和控制单元相连，对控制单元的设置进行修改；</strong></em></p>
+<h2 id="UART寄存器详解"><a href="#UART寄存器详解" class="headerlink" title="UART寄存器详解"></a>UART寄存器详解</h2><blockquote>
+<p>补充一个细节，<strong>回环模式look-back</strong>是在内部将Tx和Rx短接，一般用于测试；</p>
+</blockquote>
+<p><img src="/2022/09/21/59/workMode.JPG" alt="几种工作模式"></p>
+<p>三种工作模式：</p>
+<ol>
+<li>polling  轮询<ul>
+<li>CPU不断地对FIFO进行访问，查询需要的数据有没有发过来；</li>
+<li>CPU的状态： 工作 –&gt; 轮询 –&gt; 工作 –&gt; 轮询 …</li>
+<li>直到查找到需要的数据；</li>
+<li>费时费力，消耗资源</li>
+</ul>
+</li>
+<li>interrupt  中断<ul>
+<li>CPU和FIFO约定，CPU<strong>不主动</strong>去查询，当FIFO收到数据要发送过来的时候，给CPU发送<strong>中断信号</strong>，CPU中断当前工作，接收FIFO的数据；</li>
+<li><strong>比polling模式省资源</strong>；</li>
+</ul>
+</li>
+<li>DMA  直接存储器访问<ul>
+<li>CPU收到FIFO的数据，最终也是要放入某一块内存中去使用的；</li>
+<li>DMA模式<strong>跳过CPU</strong>，当FIFO数据过来时，直接放入需要的内存中；</li>
+</ul>
+</li>
+</ol>
+<p><mark>UART编程之前，设置需要的寄存器，以及顺序：</mark></p>
+<p><img src="/2022/09/21/59/regSet.JPG" alt="regSet"></p>
+<h2 id="UART编程"><a href="#UART编程" class="headerlink" title="UART编程"></a>UART编程</h2><h3 id="STEP-1：-串口初始化"><a href="#STEP-1：-串口初始化" class="headerlink" title="STEP 1： 串口初始化"></a>STEP 1： 串口初始化</h3><p><img src="/2022/09/21/59/uartInit.JPG" alt="uartInit"></p>
+<h3 id="STEP-2：-main函数"><a href="#STEP-2：-main函数" class="headerlink" title="STEP 2： main函数"></a>STEP 2： main函数</h3><p><img src="/2022/09/21/59/UATRmain.JPG" alt="UATRmain"></p>
+<h3 id="STEP-3：-收发函数封装"><a href="#STEP-3：-收发函数封装" class="headerlink" title="STEP 3： 收发函数封装"></a>STEP 3： 收发函数封装</h3><ul>
+<li>发送数据：</li>
+</ul>
+<p><img src="/2022/09/21/59/uartSend.JPG" alt="uartSend"></p>
+<ul>
+<li>接收数据：</li>
+</ul>
+<p><img src="/2022/09/21/59/uartRec.JPG" alt="uartRec"></p>
+<h3 id="STEP-4：-优化"><a href="#STEP-4：-优化" class="headerlink" title="STEP 4： 优化"></a>STEP 4： 优化</h3><blockquote>
+<p>电脑 – &gt; 开发板， 然后开发板收到数据+1，再返回给电脑；</p>
+</blockquote>
+<p><img src="/2022/09/21/59/uartAdd1.JPG" alt="uartAdd1"></p>
+<h2 id="输入输出重定向"><a href="#输入输出重定向" class="headerlink" title="输入输出重定向"></a>输入输出重定向</h2><blockquote>
+<p>这种通过判断发送寄存器是不是空，来把数据放入UART的寄存器中，就是相当于printf重定向到UART串口，而其他操作系统中，是重定向到显卡或者磁盘；</p>
+</blockquote>
+<p>尝试写一个发送字符串的函数：</p>
+<p><img src="/2022/09/21/59/uartSendStr.JPG" alt="uartSendStr"></p>
+<p><img src="/2022/09/21/59/uartSend.JPG" alt="uartSend"></p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+      </categories>
+      <tags>
+        <tag>UART</tag>
+        <tag>NXP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>1_数据探索</title>
     <url>/2022/03/30/53/</url>
     <content><![CDATA[<h2 id="第一步：简单观察训练集和测试集"><a href="#第一步：简单观察训练集和测试集" class="headerlink" title="第一步：简单观察训练集和测试集"></a>第一步：简单观察训练集和测试集</h2><blockquote>
@@ -188,8 +308,8 @@
         <category>NXP</category>
       </categories>
       <tags>
-        <tag>BLE</tag>
         <tag>NXP</tag>
+        <tag>BLE</tag>
       </tags>
   </entry>
   <entry>
@@ -563,8 +683,8 @@
         <category>NXP</category>
       </categories>
       <tags>
-        <tag>NXP</tag>
         <tag>UART</tag>
+        <tag>NXP</tag>
       </tags>
   </entry>
   <entry>
@@ -688,8 +808,8 @@
         <category>NXP</category>
       </categories>
       <tags>
-        <tag>NXP</tag>
         <tag>UART</tag>
+        <tag>NXP</tag>
       </tags>
   </entry>
   <entry>
@@ -1987,126 +2107,6 @@ Vector Table
       <tags>
         <tag>嵌入式</tag>
         <tag>ARM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>总线协议之 -- UART</title>
-    <url>/2022/09/21/59/</url>
-    <content><![CDATA[<h1 id="总线协议之-–-UART"><a href="#总线协议之-–-UART" class="headerlink" title="总线协议之 – UART"></a>总线协议之 – UART</h1><h2 id="UART简介"><a href="#UART简介" class="headerlink" title="UART简介"></a>UART简介</h2><blockquote>
-<p>UART: Universal Asynchronous Receiver Transmitter（通用异步收发器），</p>
-<p>通用的<em>串行、异步</em>通信总线，它有<strong>两条</strong>数据线，实现<strong>全双工</strong>发送和接收。</p>
-</blockquote>
-<h3 id="通信基础"><a href="#通信基础" class="headerlink" title="通信基础"></a>通信基础</h3><p>串行、并行：</p>
-<ul>
-<li>并行通信：总线在传递数据的时候，可以一次性收发多个位的数据。并行虽然快，但是要考虑多个线的<em>资源占用</em>，以及多条线<em>互相干扰</em>的问题；</li>
-<li>串行通信：每一位数据逐次传递；（<strong>IIC\SPI都是串行通信</strong>）</li>
-</ul>
-<p>单工、双工：</p>
-<ul>
-<li>单工通信：只能是单向的，<mark>发送器给接收器发送数据</mark>，而不能反过来；</li>
-<li>双工通信：可以是A到B，也可以是B到A；<ul>
-<li>半双工：不能同时发生；只有一根线，发送时就不能接收；</li>
-<li>全双工：可以同时发送和接收，有两根线；</li>
-</ul>
-</li>
-</ul>
-<p>波特率：</p>
-<ul>
-<li><p>波特率：描述UART通信速度，单位<strong>bps</strong>，(bit per second)，每秒传送的bit的数量；</p>
-<ul>
-<li>每秒的波特数，波特等于单个信号包含的码元数量</li>
-</ul>
-</li>
-<li><p>比特率：是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，每秒传送数据就越多。</p>
-</li>
-<li><p>波特率：表示每秒钟传送码元符号的个数，是衡量数据传送速率的指标。</p>
-<ul>
-<li>在信息传输通道中，携带数据信息的信号单元叫码元，每秒钟通过信道传输的码元数称为码元传输速率，简称<strong>波特率</strong>。波特率是传输通道频宽的指标。</li>
-<li>比特率&#x3D;波特率x单个调制状态对应的二进制位数</li>
-<li>两相调制(单个调制状态对应1个二进制位)的比特率等于波特率;四相调制(单个调制状态对应2个二进制位)的比特率为波特率的两倍;八相调制(单个调制状态对应3个二进制位)的比特率为波特率的三倍;依次类推。</li>
-</ul>
-</li>
-</ul>
-<h2 id="UART帧格式"><a href="#UART帧格式" class="headerlink" title="UART帧格式"></a>UART帧格式</h2><p><img src="/2022/09/21/59/frame_struct.JPG" alt="UART帧格式"></p>
-<ul>
-<li><input disabled type="checkbox"> 起始位：1bit的0，标志发送开始；因为空闲时为1，所以开始为0；</li>
-<li><input checked disabled type="checkbox"> 数据位： 5-8bit，<strong>先发低位，后发高位</strong>；</li>
-<li><input disabled type="checkbox"> 校验位：可有可无；奇偶校验，是校验奇数还是偶数个1； </li>
-<li><input disabled type="checkbox"> 停止位：高电平1；</li>
-<li><input disabled type="checkbox"> 空闲位：</li>
-</ul>
-<blockquote>
-<p>注意： UART<strong>空闲</strong>的时候，用<strong>高电平</strong>表示；</p>
-<p>串口协议从低位先发，最后发高位；</p>
-<p><mark>串口每次都只发一个byte，下一个byte又重新开始起始位，是因为它是<strong>异步的</strong>，发送方和接收方的时钟不是同一个，防止由于时钟不同步导致误差累积；</mark></p>
-<p>IIC和SPI都是同步通信，可以发多个字节；</p>
-</blockquote>
-<h2 id="Exynos4412下的UART控制器"><a href="#Exynos4412下的UART控制器" class="headerlink" title="Exynos4412下的UART控制器"></a>Exynos4412下的UART控制器</h2><blockquote>
-<p>串口的信号一般较弱，通信距离短，容易被干扰，所以增加了一块专有芯片用来增加抗干扰能力，使发送距离更远；(TTL信号转为232信号)</p>
-</blockquote>
-<p><img src="/2022/09/21/59/shifter.JPG" alt="shifter"></p>
-<p>STEPs：</p>
-<ol>
-<li>待发送数据放入FIFO</li>
-<li>增加了UART协议的各种头，比如起始和校验，然后拷贝放入shifter；</li>
-<li>shifter每个bit依次移位到引脚来发送，<strong>先发低位，后发高位</strong>；</li>
-</ol>
-<p><em>接收时顺序相反，RxD –&gt; shifter –&gt; FIFO;</em></p>
-<h3 id="UART控制器的总体框图"><a href="#UART控制器的总体框图" class="headerlink" title="UART控制器的总体框图"></a>UART控制器的总体框图</h3><p><img src="/2022/09/21/59/diagram.JPG" alt="框图"></p>
-<p><em><strong>CPU会通过总线，和接收和发送的BUFFer相连，用来读写数据，另外，也和控制单元相连，对控制单元的设置进行修改；</strong></em></p>
-<h2 id="UART寄存器详解"><a href="#UART寄存器详解" class="headerlink" title="UART寄存器详解"></a>UART寄存器详解</h2><blockquote>
-<p>补充一个细节，<strong>回环模式look-back</strong>是在内部将Tx和Rx短接，一般用于测试；</p>
-</blockquote>
-<p><img src="/2022/09/21/59/workMode.JPG" alt="几种工作模式"></p>
-<p>三种工作模式：</p>
-<ol>
-<li>polling  轮询<ul>
-<li>CPU不断地对FIFO进行访问，查询需要的数据有没有发过来；</li>
-<li>CPU的状态： 工作 –&gt; 轮询 –&gt; 工作 –&gt; 轮询 …</li>
-<li>直到查找到需要的数据；</li>
-<li>费时费力，消耗资源</li>
-</ul>
-</li>
-<li>interrupt  中断<ul>
-<li>CPU和FIFO约定，CPU<strong>不主动</strong>去查询，当FIFO收到数据要发送过来的时候，给CPU发送<strong>中断信号</strong>，CPU中断当前工作，接收FIFO的数据；</li>
-<li><strong>比polling模式省资源</strong>；</li>
-</ul>
-</li>
-<li>DMA  直接存储器访问<ul>
-<li>CPU收到FIFO的数据，最终也是要放入某一块内存中去使用的；</li>
-<li>DMA模式<strong>跳过CPU</strong>，当FIFO数据过来时，直接放入需要的内存中；</li>
-</ul>
-</li>
-</ol>
-<p><mark>UART编程之前，设置需要的寄存器，以及顺序：</mark></p>
-<p><img src="/2022/09/21/59/regSet.JPG" alt="regSet"></p>
-<h2 id="UART编程"><a href="#UART编程" class="headerlink" title="UART编程"></a>UART编程</h2><h3 id="STEP-1：-串口初始化"><a href="#STEP-1：-串口初始化" class="headerlink" title="STEP 1： 串口初始化"></a>STEP 1： 串口初始化</h3><p><img src="/2022/09/21/59/uartInit.JPG" alt="uartInit"></p>
-<h3 id="STEP-2：-main函数"><a href="#STEP-2：-main函数" class="headerlink" title="STEP 2： main函数"></a>STEP 2： main函数</h3><p><img src="/2022/09/21/59/UATRmain.JPG" alt="UATRmain"></p>
-<h3 id="STEP-3：-收发函数封装"><a href="#STEP-3：-收发函数封装" class="headerlink" title="STEP 3： 收发函数封装"></a>STEP 3： 收发函数封装</h3><ul>
-<li>发送数据：</li>
-</ul>
-<p><img src="/2022/09/21/59/uartSend.JPG" alt="uartSend"></p>
-<ul>
-<li>接收数据：</li>
-</ul>
-<p><img src="/2022/09/21/59/uartRec.JPG" alt="uartRec"></p>
-<h3 id="STEP-4：-优化"><a href="#STEP-4：-优化" class="headerlink" title="STEP 4： 优化"></a>STEP 4： 优化</h3><blockquote>
-<p>电脑 – &gt; 开发板， 然后开发板收到数据+1，再返回给电脑；</p>
-</blockquote>
-<p><img src="/2022/09/21/59/uartAdd1.JPG" alt="uartAdd1"></p>
-<h2 id="输入输出重定向"><a href="#输入输出重定向" class="headerlink" title="输入输出重定向"></a>输入输出重定向</h2><blockquote>
-<p>这种通过判断发送寄存器是不是空，来把数据放入UART的寄存器中，就是相当于printf重定向到UART串口，而其他操作系统中，是重定向到显卡或者磁盘；</p>
-</blockquote>
-<p>尝试写一个发送字符串的函数：</p>
-<p><img src="/2022/09/21/59/uartSendStr.JPG" alt="uartSendStr"></p>
-<p><img src="/2022/09/21/59/uartSend.JPG" alt="uartSend"></p>
-]]></content>
-      <categories>
-        <category>NXP</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>UART</tag>
       </tags>
   </entry>
   <entry>
