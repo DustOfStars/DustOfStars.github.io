@@ -2421,50 +2421,6 @@ Vector Table
       </tags>
   </entry>
   <entry>
-    <title>数组05螺旋矩阵Ⅱ</title>
-    <url>/2022/08/29/21/</url>
-    <content><![CDATA[<h1 id="数组05–螺旋矩阵Ⅱ"><a href="#数组05–螺旋矩阵Ⅱ" class="headerlink" title="数组05–螺旋矩阵Ⅱ"></a>数组05–螺旋矩阵Ⅱ</h1><h2 id="59-Spiral-Matrix-II"><a href="#59-Spiral-Matrix-II" class="headerlink" title="59. Spiral Matrix II"></a>59. Spiral Matrix II</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><blockquote>
-<p>给定一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。</p>
-</blockquote>
-<p>示例:</p>
-<blockquote>
-<p>输入: 3</p>
-<p>输出: [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]</p>
-</blockquote>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>本题并不涉及到什么算法，就是模拟过程，考察对代码的掌控能力。如何画出这个螺旋排列的正方形矩阵呢？</p>
-<blockquote>
-<p>很多同学刚开始做这种题目的时候，上来就是一波判断猛如虎。</p>
-<p>结果运行的时候各种问题，然后开始各种修修补补，最后发现改了这里那里有问题，改了那里这里又跑不起来了。</p>
-</blockquote>
-<p>求解本题依然是要<strong>坚持循环不变量原则</strong>。</p>
-<p>模拟顺时针画矩阵的过程:</p>
-<ul>
-<li>填充上行，从左到右；</li>
-<li>右列，从上到下；</li>
-<li>下行，从右到左；</li>
-<li>左列，从下到上；</li>
-</ul>
-<p>要画每四条边，这四条边怎么画，每画一条边都要<strong>坚持一致的左闭右开，或者左开右闭的原则</strong>，这样这一圈才能按照统一的规则画下来。</p>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">generateMatrix</span>(<span class="type">int</span> n) &#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">res</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(n, <span class="number">0</span>)); <span class="comment">//使用vector定义一个二维数组</span></span><br><span class="line">        <span class="type">int</span> startx = <span class="number">0</span>, starty = <span class="number">0</span>; <span class="comment">//循环一个圈的起始位置</span></span><br><span class="line">        <span class="type">int</span> loop = n / <span class="number">2</span>;  <span class="comment">// 循环几个圈，</span></span><br><span class="line">        <span class="type">int</span> mid = n / <span class="number">2</span>;  <span class="comment">//矩阵中间的位置，比如，n=3时，中心点为(1,1)</span></span><br><span class="line">        <span class="type">int</span> count = <span class="number">1</span>; <span class="comment">// 用来给矩阵中每一个格子赋值</span></span><br><span class="line">        <span class="type">int</span> offset = <span class="number">1</span>; <span class="comment">// 控制每一条边遍历的长度，每次循环右边界收缩一位</span></span><br><span class="line">        <span class="type">int</span> i, j;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (loop --) &#123;</span><br><span class="line">            i = startx;</span><br><span class="line">            j = starty;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 四个for循环模拟四条边转圈</span></span><br><span class="line">            <span class="keyword">for</span> (j = starty; j &lt; n - offset; j++) &#123;</span><br><span class="line">                res[startx][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (i = startx; i &lt; n - offset; i++) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (; j &gt; starty; j--) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (; i &gt; startx; i--) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 第二圈开始的时候，起始位置各自加一</span></span><br><span class="line">            startx++;</span><br><span class="line">            starty++;</span><br><span class="line">            </span><br><span class="line">            offset += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 当n为奇数时，需要单独给最后中心值赋值</span></span><br><span class="line">        <span class="keyword">if</span>(n % <span class="number">2</span>) &#123;</span><br><span class="line">            res[mid][mid] = count;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="相关题目"><a href="#相关题目" class="headerlink" title="相关题目"></a>相关题目</h2><ul>
-<li>54.螺旋矩阵</li>
-<li>剑指Offer 29.顺时针打印矩阵</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Leetcode</category>
-      </categories>
-      <tags>
-        <tag>Leetcode</tag>
-        <tag>代码随想录</tag>
-        <tag>数组</tag>
-        <tag>螺旋矩阵Ⅱ</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>数组06--总结</title>
     <url>/2022/09/28/01/</url>
     <content><![CDATA[<h1 id="数组06–总结"><a href="#数组06–总结" class="headerlink" title="数组06–总结"></a>数组06–总结</h1><h2 id="数组的理论基础"><a href="#数组的理论基础" class="headerlink" title="数组的理论基础"></a>数组的理论基础</h2><blockquote>
@@ -2523,6 +2479,50 @@ Vector Table
         <tag>代码随想录</tag>
         <tag>数组</tag>
         <tag>总结</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数组05螺旋矩阵Ⅱ</title>
+    <url>/2022/08/29/21/</url>
+    <content><![CDATA[<h1 id="数组05–螺旋矩阵Ⅱ"><a href="#数组05–螺旋矩阵Ⅱ" class="headerlink" title="数组05–螺旋矩阵Ⅱ"></a>数组05–螺旋矩阵Ⅱ</h1><h2 id="59-Spiral-Matrix-II"><a href="#59-Spiral-Matrix-II" class="headerlink" title="59. Spiral Matrix II"></a>59. Spiral Matrix II</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><blockquote>
+<p>给定一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。</p>
+</blockquote>
+<p>示例:</p>
+<blockquote>
+<p>输入: 3</p>
+<p>输出: [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]</p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>本题并不涉及到什么算法，就是模拟过程，考察对代码的掌控能力。如何画出这个螺旋排列的正方形矩阵呢？</p>
+<blockquote>
+<p>很多同学刚开始做这种题目的时候，上来就是一波判断猛如虎。</p>
+<p>结果运行的时候各种问题，然后开始各种修修补补，最后发现改了这里那里有问题，改了那里这里又跑不起来了。</p>
+</blockquote>
+<p>求解本题依然是要<strong>坚持循环不变量原则</strong>。</p>
+<p>模拟顺时针画矩阵的过程:</p>
+<ul>
+<li>填充上行，从左到右；</li>
+<li>右列，从上到下；</li>
+<li>下行，从右到左；</li>
+<li>左列，从下到上；</li>
+</ul>
+<p>要画每四条边，这四条边怎么画，每画一条边都要<strong>坚持一致的左闭右开，或者左开右闭的原则</strong>，这样这一圈才能按照统一的规则画下来。</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">generateMatrix</span>(<span class="type">int</span> n) &#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">res</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(n, <span class="number">0</span>)); <span class="comment">//使用vector定义一个二维数组</span></span><br><span class="line">        <span class="type">int</span> startx = <span class="number">0</span>, starty = <span class="number">0</span>; <span class="comment">//循环一个圈的起始位置</span></span><br><span class="line">        <span class="type">int</span> loop = n / <span class="number">2</span>;  <span class="comment">// 循环几个圈，</span></span><br><span class="line">        <span class="type">int</span> mid = n / <span class="number">2</span>;  <span class="comment">//矩阵中间的位置，比如，n=3时，中心点为(1,1)</span></span><br><span class="line">        <span class="type">int</span> count = <span class="number">1</span>; <span class="comment">// 用来给矩阵中每一个格子赋值</span></span><br><span class="line">        <span class="type">int</span> offset = <span class="number">1</span>; <span class="comment">// 控制每一条边遍历的长度，每次循环右边界收缩一位</span></span><br><span class="line">        <span class="type">int</span> i, j;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (loop --) &#123;</span><br><span class="line">            i = startx;</span><br><span class="line">            j = starty;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 四个for循环模拟四条边转圈</span></span><br><span class="line">            <span class="keyword">for</span> (j = starty; j &lt; n - offset; j++) &#123;</span><br><span class="line">                res[startx][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (i = startx; i &lt; n - offset; i++) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (; j &gt; starty; j--) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (; i &gt; startx; i--) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 第二圈开始的时候，起始位置各自加一</span></span><br><span class="line">            startx++;</span><br><span class="line">            starty++;</span><br><span class="line">            </span><br><span class="line">            offset += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 当n为奇数时，需要单独给最后中心值赋值</span></span><br><span class="line">        <span class="keyword">if</span>(n % <span class="number">2</span>) &#123;</span><br><span class="line">            res[mid][mid] = count;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="相关题目"><a href="#相关题目" class="headerlink" title="相关题目"></a>相关题目</h2><ul>
+<li>54.螺旋矩阵</li>
+<li>剑指Offer 29.顺时针打印矩阵</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Leetcode</category>
+      </categories>
+      <tags>
+        <tag>Leetcode</tag>
+        <tag>代码随想录</tag>
+        <tag>数组</tag>
+        <tag>螺旋矩阵Ⅱ</tag>
       </tags>
   </entry>
   <entry>
