@@ -1244,6 +1244,98 @@
       </tags>
   </entry>
   <entry>
+    <title>kw38_helloworld</title>
+    <url>/2023/03/24/45/</url>
+    <content><![CDATA[<h1 id="kw38-helloworld"><a href="#kw38-helloworld" class="headerlink" title="kw38_helloworld"></a>kw38_helloworld</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init board hardware. */</span></span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line"></span><br><span class="line">    PRINTF(<span class="string">&quot;hello world.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ch = GETCHAR();</span><br><span class="line">        PUTCHAR(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="main功能"><a href="#main功能" class="headerlink" title="main功能"></a>main功能</h2><p>这段代码是一个简单的hello world程序，它的作用是在终端输出”hello world.”，并且可以接收终端输入的字符并将其输出。</p>
+<p>在main函数中，首先调用了BOARD_InitPins()函数来初始化板子的引脚，然后调用了BOARD_BootClockRUN()函数来初始化时钟，最后调用了BOARD_InitDebugConsole()函数来初始化调试控制台。</p>
+<p>接下来，使用PRINTF函数在终端输出”hello world.”，然后进入一个死循环，不断地接收终端输入的字符并将其输出，直到程序结束。</p>
+<p>其中，GETCHAR函数用于接收终端输入的字符，PUTCHAR函数用于将字符输出到终端。</p>
+<h2 id="main的函数调用"><a href="#main的函数调用" class="headerlink" title="main的函数调用"></a>main的函数调用</h2><p>这段代码调用了三个函数，分别是BOARD_InitPins()、BOARD_BootClockRUN()和BOARD_InitDebugConsole()。</p>
+<ul>
+<li>BOARD_InitPins()函数用于初始化板子的引脚，</li>
+<li>BOARD_BootClockRUN()函数用于初始化时钟，</li>
+<li>BOARD_InitDebugConsole()函数用于初始化调试控制台。</li>
+</ul>
+<p>在这个程序中，这三个函数的作用是为了确保程序能够正常运行，因为程序需要使用板子的引脚、时钟和调试控制台。</p>
+<h2 id="main的包含头文件"><a href="#main的包含头文件" class="headerlink" title="main的包含头文件"></a>main的包含头文件</h2><p>这段代码include了以下几个文件：</p>
+<ul>
+<li>fsl_device_registers.h：包含了芯片的寄存器定义，用于访问芯片的寄存器。</li>
+<li>fsl_debug_console.h：包含了调试控制台的相关函数，用于在终端输出和输入字符。</li>
+<li>board.h：包含了板子的相关函数和宏定义，用于初始化板子的引脚和时钟。</li>
+<li>pin_mux.h：包含了引脚的配置信息，用于初始化板子的引脚。</li>
+<li>stdbool.h：包含了bool类型的定义，用于定义布尔类型的变量。</li>
+<li>clock_config.h：包含了时钟的配置信息，用于初始化时钟。</li>
+</ul>
+<p>其中，fsl_device_registers.h、fsl_debug_console.h、board.h和pin_mux.h是MCUXpresso SDK提供的库文件，而stdbool.h和clock_config.h是标准C库文件。这些文件的作用是为了确保程序能够正常运行，因为程序需要使用芯片的寄存器、调试控制台、板子的引脚和时钟。</p>
+<h2 id="pin-mux-h"><a href="#pin-mux-h" class="headerlink" title="pin_mux.h"></a>pin_mux.h</h2><p>这是一个头文件，用于使用 MCUXpresso 配置工具为微控制器配置引脚复用和电气特性。</p>
+<p>它提供了一个函数来初始化微控制器使用的引脚，可以在启动期间调用。 该文件定义了用于配置引脚电气特性的宏常量 <code>SOPT5_LPUART0ODE_0b0</code>、<code>SOPT5_LPUART0RXSRC_0b0</code> 和 <code>SOPT5_LPUART0TXSRC_0b00</code>。 </p>
+<p>头文件由包含保护 (<code>#ifndef _PIN_MUX_H_</code>) 保护，确保它在编译单元中仅包含一次。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0ODE_0b0 0x00u    <span class="comment">/*LPUART0开漏禁用*/</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0RXSRC_0b0 0x00u  <span class="comment">/*LPUART0接收数据源选择：LPUART_RX pin */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0TXSRC_0b00 0x00u <span class="comment">/*LPUART0发送数据源选择：LPUART_TX pin */</span></span></span><br></pre></td></tr></table></figure>
+
+<p>声明了两个函数：</p>
+<ul>
+<li>void BOARD_InitPins(void);  配置引脚routing和可选引脚电气特性</li>
+<li>void BOARD_InitBootPins(void);  初始化启动引脚；</li>
+</ul>
+<h2 id="pin-mux-c"><a href="#pin-mux-c" class="headerlink" title="pin_mux.c"></a>pin_mux.c</h2><h3 id="void-BOARD-IninPins-void"><a href="#void-BOARD-IninPins-void" class="headerlink" title="void BOARD_IninPins(void)"></a>void BOARD_IninPins(void)</h3><p>这段代码是来自项目中的“pin_mux.c”文件，该文件包含了MKW38A512微控制器的引脚配置函数。</p>
+<p>所选代码块是函数“BOARD_InitPins()”，它配置了LPUART0外设的引脚路由和电气特性。</p>
+<p>具体来说，它将</p>
+<ol>
+<li>使能PortC的时钟；</li>
+<li>42号和43号引脚的引脚复用设置为LPUART0_RX和LPUART0_TX。</li>
+<li>将LPUART0传输数据源设置为LPUART0_TX引脚，将LPUART0接收数据源设置为LPUART_RX引脚，并在LPUART0上禁用了开漏特性。</li>
+</ol>
+<p>该函数由“BOARD_InitBootPins()”调用，在引导过程中调用以初始化引脚。</p>
+<h2 id="clock-config-c"><a href="#clock-config-c" class="headerlink" title="clock_config.c"></a>clock_config.c</h2><h3 id="void-BOARD-BootClockRUN-void"><a href="#void-BOARD-BootClockRUN-void" class="headerlink" title="void BOARD_BootClockRUN(void)"></a>void BOARD_BootClockRUN(void)</h3><p>这段代码是MKW38A512芯片的时钟配置代码，主要包括两个函数：BOARD_BootClockRUN和BOARD_BootClockVLPR。</p>
+<p>这两个函数分别用于配置系统在RUN模式和VLPR模式下的时钟。在这两个函数中，主要使用了MCUXpresso Config Tools提供的时钟驱动函数来配置系统时钟。具体来说，这两个函数的主要步骤如下：</p>
+<ol>
+<li>BOARD_RfOscInit函数：<strong>初始化射频晶振，用于提供系统时钟的参考时钟</strong>。</li>
+<li>CLOCK_SetSimSafeDivs函数：设置<strong>系统时钟分频器的初始值</strong>，以确保在时钟模式切换时，核心时钟、总线时钟、flexbus时钟和flash时钟都在允许的范围内。</li>
+<li>BOARD_InitOsc0函数：初始化MCG OSC，用于提供系统时钟的参考时钟。</li>
+<li>CLOCK_BootToFeeMode函数：<strong>将MCG模式设置为FEE模式</strong>，即FLL Engaged External模式，此时FLL时钟和外部参考时钟都被使能。</li>
+<li>CLOCK_SetInternalRefClkConfig函数：配置<strong>内部参考时钟MCGIRCLK</strong>。</li>
+<li>CLOCK_SetSimConfig函数：设置<strong>SIM模块的时钟配置</strong>。</li>
+<li>SystemCoreClock变量：设置当前系统核心时钟的频率。</li>
+</ol>
+<p>其中，BOARD_BootClockRUN函数用于配置系统在RUN模式下的时钟，而BOARD_BootClockVLPR函数用于配置系统在VLPR模式下的时钟。</p>
+<p>在这两个函数中，<strong>主要的区别在于MCG模式的设置不同，以及时钟分频器的设置不同</strong>。</p>
+<ul>
+<li>在RUN模式下，MCG模式被设置为<strong>FEE</strong>模式，时钟分频器的初始值为1，2，2，5，</li>
+<li>而在VLPR模式下，MCG模式被设置为<strong>BLPI</strong>模式，时钟分频器的初始值为1，5，1，</li>
+</ul>
+<h2 id="board-c"><a href="#board-c" class="headerlink" title="board.c"></a>board.c</h2><h3 id="void-BOARD-InitDebugConsole-void"><a href="#void-BOARD-InitDebugConsole-void" class="headerlink" title="void BOARD_InitDebugConsole(void)"></a>void BOARD_InitDebugConsole(void)</h3><p>这段代码是初始化调试控制台的函数。在这个函数中，首先设置了<strong>LPUART0的时钟源为OSCERCLK</strong>，然后初始化了调试控制台。</p>
+<p>调试控制台的初始化使用了MCUXpresso SDK提供的DbgConsole_Init函数，该函数需要传入调试控制台的实例、波特率、类型和时钟源频率等参数。在这个函数中，调试控制台的实例为BOARD_DEBUG_UART_INSTANCE，波特率为BOARD_DEBUG_UART_BAUDRATE，类型为BOARD_DEBUG_UART_TYPE，时钟源频率为uartClkSrcFreq。</p>
+<h2 id="fsl-debug-console-c"><a href="#fsl-debug-console-c" class="headerlink" title="fsl_debug_console.c"></a>fsl_debug_console.c</h2><h3 id="int-DbgConsole-Printf-const-char-formatString-…"><a href="#int-DbgConsole-Printf-const-char-formatString-…" class="headerlink" title="int DbgConsole_Printf(const char *formatString, …)"></a>int DbgConsole_Printf(const char *formatString, …)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* See fsl_debug_console.h for documentation of this function. */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">DbgConsole_Printf</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *formatString, ...)</span></span><br><span class="line">&#123;</span><br><span class="line">    va_list ap;</span><br><span class="line">    <span class="type">int</span> logLength = <span class="number">0</span>, dbgResult = <span class="number">0</span>;</span><br><span class="line">    <span class="type">char</span> printBuf[DEBUG_CONSOLE_PRINTF_MAX_LOG_LEN] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> != g_serialHandle)</span><br><span class="line">    &#123;</span><br><span class="line">        va_start(ap, formatString);</span><br><span class="line">        <span class="comment">/* format print log first */</span></span><br><span class="line">        logLength = StrFormatPrintf(formatString, ap, printBuf, DbgConsole_PrintCallback);</span><br><span class="line">        <span class="comment">/* print log */</span></span><br><span class="line">        dbgResult = DbgConsole_SendDataReliable((<span class="type">uint8_t</span> *)printBuf, (<span class="type">size_t</span>)logLength);</span><br><span class="line"></span><br><span class="line">        va_end(ap);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dbgResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码是fsl_debug_console.c文件的一部分。该文件包含了调试控制台模块的实现。调试控制台模块提供了一组函数来初始化、去初始化、打印和从调试控制台读取数据。</p>
+<p>所选代码是DbgConsole_Printf函数的实现。该函数用于将格式化数据打印到调试控制台。</p>
+<blockquote>
+<p>该函数接受<strong>一个格式字符串</strong>和<strong>一个可变数量的参数</strong>。格式字符串指定输出字符串的格式，参数是要格式化和打印的值。</p>
+</blockquote>
+<p>该函数首先使用StrFormatPrintf函数格式化输出字符串。该函数将格式字符串、可变参数和回调函数作为输入。<strong>回调函数用于输出格式化数据</strong>。在这种情况下，回调函数是DbgConsole_PrintCallback。</p>
+<p>格式化输出字符串后，该函数使用DbgConsole_SendDataReliable函数将数据发送到调试控制台。该函数可靠地发送数据，这意味着它将重试发送数据，直到成功发送为止。</p>
+<p>后缀代码包含了DbgConsole_Putchar和DbgConsole_Scanf函数的实现。DbgConsole_Putchar函数用于<strong>将单个字符打印到调试控制台</strong>。该函数只需调用DbgConsole_SendDataReliable函数并传递要打印的字符即可。</p>
+<p>DbgConsole_Scanf函数用于从调试控制台读取格式化数据。该函数接受一个格式字符串和一个可变数量的参数。格式字符串指定输入数据的格式，参数是指向存储输入数据的变量的指针。</p>
+<p>该函数首先使用DbgConsole_ReadLine<strong>函数读取一行输入</strong>。然后使用StrFormatScanf函数格式化输入数据，并将格式化数据存储在由参数指向的变量中。</p>
+<p>总的来说，这些函数提供了一种方便的方式来与调试控制台交互，并打印和读取格式化数据。</p>
+<h2 id="关于引脚的四种输出情况"><a href="#关于引脚的四种输出情况" class="headerlink" title="关于引脚的四种输出情况"></a>关于引脚的四种输出情况</h2><p>上拉 (Pull-up) 和下拉 (Pull-down) 是指在数字电路中使用电阻将输入或输出引脚连接到电源或地，以确保在没有输入信号的情况下，引脚保持在一个已知状态。具体来说，上拉是指将引脚连接到电源（通常是高电平），下拉是指将引脚连接到地（通常是低电平）。在某些情况下，还可以使用弱上拉或弱下拉，即使用较大阻值的电阻。</p>
+<p>开漏 (Open-Drain) 和推挽 (Push-Pull) 是指输出引脚的驱动方式。<strong>开漏输出只能将引脚拉到低电平，而不能将其拉到高电平，而推挽输出可以将引脚驱动到高电平或低电平。</strong>在使用开漏输出时，还需要在输出引脚和电源之间连接一个上拉电阻，以确保输出引脚能够被拉到高电平。</p>
+<p>开漏输出通常用于需要将多个设备连接到同一个总线上的情况，而推挽输出则更适用于需要直接驱动其他器件的情况。</p>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+        <category>代码解读</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>嵌入式</tag>
+        <tag>代码解读</tag>
+        <tag>BOARD</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>代码解读之GPIO_Adapter</title>
     <url>/2023/03/20/38/</url>
     <content><![CDATA[<h1 id="读fsl-adapter-gpio-c-和-h-代码"><a href="#读fsl-adapter-gpio-c-和-h-代码" class="headerlink" title="读fsl_adapter_gpio.c 和 .h 代码"></a>读fsl_adapter_gpio.c 和 .h 代码</h1><h2 id="1-fsl-adapter-gpio-c"><a href="#1-fsl-adapter-gpio-c" class="headerlink" title="1. fsl_adapter_gpio.c"></a>1. fsl_adapter_gpio.c</h2><p>这个代码是一个包含头文件并定义与MCU中的GPIO（通用输入&#x2F;输出）功能相关的一些宏的 C 源文件。它是为 NXP 公司制造的特定MCU编写的。</p>
@@ -2258,98 +2350,6 @@ Vector Table
         <tag>数组</tag>
         <tag>双指针</tag>
         <tag>有序数组的平方</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>kw38_helloworld</title>
-    <url>/2023/03/24/45/</url>
-    <content><![CDATA[<h1 id="kw38-helloworld"><a href="#kw38-helloworld" class="headerlink" title="kw38_helloworld"></a>kw38_helloworld</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init board hardware. */</span></span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line"></span><br><span class="line">    PRINTF(<span class="string">&quot;hello world.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ch = GETCHAR();</span><br><span class="line">        PUTCHAR(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="main功能"><a href="#main功能" class="headerlink" title="main功能"></a>main功能</h2><p>这段代码是一个简单的hello world程序，它的作用是在终端输出”hello world.”，并且可以接收终端输入的字符并将其输出。</p>
-<p>在main函数中，首先调用了BOARD_InitPins()函数来初始化板子的引脚，然后调用了BOARD_BootClockRUN()函数来初始化时钟，最后调用了BOARD_InitDebugConsole()函数来初始化调试控制台。</p>
-<p>接下来，使用PRINTF函数在终端输出”hello world.”，然后进入一个死循环，不断地接收终端输入的字符并将其输出，直到程序结束。</p>
-<p>其中，GETCHAR函数用于接收终端输入的字符，PUTCHAR函数用于将字符输出到终端。</p>
-<h2 id="main的函数调用"><a href="#main的函数调用" class="headerlink" title="main的函数调用"></a>main的函数调用</h2><p>这段代码调用了三个函数，分别是BOARD_InitPins()、BOARD_BootClockRUN()和BOARD_InitDebugConsole()。</p>
-<ul>
-<li>BOARD_InitPins()函数用于初始化板子的引脚，</li>
-<li>BOARD_BootClockRUN()函数用于初始化时钟，</li>
-<li>BOARD_InitDebugConsole()函数用于初始化调试控制台。</li>
-</ul>
-<p>在这个程序中，这三个函数的作用是为了确保程序能够正常运行，因为程序需要使用板子的引脚、时钟和调试控制台。</p>
-<h2 id="main的包含头文件"><a href="#main的包含头文件" class="headerlink" title="main的包含头文件"></a>main的包含头文件</h2><p>这段代码include了以下几个文件：</p>
-<ul>
-<li>fsl_device_registers.h：包含了芯片的寄存器定义，用于访问芯片的寄存器。</li>
-<li>fsl_debug_console.h：包含了调试控制台的相关函数，用于在终端输出和输入字符。</li>
-<li>board.h：包含了板子的相关函数和宏定义，用于初始化板子的引脚和时钟。</li>
-<li>pin_mux.h：包含了引脚的配置信息，用于初始化板子的引脚。</li>
-<li>stdbool.h：包含了bool类型的定义，用于定义布尔类型的变量。</li>
-<li>clock_config.h：包含了时钟的配置信息，用于初始化时钟。</li>
-</ul>
-<p>其中，fsl_device_registers.h、fsl_debug_console.h、board.h和pin_mux.h是MCUXpresso SDK提供的库文件，而stdbool.h和clock_config.h是标准C库文件。这些文件的作用是为了确保程序能够正常运行，因为程序需要使用芯片的寄存器、调试控制台、板子的引脚和时钟。</p>
-<h2 id="pin-mux-h"><a href="#pin-mux-h" class="headerlink" title="pin_mux.h"></a>pin_mux.h</h2><p>这是一个头文件，用于使用 MCUXpresso 配置工具为微控制器配置引脚复用和电气特性。</p>
-<p>它提供了一个函数来初始化微控制器使用的引脚，可以在启动期间调用。 该文件定义了用于配置引脚电气特性的宏常量 <code>SOPT5_LPUART0ODE_0b0</code>、<code>SOPT5_LPUART0RXSRC_0b0</code> 和 <code>SOPT5_LPUART0TXSRC_0b00</code>。 </p>
-<p>头文件由包含保护 (<code>#ifndef _PIN_MUX_H_</code>) 保护，确保它在编译单元中仅包含一次。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0ODE_0b0 0x00u    <span class="comment">/*LPUART0开漏禁用*/</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0RXSRC_0b0 0x00u  <span class="comment">/*LPUART0接收数据源选择：LPUART_RX pin */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0TXSRC_0b00 0x00u <span class="comment">/*LPUART0发送数据源选择：LPUART_TX pin */</span></span></span><br></pre></td></tr></table></figure>
-
-<p>声明了两个函数：</p>
-<ul>
-<li>void BOARD_InitPins(void);  配置引脚routing和可选引脚电气特性</li>
-<li>void BOARD_InitBootPins(void);  初始化启动引脚；</li>
-</ul>
-<h2 id="pin-mux-c"><a href="#pin-mux-c" class="headerlink" title="pin_mux.c"></a>pin_mux.c</h2><h3 id="void-BOARD-IninPins-void"><a href="#void-BOARD-IninPins-void" class="headerlink" title="void BOARD_IninPins(void)"></a>void BOARD_IninPins(void)</h3><p>这段代码是来自项目中的“pin_mux.c”文件，该文件包含了MKW38A512微控制器的引脚配置函数。</p>
-<p>所选代码块是函数“BOARD_InitPins()”，它配置了LPUART0外设的引脚路由和电气特性。</p>
-<p>具体来说，它将</p>
-<ol>
-<li>使能PortC的时钟；</li>
-<li>42号和43号引脚的引脚复用设置为LPUART0_RX和LPUART0_TX。</li>
-<li>将LPUART0传输数据源设置为LPUART0_TX引脚，将LPUART0接收数据源设置为LPUART_RX引脚，并在LPUART0上禁用了开漏特性。</li>
-</ol>
-<p>该函数由“BOARD_InitBootPins()”调用，在引导过程中调用以初始化引脚。</p>
-<h2 id="clock-config-c"><a href="#clock-config-c" class="headerlink" title="clock_config.c"></a>clock_config.c</h2><h3 id="void-BOARD-BootClockRUN-void"><a href="#void-BOARD-BootClockRUN-void" class="headerlink" title="void BOARD_BootClockRUN(void)"></a>void BOARD_BootClockRUN(void)</h3><p>这段代码是MKW38A512芯片的时钟配置代码，主要包括两个函数：BOARD_BootClockRUN和BOARD_BootClockVLPR。</p>
-<p>这两个函数分别用于配置系统在RUN模式和VLPR模式下的时钟。在这两个函数中，主要使用了MCUXpresso Config Tools提供的时钟驱动函数来配置系统时钟。具体来说，这两个函数的主要步骤如下：</p>
-<ol>
-<li>BOARD_RfOscInit函数：<strong>初始化射频晶振，用于提供系统时钟的参考时钟</strong>。</li>
-<li>CLOCK_SetSimSafeDivs函数：设置<strong>系统时钟分频器的初始值</strong>，以确保在时钟模式切换时，核心时钟、总线时钟、flexbus时钟和flash时钟都在允许的范围内。</li>
-<li>BOARD_InitOsc0函数：初始化MCG OSC，用于提供系统时钟的参考时钟。</li>
-<li>CLOCK_BootToFeeMode函数：<strong>将MCG模式设置为FEE模式</strong>，即FLL Engaged External模式，此时FLL时钟和外部参考时钟都被使能。</li>
-<li>CLOCK_SetInternalRefClkConfig函数：配置<strong>内部参考时钟MCGIRCLK</strong>。</li>
-<li>CLOCK_SetSimConfig函数：设置<strong>SIM模块的时钟配置</strong>。</li>
-<li>SystemCoreClock变量：设置当前系统核心时钟的频率。</li>
-</ol>
-<p>其中，BOARD_BootClockRUN函数用于配置系统在RUN模式下的时钟，而BOARD_BootClockVLPR函数用于配置系统在VLPR模式下的时钟。</p>
-<p>在这两个函数中，<strong>主要的区别在于MCG模式的设置不同，以及时钟分频器的设置不同</strong>。</p>
-<ul>
-<li>在RUN模式下，MCG模式被设置为<strong>FEE</strong>模式，时钟分频器的初始值为1，2，2，5，</li>
-<li>而在VLPR模式下，MCG模式被设置为<strong>BLPI</strong>模式，时钟分频器的初始值为1，5，1，</li>
-</ul>
-<h2 id="board-c"><a href="#board-c" class="headerlink" title="board.c"></a>board.c</h2><h3 id="void-BOARD-InitDebugConsole-void"><a href="#void-BOARD-InitDebugConsole-void" class="headerlink" title="void BOARD_InitDebugConsole(void)"></a>void BOARD_InitDebugConsole(void)</h3><p>这段代码是初始化调试控制台的函数。在这个函数中，首先设置了<strong>LPUART0的时钟源为OSCERCLK</strong>，然后初始化了调试控制台。</p>
-<p>调试控制台的初始化使用了MCUXpresso SDK提供的DbgConsole_Init函数，该函数需要传入调试控制台的实例、波特率、类型和时钟源频率等参数。在这个函数中，调试控制台的实例为BOARD_DEBUG_UART_INSTANCE，波特率为BOARD_DEBUG_UART_BAUDRATE，类型为BOARD_DEBUG_UART_TYPE，时钟源频率为uartClkSrcFreq。</p>
-<h2 id="fsl-debug-console-c"><a href="#fsl-debug-console-c" class="headerlink" title="fsl_debug_console.c"></a>fsl_debug_console.c</h2><h3 id="int-DbgConsole-Printf-const-char-formatString-…"><a href="#int-DbgConsole-Printf-const-char-formatString-…" class="headerlink" title="int DbgConsole_Printf(const char *formatString, …)"></a>int DbgConsole_Printf(const char *formatString, …)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* See fsl_debug_console.h for documentation of this function. */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">DbgConsole_Printf</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *formatString, ...)</span></span><br><span class="line">&#123;</span><br><span class="line">    va_list ap;</span><br><span class="line">    <span class="type">int</span> logLength = <span class="number">0</span>, dbgResult = <span class="number">0</span>;</span><br><span class="line">    <span class="type">char</span> printBuf[DEBUG_CONSOLE_PRINTF_MAX_LOG_LEN] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> != g_serialHandle)</span><br><span class="line">    &#123;</span><br><span class="line">        va_start(ap, formatString);</span><br><span class="line">        <span class="comment">/* format print log first */</span></span><br><span class="line">        logLength = StrFormatPrintf(formatString, ap, printBuf, DbgConsole_PrintCallback);</span><br><span class="line">        <span class="comment">/* print log */</span></span><br><span class="line">        dbgResult = DbgConsole_SendDataReliable((<span class="type">uint8_t</span> *)printBuf, (<span class="type">size_t</span>)logLength);</span><br><span class="line"></span><br><span class="line">        va_end(ap);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dbgResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段代码是fsl_debug_console.c文件的一部分。该文件包含了调试控制台模块的实现。调试控制台模块提供了一组函数来初始化、去初始化、打印和从调试控制台读取数据。</p>
-<p>所选代码是DbgConsole_Printf函数的实现。该函数用于将格式化数据打印到调试控制台。</p>
-<blockquote>
-<p>该函数接受<strong>一个格式字符串</strong>和<strong>一个可变数量的参数</strong>。格式字符串指定输出字符串的格式，参数是要格式化和打印的值。</p>
-</blockquote>
-<p>该函数首先使用StrFormatPrintf函数格式化输出字符串。该函数将格式字符串、可变参数和回调函数作为输入。<strong>回调函数用于输出格式化数据</strong>。在这种情况下，回调函数是DbgConsole_PrintCallback。</p>
-<p>格式化输出字符串后，该函数使用DbgConsole_SendDataReliable函数将数据发送到调试控制台。该函数可靠地发送数据，这意味着它将重试发送数据，直到成功发送为止。</p>
-<p>后缀代码包含了DbgConsole_Putchar和DbgConsole_Scanf函数的实现。DbgConsole_Putchar函数用于<strong>将单个字符打印到调试控制台</strong>。该函数只需调用DbgConsole_SendDataReliable函数并传递要打印的字符即可。</p>
-<p>DbgConsole_Scanf函数用于从调试控制台读取格式化数据。该函数接受一个格式字符串和一个可变数量的参数。格式字符串指定输入数据的格式，参数是指向存储输入数据的变量的指针。</p>
-<p>该函数首先使用DbgConsole_ReadLine<strong>函数读取一行输入</strong>。然后使用StrFormatScanf函数格式化输入数据，并将格式化数据存储在由参数指向的变量中。</p>
-<p>总的来说，这些函数提供了一种方便的方式来与调试控制台交互，并打印和读取格式化数据。</p>
-<h2 id="关于引脚的四种输出情况"><a href="#关于引脚的四种输出情况" class="headerlink" title="关于引脚的四种输出情况"></a>关于引脚的四种输出情况</h2><p>上拉 (Pull-up) 和下拉 (Pull-down) 是指在数字电路中使用电阻将输入或输出引脚连接到电源或地，以确保在没有输入信号的情况下，引脚保持在一个已知状态。具体来说，上拉是指将引脚连接到电源（通常是高电平），下拉是指将引脚连接到地（通常是低电平）。在某些情况下，还可以使用弱上拉或弱下拉，即使用较大阻值的电阻。</p>
-<p>开漏 (Open-Drain) 和推挽 (Push-Pull) 是指输出引脚的驱动方式。<strong>开漏输出只能将引脚拉到低电平，而不能将其拉到高电平，而推挽输出可以将引脚驱动到高电平或低电平。</strong>在使用开漏输出时，还需要在输出引脚和电源之间连接一个上拉电阻，以确保输出引脚能够被拉到高电平。</p>
-<p>开漏输出通常用于需要将多个设备连接到同一个总线上的情况，而推挽输出则更适用于需要直接驱动其他器件的情况。</p>
-]]></content>
-      <categories>
-        <category>嵌入式</category>
-        <category>代码解读</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>嵌入式</tag>
-        <tag>代码解读</tag>
-        <tag>BOARD</tag>
       </tags>
   </entry>
   <entry>
