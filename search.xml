@@ -7120,6 +7120,96 @@ Vector Table
       </tags>
   </entry>
   <entry>
+    <title>野火RT1052开发板1创建环境</title>
+    <url>/2023/11/30/20/</url>
+    <content><![CDATA[<h1 id="野火RT1052开发板1-–-NXP-MCU-Link-Pro-Keil-V5-编译环境创建"><a href="#野火RT1052开发板1-–-NXP-MCU-Link-Pro-Keil-V5-编译环境创建" class="headerlink" title="野火RT1052开发板1 – NXP MCU-Link Pro + Keil V5 编译环境创建"></a>野火RT1052开发板1 – NXP MCU-Link Pro + Keil V5 编译环境创建</h1><blockquote>
+<p>野火i.MX RT1052 EVK Pro是个很好的学习工具，野火不仅做了汉化，另外，把所有的Pin脚都做了引出，虽然是个老产品，但是一通百通所以这个系列准备使用野火的板子来入门，具体要更几篇待定…，但是尽量每一篇都有真东西，这是第一篇：使用NXP MCU-Link Pro + Keil V5，创建编译环境运行第一个demo。</p>
+</blockquote>
+<p><img src="/2023/11/30/20/image-20231130220915920.png" alt="image-20231130220915920"></p>
+<ul>
+<li>芯片Part Number： <strong>196pin</strong> 的工业级的 <code>MIMXRT1052CVL5B</code></li>
+</ul>
+<h2 id="安装Keil-V5"><a href="#安装Keil-V5" class="headerlink" title="安装Keil V5"></a>安装Keil V5</h2><blockquote>
+<p>参考这个视频： <a href="https://www.bilibili.com/video/av544829324/?vd_source=e742ab928a70238934780b04b84d177d">https://www.bilibili.com/video/av544829324/?vd_source=e742ab928a70238934780b04b84d177d</a></p>
+</blockquote>
+<h3 id="安装芯片包"><a href="#安装芯片包" class="headerlink" title="安装芯片包"></a>安装芯片包</h3><ul>
+<li>KEIL5 需要自己安装对应芯片的芯片包。直接去 keil 的官网下载：<a href="http://www.keil.com/dd2/pack/">http://www.keil.com/dd2/pack/</a></li>
+<li>下载之后双击安装即可！</li>
+</ul>
+<p><img src="/2023/11/30/20/image-20231130221413145.png" alt="芯片包安装成功"></p>
+<h3 id="更换编译器"><a href="#更换编译器" class="headerlink" title="更换编译器"></a>更换编译器</h3><p>Keil的新版本不再提供ARM Compiler V5，因此需要自己下载，去百度这个关键词：**<u><em>ARMCompiler_506_Windows_x86_b960.zip</em></u>** 找到的就是最后一个V5编译器，下载并安装。</p>
+<ul>
+<li>安装地址推荐：**<u><em>C:\Keil_v5\ARM\ARMCC</em></u>** (新建一个ARMCC文件夹，安装到这个文件夹)</li>
+</ul>
+<p>然后，需要在project中手动增加这个编译器：</p>
+<ol>
+<li><p>Add another Arm Compiler Version to List：</p>
+<p><img src="/2023/11/30/20/image-20231130222156941.png" alt="image-20231130222156941"></p>
+</li>
+<li><p>在项目中改为这个编译器：</p>
+</li>
+</ol>
+<p><img src="/2023/11/30/20/image-20231130222240551.png" alt="image-20231130222240551"></p>
+<h3 id="更换Flash下载算法"><a href="#更换Flash下载算法" class="headerlink" title="更换Flash下载算法"></a>更换Flash下载算法</h3><p>i.MX RT 系列芯片内部不具备 FLASH 存储器，即其程序代码需要存储在外部的存储器中，使用时需要自己提供对应 FLASH 的下载算法给 KEIL 软件，野火 i.MX RT1052 系 列开发板使用 32MB 的 SPI-NorFlash 芯片存储程序。野火提供了自己的Flash下载算法，有两个版本，寄存器版本和库函数版本：</p>
+<ul>
+<li>iMXRT1052_W25Q256JV_CFG_By_Fire.FLM(寄存器版本工程使用)</li>
+<li>Embedfire_RT1052_QSPI_R1.FLM（库函数版本工程使用）</li>
+</ul>
+<p>需要把这两个文件复制到Keil的安装目录下：**<u><em>C:\Keil_v5\ARM\Flash</em></u>**</p>
+<p><u><strong>&#x3D;&#x3D;&#x3D;&#x3D;&gt; 到此为止，编译所需的软件基本整理完毕！&#x3D;&#x3D;</strong></u></p>
+<h2 id="硬件连接"><a href="#硬件连接" class="headerlink" title="硬件连接"></a>硬件连接</h2><p>先把载板丢一边，看看这个核心板，核心板有一个供电口，一个SWD debug口，还有一个三线的UART接口。</p>
+<p><img src="/2023/11/30/20/image-20231130223734281.png" alt="image-20231130223734281"></p>
+<p><img src="/2023/11/30/20/image-20231130223748254.png" alt="image-20231130223748254"></p>
+<p>原装的DAP下载器不见了，刚好试试NXP更为强大的MCU-Link Pro ! 小试牛刀！</p>
+<h3 id="MCU-Link-Pro"><a href="#MCU-Link-Pro" class="headerlink" title="MCU-Link Pro"></a>MCU-Link Pro</h3><p>MCU-Link Pro的官方主页在这：<a href="https://www.nxp.com.cn/design/software/development-software/mcuxpresso-software-and-tools-/mcu-link-pro-debug-probe:MCU-LINK-PRO">MCU-Link Pro硬件调试器 | NXP 半导体</a></p>
+<p>支持很多NXP产品的调试，而且可以方便的烧录CMSIS-DAP和JLink的固件，虽然贵点，但是相当于一颗更比两颗强，值了！</p>
+<p><img src="/2023/11/30/20/image-20231130224325691.png" alt="image-20231130224325691"></p>
+<p>看一下这里对它的总体介绍：</p>
+<blockquote>
+<p>MCU-Link Pro基于恩智浦的MCU-Link架构，可以在MCU-Link低成本硬件调试器和板载评估板中找到，所有这些版本都运行相同的固件。<br>除了基本MCU-Link中的SWD调试、SWO分析和USB到UART桥接功能(VCOM)之外，MCU-LinkPro型号还增加了J-Link LITE固件选项、能量测量、模拟信号监视器、USB转SPI和I2C桥接功能，以及外设仿真的板载LPC804。<br>MCU-Link Pro基于Arm® Cortex-M33®双核LPC55S69微控制器，并具有高速USB接口，提供低成本、高性能的调试。</p>
+</blockquote>
+<p><img src="/2023/11/30/20/image-20231130225008405.png" alt="image-20231130225008405"></p>
+<p>在这个用法中，我们主要用到J7连接板子，J19中的UART信号接出来到板子上：RX &lt;—&gt; TX  TX &lt;—&gt; RX</p>
+<p><img src="/2023/11/30/20/image-20231130225346948.png" alt="image-20231130225346948"></p>
+<h3 id="JTAG接口转接"><a href="#JTAG接口转接" class="headerlink" title="JTAG接口转接"></a>JTAG接口转接</h3><p>由于配备的cable是个小口，还需要一个小转大的转接板，因此，需要找个20PinJTAG口的定义，查阅这个链接：<a href="https://blog.csdn.net/chenhuanqiangnihao/article/details/113835905">JTAG各类接口针脚定义、含义以及SWD接线方式_jtag接口定义_学海无涯_come on的博客-CSDN博客</a></p>
+<p><img src="/2023/11/30/20/image-20231130225730949.png" alt="image-20231130225730949"></p>
+<p>注意，方形焊盘都是1号Pin脚；</p>
+<p><img src="/2023/11/30/20/image-20231130225915289.png" alt="image-20231130225915289"></p>
+<p><strong>&#x3D;&#x3D;—》至此，硬件连接部分搞定！&#x3D;&#x3D;</strong></p>
+<h2 id="跑Demo！"><a href="#跑Demo！" class="headerlink" title="跑Demo！"></a>跑Demo！</h2><h3 id="先展示一下硬件连接"><a href="#先展示一下硬件连接" class="headerlink" title="先展示一下硬件连接"></a>先展示一下硬件连接</h3><p><img src="/2023/11/30/20/%E7%A1%AC%E4%BB%B6%E8%BF%9E%E6%8E%A5.jpg" alt="硬件连接"></p>
+<hr>
+<p>注意：</p>
+<ul>
+<li>一定要先给板子上电，再给debugger上电，不然有可能通信失败！</li>
+</ul>
+<h3 id="运行自带的验证程序"><a href="#运行自带的验证程序" class="headerlink" title="运行自带的验证程序"></a>运行自带的验证程序</h3><blockquote>
+<p>1052-H1核心板测试代码\1052-H1测试程序</p>
+</blockquote>
+<p>先编译看看：</p>
+<p><img src="/2023/11/30/20/image-20231130232535899.png" alt="image-20231130232535899"></p>
+<p>🆗！</p>
+<p>再烧录进来：</p>
+<p><img src="/2023/11/30/20/image-20231130232615101.png" alt="image-20231130232615101"></p>
+<p>看看使用VCOM的串口输出：</p>
+<p><img src="/2023/11/30/20/shot.png"></p>
+<hr>
+<p>完美运行按键检测的demo~</p>
+<p>后续可以看一下按键中断是如何实现的，以及，继续看一下RT库开发手册！</p>
+<p>— 2023&#x2F;11&#x2F;30</p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+        <category>RT1052</category>
+        <category>野火</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>嵌入式</tag>
+        <tag>RT1052</tag>
+        <tag>野火</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>链表00--链表理论基础</title>
     <url>/2022/09/28/02/</url>
     <content><![CDATA[<h1 id="链表理论基础"><a href="#链表理论基础" class="headerlink" title="链表理论基础"></a>链表理论基础</h1><blockquote>
