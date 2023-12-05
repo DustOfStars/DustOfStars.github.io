@@ -254,6 +254,338 @@
       </tags>
   </entry>
   <entry>
+    <title>RT1050开发--第1节 ARM Cortex-M7体系结构</title>
+    <url>/2023/12/04/22/</url>
+    <content><![CDATA[<h1 id="第一节-ARM-Cortex-M7体系结构"><a href="#第一节-ARM-Cortex-M7体系结构" class="headerlink" title="第一节 ARM Cortex-M7体系结构"></a>第一节 ARM Cortex-M7体系结构</h1><blockquote>
+<p><img src="/2023/12/04/22/image-20231204205936163.png" alt="image-20231204205936163"></p>
+</blockquote>
+<hr>
+<h2 id="认识ARM"><a href="#认识ARM" class="headerlink" title="认识ARM"></a>认识ARM</h2><p><img src="/2023/12/04/22/image-20231204210036757.png" alt="image-20231204210036757"></p>
+<h3 id="A系列-–-移动的王者"><a href="#A系列-–-移动的王者" class="headerlink" title="A系列 – 移动的王者"></a>A系列 – 移动的王者</h3><p><img src="/2023/12/04/22/image-20231204210232296.png" alt="image-20231204210232296"></p>
+<h2 id="M系列-–-无处不在"><a href="#M系列-–-无处不在" class="headerlink" title="M系列 – 无处不在"></a>M系列 – 无处不在</h2><p><img src="/2023/12/04/22/image-20231204210508859.png" alt="image-20231204210508859"></p>
+<p><img src="/2023/12/04/22/image-20231204210629438.png" alt="image-20231204210629438"></p>
+<p><img src="/2023/12/04/22/image-20231204210816730.png" alt="image-20231204210816730"></p>
+<hr>
+<h2 id="Cortex-M7介绍"><a href="#Cortex-M7介绍" class="headerlink" title="Cortex-M7介绍"></a>Cortex-M7介绍</h2><p><img src="/2023/12/04/22/image-20231204210956321.png" alt="image-20231204210956321"></p>
+<h3 id="规格特点"><a href="#规格特点" class="headerlink" title="规格特点"></a>规格特点</h3><p><img src="/2023/12/04/22/image-20231204211218436.png" alt="image-20231204211218436"></p>
+<h3 id="对外接口"><a href="#对外接口" class="headerlink" title="对外接口"></a>对外接口</h3><p><img src="/2023/12/04/22/image-20231204211325476.png" alt="image-20231204211325476"></p>
+<hr>
+<h2 id="Cortex-M7-编程模型"><a href="#Cortex-M7-编程模型" class="headerlink" title="Cortex-M7 编程模型"></a>Cortex-M7 编程模型</h2><h3 id="运行模式"><a href="#运行模式" class="headerlink" title="运行模式"></a>运行模式</h3><p><img src="/2023/12/04/22/image-20231204211548215.png" alt="image-20231204211548215"></p>
+<blockquote>
+<p>所有M系列都是这两个模式：线程模式 + 处理模式（中断模式）</p>
+<p>即：主程序都是在线程模式，中断处理函数都是处理模式，处理模式下拥有特权；</p>
+</blockquote>
+<hr>
+<h3 id="操作状态"><a href="#操作状态" class="headerlink" title="操作状态"></a>操作状态</h3><p><img src="/2023/12/04/22/image-20231204211740877.png" alt="image-20231204211740877"></p>
+<blockquote>
+<p>即：一个运行，一个调试；</p>
+</blockquote>
+<h3 id="特权访问和非特权访问"><a href="#特权访问和非特权访问" class="headerlink" title="特权访问和非特权访问"></a>特权访问和非特权访问</h3><p><img src="/2023/12/04/22/image-20231204211828379.png" alt="image-20231204211828379"></p>
+<blockquote>
+<p>特权访问：即可以触碰到CPU所有的资源；非特权访问有些资源碰不到！</p>
+<p><mark><strong><u>线程模式一般就是非特权的，处理模式都是特权的！</u></strong></mark></p>
+</blockquote>
+<hr>
+<h3 id="系统的地址映射"><a href="#系统的地址映射" class="headerlink" title="系统的地址映射"></a>系统的地址映射</h3><blockquote>
+<p><img src="/2023/12/04/22/image-20231204212206094.png" alt="image-20231204212206094"></p>
+</blockquote>
+<p><img src="/2023/12/04/22/image-20231204212237605.png" alt="image-20231204212237605"></p>
+<blockquote>
+<p>0x0000_0000 ~ 0xFFFF_FFFF  一共 4GB；</p>
+<p>Code ： 即 ROM；</p>
+<p>SRAM：即数据；</p>
+<p>Peripheral：放外设，M7把代码、数据、外设 都映射到同一片地址空间；</p>
+<p>External RAM： 外部存储器！</p>
+<p>External device：外部设备</p>
+<p>内部私有外设总线；</p>
+<p>外部私有外设总线；–》 M7内核的；</p>
+</blockquote>
+<h3 id="处理器的核心寄存器"><a href="#处理器的核心寄存器" class="headerlink" title="处理器的核心寄存器"></a>处理器的核心寄存器</h3><blockquote>
+<p><img src="/2023/12/04/22/image-20231204212830460.png" alt="image-20231204212830460"></p>
+</blockquote>
+<p><img src="/2023/12/04/22/image-20231204212848276.png" alt="image-20231204212848276"></p>
+<p>R13栈指针一个寄存器映射两个区域：<mark><strong><code>MSP</code></strong> 和 **<code>PSP</code>**；</mark></p>
+<blockquote>
+<p><strong><u><em>纯裸机编程时，只有一个栈，所以只有MSP主栈指针；</em></u></strong></p>
+<p>FreeRTOS才会用到PSP进程栈指针；</p>
+</blockquote>
+<hr>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><p><img src="/2023/12/04/22/image-20231204213402264.png" alt="image-20231204213402264"></p>
+<p><img src="/2023/12/04/22/image-20231204213423024.png" alt="image-20231204213423024"></p>
+<p><strong><mark><u>ARM的异常处理流程：</u></mark></strong></p>
+<ul>
+<li>1– 保存当前程序的上下文，即：xPSR、PC、LR、R0-R3,R12;<ul>
+<li>通过MSP或者PSP读取地址，把这些寄存器全都入栈，就保存了下来；</li>
+</ul>
+</li>
+<li>2– 把当前要返回的地址放在LR链接寄存器中；</li>
+<li>3a– 切换模式，从线程模式切换到处理模式；</li>
+<li>3b– 指针指向新的栈顶；</li>
+<li>4– 找到该中断的向量地址，赋值给PC指针，执行中断处理函数；</li>
+</ul>
+]]></content>
+      <categories>
+        <category>NXP</category>
+        <category>RT1050EVKB</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>RT1050EVKB</tag>
+        <tag>嵌入式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RT1050开发--第2节 NXP RT1050系列芯片</title>
+    <url>/2023/12/04/29/</url>
+    <content><![CDATA[<h1 id="第二节-RT1050系列芯片"><a href="#第二节-RT1050系列芯片" class="headerlink" title="第二节 RT1050系列芯片"></a>第二节 RT1050系列芯片</h1><blockquote>
+<p><img src="/2023/12/04/29/image-20231204214727923.png" alt="image-20231204214727923"></p>
+</blockquote>
+<hr>
+<h2 id="MCU与MPU开发模式"><a href="#MCU与MPU开发模式" class="headerlink" title="MCU与MPU开发模式"></a>MCU与MPU开发模式</h2><h3 id="MPU嵌入式开发流程"><a href="#MPU嵌入式开发流程" class="headerlink" title="MPU嵌入式开发流程"></a>MPU嵌入式开发流程</h3><p><img src="/2023/12/04/29/image-20231204214944808.png" alt="image-20231204214944808"></p>
+<h3 id="MCU物联网开发流程"><a href="#MCU物联网开发流程" class="headerlink" title="MCU物联网开发流程"></a>MCU物联网开发流程</h3><p><img src="/2023/12/04/29/image-20231204215132544.png" alt="image-20231204215132544"></p>
+<h3 id="新的需求"><a href="#新的需求" class="headerlink" title="新的需求"></a>新的需求</h3><p><img src="/2023/12/04/29/image-20231204215345727.png" alt="image-20231204215345727"></p>
+<hr>
+<h2 id="iMX-RT-1050跨界处理器"><a href="#iMX-RT-1050跨界处理器" class="headerlink" title="iMX.RT 1050跨界处理器"></a>iMX.RT 1050跨界处理器</h2><p><img src="/2023/12/04/29/image-20231205100755320.png" alt="image-20231205100755320"></p>
+<h3 id="降低成本-–-无需片内闪存"><a href="#降低成本-–-无需片内闪存" class="headerlink" title="降低成本 – 无需片内闪存"></a>降低成本 – 无需片内闪存</h3><p><img src="/2023/12/04/29/image-20231205100923019.png" alt="image-20231205100923019"></p>
+<h3 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h3><blockquote>
+<p><img src="/2023/12/04/29/image-20231205101211113.png" alt="image-20231205101211113"></p>
+</blockquote>
+<p><img src="/2023/12/04/29/image-20231205101220140.png" alt="image-20231205101220140"></p>
+<h3 id="低中断延时"><a href="#低中断延时" class="headerlink" title="低中断延时"></a>低中断延时</h3><blockquote>
+<p><img src="/2023/12/04/29/image-20231205101743111.png" alt="image-20231205101743111"></p>
+</blockquote>
+<p><img src="/2023/12/04/29/image-20231205101754029.png" alt="image-20231205101754029"></p>
+<h3 id="高效能"><a href="#高效能" class="headerlink" title="高效能"></a>高效能</h3><p><img src="/2023/12/04/29/image-20231205102016092.png" alt="image-20231205102016092"></p>
+<blockquote>
+<p>RT把DC-DC放到芯片里面，每MHz电流消耗降低了接近一半！</p>
+</blockquote>
+<hr>
+<h2 id="RT1050特色外设"><a href="#RT1050特色外设" class="headerlink" title="RT1050特色外设"></a>RT1050特色外设</h2><h3 id="通用外设"><a href="#通用外设" class="headerlink" title="通用外设"></a>通用外设</h3><p><img src="/2023/12/04/29/image-20231205102154012.png" alt="image-20231205102154012"></p>
+<h3 id="低功耗外设"><a href="#低功耗外设" class="headerlink" title="低功耗外设"></a>低功耗外设</h3><p><img src="/2023/12/04/29/image-20231205102237384.png" alt="image-20231205102237384"></p>
+<h3 id="灵活外设"><a href="#灵活外设" class="headerlink" title="灵活外设"></a>灵活外设</h3><blockquote>
+<p> <img src="/2023/12/04/29/image-20231205102336054.png" alt="image-20231205102336054"></p>
+</blockquote>
+<blockquote>
+<p>**<u>FlexSPI</u>**重点，覆盖了所有的SPI接口，并且速度更快，接近200M；</p>
+<p><mark><strong><u>FlexRAM</u></strong></mark>：DTCM、ITCM，但是RT内核只提供了一个512K的RAM，但是它可以灵活的分配为DTCM、ITCM等；</p>
+</blockquote>
+<h3 id="高级外设"><a href="#高级外设" class="headerlink" title="高级外设"></a>高级外设</h3><p><img src="/2023/12/04/29/image-20231205102806831.png" alt="image-20231205102806831"></p>
+<p>SEMC:<u><em><strong>安全外部存储器控制器，之前提到的SDRAM、NOR NAND都可以通过这个接口接入</strong></em></u>；</p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+        <category>RT1050EVKB</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>RT1050EVKB</tag>
+        <tag>嵌入式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RT1050开发--第3节 RT1050硬件平台</title>
+    <url>/2023/12/04/32/</url>
+    <content><![CDATA[<h1 id="第3节-RT1050硬件平台使用"><a href="#第3节-RT1050硬件平台使用" class="headerlink" title="第3节 RT1050硬件平台使用"></a>第3节 RT1050硬件平台使用</h1><blockquote>
+<p><img src="/2023/12/04/32/image-20231205103223182.png" alt="image-20231205103223182"></p>
+</blockquote>
+<h2 id="RT1050-EVKB开发板介绍"><a href="#RT1050-EVKB开发板介绍" class="headerlink" title="RT1050 EVKB开发板介绍"></a>RT1050 EVKB开发板介绍</h2><h3 id="EVKB硬件框图"><a href="#EVKB硬件框图" class="headerlink" title="EVKB硬件框图"></a>EVKB硬件框图</h3><ol>
+<li>原理图</li>
+</ol>
+<p><img src="/2023/12/04/32/image-20231205103422056.png" alt="image-20231205103422056"></p>
+<ul>
+<li><p>FlexSPI：</p>
+<ul>
+<li>HyperFlash –高性能高速 CYPRESS S26K</li>
+<li>QSPI Flash</li>
+<li>–&gt; **<u><em>用于外部扩展ROM存储器</em></u>**；</li>
+</ul>
+</li>
+<li><p>SDRAM：</p>
+<ul>
+<li>16bit接口，<u><strong>内部控制器是<code>SEMC</code>！</strong></u></li>
+<li>扩展RAM；</li>
+</ul>
+</li>
+<li><p>SDMC：</p>
+<ul>
+<li>使用SD卡存储大型文件；</li>
+</ul>
+</li>
+</ul>
+<h3 id="PCB图"><a href="#PCB图" class="headerlink" title="PCB图"></a>PCB图</h3><p><img src="/2023/12/04/32/image-20231205103953019.png" alt="image-20231205103953019"></p>
+<ol>
+<li>开发板硬件清单</li>
+</ol>
+<p><img src="/2023/12/04/32/image-20231205104237835.png" alt="image-20231205104237835"></p>
+<ul>
+<li>重点看一下Mass Storage，可以看到除了SD卡外，还有64M的QSPI Flash和512M的HyperFlash；</li>
+</ul>
+<ol start="2">
+<li><p>开发板供电模式</p>
+<p><img src="/2023/12/04/32/image-20231205104639064.png" alt="image-20231205104639064"></p>
+<blockquote>
+<p>J1 放在5-6时，由OpenSDA那个USB口供电：J28；</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="开发板启动模式配置"><a href="#开发板启动模式配置" class="headerlink" title="开发板启动模式配置"></a>开发板启动模式配置</h2><h3 id="启动配置引脚"><a href="#启动配置引脚" class="headerlink" title="启动配置引脚"></a>启动配置引脚</h3><p><img src="/2023/12/04/32/image-20231205104954445.png" alt="image-20231205104954445"></p>
+<ul>
+<li><u><strong>最常用的是：10–Internal Boot 模式！</strong></u></li>
+<li>SW7就是4个拨码开关：x-x-1-0  –&gt; Internal Boot！</li>
+</ul>
+<hr>
+<h3 id="高级启动序列"><a href="#高级启动序列" class="headerlink" title="高级启动序列"></a>高级启动序列</h3><p><img src="/2023/12/04/32/image-20231205105329551.png" alt="image-20231205105329551"></p>
+<blockquote>
+<p>即：Internal Boot的执行流程：</p>
+<ul>
+<li>最上方是低功耗的WakeUp检测；如果是WakeUp模式启动，就正常Execute Image；</li>
+<li>如果不是，就会检测Boot的启动模式；Internal Boot or 串口下载？<ul>
+<li>Internal Boot：<ul>
+<li>根据GPIO引脚的配置（高低电平），选择是从SD卡还是QSPI还是HyperFlash启动；</li>
+<li>Authenticate image；</li>
+<li>校验通过就Execute Image；</li>
+</ul>
+</li>
+<li>串口下载：*<u>暂时略过</u>*；</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="外部启动模式选择（通过拨码开关）"><a href="#外部启动模式选择（通过拨码开关）" class="headerlink" title="外部启动模式选择（通过拨码开关）"></a>外部启动模式选择（通过拨码开关）</h3><p><img src="/2023/12/04/32/image-20231205105944436.png" alt="image-20231205105944436"></p>
+<hr>
+<h2 id="开发板烧写-x2F-仿真接口"><a href="#开发板烧写-x2F-仿真接口" class="headerlink" title="开发板烧写&#x2F;仿真接口"></a>开发板烧写&#x2F;仿真接口</h2><h3 id="OpenSDA"><a href="#OpenSDA" class="headerlink" title="OpenSDA"></a>OpenSDA</h3><blockquote>
+<p><img src="/2023/12/04/32/image-20231205110133794.png" alt="image-20231205110133794"></p>
+</blockquote>
+<p><img src="/2023/12/04/32/image-20231205110147365.png" alt="image-20231205110147365"></p>
+<h3 id="CMSIS-DAP接口"><a href="#CMSIS-DAP接口" class="headerlink" title="CMSIS-DAP接口"></a>CMSIS-DAP接口</h3><blockquote>
+<p><img src="/2023/12/04/32/image-20231205110445636.png" alt="image-20231205110445636"></p>
+</blockquote>
+<p><img src="/2023/12/04/32/image-20231205110458191.png" alt="image-20231205110458191"></p>
+<h3 id="使用要求"><a href="#使用要求" class="headerlink" title="使用要求"></a>使用要求</h3><p><img src="/2023/12/04/32/image-20231205110606490.png" alt="image-20231205110606490"></p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+        <category>RT1050EVKB</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>RT1050EVKB</tag>
+        <tag>嵌入式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RT1050开发--第4节 RT1050开发环境搭建</title>
+    <url>/2023/12/04/36/</url>
+    <content><![CDATA[<h1 id="第4节-RT1050开发环境搭建"><a href="#第4节-RT1050开发环境搭建" class="headerlink" title="第4节 RT1050开发环境搭建"></a>第4节 RT1050开发环境搭建</h1><blockquote>
+<p><img src="/2023/12/04/36/image-20231205110854127.png" alt="image-20231205110854127"></p>
+</blockquote>
+<h2 id="Keil5安装"><a href="#Keil5安装" class="headerlink" title="Keil5安装"></a>Keil5安装</h2><ol>
+<li>安装MDK-Keil5；</li>
+<li>安装RT1052 Keil5依赖包；<ol>
+<li>地址：<code>https://www.keil.arm.com/packs/mimxrt1052_dfp-nxp/devices/</code></li>
+<li><img src="/2023/12/04/36/image-20231205115624338.png" alt="image-20231205115624338"></li>
+</ol>
+</li>
+</ol>
+<h2 id="仿真器驱动安装"><a href="#仿真器驱动安装" class="headerlink" title="仿真器驱动安装"></a>仿真器驱动安装</h2><ul>
+<li><p>CMSIS-DAP仿真器驱动；</p>
+</li>
+<li><p>串口驱动；</p>
+</li>
+<li><blockquote>
+<p><img src="/2023/12/04/36/image-20231205115830490.png" alt="image-20231205115830490"></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="SDK下载"><a href="#SDK下载" class="headerlink" title="SDK下载"></a>SDK下载</h2><ol>
+<li>下载地址：<code>https://mcuxpresso.nxp.com/en/select</code></li>
+<li><img src="/2023/12/04/36/image-20231205120209889.png" alt="image-20231205120209889"></li>
+</ol>
+<h2 id="SDK介绍"><a href="#SDK介绍" class="headerlink" title="SDK介绍"></a>SDK介绍</h2><ul>
+<li><p>SDK概述</p>
+<p><img src="/2023/12/04/36/image-20231205121253428.png" alt="image-20231205121253428"></p>
+</li>
+<li><p>SDK源码目录</p>
+<p><img src="/2023/12/04/36/image-20231205121358508.png" alt="image-20231205121358508"></p>
+</li>
+<li><p>API手册外设驱动结构</p>
+<p><img src="/2023/12/04/36/image-20231205121447229.png" alt="image-20231205121447229"></p>
+</li>
+</ul>
+<h2 id="原理图"><a href="#原理图" class="headerlink" title="原理图"></a>原理图</h2><p><img src="/2023/12/04/36/image-20231205121856419.png" alt="image-20231205121856419"></p>
+<h2 id="数据手册"><a href="#数据手册" class="headerlink" title="数据手册"></a>数据手册</h2><p><img src="/2023/12/04/36/image-20231205122245517.png" alt="image-20231205122245517"></p>
+<ul>
+<li>MIMXRT1050 EVKB Board Hardware User’s Guide ： <code>https://www.nxp.com/webapp/sps/download/preDownload.jsp?render=true</code></li>
+<li>DataSheet:</li>
+<li><img src="/2023/12/04/36/image-20231205123621629.png" alt="image-20231205123621629" style="zoom:150%;"></li>
+</ul>
+]]></content>
+      <categories>
+        <category>NXP</category>
+        <category>RT1050EVKB</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>RT1050EVKB</tag>
+        <tag>嵌入式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RT1050开发--第5节 RT1050 Hello World （Keil V5）</title>
+    <url>/2023/12/05/25/</url>
+    <content><![CDATA[<h1 id="第5节-RT1050-Hello-World-（Keil-V5）"><a href="#第5节-RT1050-Hello-World-（Keil-V5）" class="headerlink" title="第5节 RT1050 Hello World （Keil V5）"></a>第5节 RT1050 Hello World （Keil V5）</h1><p><img src="/2023/12/05/25/image-20231205210519877.png" alt="image-20231205210519877"></p>
+<h2 id="HelloWorld工程介绍"><a href="#HelloWorld工程介绍" class="headerlink" title="HelloWorld工程介绍"></a>HelloWorld工程介绍</h2><h3 id="工程文件位置"><a href="#工程文件位置" class="headerlink" title="工程文件位置"></a>工程文件位置</h3><p><code>C:\Users\Gavin\Documents\RT\Keil5\rt1050 keil sdk &amp; doc\SDK_2_14_0_EVKB-IMXRT1050\boards\evkbimxrt1050\demo_apps\hello_world\</code></p>
+<p><img src="/2023/12/05/25/image-20231205211106693.png" alt="image-20231205211106693"></p>
+<h3 id="Keil工程位置"><a href="#Keil工程位置" class="headerlink" title="Keil工程位置"></a>Keil工程位置</h3><p><img src="/2023/12/05/25/image-20231205211232436.png" alt="image-20231205211232436"></p>
+<hr>
+<h3 id="MDK工程目录结构"><a href="#MDK工程目录结构" class="headerlink" title="MDK工程目录结构"></a>MDK工程目录结构</h3><p><img src="/2023/12/05/25/image-20231205211757977.png" alt="image-20231205211757977"></p>
+<h4 id="几种工程目标"><a href="#几种工程目标" class="headerlink" title="几种工程目标"></a>几种工程目标</h4><p><img src="/2023/12/05/25/image-20231205211932870.png" alt="image-20231205211932870"></p>
+<p>—&gt; <mark><strong><u>我们在这里用的是<code>flexspi_nor_debug</code>工程，代码段放在nor flash，数据段放在TCM中！</u></strong></mark></p>
+<h4 id="工程工作组"><a href="#工程工作组" class="headerlink" title="工程工作组"></a>工程工作组</h4><p><img src="/2023/12/05/25/image-20231205212708560.png" alt="image-20231205212708560"></p>
+<p><strong><u><em>关于xip的用处：</em></u></strong></p>
+<ul>
+<li>由于RT没有内部Flash，代码都存放在外部ROM空间，那么，在系统启动时，RT是不知道外部flash的信息的，比如：代码地址，空间大小等等；</li>
+<li>所以，需要把这些信息先存放在外部Flash中，然后RT通过SPI通信获得了这部分信息之后，才可以到外部Flash中去取指令；</li>
+</ul>
+<h2 id="打造自己的HelloWorld工程"><a href="#打造自己的HelloWorld工程" class="headerlink" title="打造自己的HelloWorld工程"></a>打造自己的HelloWorld工程</h2><h3 id="SDK工程路径"><a href="#SDK工程路径" class="headerlink" title="SDK工程路径"></a>SDK工程路径</h3><p><img src="/2023/12/05/25/image-20231205213504551.png" alt="image-20231205213504551"></p>
+<h3 id="创建hello-world工程"><a href="#创建hello-world工程" class="headerlink" title="创建hello_world工程"></a>创建hello_world工程</h3><ul>
+<li>创建01-hello_world文件夹；</li>
+<li>复制SDK的主要文件；<ul>
+<li>根据工程包含的路径复制，得到：</li>
+<li><img src="/2023/12/05/25/image-20231205214932520.png" alt="image-20231205214932520"></li>
+</ul>
+</li>
+<li>打开这个新建的工程，消除找不到文件的感叹号<code>❗</code></li>
+<li><img src="/2023/12/05/25/image-20231205215148765.png" alt="image-20231205215148765"></li>
+</ul>
+<p>—&gt; 消除方法：通过使用文本编辑器打开该Keil工程，全文搜索并替换这几个include的相对路径！</p>
+<p>—&gt; Reload!</p>
+<p>—&gt; 完成！</p>
+<blockquote>
+<p><img src="/2023/12/05/25/image-20231205221003063.png" alt="image-20231205221003063"></p>
+</blockquote>
+<h2 id="分析Hello-world-c"><a href="#分析Hello-world-c" class="headerlink" title="分析Hello_world.c"></a>分析Hello_world.c</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init board hardware. 初始化开发板*/</span></span><br><span class="line">    BOARD_ConfigMPU();  				<span class="comment">//配置内存保护单元</span></span><br><span class="line">    BOARD_InitBootPins();				<span class="comment">//初始化开发板IO模式</span></span><br><span class="line">    BOARD_InitBootClocks();				<span class="comment">//初始化开发板系统时钟</span></span><br><span class="line">    BOARD_InitDebugConsole();			<span class="comment">//初始化调试控制台</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Just enable the trace clock, leave coresight initialization to IDE debugger */</span></span><br><span class="line">    SystemCoreClockUpdate();</span><br><span class="line">    CLOCK_EnableClock(kCLOCK_Trace);</span><br><span class="line"></span><br><span class="line">    PRINTF(<span class="string">&quot;hello world.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ch = GETCHAR();</span><br><span class="line">        PUTCHAR(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="烧写代码"><a href="#烧写代码" class="headerlink" title="烧写代码"></a>烧写代码</h2><blockquote>
+<p>Keil 快捷键 F8 </p>
+<p><img src="/2023/12/05/25/image-20231205221649324.png" alt="image-20231205221649324"></p>
+</blockquote>
+<p><img src="/2023/12/05/25/image-20231205221717414.png" alt="image-20231205221717414"></p>
+<h3 id="实验现象"><a href="#实验现象" class="headerlink" title="实验现象"></a>实验现象</h3><p><img src="/2023/12/05/25/image-20231205222337955.png" alt="image-20231205222337955"></p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+        <category>RT1050EVKB</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>RT1050EVKB</tag>
+        <tag>嵌入式</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>STL之vector</title>
     <url>/2022/03/22/13/</url>
     <content><![CDATA[<h1 id="STL之vector-向量"><a href="#STL之vector-向量" class="headerlink" title="STL之vector  向量"></a>STL之vector  向量</h1><p>vector是一个多功能的、能够操作多种数据结构和算法的模板类和函数库。</p>

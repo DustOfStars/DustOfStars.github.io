@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="第三节课！ RT1050硬件平台EVKB板子的使用！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RT1050开发--第3节 RT1050硬件平台">
+<meta property="og:url" content="http://example.com/2023/12/04/32/index.html">
+<meta property="og:site_name" content="DustOfStars">
+<meta property="og:description" content="第三节课！ RT1050硬件平台EVKB板子的使用！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205103223182.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205103422056.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205103953019.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205104237835.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205104639064.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205104954445.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205105329551.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205105944436.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205110133794.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205110147365.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205110445636.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205110458191.png">
+<meta property="og:image" content="http://example.com/2023/12/04/32/image-20231205110606490.png">
+<meta property="article:published_time" content="2023-12-04T14:31:32.000Z">
+<meta property="article:modified_time" content="2023-12-04T14:31:32.000Z">
+<meta property="article:author" content="Jia">
+<meta property="article:tag" content="NXP">
+<meta property="article:tag" content="RT1050EVKB">
+<meta property="article:tag" content="嵌入式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/12/04/32/image-20231205103223182.png">
+
+
+<link rel="canonical" href="http://example.com/2023/12/04/32/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/12/04/32/","path":"2023/12/04/32/","title":"RT1050开发--第3节 RT1050硬件平台"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RT1050开发--第3节 RT1050硬件平台 | DustOfStars</title>
+  
+
+
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>
+<!-- 文章加密 -->
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DustOfStars</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">--jxw</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-github"><a href="https://github.com/DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>Github</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC3%E8%8A%82-RT1050%E7%A1%AC%E4%BB%B6%E5%B9%B3%E5%8F%B0%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">第3节 RT1050硬件平台使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RT1050-EVKB%E5%BC%80%E5%8F%91%E6%9D%BF%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">RT1050 EVKB开发板介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVKB%E7%A1%AC%E4%BB%B6%E6%A1%86%E5%9B%BE"><span class="nav-number">1.1.1.</span> <span class="nav-text">EVKB硬件框图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PCB%E5%9B%BE"><span class="nav-number">1.1.2.</span> <span class="nav-text">PCB图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%9D%BF%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">开发板启动模式配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%BC%95%E8%84%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">启动配置引脚</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E5%90%AF%E5%8A%A8%E5%BA%8F%E5%88%97"><span class="nav-number">1.2.2.</span> <span class="nav-text">高级启动序列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F%E9%80%89%E6%8B%A9%EF%BC%88%E9%80%9A%E8%BF%87%E6%8B%A8%E7%A0%81%E5%BC%80%E5%85%B3%EF%BC%89"><span class="nav-number">1.2.3.</span> <span class="nav-text">外部启动模式选择（通过拨码开关）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%9D%BF%E7%83%A7%E5%86%99-x2F-%E4%BB%BF%E7%9C%9F%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.3.</span> <span class="nav-text">开发板烧写&#x2F;仿真接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenSDA"><span class="nav-number">1.3.1.</span> <span class="nav-text">OpenSDA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMSIS-DAP%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.3.2.</span> <span class="nav-text">CMSIS-DAP接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%A6%81%E6%B1%82"><span class="nav-number">1.3.3.</span> <span class="nav-text">使用要求</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jia</p>
+  <div class="site-description" itemprop="description">Go ahead, and believe in yourself.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/DustOfStars" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;DustOfStars" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/04/32/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jia">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DustOfStars">
+      <meta itemprop="description" content="Go ahead, and believe in yourself.">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RT1050开发--第3节 RT1050硬件平台 | DustOfStars">
+      <meta itemprop="description" content="第三节课！ RT1050硬件平台EVKB板子的使用！">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RT1050开发--第3节 RT1050硬件平台
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-12-04 22:31:32" itemprop="dateCreated datePublished" datetime="2023-12-04T22:31:32+08:00">2023-12-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NXP/" itemprop="url" rel="index"><span itemprop="name">NXP</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NXP/RT1050EVKB/" itemprop="url" rel="index"><span itemprop="name">RT1050EVKB</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">第三节课！ RT1050硬件平台EVKB板子的使用！</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="第3节-RT1050硬件平台使用"><a href="#第3节-RT1050硬件平台使用" class="headerlink" title="第3节 RT1050硬件平台使用"></a>第3节 RT1050硬件平台使用</h1><blockquote>
+<p><img src="/2023/12/04/32/image-20231205103223182.png" alt="image-20231205103223182"></p>
+</blockquote>
+<h2 id="RT1050-EVKB开发板介绍"><a href="#RT1050-EVKB开发板介绍" class="headerlink" title="RT1050 EVKB开发板介绍"></a>RT1050 EVKB开发板介绍</h2><h3 id="EVKB硬件框图"><a href="#EVKB硬件框图" class="headerlink" title="EVKB硬件框图"></a>EVKB硬件框图</h3><ol>
+<li>原理图</li>
+</ol>
+<p><img src="/2023/12/04/32/image-20231205103422056.png" alt="image-20231205103422056"></p>
+<ul>
+<li><p>FlexSPI：</p>
+<ul>
+<li>HyperFlash –高性能高速 CYPRESS S26K</li>
+<li>QSPI Flash</li>
+<li>–&gt; **<u><em>用于外部扩展ROM存储器</em></u>**；</li>
+</ul>
+</li>
+<li><p>SDRAM：</p>
+<ul>
+<li>16bit接口，<u><strong>内部控制器是<code>SEMC</code>！</strong></u></li>
+<li>扩展RAM；</li>
+</ul>
+</li>
+<li><p>SDMC：</p>
+<ul>
+<li>使用SD卡存储大型文件；</li>
+</ul>
+</li>
+</ul>
+<h3 id="PCB图"><a href="#PCB图" class="headerlink" title="PCB图"></a>PCB图</h3><p><img src="/2023/12/04/32/image-20231205103953019.png" alt="image-20231205103953019"></p>
+<ol>
+<li>开发板硬件清单</li>
+</ol>
+<p><img src="/2023/12/04/32/image-20231205104237835.png" alt="image-20231205104237835"></p>
+<ul>
+<li>重点看一下Mass Storage，可以看到除了SD卡外，还有64M的QSPI Flash和512M的HyperFlash；</li>
+</ul>
+<ol start="2">
+<li><p>开发板供电模式</p>
+<p><img src="/2023/12/04/32/image-20231205104639064.png" alt="image-20231205104639064"></p>
+<blockquote>
+<p>J1 放在5-6时，由OpenSDA那个USB口供电：J28；</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="开发板启动模式配置"><a href="#开发板启动模式配置" class="headerlink" title="开发板启动模式配置"></a>开发板启动模式配置</h2><h3 id="启动配置引脚"><a href="#启动配置引脚" class="headerlink" title="启动配置引脚"></a>启动配置引脚</h3><p><img src="/2023/12/04/32/image-20231205104954445.png" alt="image-20231205104954445"></p>
+<ul>
+<li><u><strong>最常用的是：10–Internal Boot 模式！</strong></u></li>
+<li>SW7就是4个拨码开关：x-x-1-0  –&gt; Internal Boot！</li>
+</ul>
+<hr>
+<h3 id="高级启动序列"><a href="#高级启动序列" class="headerlink" title="高级启动序列"></a>高级启动序列</h3><p><img src="/2023/12/04/32/image-20231205105329551.png" alt="image-20231205105329551"></p>
+<blockquote>
+<p>即：Internal Boot的执行流程：</p>
+<ul>
+<li>最上方是低功耗的WakeUp检测；如果是WakeUp模式启动，就正常Execute Image；</li>
+<li>如果不是，就会检测Boot的启动模式；Internal Boot or 串口下载？<ul>
+<li>Internal Boot：<ul>
+<li>根据GPIO引脚的配置（高低电平），选择是从SD卡还是QSPI还是HyperFlash启动；</li>
+<li>Authenticate image；</li>
+<li>校验通过就Execute Image；</li>
+</ul>
+</li>
+<li>串口下载：*<u>暂时略过</u>*；</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="外部启动模式选择（通过拨码开关）"><a href="#外部启动模式选择（通过拨码开关）" class="headerlink" title="外部启动模式选择（通过拨码开关）"></a>外部启动模式选择（通过拨码开关）</h3><p><img src="/2023/12/04/32/image-20231205105944436.png" alt="image-20231205105944436"></p>
+<hr>
+<h2 id="开发板烧写-x2F-仿真接口"><a href="#开发板烧写-x2F-仿真接口" class="headerlink" title="开发板烧写&#x2F;仿真接口"></a>开发板烧写&#x2F;仿真接口</h2><h3 id="OpenSDA"><a href="#OpenSDA" class="headerlink" title="OpenSDA"></a>OpenSDA</h3><blockquote>
+<p><img src="/2023/12/04/32/image-20231205110133794.png" alt="image-20231205110133794"></p>
+</blockquote>
+<p><img src="/2023/12/04/32/image-20231205110147365.png" alt="image-20231205110147365"></p>
+<h3 id="CMSIS-DAP接口"><a href="#CMSIS-DAP接口" class="headerlink" title="CMSIS-DAP接口"></a>CMSIS-DAP接口</h3><blockquote>
+<p><img src="/2023/12/04/32/image-20231205110445636.png" alt="image-20231205110445636"></p>
+</blockquote>
+<p><img src="/2023/12/04/32/image-20231205110458191.png" alt="image-20231205110458191"></p>
+<h3 id="使用要求"><a href="#使用要求" class="headerlink" title="使用要求"></a>使用要求</h3><p><img src="/2023/12/04/32/image-20231205110606490.png" alt="image-20231205110606490"></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div>
+    
+    <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i
+            class="fa fa-paw"></i>再接再厉-------------</div>
+    
+</div>
+
+
+<div class="my_post_copyright">
+    <p><span>本文标题:</span><a href="/2023/12/04/32/">RT1050开发--第3节 RT1050硬件平台</a></p>
+    <p><span>文章作者:</span><a href="/" title="访问 Jia 的个人博客">Jia</a></p>
+    <p><span>发布时间:</span>2023年12月04日 - 22:12</p>
+    <p><span>最后更新:</span>2023年12月04日 - 22:12</p>
+    <p><span>原始链接:</span><a href="/2023/12/04/32/" title="RT1050开发--第3节 RT1050硬件平台">http://example.com/2023/12/04/32/</a></p>
+    <p><span>许可协议:</span><i class="fab fa-creative-commons"></i>
+        <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"
+            title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">
+            署名-非商业性使用-禁止演绎 4.0 国际</a>
+        转载请保留原文链接及作者。
+    </p>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/NXP/" rel="tag"><i class="fa fa-tag"></i> NXP</a>
+              <a href="/tags/RT1050EVKB/" rel="tag"><i class="fa fa-tag"></i> RT1050EVKB</a>
+              <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" rel="tag"><i class="fa fa-tag"></i> 嵌入式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/04/29/" rel="prev" title="RT1050开发--第2节 NXP RT1050系列芯片">
+                  <i class="fa fa-chevron-left"></i> RT1050开发--第2节 NXP RT1050系列芯片
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/12/04/36/" rel="next" title="RT1050开发--第4节 RT1050开发环境搭建">
+                  RT1050开发--第4节 RT1050开发环境搭建 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jia</span>
+</div><div>
+<!--添加网站运行时间-->
+<span>小破站已经在风雨中度过了</span>
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    function createtime() {
+        const startTime = '02/11/2021 00:12:55',
+            start = new Date(startTime)
+        let mill = new Date() - start,
+            seconds = Math.floor(mill / 1000),
+            mins = Math.floor(seconds / 60),
+            hours = Math.floor(mins / 60),
+            days = Math.floor(hours / 24)
+        const time = {
+            seconds: seconds - mins * 60,
+            mins: mins - hours * 60,
+            hours: hours - days * 24,
+        }
+        for (const k in time) {
+            time[k] = `${time[k]}`.padStart(2, '0')
+        }
+        document.getElementById("timeDate").innerHTML = ` ${days} 天`
+        document.getElementById("times").innerHTML = ` ${time.hours} 小时 ${time.mins} 分 ${time.seconds} 秒`
+    }
+    setInterval(createtime, 500)
+</script>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: '32px',
+  left: 'unset',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: false
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+</body>
+</html>
