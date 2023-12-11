@@ -38,6 +38,24 @@
   </url>
   
   <url>
+    <loc>http://example.com/2023/12/11/12/</loc>
+    
+    <lastmod>2023-12-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/2023/12/11/29/</loc>
+    
+    <lastmod>2023-12-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/2023/12/05/25/</loc>
     
     <lastmod>2023-12-05</lastmod>
@@ -1201,6 +1219,13 @@
   </url>
   
   <url>
+    <loc>http://example.com/categories/NXP/RT1050EVKB/</loc>
+    <lastmod>2023-12-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/categories/STL/forward-list/</loc>
     <lastmod>2023-12-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -1229,13 +1254,6 @@
   </url>
   
   <url>
-    <loc>http://example.com/categories/NXP/RT1050EVKB/</loc>
-    <lastmod>2023-12-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://example.com/categories/NLP/Numpy/</loc>
     <lastmod>2023-12-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -1257,14 +1275,14 @@
   </url>
   
   <url>
-    <loc>http://example.com/categories/STL/vector/</loc>
+    <loc>http://example.com/categories/%E8%8B%B1%E8%AF%AD/</loc>
     <lastmod>2023-12-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://example.com/categories/%E8%8B%B1%E8%AF%AD/</loc>
+    <loc>http://example.com/categories/STL/vector/</loc>
     <lastmod>2023-12-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1299,14 +1317,14 @@
   </url>
   
   <url>
-    <loc>http://example.com/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB/%E4%B8%AD%E6%96%AD/</loc>
+    <loc>http://example.com/categories/NXP/RT1052/</loc>
     <lastmod>2023-12-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://example.com/categories/NXP/RT1052/</loc>
+    <loc>http://example.com/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB/%E4%B8%AD%E6%96%AD/</loc>
     <lastmod>2023-12-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
