@@ -1190,68 +1190,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Vim使用</title>
-    <url>/2022/04/05/20/</url>
-    <content><![CDATA[<h1 id="Vim使用"><a href="#Vim使用" class="headerlink" title="Vim使用"></a>Vim使用</h1><p>本周学习了小彭老师的vim教程，很受启发，学习记录在这。</p>
-<blockquote>
-<p><strong>先放链接：</strong></p>
-<p><a href="https://www.bilibili.com/video/BV1H44y1V7DW?spm_id_from=333.999.0.0" title="小彭老师B站链接">【Vim插件整合包】C++&#x2F;Python自动补全，模糊查找文件，编译CMake工程等</a></p>
-</blockquote>
-<ul>
-<li>F4  &#x3D;&#x3D; :wa 保存文件</li>
-<li>F5      cmake多文件运行</li>
-<li>F7      单文件运行</li>
-<li>F8      打开一个外部shell</li>
-<li>F8 执行完命令之后，按Ctrl+D退出shell，回到文件中</li>
-<li>F9      打开nerdtree</li>
-<li>ctrl + T  打开&#x2F;关闭终端</li>
-<li>ctrl + \  ctrl + n 终端进入普通模式，可选中</li>
-<li>ctrl + w + “” 在终端中粘贴；如果来自别的寄存器a，则ctrl + w + “a</li>
-<li>可视模式按y复制，按p粘贴，按u撤销，按ctrl+r恢复撤销，按x删除单个字符，按dw删除单词，按dd删除行</li>
-<li>Z   &#x3D;&#x3D; ZZ 保存并退出</li>
-<li>Q         直接退出所有窗口</li>
-<li>F10      快速修改error</li>
-<li>ctrl + ww 切换窗口</li>
-<li>ctrl + wk 或者 wj 上下切换窗口</li>
-<li>:split  和  :vsplit 分割窗口</li>
-<li>普通模式 gq 快速修复</li>
-<li>普通模式 gf 格式化代码</li>
-<li>gd 跳转到定义</li>
-<li>gD 跳转到声明</li>
-<li>gr 跳转到引用</li>
-<li>gy 跳转到类型定义</li>
-<li>gI 跳转到函数实现</li>
-<li>gn 重命名当前光标下的变量名</li>
-<li>g + tab  查找命令表</li>
-<li>gci   批量注释和反注释</li>
-<li>K  查看当前光标下的symbol的文档</li>
-<li>ctrl + i 或者 ctrl + o 光标跳转到上一次、下一次的位置</li>
-<li>然后，不同的窗口之间切换，F2 F3</li>
-<li>:Git blame 显示每一行的提交信息</li>
-<li>空格 + g   打开所有当前git仓库中的文件</li>
-<li>空格 + s   相当于git status</li>
-<li>空格 + h   显示最近打开过的文件</li>
-<li>空格 + b   显示目前已经打开的所有文件</li>
-<li>空格 + l    搜索已打开文件中的内容</li>
-<li>空格 + o    只在当前文件中搜索</li>
-<li>空格 + r   在目前没打开的文件中搜索name</li>
-<li>% 跳转到匹配的括号</li>
-</ul>
-<p>一些可以修改的运行tasks配置：</p>
-<ul>
-<li>位置： <code>~/.vim/tasks.ini</code></li>
-</ul>
-]]></content>
-      <categories>
-        <category>工具</category>
-        <category>vim</category>
-      </categories>
-      <tags>
-        <tag>vim</tag>
-        <tag>工具</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ZigBeePRO-Fundamentals_Training</title>
     <url>/2022/07/28/05/</url>
     <content><![CDATA[<h1 id="1-ZigBeePRO-Fundamentals-Training"><a href="#1-ZigBeePRO-Fundamentals-Training" class="headerlink" title="1_ZigBeePRO-Fundamentals_Training"></a>1_ZigBeePRO-Fundamentals_Training</h1><h2 id="0-Agend"><a href="#0-Agend" class="headerlink" title="0 Agend"></a>0 Agend</h2><ul>
@@ -1539,6 +1477,68 @@
       <tags>
         <tag>NXP</tag>
         <tag>ZigBee</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Vim使用</title>
+    <url>/2022/04/05/20/</url>
+    <content><![CDATA[<h1 id="Vim使用"><a href="#Vim使用" class="headerlink" title="Vim使用"></a>Vim使用</h1><p>本周学习了小彭老师的vim教程，很受启发，学习记录在这。</p>
+<blockquote>
+<p><strong>先放链接：</strong></p>
+<p><a href="https://www.bilibili.com/video/BV1H44y1V7DW?spm_id_from=333.999.0.0" title="小彭老师B站链接">【Vim插件整合包】C++&#x2F;Python自动补全，模糊查找文件，编译CMake工程等</a></p>
+</blockquote>
+<ul>
+<li>F4  &#x3D;&#x3D; :wa 保存文件</li>
+<li>F5      cmake多文件运行</li>
+<li>F7      单文件运行</li>
+<li>F8      打开一个外部shell</li>
+<li>F8 执行完命令之后，按Ctrl+D退出shell，回到文件中</li>
+<li>F9      打开nerdtree</li>
+<li>ctrl + T  打开&#x2F;关闭终端</li>
+<li>ctrl + \  ctrl + n 终端进入普通模式，可选中</li>
+<li>ctrl + w + “” 在终端中粘贴；如果来自别的寄存器a，则ctrl + w + “a</li>
+<li>可视模式按y复制，按p粘贴，按u撤销，按ctrl+r恢复撤销，按x删除单个字符，按dw删除单词，按dd删除行</li>
+<li>Z   &#x3D;&#x3D; ZZ 保存并退出</li>
+<li>Q         直接退出所有窗口</li>
+<li>F10      快速修改error</li>
+<li>ctrl + ww 切换窗口</li>
+<li>ctrl + wk 或者 wj 上下切换窗口</li>
+<li>:split  和  :vsplit 分割窗口</li>
+<li>普通模式 gq 快速修复</li>
+<li>普通模式 gf 格式化代码</li>
+<li>gd 跳转到定义</li>
+<li>gD 跳转到声明</li>
+<li>gr 跳转到引用</li>
+<li>gy 跳转到类型定义</li>
+<li>gI 跳转到函数实现</li>
+<li>gn 重命名当前光标下的变量名</li>
+<li>g + tab  查找命令表</li>
+<li>gci   批量注释和反注释</li>
+<li>K  查看当前光标下的symbol的文档</li>
+<li>ctrl + i 或者 ctrl + o 光标跳转到上一次、下一次的位置</li>
+<li>然后，不同的窗口之间切换，F2 F3</li>
+<li>:Git blame 显示每一行的提交信息</li>
+<li>空格 + g   打开所有当前git仓库中的文件</li>
+<li>空格 + s   相当于git status</li>
+<li>空格 + h   显示最近打开过的文件</li>
+<li>空格 + b   显示目前已经打开的所有文件</li>
+<li>空格 + l    搜索已打开文件中的内容</li>
+<li>空格 + o    只在当前文件中搜索</li>
+<li>空格 + r   在目前没打开的文件中搜索name</li>
+<li>% 跳转到匹配的括号</li>
+</ul>
+<p>一些可以修改的运行tasks配置：</p>
+<ul>
+<li>位置： <code>~/.vim/tasks.ini</code></li>
+</ul>
+]]></content>
+      <categories>
+        <category>工具</category>
+        <category>vim</category>
+      </categories>
+      <tags>
+        <tag>vim</tag>
+        <tag>工具</tag>
       </tags>
   </entry>
   <entry>
@@ -2756,47 +2756,6 @@ Vector Table
       </tags>
   </entry>
   <entry>
-    <title>数组02移除元素</title>
-    <url>/2022/07/15/21/</url>
-    <content><![CDATA[<h1 id="数组02–移除元素"><a href="#数组02–移除元素" class="headerlink" title="数组02–移除元素"></a>数组02–移除元素</h1><h2 id="题干"><a href="#题干" class="headerlink" title="题干"></a>题干</h2><figure class="highlight smali"><table><tr><td class="code"><pre><span class="line">Given an integer<span class="built_in"> array </span>nums<span class="built_in"> and </span>an integer val, remove all occurrences of val in nums in-place. The relative order of the elements may be changed.</span><br><span class="line"></span><br><span class="line">Since it is impossible to change the length of the<span class="built_in"> array </span>in some languages, you must instead have the result be placed in the first part of the<span class="built_in"> array </span>nums. More formally,<span class="built_in"> if </span>there are k elements after removing the duplicates, then the first k elements of nums should hold the<span class="keyword"> final</span> result. It does<span class="built_in"> not </span>matter what you leave beyond the first k elements.</span><br><span class="line"></span><br><span class="line">Return k after placing the<span class="keyword"> final</span> result in the first k slots of nums.</span><br><span class="line"></span><br><span class="line">Do<span class="built_in"> not </span>allocate extra space for another array. You must do this by modifying the input<span class="built_in"> array </span>in-place with O(1) extra memory.</span><br></pre></td></tr></table></figure>
-
-<p>Example 1:</p>
-<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">Input: nums = [<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>], val = <span class="number">3</span></span><br><span class="line">Output: <span class="number">2</span>, nums = [<span class="number">2</span>,<span class="number">2</span>,_,_]</span><br><span class="line">Explanation: Your <span class="keyword">function</span> <span class="title">should</span> <span class="keyword">return</span> <span class="type">k</span> = <span class="number">2</span>, <span class="keyword">with</span> the first two elements <span class="keyword">of</span> nums being <span class="number">2</span>.</span><br><span class="line">It does <span class="keyword">not</span> matter what you leave beyond the returned k (hence they are underscores).</span><br></pre></td></tr></table></figure>
-
-<h2 id="暴力解法"><a href="#暴力解法" class="headerlink" title="暴力解法"></a>暴力解法</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 暴力解法：两个循环，一个for遍历数组，一个for更新数组</span></span><br><span class="line"><span class="comment">// 时间 O(n^2)</span></span><br><span class="line"><span class="comment">// 空间 O(1)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> size = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] == val)&#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> j = i + <span class="number">1</span>; j &lt; size; j++)&#123;</span><br><span class="line">                    nums[j<span class="number">-1</span>] = nums[j];</span><br><span class="line">                &#125;</span><br><span class="line">                i --;<span class="comment">//因为i后面的都前移一位，所以i也要前移一位，</span></span><br><span class="line">                     <span class="comment">//i++回来，再从这个位置计算，因为新的i位置可能还是那个val，要重新判断</span></span><br><span class="line">                size --;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> size;      </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h2 id="双指针法"><a href="#双指针法" class="headerlink" title="双指针法"></a>双指针法</h2><blockquote>
-<p>双指针法（快慢指针法）在数组和链表的操作中是非常常见的，很多考察数组、链表、字符串等操作的面试题，都使用双指针法。</p>
-</blockquote>
-<p>双指针法（快慢指针法）：<br><strong>通过一个快指针和慢指针在一个for循环下完成两个for循环的工作。</strong></p>
-<p>定义快慢指针:</p>
-<ul>
-<li>快指针：寻找新数组的元素 ，新数组就是不含有目标元素的数组</li>
-<li>慢指针：指向更新新数组下标的位置</li>
-</ul>
-<p>很多同学这道题目做的很懵，就是不理解 快慢指针究竟都是什么含义，所以一定要明确含义，后面的思路就更容易理解了。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 快慢指针法</span></span><br><span class="line"><span class="comment">// 时间O(n)</span></span><br><span class="line"><span class="comment">// 空间O(1)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> slowIndex = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> fastIndex = <span class="number">0</span>; fastIndex &lt; nums.<span class="built_in">size</span>(); fastIndex++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(val != nums[fastIndex])&#123;</span><br><span class="line">                nums[slowIndex] = nums[fastIndex];</span><br><span class="line">                slowIndex++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> slowIndex;        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="其他相关题目"><a href="#其他相关题目" class="headerlink" title="其他相关题目"></a>其他相关题目</h2><ul>
-<li>26.删除排序数组中的重复项</li>
-<li>283.移动零</li>
-<li>844.比较含退格的字符串</li>
-<li>977.有序数组的平方</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Leetcode</category>
-      </categories>
-      <tags>
-        <tag>Leetcode</tag>
-        <tag>代码随想录</tag>
-        <tag>数组</tag>
-        <tag>双指针</tag>
-        <tag>移除元素</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>数组03有序数组的平方</title>
     <url>/2022/07/20/21/</url>
     <content><![CDATA[<h1 id="数组03–有序数组的平方"><a href="#数组03–有序数组的平方" class="headerlink" title="数组03–有序数组的平方"></a>数组03–有序数组的平方</h1><h2 id="977-Squares-of-a-Sorted-Array"><a href="#977-Squares-of-a-Sorted-Array" class="headerlink" title="977. Squares of a Sorted Array"></a>977. Squares of a Sorted Array</h2><blockquote>
@@ -2847,6 +2806,47 @@ Vector Table
         <tag>数组</tag>
         <tag>双指针</tag>
         <tag>有序数组的平方</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数组02移除元素</title>
+    <url>/2022/07/15/21/</url>
+    <content><![CDATA[<h1 id="数组02–移除元素"><a href="#数组02–移除元素" class="headerlink" title="数组02–移除元素"></a>数组02–移除元素</h1><h2 id="题干"><a href="#题干" class="headerlink" title="题干"></a>题干</h2><figure class="highlight smali"><table><tr><td class="code"><pre><span class="line">Given an integer<span class="built_in"> array </span>nums<span class="built_in"> and </span>an integer val, remove all occurrences of val in nums in-place. The relative order of the elements may be changed.</span><br><span class="line"></span><br><span class="line">Since it is impossible to change the length of the<span class="built_in"> array </span>in some languages, you must instead have the result be placed in the first part of the<span class="built_in"> array </span>nums. More formally,<span class="built_in"> if </span>there are k elements after removing the duplicates, then the first k elements of nums should hold the<span class="keyword"> final</span> result. It does<span class="built_in"> not </span>matter what you leave beyond the first k elements.</span><br><span class="line"></span><br><span class="line">Return k after placing the<span class="keyword"> final</span> result in the first k slots of nums.</span><br><span class="line"></span><br><span class="line">Do<span class="built_in"> not </span>allocate extra space for another array. You must do this by modifying the input<span class="built_in"> array </span>in-place with O(1) extra memory.</span><br></pre></td></tr></table></figure>
+
+<p>Example 1:</p>
+<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">Input: nums = [<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>], val = <span class="number">3</span></span><br><span class="line">Output: <span class="number">2</span>, nums = [<span class="number">2</span>,<span class="number">2</span>,_,_]</span><br><span class="line">Explanation: Your <span class="keyword">function</span> <span class="title">should</span> <span class="keyword">return</span> <span class="type">k</span> = <span class="number">2</span>, <span class="keyword">with</span> the first two elements <span class="keyword">of</span> nums being <span class="number">2</span>.</span><br><span class="line">It does <span class="keyword">not</span> matter what you leave beyond the returned k (hence they are underscores).</span><br></pre></td></tr></table></figure>
+
+<h2 id="暴力解法"><a href="#暴力解法" class="headerlink" title="暴力解法"></a>暴力解法</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 暴力解法：两个循环，一个for遍历数组，一个for更新数组</span></span><br><span class="line"><span class="comment">// 时间 O(n^2)</span></span><br><span class="line"><span class="comment">// 空间 O(1)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> size = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] == val)&#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> j = i + <span class="number">1</span>; j &lt; size; j++)&#123;</span><br><span class="line">                    nums[j<span class="number">-1</span>] = nums[j];</span><br><span class="line">                &#125;</span><br><span class="line">                i --;<span class="comment">//因为i后面的都前移一位，所以i也要前移一位，</span></span><br><span class="line">                     <span class="comment">//i++回来，再从这个位置计算，因为新的i位置可能还是那个val，要重新判断</span></span><br><span class="line">                size --;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> size;      </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="双指针法"><a href="#双指针法" class="headerlink" title="双指针法"></a>双指针法</h2><blockquote>
+<p>双指针法（快慢指针法）在数组和链表的操作中是非常常见的，很多考察数组、链表、字符串等操作的面试题，都使用双指针法。</p>
+</blockquote>
+<p>双指针法（快慢指针法）：<br><strong>通过一个快指针和慢指针在一个for循环下完成两个for循环的工作。</strong></p>
+<p>定义快慢指针:</p>
+<ul>
+<li>快指针：寻找新数组的元素 ，新数组就是不含有目标元素的数组</li>
+<li>慢指针：指向更新新数组下标的位置</li>
+</ul>
+<p>很多同学这道题目做的很懵，就是不理解 快慢指针究竟都是什么含义，所以一定要明确含义，后面的思路就更容易理解了。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 快慢指针法</span></span><br><span class="line"><span class="comment">// 时间O(n)</span></span><br><span class="line"><span class="comment">// 空间O(1)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> slowIndex = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> fastIndex = <span class="number">0</span>; fastIndex &lt; nums.<span class="built_in">size</span>(); fastIndex++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(val != nums[fastIndex])&#123;</span><br><span class="line">                nums[slowIndex] = nums[fastIndex];</span><br><span class="line">                slowIndex++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> slowIndex;        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="其他相关题目"><a href="#其他相关题目" class="headerlink" title="其他相关题目"></a>其他相关题目</h2><ul>
+<li>26.删除排序数组中的重复项</li>
+<li>283.移动零</li>
+<li>844.比较含退格的字符串</li>
+<li>977.有序数组的平方</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Leetcode</category>
+      </categories>
+      <tags>
+        <tag>Leetcode</tag>
+        <tag>代码随想录</tag>
+        <tag>数组</tag>
+        <tag>双指针</tag>
+        <tag>移除元素</tag>
       </tags>
   </entry>
   <entry>
