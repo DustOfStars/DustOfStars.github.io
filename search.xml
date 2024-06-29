@@ -1833,6 +1833,118 @@
       </tags>
   </entry>
   <entry>
+    <title>代码解读之fsl_gpio</title>
+    <url>/2023/03/21/40/</url>
+    <content><![CDATA[<h1 id="读fsl-gpio-c-和-fsl-gpio-h-代码"><a href="#读fsl-gpio-c-和-fsl-gpio-h-代码" class="headerlink" title="读fsl_gpio.c 和 fsl_gpio.h 代码"></a>读fsl_gpio.c 和 fsl_gpio.h 代码</h1><blockquote>
+<p>使用kw38的win mcuxpresso版本 <code>SDK_2_6_615_FRDM-KW38_mcuxpresso_win</code></p>
+</blockquote>
+<h1 id="fsl-gpio-h"><a href="#fsl-gpio-h" class="headerlink" title="fsl_gpio.h"></a>fsl_gpio.h</h1><blockquote>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _FSL_GPIO_H_</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _FSL_GPIO_H_</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;fsl_common.h&quot;</span></span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h2><h3 id="Part1-gpio-pin-direction-t-和-gpio-checker-attribute-t"><a href="#Part1-gpio-pin-direction-t-和-gpio-checker-attribute-t" class="headerlink" title="Part1 gpio_pin_direction_t 和 gpio_checker_attribute_t"></a>Part1 gpio_pin_direction_t 和 gpio_checker_attribute_t</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">gpio_pin_direction</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    kGPIO_DigitalInput  = <span class="number">0U</span>, <span class="comment">/*!&lt; Set current pin as digital input*/</span></span><br><span class="line">    kGPIO_DigitalOutput = <span class="number">1U</span>, <span class="comment">/*!&lt; Set current pin as digital output*/</span></span><br><span class="line">&#125; <span class="type">gpio_pin_direction_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">gpio_checker_attribute</span>&#123;</span></span><br><span class="line">&#125;<span class="type">gpio_checker_attribute_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>gpio_pin_direction_t</code> 确定Pin引脚方向，输入为0，输出为1。</p>
+<p>GPIO 检查器属性用于某些具有 GPIO 属性检查器功能的 NXP 微控制器。此功能用于安全目的，<strong>根据访问属性检查是否允许访问 GPIO 引脚</strong>。</p>
+<p><code>gpio_checker_attribute_t</code> 枚举定义了可以检查的可能属性。这些属性指定不同权限级别（用户非安全、用户安全和特权安全）的读取和写入权限。</p>
+<p>另外还有一个属性值<code>kGPIO_IgnoreAttributeCheck</code>，表示忽略属性检查。</p>
+<p>GPIO 检查器属性与 <code>GPIO_CheckAttribute()</code> 函数结合使用，<strong>以根据操作的属性检查是否允许 GPIO 引脚上的特定操作</strong>。</p>
+<h3 id="Part2-gpio-pin-config-t-和-gpio-interrupt-config-t"><a href="#Part2-gpio-pin-config-t-和-gpio-interrupt-config-t" class="headerlink" title="Part2 gpio_pin_config_t 和 gpio_interrupt_config_t"></a>Part2 gpio_pin_config_t 和 gpio_interrupt_config_t</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">gpio_pin_config</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">gpio_pin_direction_t</span> pinDirection;</span><br><span class="line">    <span class="type">uint8_t</span> outputLogic; <span class="comment">/*!&lt; Set a default output logic, which has no use in input */</span></span><br><span class="line">&#125; <span class="type">gpio_pin_config_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">gpio_interrupt_config</span>&#123;</span></span><br><span class="line">&#125; <span class="type">gpio_interrupt_config_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个 C 语言代码片段，它定义了两个数据结构和一个枚举类型，用于在微控制器上配置通用输入&#x2F;输出 (GPIO) 引脚。</p>
+<ol>
+<li><code>gpio_pin_config_t</code> 定义了 GPIO 引脚的配置参数，包括它的方向（输入或输出）和<strong>它的默认输出逻辑（如果它是一个输出引脚）</strong>。</li>
+<li>第二个数据结构 <code>gpio_interrupt_config_t</code> 是有条件地定义的，具体取决于微控制器是否支持其 GPIO 引脚上的中断。如果是，则此结构定义中断生成条件的配置参数。</li>
+<li>枚举类型 <code>gpio_interrupt_config_t</code> 定义了中断生成条件的可能值，例如在上升沿、下降沿、任一边沿或逻辑电平为高或低时启用中断。</li>
+</ol>
+<h2 id="函数接口"><a href="#函数接口" class="headerlink" title="函数接口"></a>函数接口</h2><h3 id="GPIO配置"><a href="#GPIO配置" class="headerlink" title="GPIO配置"></a>GPIO配置</h3><h3 id="Part1-GPIO-PinInit"><a href="#Part1-GPIO-PinInit" class="headerlink" title="Part1 GPIO_PinInit()"></a>Part1 GPIO_PinInit()</h3><p>这是名为 <code>GPIO_PinInit()</code> 的函数的代码片段，它是用于处理微控制器上的通用输入&#x2F;输出 (GPIO) 引脚的更大驱动程序的一部分。该驱动程序提供一组函数<strong>来配置、读取和写入 GPIO 引脚</strong>。</p>
+<p>函数 <code>GPIO_PinInit()</code> <strong>初始化板使用的 GPIO 引脚</strong>。它采用三个参数：</p>
+<ul>
+<li>GPIO 外设的基地址 GPIO peripheral base pointer (GPIOA, GPIOB, GPIOC, and so on.)</li>
+<li>GPIO 端口的引脚号 GPIO port pin number</li>
+<li>以及指向定义 GPIO 引脚配置的 gpio_pin_config_t 结构的指针 GPIO pin configuration pointer</li>
+</ul>
+<p>gpio_pin_config_t 结构包含两个字段：</p>
+<ul>
+<li>pinDirection：GPIO引脚的方向，可以设置为kGPIO_DigitalInput或kGPIO_DigitalOutput。</li>
+<li>outputLogic：GPIO引脚的输出逻辑电平，仅在引脚配置为数字输出时适用。它可以设置为 0 或 1。</li>
+</ul>
+<p>函数 <code>GPIO_PinInit()</code> 使用 <code>gpio_pin_config_t</code> 结构中定义的配置初始化 GPIO 引脚。</p>
+<h3 id="GPIO输入操作"><a href="#GPIO输入操作" class="headerlink" title="GPIO输入操作"></a>GPIO输入操作</h3><h3 id="Part2-静态函数-GPIO-PinWrite"><a href="#Part2-静态函数-GPIO-PinWrite" class="headerlink" title="Part2 静态函数 GPIO_PinWrite()"></a>Part2 静态函数 GPIO_PinWrite()</h3><p>这是名为 <code>GPIO_PinWrite()</code> 的函数的代码片段。</p>
+<p>函数<code>GPIO_PinWrite()</code>将一个GPIO引脚的输出电平设置为逻辑1或逻辑0。它需要三个参数：</p>
+<ul>
+<li>GPIO外设的基址、</li>
+<li>GPIO端口的引脚号、</li>
+<li>GPIO引脚的输出电平.</li>
+</ul>
+<p>输出参数可以设置为 0 或 1 以指定 GPIO 引脚的输出逻辑电平。<strong>如果输出为 0，则相应的引脚输出设置为逻辑低电平，否则，如果输出为 1，则相应的引脚输出设置为逻辑高电平</strong>。</p>
+<p>函数 GPIO_PinWrite() 使用<strong>按位操作</strong>来设置 GPIO 引脚的输出电平。如果输出参数为0，则使用左移操作清除GPIO端口输出清除寄存器（<strong>GPIOx_PCOR</strong>）中的相应位。否则，如果输出参数为 1，则使用左移操作设置 GPIO 端口输出设置寄存器 (<strong>GPIOx_PSOR</strong>) 中的相应位。</p>
+<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如分别用于清除和设置 GPIO 输出引脚的 PCOR 和 PSOR 寄存器。</p>
+<h3 id="Part3-静态函数-GPIO-PortSet"><a href="#Part3-静态函数-GPIO-PortSet" class="headerlink" title="Part3 静态函数 GPIO_PortSet()"></a>Part3 静态函数 GPIO_PortSet()</h3><p>这是名为 GPIO_PortSet() 的函数的代码片段.</p>
+<p>函数 <code>GPIO_PortSet()</code> <strong>将多个 GPIO 引脚的输出电平设置为逻辑 1</strong>。它有两个参数：</p>
+<ul>
+<li>GPIO 外设的基址, base GPIO peripheral base pointer (GPIOA, GPIOB, GPIOC, and so on.)</li>
+<li>指定要设置哪些 GPIO 引脚的掩码。GPIO pin number macro</li>
+</ul>
+<p><strong>掩码参数是一个位掩码，指示要设置的引脚。掩码参数的每一位对应一个特定的 GPIO 引脚。如果某位设置为 1，则相应的 GPIO 引脚输出设置为逻辑高电平</strong>。</p>
+<p>函数 <code>GPIO_PortSet()</code> 通过使用<strong>按位或</strong>运算写入 GPIO 端口输出设置寄存器 (<strong>GPIOx_PSOR</strong>)，将指定 GPIO 引脚的输出电平设置为逻辑 1。在执行按位或操作之前，将掩码参数的值左移以与 GPIO 端口输出设置寄存器的位位置对齐。</p>
+<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如用于设置 GPIO 输出引脚的 PSOR 寄存器。</p>
+<h3 id="Part4-静态函数-GPIO-PortClear"><a href="#Part4-静态函数-GPIO-PortClear" class="headerlink" title="Part4 静态函数 GPIO_PortClear()"></a>Part4 静态函数 GPIO_PortClear()</h3><p>这是名为 <code>GPIO_PortClear()</code> 的函数的代码片段.</p>
+<p>函数 <code>GPIO_PortClear()</code> <strong>将多个 GPIO 引脚的输出电平设置为逻辑 0</strong>。它有两个参数：</p>
+<ul>
+<li>GPIO 外设的基址</li>
+<li>和指定要清除哪些 GPIO 引脚的掩码。</li>
+</ul>
+<p>掩码参数是一个位掩码，指示要清除哪些引脚。掩码参数的每一位对应一个特定的 GPIO 引脚。如果某位设置为0，则相应的 GPIO 引脚输出设置为逻辑低电平。</p>
+<p>函数 <code>GPIO_PortClear()</code> 通过使用按位或运算写入 GPIO 端口输出清除寄存器 (<strong>GPIOx_PCOR</strong>)，将指定 GPIO 引脚的输出电平设置为逻辑 0。在执行按位或操作之前，将掩码参数的值左移以与 GPIO 端口输出清除寄存器的位位置对齐。</p>
+<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如用于清除 GPIO 输出引脚的 PCOR 寄存器。</p>
+<h3 id="Part5-静态函数-GPIO-PortToggle"><a href="#Part5-静态函数-GPIO-PortToggle" class="headerlink" title="Part5 静态函数 GPIO_PortToggle()"></a>Part5 静态函数 GPIO_PortToggle()</h3><p>这是名为 <code>GPIO_PortToggle()</code> 的函数的代码片段。</p>
+<p>函数 <code>GPIO_PortToggle()</code> <strong>反转多个 GPIO 引脚的当前输出逻辑</strong>。它有两个参数：</p>
+<ul>
+<li>GPIO 外设的基地址</li>
+<li>和一个掩码，它指定要切换的 GPIO 引脚。</li>
+</ul>
+<p>掩码参数是一个位掩码，指示要切换的引脚。掩码参数的每一位对应一个特定的 GPIO 引脚。如果某位设置为 1，则相应的 GPIO 引脚输出逻辑反转，即如果设置为逻辑 1，则变为逻辑 0，反之亦然。</p>
+<p>函数 <code>GPIO_PortToggle()</code> 通过使用<strong>按位或</strong>运算写入 GPIO 端口<strong>输出切换寄存器 (GPIOx_PTOR)</strong> 来反转指定 GPIO 引脚的输出逻辑。在执行按位或操作之前，掩码参数的值左移以与 GPIO 端口输出切换寄存器的位位置对齐。</p>
+<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如用于切换 GPIO 输出引脚的 PTOR 寄存器。</p>
+<h3 id="GPIO输入操作-1"><a href="#GPIO输入操作-1" class="headerlink" title="GPIO输入操作"></a>GPIO输入操作</h3><h3 id="Part6-静态函数-GPIO-PinRead"><a href="#Part6-静态函数-GPIO-PinRead" class="headerlink" title="Part6 静态函数 GPIO_PinRead()"></a>Part6 静态函数 GPIO_PinRead()</h3><p>这是一个名为 <code>GPIO_PinRead()</code> 的函数的代码片段。</p>
+<p>函数 <code>GPIO_PinRead()</code> <strong>读取单个 GPIO 引脚的当前输入值</strong>。它需要两个参数：GPIO外设的基地址和要读取的GPIO引脚的引脚号。</p>
+<p>函数 <code>GPIO_PinRead()</code> 通过使用<strong>移位和与操作</strong>从 GPIO 端口输入数据寄存器 (<strong>GPIOx_PDIR</strong>) 读取来读取指定 GPIO 引脚的输入值。按位移位操作将 GPIO 端口输入数据寄存器的值右对齐，以与指定 GPIO 引脚的位位置对齐。 <em><strong>AND 运算会屏蔽除对应于指定 GPIO 引脚的位之外的所有位</strong></em>。</p>
+<p>该函数将指定 GPIO 引脚的输入值作为single-bit值（0 或 1）返回。</p>
+<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如用于读取 GPIO 输入引脚的 PDIR 寄存器。</p>
+<h3 id="GPIO中断"><a href="#GPIO中断" class="headerlink" title="GPIO中断"></a>GPIO中断</h3><h3 id="GPIO-PortGetInterruptFlags-和-GPIO-PortClearInterruptFlags"><a href="#GPIO-PortGetInterruptFlags-和-GPIO-PortClearInterruptFlags" class="headerlink" title="GPIO_PortGetInterruptFlags() 和 GPIO_PortClearInterruptFlags()"></a>GPIO_PortGetInterruptFlags() 和 GPIO_PortClearInterruptFlags()</h3><p>此代码提供了一个 API，用于配置和处理 GPIO 引脚上的中断。</p>
+<p>前两个函数 <code>GPIO_PortGetInterruptFlags()</code> 和 <code>GPIO_PortClearInterruptFlags()</code> <strong>分别用于读取和清除 GPIO 端口中多个引脚的中断状态标志</strong>。 </p>
+<p>base参数是指GPIO peripheral的基地址，mask参数是用来指定要对哪个GPIO引脚进行读或清除操作。</p>
+<p>此语句似乎描述了与数字系统中的 DMA 请求或电平敏感中断相关联的标志的行为。</p>
+<p>如果某个引脚被配置为生成 DMA 请求，则当<strong>请求的 DMA 传输完成时，相应的标志将自动清除</strong>。这意味着该标志指示 DMA 传输的状态，并在传输完成时重置。</p>
+<p>另一方面，如果引脚未配置为生成 DMA 请求，则相应的标志将保持设置状态，<strong>直到将逻辑 1 写入该标志</strong>。这意味着该标志可用于指示与 DMA 无关的事件的发生，例如中断或数据传输。</p>
+<p>最后，如果引脚被配置为电平敏感中断并且中断信号保持有效，则标志立即再次设置。此行为允许系统响应连续信号，例如按钮按下或传感器读数，而不会错过任何事件。</p>
+<h3 id="GPIO-SetPinInterruptConfig-和-GPIO-GetPinsDMARequestFlags-GPIO-SetMultipleInterruptPinsConfig"><a href="#GPIO-SetPinInterruptConfig-和-GPIO-GetPinsDMARequestFlags-GPIO-SetMultipleInterruptPinsConfig" class="headerlink" title="GPIO_SetPinInterruptConfig() 和 GPIO_GetPinsDMARequestFlags() GPIO_SetMultipleInterruptPinsConfig()"></a>GPIO_SetPinInterruptConfig() 和 GPIO_GetPinsDMARequestFlags() GPIO_SetMultipleInterruptPinsConfig()</h3><p>其余函数是有条件的，取决于 GPIO 端口是否支持中断。如果支持中断，则 <code>GPIO_SetPinInterruptConfig()</code> 函数用于设置单个引脚的中断配置。 pin 参数指定 GPIO 引脚号，而 config 参数用于指定中断配置。</p>
+<p><code>GPIO_SetPinInterruptConfig()</code> 函数用于<strong>读取多个引脚的 DMA 请求标志</strong>。 <code>GPIO_SetMultipleInterruptPinsConfig()</code> 函数<strong>用于同时设置多个引脚的中断配置</strong>。 mask 参数用于指定要为其设置中断配置的 GPIO 引脚，而 config 参数指定中断配置。</p>
+<p><em>中断配置选项包括设置中断&#x2F;DMA 请求、触发中断&#x2F;DMA 请求的边沿类型、触发中断的逻辑电平以及输出触发模式</em>。</p>
+<h3 id="GPIO-CheckAttributeBytes"><a href="#GPIO-CheckAttributeBytes" class="headerlink" title="GPIO_CheckAttributeBytes()"></a>GPIO_CheckAttributeBytes()</h3><p>此代码片段定义了一个名为 <code>GPIO_CheckAttributeBytes()</code> 的函数。该函数有两个参数：一个指向 GPIO 外设（基）的指针和一个名为 attribute 的 gpio_checker_attribute_t 参数。</p>
+<p>该函数检查 GPIO 模块是否具有设备特定数量的数据端口，以及它是否支持属性检查器。如果满足这些条件，该函数将继续检查成功访问指定 GPIO 引脚（掩码）的 GPIO 编程模型所需的字节级属性。</p>
+<p>属性参数是一个枚举，表示 GACR 中 4 个数据字节的属性控制值。字节级属性是使用小端数据约定定义的。</p>
+<h3 id="fgpio-driver-快速GPIO"><a href="#fgpio-driver-快速GPIO" class="headerlink" title="fgpio_driver  快速GPIO"></a>fgpio_driver  快速GPIO</h3><h3 id="FGPIO-PortInit"><a href="#FGPIO-PortInit" class="headerlink" title="FGPIO_PortInit()"></a>FGPIO_PortInit()</h3><blockquote>
+<p>此代码片段介绍了 FGPIO 功能，该功能仅在某些 Kinetis MCU 上受支持。 FGPIO 寄存器是 <code>IOPORT</code> 接口的别名，通过 IOPORT 接口的访问与任何指令获取并行发生，并在一个周期内完成。此内存映射称为 <code>FGPIO</code>。</p>
+</blockquote>
+<p>然后代码定义了一个名为 <code>FGPIO_PortInit()</code> 的函数，该函数将指向 FGPIO 外设（基）的指针作为其参数。此函数<strong>通过关闭其时钟来初始化 FGPIO 外设</strong>。</p>
+<p><code>FGPIO_Type</code> 可能是表示 FGPIO 外设的结构的类型定义。特定的 FGPIO 外设用后缀（FGPIOA、FGPIOB、FGPIOC 等）表示，并且可能具有不同的配置和引脚映射。</p>
+<p>还有一个条件预处理器指令，用于检查 <code>FSL_FEATURE_SOC_FGPIO_COUNT</code> 功能是否已定义和支持。如果不支持，则不会编译指令中的代码。</p>
+<p>同样，还有另一个条件预处理器指令检查 <code>FSL_FEATURE_PCC_HAS_FGPIO_CLOCK_GATE_CONTROL</code> 功能是否已定义和支持。如果不支持，则不会编译指令中的代码。</p>
+<p>总的来说，这段代码设置了 FGPIO 功能并提供了一个函数来初始化 FGPIO 外设。但是，如果没有关于如何使用此代码以及 FGPIO_Type 结构是什么样子的更多上下文，则很难提供更详细的分析。</p>
+<h1 id="fsl-gpio-c"><a href="#fsl-gpio-c" class="headerlink" title="fsl_gpio.c"></a>fsl_gpio.c</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> PORT_Type *<span class="type">const</span> s_portBases[] = PORT_BASE_PTRS;</span><br><span class="line"><span class="type">static</span> GPIO_Type *<span class="type">const</span> s_gpioBases[] = GPIO_BASE_PTRS;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">uint32_t</span> <span class="title function_">GPIO_GetInstance</span><span class="params">(GPIO_Type *base)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint32_t</span> instance;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Find the instance index from base address mappings. */</span></span><br><span class="line">    <span class="keyword">for</span> (instance = <span class="number">0</span>; instance &lt; ARRAY_SIZE(s_gpioBases); instance++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (s_gpioBases[instance] == base)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    assert(instance &lt; ARRAY_SIZE(s_gpioBases));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">GPIO_PinInit</span><span class="params">(GPIO_Type *base, <span class="type">uint32_t</span> pin, <span class="type">const</span> <span class="type">gpio_pin_config_t</span> *config)</span></span><br><span class="line">&#123;</span><br><span class="line">    assert(<span class="literal">NULL</span> != config);</span><br><span class="line"></span><br><span class="line">    <span class="type">uint32_t</span> u32flag = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (config-&gt;pinDirection == kGPIO_DigitalInput)</span><br><span class="line">    &#123;</span><br><span class="line">        base-&gt;PDDR &amp;= ~(u32flag &lt;&lt; pin);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        GPIO_PinWrite(base, pin, config-&gt;outputLogic);</span><br><span class="line">        base-&gt;PDDR |= (u32flag &lt;&lt; pin);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">uint32_t</span> <span class="title function_">GPIO_PortGetInterruptFlags</span><span class="params">(GPIO_Type *base)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> instance;</span><br><span class="line">    PORT_Type *portBase;</span><br><span class="line">    instance = (<span class="type">uint8_t</span>)GPIO_GetInstance(base);</span><br><span class="line">    portBase = s_portBases[instance];</span><br><span class="line">    <span class="keyword">return</span> portBase-&gt;ISFR;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">GPIO_PortClearInterruptFlags</span><span class="params">(GPIO_Type *base, <span class="type">uint32_t</span> mask)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> instance;</span><br><span class="line">    PORT_Type *portBase;</span><br><span class="line">    instance       = (<span class="type">uint8_t</span>)GPIO_GetInstance(base);</span><br><span class="line">    portBase       = s_portBases[instance];</span><br><span class="line">    portBase-&gt;ISFR = mask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">GPIO_CheckAttributeBytes</span><span class="params">(GPIO_Type *base, <span class="type">gpio_checker_attribute_t</span> attribute)</span></span><br><span class="line">&#123;</span><br><span class="line">    base-&gt;GACR = ((<span class="type">uint32_t</span>)attribute &lt;&lt; GPIO_GACR_ACB0_SHIFT) | ((<span class="type">uint32_t</span>)attribute &lt;&lt; GPIO_GACR_ACB1_SHIFT) |</span><br><span class="line">                 ((<span class="type">uint32_t</span>)attribute &lt;&lt; GPIO_GACR_ACB2_SHIFT) | ((<span class="type">uint32_t</span>)attribute &lt;&lt; GPIO_GACR_ACB3_SHIFT);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>嵌入式</category>
+        <category>代码解读</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>嵌入式</tag>
+        <tag>代码解读</tag>
+        <tag>GPIO</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>代码解读之GPIO_Adapter</title>
     <url>/2023/03/20/38/</url>
     <content><![CDATA[<h1 id="读fsl-adapter-gpio-c-和-h-代码"><a href="#读fsl-adapter-gpio-c-和-h-代码" class="headerlink" title="读fsl_adapter_gpio.c 和 .h 代码"></a>读fsl_adapter_gpio.c 和 .h 代码</h1><h2 id="1-fsl-adapter-gpio-c"><a href="#1-fsl-adapter-gpio-c" class="headerlink" title="1. fsl_adapter_gpio.c"></a>1. fsl_adapter_gpio.c</h2><p>这个代码是一个包含头文件并定义与MCU中的GPIO（通用输入&#x2F;输出）功能相关的一些宏的 C 源文件。它是为 NXP 公司制造的特定MCU编写的。</p>
@@ -2161,118 +2273,6 @@
 <p>HAL_GpioExitLowpower 可能会执行 HAL_GpioEnterLowpower 的反向操作，例如恢复 GPIO 中断，将 GPIO 引脚恢复到之前的状态，或者提高 GPIO 模块的时钟频率以恢复正常操作。 </p>
 <p>总体而言，这些功能似乎是用于管理功耗和唤醒行为的更大系统的一部分，而不是独立的 GPIO 功能。</p>
 ]]></content>
-      <categories>
-        <category>嵌入式</category>
-        <category>代码解读</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>嵌入式</tag>
-        <tag>代码解读</tag>
-        <tag>GPIO</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>代码解读之fsl_gpio</title>
-    <url>/2023/03/21/40/</url>
-    <content><![CDATA[<h1 id="读fsl-gpio-c-和-fsl-gpio-h-代码"><a href="#读fsl-gpio-c-和-fsl-gpio-h-代码" class="headerlink" title="读fsl_gpio.c 和 fsl_gpio.h 代码"></a>读fsl_gpio.c 和 fsl_gpio.h 代码</h1><blockquote>
-<p>使用kw38的win mcuxpresso版本 <code>SDK_2_6_615_FRDM-KW38_mcuxpresso_win</code></p>
-</blockquote>
-<h1 id="fsl-gpio-h"><a href="#fsl-gpio-h" class="headerlink" title="fsl_gpio.h"></a>fsl_gpio.h</h1><blockquote>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _FSL_GPIO_H_</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _FSL_GPIO_H_</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;fsl_common.h&quot;</span></span></span><br></pre></td></tr></table></figure>
-</blockquote>
-<h2 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h2><h3 id="Part1-gpio-pin-direction-t-和-gpio-checker-attribute-t"><a href="#Part1-gpio-pin-direction-t-和-gpio-checker-attribute-t" class="headerlink" title="Part1 gpio_pin_direction_t 和 gpio_checker_attribute_t"></a>Part1 gpio_pin_direction_t 和 gpio_checker_attribute_t</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">gpio_pin_direction</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    kGPIO_DigitalInput  = <span class="number">0U</span>, <span class="comment">/*!&lt; Set current pin as digital input*/</span></span><br><span class="line">    kGPIO_DigitalOutput = <span class="number">1U</span>, <span class="comment">/*!&lt; Set current pin as digital output*/</span></span><br><span class="line">&#125; <span class="type">gpio_pin_direction_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">gpio_checker_attribute</span>&#123;</span></span><br><span class="line">&#125;<span class="type">gpio_checker_attribute_t</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>gpio_pin_direction_t</code> 确定Pin引脚方向，输入为0，输出为1。</p>
-<p>GPIO 检查器属性用于某些具有 GPIO 属性检查器功能的 NXP 微控制器。此功能用于安全目的，<strong>根据访问属性检查是否允许访问 GPIO 引脚</strong>。</p>
-<p><code>gpio_checker_attribute_t</code> 枚举定义了可以检查的可能属性。这些属性指定不同权限级别（用户非安全、用户安全和特权安全）的读取和写入权限。</p>
-<p>另外还有一个属性值<code>kGPIO_IgnoreAttributeCheck</code>，表示忽略属性检查。</p>
-<p>GPIO 检查器属性与 <code>GPIO_CheckAttribute()</code> 函数结合使用，<strong>以根据操作的属性检查是否允许 GPIO 引脚上的特定操作</strong>。</p>
-<h3 id="Part2-gpio-pin-config-t-和-gpio-interrupt-config-t"><a href="#Part2-gpio-pin-config-t-和-gpio-interrupt-config-t" class="headerlink" title="Part2 gpio_pin_config_t 和 gpio_interrupt_config_t"></a>Part2 gpio_pin_config_t 和 gpio_interrupt_config_t</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">gpio_pin_config</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">gpio_pin_direction_t</span> pinDirection;</span><br><span class="line">    <span class="type">uint8_t</span> outputLogic; <span class="comment">/*!&lt; Set a default output logic, which has no use in input */</span></span><br><span class="line">&#125; <span class="type">gpio_pin_config_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">gpio_interrupt_config</span>&#123;</span></span><br><span class="line">&#125; <span class="type">gpio_interrupt_config_t</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这是一个 C 语言代码片段，它定义了两个数据结构和一个枚举类型，用于在微控制器上配置通用输入&#x2F;输出 (GPIO) 引脚。</p>
-<ol>
-<li><code>gpio_pin_config_t</code> 定义了 GPIO 引脚的配置参数，包括它的方向（输入或输出）和<strong>它的默认输出逻辑（如果它是一个输出引脚）</strong>。</li>
-<li>第二个数据结构 <code>gpio_interrupt_config_t</code> 是有条件地定义的，具体取决于微控制器是否支持其 GPIO 引脚上的中断。如果是，则此结构定义中断生成条件的配置参数。</li>
-<li>枚举类型 <code>gpio_interrupt_config_t</code> 定义了中断生成条件的可能值，例如在上升沿、下降沿、任一边沿或逻辑电平为高或低时启用中断。</li>
-</ol>
-<h2 id="函数接口"><a href="#函数接口" class="headerlink" title="函数接口"></a>函数接口</h2><h3 id="GPIO配置"><a href="#GPIO配置" class="headerlink" title="GPIO配置"></a>GPIO配置</h3><h3 id="Part1-GPIO-PinInit"><a href="#Part1-GPIO-PinInit" class="headerlink" title="Part1 GPIO_PinInit()"></a>Part1 GPIO_PinInit()</h3><p>这是名为 <code>GPIO_PinInit()</code> 的函数的代码片段，它是用于处理微控制器上的通用输入&#x2F;输出 (GPIO) 引脚的更大驱动程序的一部分。该驱动程序提供一组函数<strong>来配置、读取和写入 GPIO 引脚</strong>。</p>
-<p>函数 <code>GPIO_PinInit()</code> <strong>初始化板使用的 GPIO 引脚</strong>。它采用三个参数：</p>
-<ul>
-<li>GPIO 外设的基地址 GPIO peripheral base pointer (GPIOA, GPIOB, GPIOC, and so on.)</li>
-<li>GPIO 端口的引脚号 GPIO port pin number</li>
-<li>以及指向定义 GPIO 引脚配置的 gpio_pin_config_t 结构的指针 GPIO pin configuration pointer</li>
-</ul>
-<p>gpio_pin_config_t 结构包含两个字段：</p>
-<ul>
-<li>pinDirection：GPIO引脚的方向，可以设置为kGPIO_DigitalInput或kGPIO_DigitalOutput。</li>
-<li>outputLogic：GPIO引脚的输出逻辑电平，仅在引脚配置为数字输出时适用。它可以设置为 0 或 1。</li>
-</ul>
-<p>函数 <code>GPIO_PinInit()</code> 使用 <code>gpio_pin_config_t</code> 结构中定义的配置初始化 GPIO 引脚。</p>
-<h3 id="GPIO输入操作"><a href="#GPIO输入操作" class="headerlink" title="GPIO输入操作"></a>GPIO输入操作</h3><h3 id="Part2-静态函数-GPIO-PinWrite"><a href="#Part2-静态函数-GPIO-PinWrite" class="headerlink" title="Part2 静态函数 GPIO_PinWrite()"></a>Part2 静态函数 GPIO_PinWrite()</h3><p>这是名为 <code>GPIO_PinWrite()</code> 的函数的代码片段。</p>
-<p>函数<code>GPIO_PinWrite()</code>将一个GPIO引脚的输出电平设置为逻辑1或逻辑0。它需要三个参数：</p>
-<ul>
-<li>GPIO外设的基址、</li>
-<li>GPIO端口的引脚号、</li>
-<li>GPIO引脚的输出电平.</li>
-</ul>
-<p>输出参数可以设置为 0 或 1 以指定 GPIO 引脚的输出逻辑电平。<strong>如果输出为 0，则相应的引脚输出设置为逻辑低电平，否则，如果输出为 1，则相应的引脚输出设置为逻辑高电平</strong>。</p>
-<p>函数 GPIO_PinWrite() 使用<strong>按位操作</strong>来设置 GPIO 引脚的输出电平。如果输出参数为0，则使用左移操作清除GPIO端口输出清除寄存器（<strong>GPIOx_PCOR</strong>）中的相应位。否则，如果输出参数为 1，则使用左移操作设置 GPIO 端口输出设置寄存器 (<strong>GPIOx_PSOR</strong>) 中的相应位。</p>
-<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如分别用于清除和设置 GPIO 输出引脚的 PCOR 和 PSOR 寄存器。</p>
-<h3 id="Part3-静态函数-GPIO-PortSet"><a href="#Part3-静态函数-GPIO-PortSet" class="headerlink" title="Part3 静态函数 GPIO_PortSet()"></a>Part3 静态函数 GPIO_PortSet()</h3><p>这是名为 GPIO_PortSet() 的函数的代码片段.</p>
-<p>函数 <code>GPIO_PortSet()</code> <strong>将多个 GPIO 引脚的输出电平设置为逻辑 1</strong>。它有两个参数：</p>
-<ul>
-<li>GPIO 外设的基址, base GPIO peripheral base pointer (GPIOA, GPIOB, GPIOC, and so on.)</li>
-<li>指定要设置哪些 GPIO 引脚的掩码。GPIO pin number macro</li>
-</ul>
-<p><strong>掩码参数是一个位掩码，指示要设置的引脚。掩码参数的每一位对应一个特定的 GPIO 引脚。如果某位设置为 1，则相应的 GPIO 引脚输出设置为逻辑高电平</strong>。</p>
-<p>函数 <code>GPIO_PortSet()</code> 通过使用<strong>按位或</strong>运算写入 GPIO 端口输出设置寄存器 (<strong>GPIOx_PSOR</strong>)，将指定 GPIO 引脚的输出电平设置为逻辑 1。在执行按位或操作之前，将掩码参数的值左移以与 GPIO 端口输出设置寄存器的位位置对齐。</p>
-<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如用于设置 GPIO 输出引脚的 PSOR 寄存器。</p>
-<h3 id="Part4-静态函数-GPIO-PortClear"><a href="#Part4-静态函数-GPIO-PortClear" class="headerlink" title="Part4 静态函数 GPIO_PortClear()"></a>Part4 静态函数 GPIO_PortClear()</h3><p>这是名为 <code>GPIO_PortClear()</code> 的函数的代码片段.</p>
-<p>函数 <code>GPIO_PortClear()</code> <strong>将多个 GPIO 引脚的输出电平设置为逻辑 0</strong>。它有两个参数：</p>
-<ul>
-<li>GPIO 外设的基址</li>
-<li>和指定要清除哪些 GPIO 引脚的掩码。</li>
-</ul>
-<p>掩码参数是一个位掩码，指示要清除哪些引脚。掩码参数的每一位对应一个特定的 GPIO 引脚。如果某位设置为0，则相应的 GPIO 引脚输出设置为逻辑低电平。</p>
-<p>函数 <code>GPIO_PortClear()</code> 通过使用按位或运算写入 GPIO 端口输出清除寄存器 (<strong>GPIOx_PCOR</strong>)，将指定 GPIO 引脚的输出电平设置为逻辑 0。在执行按位或操作之前，将掩码参数的值左移以与 GPIO 端口输出清除寄存器的位位置对齐。</p>
-<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如用于清除 GPIO 输出引脚的 PCOR 寄存器。</p>
-<h3 id="Part5-静态函数-GPIO-PortToggle"><a href="#Part5-静态函数-GPIO-PortToggle" class="headerlink" title="Part5 静态函数 GPIO_PortToggle()"></a>Part5 静态函数 GPIO_PortToggle()</h3><p>这是名为 <code>GPIO_PortToggle()</code> 的函数的代码片段。</p>
-<p>函数 <code>GPIO_PortToggle()</code> <strong>反转多个 GPIO 引脚的当前输出逻辑</strong>。它有两个参数：</p>
-<ul>
-<li>GPIO 外设的基地址</li>
-<li>和一个掩码，它指定要切换的 GPIO 引脚。</li>
-</ul>
-<p>掩码参数是一个位掩码，指示要切换的引脚。掩码参数的每一位对应一个特定的 GPIO 引脚。如果某位设置为 1，则相应的 GPIO 引脚输出逻辑反转，即如果设置为逻辑 1，则变为逻辑 0，反之亦然。</p>
-<p>函数 <code>GPIO_PortToggle()</code> 通过使用<strong>按位或</strong>运算写入 GPIO 端口<strong>输出切换寄存器 (GPIOx_PTOR)</strong> 来反转指定 GPIO 引脚的输出逻辑。在执行按位或操作之前，掩码参数的值左移以与 GPIO 端口输出切换寄存器的位位置对齐。</p>
-<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如用于切换 GPIO 输出引脚的 PTOR 寄存器。</p>
-<h3 id="GPIO输入操作-1"><a href="#GPIO输入操作-1" class="headerlink" title="GPIO输入操作"></a>GPIO输入操作</h3><h3 id="Part6-静态函数-GPIO-PinRead"><a href="#Part6-静态函数-GPIO-PinRead" class="headerlink" title="Part6 静态函数 GPIO_PinRead()"></a>Part6 静态函数 GPIO_PinRead()</h3><p>这是一个名为 <code>GPIO_PinRead()</code> 的函数的代码片段。</p>
-<p>函数 <code>GPIO_PinRead()</code> <strong>读取单个 GPIO 引脚的当前输入值</strong>。它需要两个参数：GPIO外设的基地址和要读取的GPIO引脚的引脚号。</p>
-<p>函数 <code>GPIO_PinRead()</code> 通过使用<strong>移位和与操作</strong>从 GPIO 端口输入数据寄存器 (<strong>GPIOx_PDIR</strong>) 读取来读取指定 GPIO 引脚的输入值。按位移位操作将 GPIO 端口输入数据寄存器的值右对齐，以与指定 GPIO 引脚的位位置对齐。 <em><strong>AND 运算会屏蔽除对应于指定 GPIO 引脚的位之外的所有位</strong></em>。</p>
-<p>该函数将指定 GPIO 引脚的输入值作为single-bit值（0 或 1）返回。</p>
-<p>此代码是用 C 编程语言编写的，并假定微控制器具有 GPIO 寄存器的特定实现，例如用于读取 GPIO 输入引脚的 PDIR 寄存器。</p>
-<h3 id="GPIO中断"><a href="#GPIO中断" class="headerlink" title="GPIO中断"></a>GPIO中断</h3><h3 id="GPIO-PortGetInterruptFlags-和-GPIO-PortClearInterruptFlags"><a href="#GPIO-PortGetInterruptFlags-和-GPIO-PortClearInterruptFlags" class="headerlink" title="GPIO_PortGetInterruptFlags() 和 GPIO_PortClearInterruptFlags()"></a>GPIO_PortGetInterruptFlags() 和 GPIO_PortClearInterruptFlags()</h3><p>此代码提供了一个 API，用于配置和处理 GPIO 引脚上的中断。</p>
-<p>前两个函数 <code>GPIO_PortGetInterruptFlags()</code> 和 <code>GPIO_PortClearInterruptFlags()</code> <strong>分别用于读取和清除 GPIO 端口中多个引脚的中断状态标志</strong>。 </p>
-<p>base参数是指GPIO peripheral的基地址，mask参数是用来指定要对哪个GPIO引脚进行读或清除操作。</p>
-<p>此语句似乎描述了与数字系统中的 DMA 请求或电平敏感中断相关联的标志的行为。</p>
-<p>如果某个引脚被配置为生成 DMA 请求，则当<strong>请求的 DMA 传输完成时，相应的标志将自动清除</strong>。这意味着该标志指示 DMA 传输的状态，并在传输完成时重置。</p>
-<p>另一方面，如果引脚未配置为生成 DMA 请求，则相应的标志将保持设置状态，<strong>直到将逻辑 1 写入该标志</strong>。这意味着该标志可用于指示与 DMA 无关的事件的发生，例如中断或数据传输。</p>
-<p>最后，如果引脚被配置为电平敏感中断并且中断信号保持有效，则标志立即再次设置。此行为允许系统响应连续信号，例如按钮按下或传感器读数，而不会错过任何事件。</p>
-<h3 id="GPIO-SetPinInterruptConfig-和-GPIO-GetPinsDMARequestFlags-GPIO-SetMultipleInterruptPinsConfig"><a href="#GPIO-SetPinInterruptConfig-和-GPIO-GetPinsDMARequestFlags-GPIO-SetMultipleInterruptPinsConfig" class="headerlink" title="GPIO_SetPinInterruptConfig() 和 GPIO_GetPinsDMARequestFlags() GPIO_SetMultipleInterruptPinsConfig()"></a>GPIO_SetPinInterruptConfig() 和 GPIO_GetPinsDMARequestFlags() GPIO_SetMultipleInterruptPinsConfig()</h3><p>其余函数是有条件的，取决于 GPIO 端口是否支持中断。如果支持中断，则 <code>GPIO_SetPinInterruptConfig()</code> 函数用于设置单个引脚的中断配置。 pin 参数指定 GPIO 引脚号，而 config 参数用于指定中断配置。</p>
-<p><code>GPIO_SetPinInterruptConfig()</code> 函数用于<strong>读取多个引脚的 DMA 请求标志</strong>。 <code>GPIO_SetMultipleInterruptPinsConfig()</code> 函数<strong>用于同时设置多个引脚的中断配置</strong>。 mask 参数用于指定要为其设置中断配置的 GPIO 引脚，而 config 参数指定中断配置。</p>
-<p><em>中断配置选项包括设置中断&#x2F;DMA 请求、触发中断&#x2F;DMA 请求的边沿类型、触发中断的逻辑电平以及输出触发模式</em>。</p>
-<h3 id="GPIO-CheckAttributeBytes"><a href="#GPIO-CheckAttributeBytes" class="headerlink" title="GPIO_CheckAttributeBytes()"></a>GPIO_CheckAttributeBytes()</h3><p>此代码片段定义了一个名为 <code>GPIO_CheckAttributeBytes()</code> 的函数。该函数有两个参数：一个指向 GPIO 外设（基）的指针和一个名为 attribute 的 gpio_checker_attribute_t 参数。</p>
-<p>该函数检查 GPIO 模块是否具有设备特定数量的数据端口，以及它是否支持属性检查器。如果满足这些条件，该函数将继续检查成功访问指定 GPIO 引脚（掩码）的 GPIO 编程模型所需的字节级属性。</p>
-<p>属性参数是一个枚举，表示 GACR 中 4 个数据字节的属性控制值。字节级属性是使用小端数据约定定义的。</p>
-<h3 id="fgpio-driver-快速GPIO"><a href="#fgpio-driver-快速GPIO" class="headerlink" title="fgpio_driver  快速GPIO"></a>fgpio_driver  快速GPIO</h3><h3 id="FGPIO-PortInit"><a href="#FGPIO-PortInit" class="headerlink" title="FGPIO_PortInit()"></a>FGPIO_PortInit()</h3><blockquote>
-<p>此代码片段介绍了 FGPIO 功能，该功能仅在某些 Kinetis MCU 上受支持。 FGPIO 寄存器是 <code>IOPORT</code> 接口的别名，通过 IOPORT 接口的访问与任何指令获取并行发生，并在一个周期内完成。此内存映射称为 <code>FGPIO</code>。</p>
-</blockquote>
-<p>然后代码定义了一个名为 <code>FGPIO_PortInit()</code> 的函数，该函数将指向 FGPIO 外设（基）的指针作为其参数。此函数<strong>通过关闭其时钟来初始化 FGPIO 外设</strong>。</p>
-<p><code>FGPIO_Type</code> 可能是表示 FGPIO 外设的结构的类型定义。特定的 FGPIO 外设用后缀（FGPIOA、FGPIOB、FGPIOC 等）表示，并且可能具有不同的配置和引脚映射。</p>
-<p>还有一个条件预处理器指令，用于检查 <code>FSL_FEATURE_SOC_FGPIO_COUNT</code> 功能是否已定义和支持。如果不支持，则不会编译指令中的代码。</p>
-<p>同样，还有另一个条件预处理器指令检查 <code>FSL_FEATURE_PCC_HAS_FGPIO_CLOCK_GATE_CONTROL</code> 功能是否已定义和支持。如果不支持，则不会编译指令中的代码。</p>
-<p>总的来说，这段代码设置了 FGPIO 功能并提供了一个函数来初始化 FGPIO 外设。但是，如果没有关于如何使用此代码以及 FGPIO_Type 结构是什么样子的更多上下文，则很难提供更详细的分析。</p>
-<h1 id="fsl-gpio-c"><a href="#fsl-gpio-c" class="headerlink" title="fsl_gpio.c"></a>fsl_gpio.c</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> PORT_Type *<span class="type">const</span> s_portBases[] = PORT_BASE_PTRS;</span><br><span class="line"><span class="type">static</span> GPIO_Type *<span class="type">const</span> s_gpioBases[] = GPIO_BASE_PTRS;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">uint32_t</span> <span class="title function_">GPIO_GetInstance</span><span class="params">(GPIO_Type *base)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint32_t</span> instance;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Find the instance index from base address mappings. */</span></span><br><span class="line">    <span class="keyword">for</span> (instance = <span class="number">0</span>; instance &lt; ARRAY_SIZE(s_gpioBases); instance++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (s_gpioBases[instance] == base)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    assert(instance &lt; ARRAY_SIZE(s_gpioBases));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">GPIO_PinInit</span><span class="params">(GPIO_Type *base, <span class="type">uint32_t</span> pin, <span class="type">const</span> <span class="type">gpio_pin_config_t</span> *config)</span></span><br><span class="line">&#123;</span><br><span class="line">    assert(<span class="literal">NULL</span> != config);</span><br><span class="line"></span><br><span class="line">    <span class="type">uint32_t</span> u32flag = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (config-&gt;pinDirection == kGPIO_DigitalInput)</span><br><span class="line">    &#123;</span><br><span class="line">        base-&gt;PDDR &amp;= ~(u32flag &lt;&lt; pin);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        GPIO_PinWrite(base, pin, config-&gt;outputLogic);</span><br><span class="line">        base-&gt;PDDR |= (u32flag &lt;&lt; pin);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">uint32_t</span> <span class="title function_">GPIO_PortGetInterruptFlags</span><span class="params">(GPIO_Type *base)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> instance;</span><br><span class="line">    PORT_Type *portBase;</span><br><span class="line">    instance = (<span class="type">uint8_t</span>)GPIO_GetInstance(base);</span><br><span class="line">    portBase = s_portBases[instance];</span><br><span class="line">    <span class="keyword">return</span> portBase-&gt;ISFR;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">GPIO_PortClearInterruptFlags</span><span class="params">(GPIO_Type *base, <span class="type">uint32_t</span> mask)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> instance;</span><br><span class="line">    PORT_Type *portBase;</span><br><span class="line">    instance       = (<span class="type">uint8_t</span>)GPIO_GetInstance(base);</span><br><span class="line">    portBase       = s_portBases[instance];</span><br><span class="line">    portBase-&gt;ISFR = mask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">GPIO_CheckAttributeBytes</span><span class="params">(GPIO_Type *base, <span class="type">gpio_checker_attribute_t</span> attribute)</span></span><br><span class="line">&#123;</span><br><span class="line">    base-&gt;GACR = ((<span class="type">uint32_t</span>)attribute &lt;&lt; GPIO_GACR_ACB0_SHIFT) | ((<span class="type">uint32_t</span>)attribute &lt;&lt; GPIO_GACR_ACB1_SHIFT) |</span><br><span class="line">                 ((<span class="type">uint32_t</span>)attribute &lt;&lt; GPIO_GACR_ACB2_SHIFT) | ((<span class="type">uint32_t</span>)attribute &lt;&lt; GPIO_GACR_ACB3_SHIFT);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>嵌入式</category>
         <category>代码解读</category>
@@ -6382,6 +6382,181 @@ Vector Table
       </tags>
   </entry>
   <entry>
+    <title>路科V0P19P22随机变量-随机约束-约束控制-任务和函数</title>
+    <url>/2022/05/13/17/</url>
+    <content><![CDATA[<h1 id="随机变量"><a href="#随机变量" class="headerlink" title="随机变量"></a>随机变量</h1><ul>
+<li>随着设计越来越大，要产生完整的激励来测试设计的功能变得越来越困难；</li>
+<li>定向激励的测试方法已经无法满足检查功能完整性的要求；</li>
+<li>Soc集成度提高带来的模块之间交互的复杂性也指数提高，验证工程师无法预测用户使用过程中发生什么样的情况；</li>
+</ul>
+<h2 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h2><ul>
+<li><strong>随机-约束</strong>： 构成目前动态仿真验证的主流方法；</li>
+<li><strong>随机约束测试</strong>：CRT， constrained-random test，即能够产生感兴趣的、想不到的测试向量，<strong>通过回归测试、替换随机种子的方式来提高单位测试用例的覆盖率收集效率</strong>；</li>
+<li>随机测试带来的负担是验证环境的复杂度提高，不再只需要发送激励的组件，还包括监测器、比较器等；</li>
+<li>对环境复杂度还包括环境的复用和测试的复用，带来组件封装要求，使得代码量增大；</li>
+</ul>
+<h2 id="产生一个随机数"><a href="#产生一个随机数" class="headerlink" title="产生一个随机数"></a>产生一个随机数</h2><blockquote>
+<p>利用系统函数产生一个随机数</p>
+</blockquote>
+<ul>
+<li><code>randomize</code>函数产生随机数，如果随机成功，返回1,否则0；</li>
+<li>通过系统函数<code>std::randomize()</code>对一些变量完成随机化，即产生随机数并赋值给这些向量；</li>
+<li>还有一些其他的系统函数：<ul>
+<li><code>$urandom()</code> 产生一个32位无符号的随机数；</li>
+<li><code>$urandom_range(max_val, minval=0)</code>， 可以生成介于maxval和minval之间的随机数；</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> stim;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">15</span>:<span class="number">0</span>] addr;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] data;</span><br><span class="line">    <span class="keyword">function</span> <span class="keyword">bit</span> get_stim();</span><br><span class="line">        <span class="keyword">bit</span> success, rd_wr;</span><br><span class="line">        success = randomize(add, data, rd_wr);</span><br><span class="line">        <span class="keyword">return</span> rd_wr;</span><br><span class="line">    <span class="keyword">endfunction</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="系统有机的组织随机变量"><a href="#系统有机的组织随机变量" class="headerlink" title="系统有机的组织随机变量"></a>系统有机的组织随机变量</h2><ul>
+<li>比起独立的产生随机数，在向DUT产生随机激励时，为了符合协议、满足测试需求，还需要添加一些约束；</li>
+<li>这些约束会使得变量朝着希望他们变化的方向去随机；</li>
+<li>这些约束也会对变量和变量之间的关系生效；</li>
+<li>需要一个载体去容纳变量和他们之间的约束；</li>
+<li><strong>这个载体是类，类的成员变量可以声明“随机”属性，用rand或者randc表示</strong>；</li>
+</ul>
+<h2 id="随机变量-1"><a href="#随机变量-1" class="headerlink" title="随机变量"></a>随机变量</h2><ul>
+<li>任何类中的整型（bit、byte、int）变量都可以声明为rand、randc；</li>
+<li>定长数组、动态数组、关联数组和队列都可以声明为rand、randc；</li>
+<li>可以对动态数组和队列的长度加以约束；</li>
+<li><strong>指向对象的句柄，也可以声明为rand，不能randc，随机时该句柄指向的对象中的随机变量会一起被随机化</strong>；</li>
+<li>非组合型结构体可以声明为rand，非组合型的成员也可以声明为rand、randc；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] len;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> data[];</span><br><span class="line"><span class="keyword">constraint</span> db &#123;data<span class="variable">.size</span> == len;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">int</span> addr = <span class="number">1</span> + constant;</span><br><span class="line">    <span class="keyword">int</span> crc;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> data [] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line">&#125; header;</span><br><span class="line"><span class="keyword">rand</span> header h1;</span><br></pre></td></tr></table></figure>
+
+<h2 id="rand和randc"><a href="#rand和randc" class="headerlink" title="rand和randc"></a>rand和randc</h2><ul>
+<li>rand： 表示在可生成范围内，每个值得可能性是相同的–&gt;每次都是有放回！！<ul>
+<li><code>rand bit [7:0] y;</code></li>
+</ul>
+</li>
+<li>randc: 它的值会随机，并且遍历可取值范围，–&gt;无放回！！</li>
+</ul>
+<h1 id="随机约束"><a href="#随机约束" class="headerlink" title="随机约束"></a>随机约束</h1><h2 id="带有随机约束的简单类"><a href="#带有随机约束的简单类" class="headerlink" title="带有随机约束的简单类"></a>带有随机约束的简单类</h2><figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] src, dst, data[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] kind;</span><br><span class="line">    <span class="comment">// src的约束</span></span><br><span class="line">    <span class="keyword">constraint</span> c &#123;src &gt; <span class="number">10</span>; src &lt; <span class="number">15</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p;</span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span></span><br><span class="line">    p = <span class="keyword">new</span>();</span><br><span class="line">    <span class="keyword">if</span> (!p<span class="variable">.randomize</span>())</span><br><span class="line">        <span class="built_in">$finish</span>;</span><br><span class="line">    transmit(p);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="约束块"><a href="#约束块" class="headerlink" title="约束块"></a>约束块</h2><ul>
+<li>有用的激励不仅会约束随机变量，变量之间也存在互相约束关系；</li>
+<li>没有约束的随机变量会包含很多无效的和非法的值，会使得有效激励变得低效；</li>
+<li>类需要<strong>用一个或者多个约束块来描述变量之间的关系</strong>；</li>
+<li><strong>约束块支持整型通过<code>inside</code>操作符来设置可取值的范围</strong>；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> x,y,z;</span><br><span class="line"><span class="keyword">constraint</span> c1 &#123;x <span class="keyword">inside</span> &#123;<span class="number">3</span>, <span class="number">5</span>, [<span class="number">9</span>:<span class="number">15</span>], [<span class="number">24</span>:<span class="number">32</span>], [y:<span class="number">2</span>*y], z&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> a,b,c;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;a <span class="keyword">inside</span> &#123;b, c&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">integer</span> fives[<span class="number">4</span>] = &#x27;&#123;<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>&#125;;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> v;</span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;v <span class="keyword">inside</span> &#123;fives&#125;;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="权重分布"><a href="#权重分布" class="headerlink" title="权重分布"></a>权重分布</h2><ul>
+<li>除了成员集合设置，约束块也支持设置可取值的同事为其设置随机时的权重；</li>
+<li><strong><code>:=</code> : 表示每个值的权重都是相同的；</strong></li>
+<li><strong><code>:/</code> : 表示权重会平均分配到每一个值；</strong></li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] := <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1 1 1 2 5</span></span><br><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] :/ <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1/3 1/3 1/3 2 5</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="唯一标识"><a href="#唯一标识" class="headerlink" title="唯一标识"></a>唯一标识</h2><ul>
+<li><code>unique</code> : 可以用来约束一组变量，使得其随机后变量之间不会有相同的数值；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> a[<span class="number">5</span>];</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> b;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> excluded;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> u &#123;<span class="keyword">unique</span> &#123;b, a[<span class="number">2</span>:<span class="number">3</span>], excluded&#125;;&#125;</span><br><span class="line"><span class="keyword">constraint</span> exclusion &#123;excluded == <span class="number">5</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="条件约束"><a href="#条件约束" class="headerlink" title="条件约束"></a>条件约束</h2><ul>
+<li>可以使用<code>if-else</code>或者<code>-&gt;</code>操作符表示条件约束；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">    mode == little -&gt; len &lt; <span class="number">10</span>;</span><br><span class="line">    mode == big -&gt; len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bit</span> [<span class="number">3</span>:<span class="number">0</span>] a, b;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;(a==<span class="number">0</span>) -&gt; (b==<span class="number">1</span>);&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;</span><br><span class="line">    <span class="keyword">if</span> (mode == little)</span><br><span class="line">        len &lt; <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (mode == big)</span><br><span class="line">        len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代约束"><a href="#迭代约束" class="headerlink" title="迭代约束"></a>迭代约束</h2><ul>
+<li><code>foreach</code>可以用来迭代约束数组中的元素，这些数组可以是定长数组、动态数组、关联数组或者队列；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[i])</span><br><span class="line">            A[i] <span class="keyword">inside</span> &#123;<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[j])</span><br><span class="line">            A[j] &gt; <span class="number">2</span>*j;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>也可以用数组的缩减方法进行迭代约束</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;A<span class="variable">.size</span>() == <span class="number">5</span>;&#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;A<span class="variable">.sum</span>() &lt; <span class="number">1000</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h2><ul>
+<li>有时候，在一些表达式中不能简单的描述约束，比如计算一个组合数组中的’1’；</li>
+<li>可以写成一个函数，然后约束调用这个函数；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> count_ones (<span class="keyword">bit</span> [<span class="number">9</span>:<span class="number">0</span>] w);</span><br><span class="line">    <span class="keyword">for</span> (count_onts=<span class="number">0</span>; w!=<span class="number">0</span>; w = w&gt;&gt;<span class="number">1</span>)</span><br><span class="line">        count_ones += w &amp; <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> C1 &#123;length == count_ones(v);&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="软约束-和-硬约束"><a href="#软约束-和-硬约束" class="headerlink" title="软约束 和 硬约束"></a>软约束 和 硬约束</h2><ul>
+<li>为了防止约束冲突时执行失败，分为软约束和硬约束；</li>
+<li><code>soft</code> : soft描述的约束是软，没有soft是硬；</li>
+<li>如果用户在使用时，制订了外部约束对同一个变量做了二次约束，或者用户定义了子类，也对同一个变量做了二次约束，<strong>那么硬约束可以覆盖软约束</strong>，不会导致随机失败；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">int</span> length;</span><br><span class="line">    <span class="keyword">constraint</span> deflt &#123;<span class="keyword">soft</span> length <span class="keyword">inside</span> &#123;<span class="number">32</span>, <span class="number">1024</span>&#125;;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p = <span class="keyword">new</span>();</span><br><span class="line">p<span class="variable">.randomize</span>() <span class="keyword">with</span> &#123;length == <span class="number">1512</span>;&#125;        <span class="comment">// 覆盖了内部的软约束，执行成功</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="约束控制"><a href="#约束控制" class="headerlink" title="约束控制"></a>约束控制</h1><h2 id="随机方法"><a href="#随机方法" class="headerlink" title="随机方法"></a>随机方法</h2><ul>
+<li>类的声明中的随机变量，需要伴随类的句柄的调用randomize()，这是SV的内建方法<code>virtual function int randomize();</code></li>
+<li>随机化成功返回1,否则0；</li>
+<li>随机化之前需要先对对象完成例化，例化时没有随机的过程；</li>
+</ul>
+<h2 id="内嵌约束"><a href="#内嵌约束" class="headerlink" title="内嵌约束"></a>内嵌约束</h2><ul>
+<li>在调用<code>randomize()</code>时伴随<code>with</code>，称为内嵌约束；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> y);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span> (x) &#123;x &lt; y;&#125;;      <span class="comment">//这种方式对x的指向明确了，不在参数列表中，所以是C的x</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="local域指向"><a href="#local域指向" class="headerlink" title="local域指向"></a>local域指向</h2><ul>
+<li>同名的变量处于不同的域中，可能出现指向模糊，可以使用上文的方法；</li>
+<li>也可以使用<code>local::</code>域索引到方式；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> x);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span>&#123;x &lt; <span class="keyword">local</span>::x;&#125;;      <span class="comment">//第一个x是C的，第二个local的x是参数</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="随机控制"><a href="#随机控制" class="headerlink" title="随机控制"></a>随机控制</h2><ul>
+<li><code>rand_mode</code>可以用来使能或者禁止成员变量的随机属性；<ul>
+<li>当随机模式被禁止时，就相当于一个普通变量了；</li>
+<li>可以禁止某个变量的随机模式，也可以对整个对象调用<code>rand_mode</code>进行控制；</li>
+</ul>
+</li>
+<li><code>constraint_mode()</code>用来关闭或者使能约束块；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> object[<span class="variable">.random_variable</span>]::rand_mode(<span class="keyword">bit</span> on_off);</span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> object<span class="variable">.rand_variable</span>::rand_mode();</span><br></pre></td></tr></table></figure>
+
+<h2 id="内嵌变量控制"><a href="#内嵌变量控制" class="headerlink" title="内嵌变量控制"></a>内嵌变量控制</h2><ul>
+<li>一个有意思的点，如果在<code>randomize()</code>中有参数，则只会对这个参数进行随机化，别的就算是rand也不随机化了；</li>
+</ul>
+<h1 id="任务和函数"><a href="#任务和函数" class="headerlink" title="任务和函数"></a>任务和函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>function和task都是提高代码复用性和整洁度；</li>
+<li>function：<ul>
+<li>首要目的在于为运算表达式提供返回值，便于简化原有代码，提高维护性；</li>
+<li>void函数无返回值；</li>
+<li><strong>一个function只能有一个返回值</strong>，所以函数可以作为表达式的操作数，因为就一个值；</li>
+<li>函数的参数方向可以声明为：input、output、inout、ref</li>
+<li><strong>函数可以调用函数，但是必须立即返回，不能阻塞等待</strong>！</li>
+<li><strong>函数返回方式有两种，一个是return直接返回，一个是将值或者表达式赋给函数的同名变量</strong>；</li>
+<li>区别在于return会立即返回，但是赋值同名变量之后，后续的代码还会执行下去；</li>
+<li>可以对有返回值的函数进行类型转换，<code>void&#39;(func1)</code>,这时候用不到函数的返回值；</li>
+</ul>
+</li>
+<li>task：<ul>
+<li>同样的参数列表指名四个方向；</li>
+<li>task无返回值！</li>
+<li>task可以用来消耗仿真时间，内置一些阻塞语句；</li>
+<li>可以使用return立刻结束task；</li>
+<li>task可以调用task和function，但是function只能调用function，不能调用task；</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">logic</span> red;</span><br><span class="line"><span class="keyword">parameter</span> red_tics = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">always</span> <span class="keyword">begin</span></span><br><span class="line">    red = on;</span><br><span class="line">    light(red, red_tics);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> light(<span class="keyword">output</span> color, <span class="keyword">input</span> [<span class="number">31</span>:<span class="number">0</span>] tics);</span><br><span class="line">    <span class="keyword">repeat</span>(tics) @(<span class="keyword">posedge</span> clock);</span><br><span class="line">    color = off;</span><br><span class="line"><span class="keyword">endtask</span>: light</span><br></pre></td></tr></table></figure>
+
+<h2 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h2><ul>
+<li>input ： 在方法调用时，<strong>属于值传递</strong>，在传递的过程中，外部变量的值<strong>经过拷贝</strong>，赋值给输入参数；</li>
+<li>output、inout都是值传递，发生在方法调用和返回时；</li>
+<li><strong>ref参数不会传递值拷贝，而是将变量指针传递到方法中，所以方法内部的操作会影响到外部的变量；</strong></li>
+<li><strong>为了避免外部传入的ref参数被方法修改，可以添加const修饰符</strong>；</li>
+<li>SV允许在声明输入参数时，指定参数的默认值；</li>
+<li>除了按照参数位置传递参数，SV也允许像module例化一样，<strong>用参数名字映射的方式传递参数</strong>；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> read(<span class="keyword">int</span> j=<span class="number">0</span>, <span class="keyword">int</span> k, <span class="keyword">int</span> data=<span class="number">1</span>);</span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"></span><br><span class="line">read(,<span class="number">5</span>);  <span class="comment">// 即0 5 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> func(<span class="keyword">int</span> j=<span class="number">1</span>, <span class="keyword">string</span> s= <span class="string">&quot;no&quot;</span>);</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line">func(<span class="variable">.j</span>(<span class="number">2</span>), <span class="variable">.s</span>(<span class="string">&quot;yes&quot;</span>));  <span class="comment">// 即2 yes</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>路科V0</category>
+      </categories>
+      <tags>
+        <tag>UVM</tag>
+        <tag>System Verilog</tag>
+        <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>路科V0P13P18SV数组-类-对象-包</title>
     <url>/2022/05/13/24/</url>
     <content><![CDATA[<h1 id="数组操作"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作</h1><blockquote>
@@ -6651,181 +6826,6 @@ Vector Table
 <li>lib库可以容纳硬件类型，也能容纳软件类型（类、方法和包等）</li>
 <li>package包只能容纳软件类型，比如类、方法和参数；</li>
 </ul>
-]]></content>
-      <categories>
-        <category>路科V0</category>
-      </categories>
-      <tags>
-        <tag>UVM</tag>
-        <tag>System Verilog</tag>
-        <tag>IC验证</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>路科V0P19P22随机变量-随机约束-约束控制-任务和函数</title>
-    <url>/2022/05/13/17/</url>
-    <content><![CDATA[<h1 id="随机变量"><a href="#随机变量" class="headerlink" title="随机变量"></a>随机变量</h1><ul>
-<li>随着设计越来越大，要产生完整的激励来测试设计的功能变得越来越困难；</li>
-<li>定向激励的测试方法已经无法满足检查功能完整性的要求；</li>
-<li>Soc集成度提高带来的模块之间交互的复杂性也指数提高，验证工程师无法预测用户使用过程中发生什么样的情况；</li>
-</ul>
-<h2 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h2><ul>
-<li><strong>随机-约束</strong>： 构成目前动态仿真验证的主流方法；</li>
-<li><strong>随机约束测试</strong>：CRT， constrained-random test，即能够产生感兴趣的、想不到的测试向量，<strong>通过回归测试、替换随机种子的方式来提高单位测试用例的覆盖率收集效率</strong>；</li>
-<li>随机测试带来的负担是验证环境的复杂度提高，不再只需要发送激励的组件，还包括监测器、比较器等；</li>
-<li>对环境复杂度还包括环境的复用和测试的复用，带来组件封装要求，使得代码量增大；</li>
-</ul>
-<h2 id="产生一个随机数"><a href="#产生一个随机数" class="headerlink" title="产生一个随机数"></a>产生一个随机数</h2><blockquote>
-<p>利用系统函数产生一个随机数</p>
-</blockquote>
-<ul>
-<li><code>randomize</code>函数产生随机数，如果随机成功，返回1,否则0；</li>
-<li>通过系统函数<code>std::randomize()</code>对一些变量完成随机化，即产生随机数并赋值给这些向量；</li>
-<li>还有一些其他的系统函数：<ul>
-<li><code>$urandom()</code> 产生一个32位无符号的随机数；</li>
-<li><code>$urandom_range(max_val, minval=0)</code>， 可以生成介于maxval和minval之间的随机数；</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> stim;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">15</span>:<span class="number">0</span>] addr;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] data;</span><br><span class="line">    <span class="keyword">function</span> <span class="keyword">bit</span> get_stim();</span><br><span class="line">        <span class="keyword">bit</span> success, rd_wr;</span><br><span class="line">        success = randomize(add, data, rd_wr);</span><br><span class="line">        <span class="keyword">return</span> rd_wr;</span><br><span class="line">    <span class="keyword">endfunction</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="系统有机的组织随机变量"><a href="#系统有机的组织随机变量" class="headerlink" title="系统有机的组织随机变量"></a>系统有机的组织随机变量</h2><ul>
-<li>比起独立的产生随机数，在向DUT产生随机激励时，为了符合协议、满足测试需求，还需要添加一些约束；</li>
-<li>这些约束会使得变量朝着希望他们变化的方向去随机；</li>
-<li>这些约束也会对变量和变量之间的关系生效；</li>
-<li>需要一个载体去容纳变量和他们之间的约束；</li>
-<li><strong>这个载体是类，类的成员变量可以声明“随机”属性，用rand或者randc表示</strong>；</li>
-</ul>
-<h2 id="随机变量-1"><a href="#随机变量-1" class="headerlink" title="随机变量"></a>随机变量</h2><ul>
-<li>任何类中的整型（bit、byte、int）变量都可以声明为rand、randc；</li>
-<li>定长数组、动态数组、关联数组和队列都可以声明为rand、randc；</li>
-<li>可以对动态数组和队列的长度加以约束；</li>
-<li><strong>指向对象的句柄，也可以声明为rand，不能randc，随机时该句柄指向的对象中的随机变量会一起被随机化</strong>；</li>
-<li>非组合型结构体可以声明为rand，非组合型的成员也可以声明为rand、randc；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] len;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> data[];</span><br><span class="line"><span class="keyword">constraint</span> db &#123;data<span class="variable">.size</span> == len;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">int</span> addr = <span class="number">1</span> + constant;</span><br><span class="line">    <span class="keyword">int</span> crc;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> data [] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line">&#125; header;</span><br><span class="line"><span class="keyword">rand</span> header h1;</span><br></pre></td></tr></table></figure>
-
-<h2 id="rand和randc"><a href="#rand和randc" class="headerlink" title="rand和randc"></a>rand和randc</h2><ul>
-<li>rand： 表示在可生成范围内，每个值得可能性是相同的–&gt;每次都是有放回！！<ul>
-<li><code>rand bit [7:0] y;</code></li>
-</ul>
-</li>
-<li>randc: 它的值会随机，并且遍历可取值范围，–&gt;无放回！！</li>
-</ul>
-<h1 id="随机约束"><a href="#随机约束" class="headerlink" title="随机约束"></a>随机约束</h1><h2 id="带有随机约束的简单类"><a href="#带有随机约束的简单类" class="headerlink" title="带有随机约束的简单类"></a>带有随机约束的简单类</h2><figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] src, dst, data[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] kind;</span><br><span class="line">    <span class="comment">// src的约束</span></span><br><span class="line">    <span class="keyword">constraint</span> c &#123;src &gt; <span class="number">10</span>; src &lt; <span class="number">15</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p;</span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span></span><br><span class="line">    p = <span class="keyword">new</span>();</span><br><span class="line">    <span class="keyword">if</span> (!p<span class="variable">.randomize</span>())</span><br><span class="line">        <span class="built_in">$finish</span>;</span><br><span class="line">    transmit(p);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="约束块"><a href="#约束块" class="headerlink" title="约束块"></a>约束块</h2><ul>
-<li>有用的激励不仅会约束随机变量，变量之间也存在互相约束关系；</li>
-<li>没有约束的随机变量会包含很多无效的和非法的值，会使得有效激励变得低效；</li>
-<li>类需要<strong>用一个或者多个约束块来描述变量之间的关系</strong>；</li>
-<li><strong>约束块支持整型通过<code>inside</code>操作符来设置可取值的范围</strong>；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> x,y,z;</span><br><span class="line"><span class="keyword">constraint</span> c1 &#123;x <span class="keyword">inside</span> &#123;<span class="number">3</span>, <span class="number">5</span>, [<span class="number">9</span>:<span class="number">15</span>], [<span class="number">24</span>:<span class="number">32</span>], [y:<span class="number">2</span>*y], z&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> a,b,c;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;a <span class="keyword">inside</span> &#123;b, c&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">integer</span> fives[<span class="number">4</span>] = &#x27;&#123;<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>&#125;;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> v;</span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;v <span class="keyword">inside</span> &#123;fives&#125;;&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="权重分布"><a href="#权重分布" class="headerlink" title="权重分布"></a>权重分布</h2><ul>
-<li>除了成员集合设置，约束块也支持设置可取值的同事为其设置随机时的权重；</li>
-<li><strong><code>:=</code> : 表示每个值的权重都是相同的；</strong></li>
-<li><strong><code>:/</code> : 表示权重会平均分配到每一个值；</strong></li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] := <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1 1 1 2 5</span></span><br><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] :/ <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1/3 1/3 1/3 2 5</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="唯一标识"><a href="#唯一标识" class="headerlink" title="唯一标识"></a>唯一标识</h2><ul>
-<li><code>unique</code> : 可以用来约束一组变量，使得其随机后变量之间不会有相同的数值；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> a[<span class="number">5</span>];</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> b;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> excluded;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> u &#123;<span class="keyword">unique</span> &#123;b, a[<span class="number">2</span>:<span class="number">3</span>], excluded&#125;;&#125;</span><br><span class="line"><span class="keyword">constraint</span> exclusion &#123;excluded == <span class="number">5</span>;&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="条件约束"><a href="#条件约束" class="headerlink" title="条件约束"></a>条件约束</h2><ul>
-<li>可以使用<code>if-else</code>或者<code>-&gt;</code>操作符表示条件约束；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">    mode == little -&gt; len &lt; <span class="number">10</span>;</span><br><span class="line">    mode == big -&gt; len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bit</span> [<span class="number">3</span>:<span class="number">0</span>] a, b;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;(a==<span class="number">0</span>) -&gt; (b==<span class="number">1</span>);&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;</span><br><span class="line">    <span class="keyword">if</span> (mode == little)</span><br><span class="line">        len &lt; <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (mode == big)</span><br><span class="line">        len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="迭代约束"><a href="#迭代约束" class="headerlink" title="迭代约束"></a>迭代约束</h2><ul>
-<li><code>foreach</code>可以用来迭代约束数组中的元素，这些数组可以是定长数组、动态数组、关联数组或者队列；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[i])</span><br><span class="line">            A[i] <span class="keyword">inside</span> &#123;<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[j])</span><br><span class="line">            A[j] &gt; <span class="number">2</span>*j;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>也可以用数组的缩减方法进行迭代约束</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;A<span class="variable">.size</span>() == <span class="number">5</span>;&#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;A<span class="variable">.sum</span>() &lt; <span class="number">1000</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h2><ul>
-<li>有时候，在一些表达式中不能简单的描述约束，比如计算一个组合数组中的’1’；</li>
-<li>可以写成一个函数，然后约束调用这个函数；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> count_ones (<span class="keyword">bit</span> [<span class="number">9</span>:<span class="number">0</span>] w);</span><br><span class="line">    <span class="keyword">for</span> (count_onts=<span class="number">0</span>; w!=<span class="number">0</span>; w = w&gt;&gt;<span class="number">1</span>)</span><br><span class="line">        count_ones += w &amp; <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> C1 &#123;length == count_ones(v);&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="软约束-和-硬约束"><a href="#软约束-和-硬约束" class="headerlink" title="软约束 和 硬约束"></a>软约束 和 硬约束</h2><ul>
-<li>为了防止约束冲突时执行失败，分为软约束和硬约束；</li>
-<li><code>soft</code> : soft描述的约束是软，没有soft是硬；</li>
-<li>如果用户在使用时，制订了外部约束对同一个变量做了二次约束，或者用户定义了子类，也对同一个变量做了二次约束，<strong>那么硬约束可以覆盖软约束</strong>，不会导致随机失败；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">int</span> length;</span><br><span class="line">    <span class="keyword">constraint</span> deflt &#123;<span class="keyword">soft</span> length <span class="keyword">inside</span> &#123;<span class="number">32</span>, <span class="number">1024</span>&#125;;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p = <span class="keyword">new</span>();</span><br><span class="line">p<span class="variable">.randomize</span>() <span class="keyword">with</span> &#123;length == <span class="number">1512</span>;&#125;        <span class="comment">// 覆盖了内部的软约束，执行成功</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="约束控制"><a href="#约束控制" class="headerlink" title="约束控制"></a>约束控制</h1><h2 id="随机方法"><a href="#随机方法" class="headerlink" title="随机方法"></a>随机方法</h2><ul>
-<li>类的声明中的随机变量，需要伴随类的句柄的调用randomize()，这是SV的内建方法<code>virtual function int randomize();</code></li>
-<li>随机化成功返回1,否则0；</li>
-<li>随机化之前需要先对对象完成例化，例化时没有随机的过程；</li>
-</ul>
-<h2 id="内嵌约束"><a href="#内嵌约束" class="headerlink" title="内嵌约束"></a>内嵌约束</h2><ul>
-<li>在调用<code>randomize()</code>时伴随<code>with</code>，称为内嵌约束；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> y);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span> (x) &#123;x &lt; y;&#125;;      <span class="comment">//这种方式对x的指向明确了，不在参数列表中，所以是C的x</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="local域指向"><a href="#local域指向" class="headerlink" title="local域指向"></a>local域指向</h2><ul>
-<li>同名的变量处于不同的域中，可能出现指向模糊，可以使用上文的方法；</li>
-<li>也可以使用<code>local::</code>域索引到方式；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> x);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span>&#123;x &lt; <span class="keyword">local</span>::x;&#125;;      <span class="comment">//第一个x是C的，第二个local的x是参数</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="随机控制"><a href="#随机控制" class="headerlink" title="随机控制"></a>随机控制</h2><ul>
-<li><code>rand_mode</code>可以用来使能或者禁止成员变量的随机属性；<ul>
-<li>当随机模式被禁止时，就相当于一个普通变量了；</li>
-<li>可以禁止某个变量的随机模式，也可以对整个对象调用<code>rand_mode</code>进行控制；</li>
-</ul>
-</li>
-<li><code>constraint_mode()</code>用来关闭或者使能约束块；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> object[<span class="variable">.random_variable</span>]::rand_mode(<span class="keyword">bit</span> on_off);</span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> object<span class="variable">.rand_variable</span>::rand_mode();</span><br></pre></td></tr></table></figure>
-
-<h2 id="内嵌变量控制"><a href="#内嵌变量控制" class="headerlink" title="内嵌变量控制"></a>内嵌变量控制</h2><ul>
-<li>一个有意思的点，如果在<code>randomize()</code>中有参数，则只会对这个参数进行随机化，别的就算是rand也不随机化了；</li>
-</ul>
-<h1 id="任务和函数"><a href="#任务和函数" class="headerlink" title="任务和函数"></a>任务和函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
-<li>function和task都是提高代码复用性和整洁度；</li>
-<li>function：<ul>
-<li>首要目的在于为运算表达式提供返回值，便于简化原有代码，提高维护性；</li>
-<li>void函数无返回值；</li>
-<li><strong>一个function只能有一个返回值</strong>，所以函数可以作为表达式的操作数，因为就一个值；</li>
-<li>函数的参数方向可以声明为：input、output、inout、ref</li>
-<li><strong>函数可以调用函数，但是必须立即返回，不能阻塞等待</strong>！</li>
-<li><strong>函数返回方式有两种，一个是return直接返回，一个是将值或者表达式赋给函数的同名变量</strong>；</li>
-<li>区别在于return会立即返回，但是赋值同名变量之后，后续的代码还会执行下去；</li>
-<li>可以对有返回值的函数进行类型转换，<code>void&#39;(func1)</code>,这时候用不到函数的返回值；</li>
-</ul>
-</li>
-<li>task：<ul>
-<li>同样的参数列表指名四个方向；</li>
-<li>task无返回值！</li>
-<li>task可以用来消耗仿真时间，内置一些阻塞语句；</li>
-<li>可以使用return立刻结束task；</li>
-<li>task可以调用task和function，但是function只能调用function，不能调用task；</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">logic</span> red;</span><br><span class="line"><span class="keyword">parameter</span> red_tics = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">always</span> <span class="keyword">begin</span></span><br><span class="line">    red = on;</span><br><span class="line">    light(red, red_tics);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> light(<span class="keyword">output</span> color, <span class="keyword">input</span> [<span class="number">31</span>:<span class="number">0</span>] tics);</span><br><span class="line">    <span class="keyword">repeat</span>(tics) @(<span class="keyword">posedge</span> clock);</span><br><span class="line">    color = off;</span><br><span class="line"><span class="keyword">endtask</span>: light</span><br></pre></td></tr></table></figure>
-
-<h2 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h2><ul>
-<li>input ： 在方法调用时，<strong>属于值传递</strong>，在传递的过程中，外部变量的值<strong>经过拷贝</strong>，赋值给输入参数；</li>
-<li>output、inout都是值传递，发生在方法调用和返回时；</li>
-<li><strong>ref参数不会传递值拷贝，而是将变量指针传递到方法中，所以方法内部的操作会影响到外部的变量；</strong></li>
-<li><strong>为了避免外部传入的ref参数被方法修改，可以添加const修饰符</strong>；</li>
-<li>SV允许在声明输入参数时，指定参数的默认值；</li>
-<li>除了按照参数位置传递参数，SV也允许像module例化一样，<strong>用参数名字映射的方式传递参数</strong>；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> read(<span class="keyword">int</span> j=<span class="number">0</span>, <span class="keyword">int</span> k, <span class="keyword">int</span> data=<span class="number">1</span>);</span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"></span><br><span class="line">read(,<span class="number">5</span>);  <span class="comment">// 即0 5 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> func(<span class="keyword">int</span> j=<span class="number">1</span>, <span class="keyword">string</span> s= <span class="string">&quot;no&quot;</span>);</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line">func(<span class="variable">.j</span>(<span class="number">2</span>), <span class="variable">.s</span>(<span class="string">&quot;yes&quot;</span>));  <span class="comment">// 即2 yes</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>路科V0</category>
