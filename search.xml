@@ -531,6 +531,61 @@
       </tags>
   </entry>
   <entry>
+    <title>RT1050开发--第5节 RT1050 Hello World （Keil V5）</title>
+    <url>/2023/12/05/25/</url>
+    <content><![CDATA[<h1 id="第5节-RT1050-Hello-World-（Keil-V5）"><a href="#第5节-RT1050-Hello-World-（Keil-V5）" class="headerlink" title="第5节 RT1050 Hello World （Keil V5）"></a>第5节 RT1050 Hello World （Keil V5）</h1><p><img src="/2023/12/05/25/image-20231205210519877.png" alt="image-20231205210519877"></p>
+<h2 id="HelloWorld工程介绍"><a href="#HelloWorld工程介绍" class="headerlink" title="HelloWorld工程介绍"></a>HelloWorld工程介绍</h2><h3 id="工程文件位置"><a href="#工程文件位置" class="headerlink" title="工程文件位置"></a>工程文件位置</h3><p><code>C:\Users\Gavin\Documents\RT\Keil5\rt1050 keil sdk &amp; doc\SDK_2_14_0_EVKB-IMXRT1050\boards\evkbimxrt1050\demo_apps\hello_world\</code></p>
+<p><img src="/2023/12/05/25/image-20231205211106693.png" alt="image-20231205211106693"></p>
+<h3 id="Keil工程位置"><a href="#Keil工程位置" class="headerlink" title="Keil工程位置"></a>Keil工程位置</h3><p><img src="/2023/12/05/25/image-20231205211232436.png" alt="image-20231205211232436"></p>
+<hr>
+<h3 id="MDK工程目录结构"><a href="#MDK工程目录结构" class="headerlink" title="MDK工程目录结构"></a>MDK工程目录结构</h3><p><img src="/2023/12/05/25/image-20231205211757977.png" alt="image-20231205211757977"></p>
+<h4 id="几种工程目标"><a href="#几种工程目标" class="headerlink" title="几种工程目标"></a>几种工程目标</h4><p><img src="/2023/12/05/25/image-20231205211932870.png" alt="image-20231205211932870"></p>
+<p>—&gt; <mark><strong><u>我们在这里用的是<code>flexspi_nor_debug</code>工程，代码段放在nor flash，数据段放在TCM中！</u></strong></mark></p>
+<h4 id="工程工作组"><a href="#工程工作组" class="headerlink" title="工程工作组"></a>工程工作组</h4><p><img src="/2023/12/05/25/image-20231205212708560.png" alt="image-20231205212708560"></p>
+<p><strong><u><em>关于xip的用处：</em></u></strong></p>
+<ul>
+<li>由于RT没有内部Flash，代码都存放在外部ROM空间，那么，在系统启动时，RT是不知道外部flash的信息的，比如：代码地址，空间大小等等；</li>
+<li>所以，需要把这些信息先存放在外部Flash中，然后RT通过SPI通信获得了这部分信息之后，才可以到外部Flash中去取指令；</li>
+</ul>
+<h2 id="打造自己的HelloWorld工程"><a href="#打造自己的HelloWorld工程" class="headerlink" title="打造自己的HelloWorld工程"></a>打造自己的HelloWorld工程</h2><h3 id="SDK工程路径"><a href="#SDK工程路径" class="headerlink" title="SDK工程路径"></a>SDK工程路径</h3><p><img src="/2023/12/05/25/image-20231205213504551.png" alt="image-20231205213504551"></p>
+<h3 id="创建hello-world工程"><a href="#创建hello-world工程" class="headerlink" title="创建hello_world工程"></a>创建hello_world工程</h3><ul>
+<li>创建01-hello_world文件夹；</li>
+<li>复制SDK的主要文件；<ul>
+<li>根据工程包含的路径复制，得到：</li>
+<li><img src="/2023/12/05/25/image-20231205214932520.png" alt="image-20231205214932520"></li>
+</ul>
+</li>
+<li>打开这个新建的工程，消除找不到文件的感叹号<code>❗</code></li>
+<li><img src="/2023/12/05/25/image-20231205215148765.png" alt="image-20231205215148765"></li>
+</ul>
+<p>—&gt; 消除方法：通过使用文本编辑器打开该Keil工程，全文搜索并替换这几个include的相对路径！</p>
+<p>—&gt; Reload!</p>
+<p>—&gt; 完成！</p>
+<blockquote>
+<p><img src="/2023/12/05/25/image-20231205221003063.png" alt="image-20231205221003063"></p>
+</blockquote>
+<h2 id="分析Hello-world-c"><a href="#分析Hello-world-c" class="headerlink" title="分析Hello_world.c"></a>分析Hello_world.c</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init board hardware. 初始化开发板*/</span></span><br><span class="line">    BOARD_ConfigMPU();  				<span class="comment">//配置内存保护单元</span></span><br><span class="line">    BOARD_InitBootPins();				<span class="comment">//初始化开发板IO模式</span></span><br><span class="line">    BOARD_InitBootClocks();				<span class="comment">//初始化开发板系统时钟</span></span><br><span class="line">    BOARD_InitDebugConsole();			<span class="comment">//初始化调试控制台</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Just enable the trace clock, leave coresight initialization to IDE debugger */</span></span><br><span class="line">    SystemCoreClockUpdate();</span><br><span class="line">    CLOCK_EnableClock(kCLOCK_Trace);</span><br><span class="line"></span><br><span class="line">    PRINTF(<span class="string">&quot;hello world.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ch = GETCHAR();</span><br><span class="line">        PUTCHAR(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="烧写代码"><a href="#烧写代码" class="headerlink" title="烧写代码"></a>烧写代码</h2><blockquote>
+<p>Keil 快捷键 F8 </p>
+<p><img src="/2023/12/05/25/image-20231205221649324.png" alt="image-20231205221649324"></p>
+</blockquote>
+<p><img src="/2023/12/05/25/image-20231205221717414.png" alt="image-20231205221717414"></p>
+<h3 id="实验现象"><a href="#实验现象" class="headerlink" title="实验现象"></a>实验现象</h3><p><img src="/2023/12/05/25/image-20231205222337955.png" alt="image-20231205222337955"></p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+        <category>RT1050EVKB</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>RT1050EVKB</tag>
+        <tag>嵌入式</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>RT1050开发--第6节 RT1050 Memory Mapping</title>
     <url>/2023/12/11/29/</url>
     <content><![CDATA[<h1 id="第6节-RT1050-Memory-Mapping"><a href="#第6节-RT1050-Memory-Mapping" class="headerlink" title="第6节 RT1050 Memory Mapping"></a>第6节 RT1050 Memory Mapping</h1><p><img src="/2023/12/11/29/Snipaste_2023-12-11_13-40-00.bmp"></p>
@@ -586,61 +641,6 @@
 </ul>
 </blockquote>
 <p>RT1052没有内置的Flash，那么如果像原来一样，在MCU的Flash中运行，就会受限于NorFlash的总线访问速度，无法发挥CPU速度的优势。那么，通过分散加载文件，到Cache，TCM中运行，就是一个可行的解决方案了。</p>
-]]></content>
-      <categories>
-        <category>NXP</category>
-        <category>RT1050EVKB</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>RT1050EVKB</tag>
-        <tag>嵌入式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>RT1050开发--第5节 RT1050 Hello World （Keil V5）</title>
-    <url>/2023/12/05/25/</url>
-    <content><![CDATA[<h1 id="第5节-RT1050-Hello-World-（Keil-V5）"><a href="#第5节-RT1050-Hello-World-（Keil-V5）" class="headerlink" title="第5节 RT1050 Hello World （Keil V5）"></a>第5节 RT1050 Hello World （Keil V5）</h1><p><img src="/2023/12/05/25/image-20231205210519877.png" alt="image-20231205210519877"></p>
-<h2 id="HelloWorld工程介绍"><a href="#HelloWorld工程介绍" class="headerlink" title="HelloWorld工程介绍"></a>HelloWorld工程介绍</h2><h3 id="工程文件位置"><a href="#工程文件位置" class="headerlink" title="工程文件位置"></a>工程文件位置</h3><p><code>C:\Users\Gavin\Documents\RT\Keil5\rt1050 keil sdk &amp; doc\SDK_2_14_0_EVKB-IMXRT1050\boards\evkbimxrt1050\demo_apps\hello_world\</code></p>
-<p><img src="/2023/12/05/25/image-20231205211106693.png" alt="image-20231205211106693"></p>
-<h3 id="Keil工程位置"><a href="#Keil工程位置" class="headerlink" title="Keil工程位置"></a>Keil工程位置</h3><p><img src="/2023/12/05/25/image-20231205211232436.png" alt="image-20231205211232436"></p>
-<hr>
-<h3 id="MDK工程目录结构"><a href="#MDK工程目录结构" class="headerlink" title="MDK工程目录结构"></a>MDK工程目录结构</h3><p><img src="/2023/12/05/25/image-20231205211757977.png" alt="image-20231205211757977"></p>
-<h4 id="几种工程目标"><a href="#几种工程目标" class="headerlink" title="几种工程目标"></a>几种工程目标</h4><p><img src="/2023/12/05/25/image-20231205211932870.png" alt="image-20231205211932870"></p>
-<p>—&gt; <mark><strong><u>我们在这里用的是<code>flexspi_nor_debug</code>工程，代码段放在nor flash，数据段放在TCM中！</u></strong></mark></p>
-<h4 id="工程工作组"><a href="#工程工作组" class="headerlink" title="工程工作组"></a>工程工作组</h4><p><img src="/2023/12/05/25/image-20231205212708560.png" alt="image-20231205212708560"></p>
-<p><strong><u><em>关于xip的用处：</em></u></strong></p>
-<ul>
-<li>由于RT没有内部Flash，代码都存放在外部ROM空间，那么，在系统启动时，RT是不知道外部flash的信息的，比如：代码地址，空间大小等等；</li>
-<li>所以，需要把这些信息先存放在外部Flash中，然后RT通过SPI通信获得了这部分信息之后，才可以到外部Flash中去取指令；</li>
-</ul>
-<h2 id="打造自己的HelloWorld工程"><a href="#打造自己的HelloWorld工程" class="headerlink" title="打造自己的HelloWorld工程"></a>打造自己的HelloWorld工程</h2><h3 id="SDK工程路径"><a href="#SDK工程路径" class="headerlink" title="SDK工程路径"></a>SDK工程路径</h3><p><img src="/2023/12/05/25/image-20231205213504551.png" alt="image-20231205213504551"></p>
-<h3 id="创建hello-world工程"><a href="#创建hello-world工程" class="headerlink" title="创建hello_world工程"></a>创建hello_world工程</h3><ul>
-<li>创建01-hello_world文件夹；</li>
-<li>复制SDK的主要文件；<ul>
-<li>根据工程包含的路径复制，得到：</li>
-<li><img src="/2023/12/05/25/image-20231205214932520.png" alt="image-20231205214932520"></li>
-</ul>
-</li>
-<li>打开这个新建的工程，消除找不到文件的感叹号<code>❗</code></li>
-<li><img src="/2023/12/05/25/image-20231205215148765.png" alt="image-20231205215148765"></li>
-</ul>
-<p>—&gt; 消除方法：通过使用文本编辑器打开该Keil工程，全文搜索并替换这几个include的相对路径！</p>
-<p>—&gt; Reload!</p>
-<p>—&gt; 完成！</p>
-<blockquote>
-<p><img src="/2023/12/05/25/image-20231205221003063.png" alt="image-20231205221003063"></p>
-</blockquote>
-<h2 id="分析Hello-world-c"><a href="#分析Hello-world-c" class="headerlink" title="分析Hello_world.c"></a>分析Hello_world.c</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init board hardware. 初始化开发板*/</span></span><br><span class="line">    BOARD_ConfigMPU();  				<span class="comment">//配置内存保护单元</span></span><br><span class="line">    BOARD_InitBootPins();				<span class="comment">//初始化开发板IO模式</span></span><br><span class="line">    BOARD_InitBootClocks();				<span class="comment">//初始化开发板系统时钟</span></span><br><span class="line">    BOARD_InitDebugConsole();			<span class="comment">//初始化调试控制台</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Just enable the trace clock, leave coresight initialization to IDE debugger */</span></span><br><span class="line">    SystemCoreClockUpdate();</span><br><span class="line">    CLOCK_EnableClock(kCLOCK_Trace);</span><br><span class="line"></span><br><span class="line">    PRINTF(<span class="string">&quot;hello world.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ch = GETCHAR();</span><br><span class="line">        PUTCHAR(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="烧写代码"><a href="#烧写代码" class="headerlink" title="烧写代码"></a>烧写代码</h2><blockquote>
-<p>Keil 快捷键 F8 </p>
-<p><img src="/2023/12/05/25/image-20231205221649324.png" alt="image-20231205221649324"></p>
-</blockquote>
-<p><img src="/2023/12/05/25/image-20231205221717414.png" alt="image-20231205221717414"></p>
-<h3 id="实验现象"><a href="#实验现象" class="headerlink" title="实验现象"></a>实验现象</h3><p><img src="/2023/12/05/25/image-20231205222337955.png" alt="image-20231205222337955"></p>
 ]]></content>
       <categories>
         <category>NXP</category>
@@ -1542,6 +1542,24 @@
       </tags>
   </entry>
   <entry>
+    <title>Hello World</title>
+    <url>/2021/03/18/57/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>kw38点灯大师</title>
     <url>/2023/03/24/42/</url>
     <content><![CDATA[<h1 id="KW38点灯大师"><a href="#KW38点灯大师" class="headerlink" title="KW38点灯大师"></a>KW38点灯大师</h1><blockquote>
@@ -1636,24 +1654,6 @@
         <tag>嵌入式</tag>
         <tag>LED</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2021/03/18/57/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
   <entry>
     <title>kw38点灯大师2_GPIO中断</title>
@@ -4474,6 +4474,97 @@ Vector Table
       </tags>
   </entry>
   <entry>
+    <title>考研英语100句Day5</title>
+    <url>/2022/08/29/01/</url>
+    <content><![CDATA[<h1 id="考研英语100句–Day5"><a href="#考研英语100句–Day5" class="headerlink" title="考研英语100句–Day5"></a>考研英语100句–Day5</h1><h2 id="Sentence-21"><a href="#Sentence-21" class="headerlink" title="Sentence 21"></a>Sentence 21</h2><p><em>The Navy Department moved into the east wing in 1879, where elaborate wall and ceiling stenciling and marquetry floors decorated the office of the Secretary.</em></p>
+<blockquote>
+<p>海军部门于 1879 年搬进了东翼，在那里，精心制作的墙壁、天花板上的镂花涂装和镶嵌工艺地板装饰着部长办公室。</p>
+</blockquote>
+<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>nacy</li>
+<li>department</li>
+<li>elaborate</li>
+<li>stenciling</li>
+<li>marquetry</li>
+<li>decorate</li>
+<li>Secretary</li>
+</ul>
+<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
+<li><code>NONE</code></li>
+</ul>
+<h2 id="Sentence-22"><a href="#Sentence-22" class="headerlink" title="Sentence 22"></a>Sentence 22</h2><p><em>The researchers mapped not only the city’s vast and ornate ceremonial areas, but also hundreds of simpler apartment complexes where common people lived.</em></p>
+<blockquote>
+<p>研究人员不仅绘制了这座城市广阔且装饰华丽的庆典区，还绘制了数百个普通民众居住的简单公寓建筑群。</p>
+</blockquote>
+<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>researcher</li>
+<li>vast</li>
+<li>ornate</li>
+<li>ceremonial</li>
+<li>apartment</li>
+<li>complexe</li>
+</ul>
+<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>map out</li>
+</ul>
+<h2 id="Sentence-23"><a href="#Sentence-23" class="headerlink" title="Sentence 23"></a>Sentence 23</h2><p><em>It may be said that the measure of the worth of any social institution is its effect in enlarging and improving experience, but this effect is not a part of its original motive.</em></p>
+<blockquote>
+<p>可以说，衡量任何社会制度价值的标准是其在扩大和改进经验上的成效，但这种成效并不是其最初动机的一部分。</p>
+</blockquote>
+<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>measure</li>
+<li>institution</li>
+<li>effect</li>
+<li>enlarge</li>
+<li>improve</li>
+<li>motive</li>
+</ul>
+<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>the measure of the worth of any social institution</li>
+<li>its effect in doing …</li>
+<li>original motive</li>
+</ul>
+<h2 id="Sentence-24"><a href="#Sentence-24" class="headerlink" title="Sentence 24"></a>Sentence 24</h2><p><em>Our mental health doesn’t really go anywhere; like the sun behind a cloud, it can be temporarily hidden from view, but it is fully capable of being restored in an instant.</em></p>
+<blockquote>
+<p>我们的心理健康并不是真的消失不见了；就像云朵背后的太阳，它也许暂时被遮挡，但是它完全可以在瞬间重焕光芒。</p>
+</blockquote>
+<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>mental</li>
+<li>go anywhere</li>
+<li>temporarily</li>
+</ul>
+<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>be hidden from view</li>
+<li>be fully capable of doing …</li>
+<li>in an instant</li>
+<li>be restored</li>
+</ul>
+<h2 id="Sentence-25"><a href="#Sentence-25" class="headerlink" title="Sentence 25"></a>Sentence 25</h2><p><em>No boy who went to a grammar school could be ignorant that the drama was a form of literature which gave glory to Greece and Rome and might yet bring honor to England.</em></p>
+<blockquote>
+<p>每个进入文法学校学习的学生都知道，戏剧是一种文学形式，这种文学形式赋予希腊和罗马以荣光，并且可能也会为英国带来荣耀。</p>
+</blockquote>
+<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>ignorant</li>
+<li>glory</li>
+<li>literature</li>
+<li>honor</li>
+</ul>
+<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>be ignorant that</li>
+<li>a form of literature</li>
+<li>give glory to ..</li>
+<li>bring honor to</li>
+</ul>
+]]></content>
+      <categories>
+        <category>英语</category>
+      </categories>
+      <tags>
+        <tag>英语</tag>
+        <tag>考研英语100句</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>考研英语100句Day6</title>
     <url>/2022/08/31/01/</url>
     <content><![CDATA[<h1 id="考研英语100句–Day6"><a href="#考研英语100句–Day6" class="headerlink" title="考研英语100句–Day6"></a>考研英语100句–Day6</h1><h2 id="Sentence-26"><a href="#Sentence-26" class="headerlink" title="Sentence 26"></a>Sentence 26</h2><p><em>The most loyal customers would still get the product they favor, the idea goes, and they’d feel like they were helping sustain the quality of something they believe in.</em></p>
@@ -4559,97 +4650,6 @@ Vector Table
 <h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
 <li>rely on their own notions of significance</li>
 <li>make their own judgments</li>
-</ul>
-]]></content>
-      <categories>
-        <category>英语</category>
-      </categories>
-      <tags>
-        <tag>英语</tag>
-        <tag>考研英语100句</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>考研英语100句Day5</title>
-    <url>/2022/08/29/01/</url>
-    <content><![CDATA[<h1 id="考研英语100句–Day5"><a href="#考研英语100句–Day5" class="headerlink" title="考研英语100句–Day5"></a>考研英语100句–Day5</h1><h2 id="Sentence-21"><a href="#Sentence-21" class="headerlink" title="Sentence 21"></a>Sentence 21</h2><p><em>The Navy Department moved into the east wing in 1879, where elaborate wall and ceiling stenciling and marquetry floors decorated the office of the Secretary.</em></p>
-<blockquote>
-<p>海军部门于 1879 年搬进了东翼，在那里，精心制作的墙壁、天花板上的镂花涂装和镶嵌工艺地板装饰着部长办公室。</p>
-</blockquote>
-<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>nacy</li>
-<li>department</li>
-<li>elaborate</li>
-<li>stenciling</li>
-<li>marquetry</li>
-<li>decorate</li>
-<li>Secretary</li>
-</ul>
-<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
-<li><code>NONE</code></li>
-</ul>
-<h2 id="Sentence-22"><a href="#Sentence-22" class="headerlink" title="Sentence 22"></a>Sentence 22</h2><p><em>The researchers mapped not only the city’s vast and ornate ceremonial areas, but also hundreds of simpler apartment complexes where common people lived.</em></p>
-<blockquote>
-<p>研究人员不仅绘制了这座城市广阔且装饰华丽的庆典区，还绘制了数百个普通民众居住的简单公寓建筑群。</p>
-</blockquote>
-<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>researcher</li>
-<li>vast</li>
-<li>ornate</li>
-<li>ceremonial</li>
-<li>apartment</li>
-<li>complexe</li>
-</ul>
-<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>map out</li>
-</ul>
-<h2 id="Sentence-23"><a href="#Sentence-23" class="headerlink" title="Sentence 23"></a>Sentence 23</h2><p><em>It may be said that the measure of the worth of any social institution is its effect in enlarging and improving experience, but this effect is not a part of its original motive.</em></p>
-<blockquote>
-<p>可以说，衡量任何社会制度价值的标准是其在扩大和改进经验上的成效，但这种成效并不是其最初动机的一部分。</p>
-</blockquote>
-<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>measure</li>
-<li>institution</li>
-<li>effect</li>
-<li>enlarge</li>
-<li>improve</li>
-<li>motive</li>
-</ul>
-<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>the measure of the worth of any social institution</li>
-<li>its effect in doing …</li>
-<li>original motive</li>
-</ul>
-<h2 id="Sentence-24"><a href="#Sentence-24" class="headerlink" title="Sentence 24"></a>Sentence 24</h2><p><em>Our mental health doesn’t really go anywhere; like the sun behind a cloud, it can be temporarily hidden from view, but it is fully capable of being restored in an instant.</em></p>
-<blockquote>
-<p>我们的心理健康并不是真的消失不见了；就像云朵背后的太阳，它也许暂时被遮挡，但是它完全可以在瞬间重焕光芒。</p>
-</blockquote>
-<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>mental</li>
-<li>go anywhere</li>
-<li>temporarily</li>
-</ul>
-<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>be hidden from view</li>
-<li>be fully capable of doing …</li>
-<li>in an instant</li>
-<li>be restored</li>
-</ul>
-<h2 id="Sentence-25"><a href="#Sentence-25" class="headerlink" title="Sentence 25"></a>Sentence 25</h2><p><em>No boy who went to a grammar school could be ignorant that the drama was a form of literature which gave glory to Greece and Rome and might yet bring honor to England.</em></p>
-<blockquote>
-<p>每个进入文法学校学习的学生都知道，戏剧是一种文学形式，这种文学形式赋予希腊和罗马以荣光，并且可能也会为英国带来荣耀。</p>
-</blockquote>
-<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>ignorant</li>
-<li>glory</li>
-<li>literature</li>
-<li>honor</li>
-</ul>
-<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>be ignorant that</li>
-<li>a form of literature</li>
-<li>give glory to ..</li>
-<li>bring honor to</li>
 </ul>
 ]]></content>
       <categories>
@@ -6382,181 +6382,6 @@ Vector Table
       </tags>
   </entry>
   <entry>
-    <title>路科V0P19P22随机变量-随机约束-约束控制-任务和函数</title>
-    <url>/2022/05/13/17/</url>
-    <content><![CDATA[<h1 id="随机变量"><a href="#随机变量" class="headerlink" title="随机变量"></a>随机变量</h1><ul>
-<li>随着设计越来越大，要产生完整的激励来测试设计的功能变得越来越困难；</li>
-<li>定向激励的测试方法已经无法满足检查功能完整性的要求；</li>
-<li>Soc集成度提高带来的模块之间交互的复杂性也指数提高，验证工程师无法预测用户使用过程中发生什么样的情况；</li>
-</ul>
-<h2 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h2><ul>
-<li><strong>随机-约束</strong>： 构成目前动态仿真验证的主流方法；</li>
-<li><strong>随机约束测试</strong>：CRT， constrained-random test，即能够产生感兴趣的、想不到的测试向量，<strong>通过回归测试、替换随机种子的方式来提高单位测试用例的覆盖率收集效率</strong>；</li>
-<li>随机测试带来的负担是验证环境的复杂度提高，不再只需要发送激励的组件，还包括监测器、比较器等；</li>
-<li>对环境复杂度还包括环境的复用和测试的复用，带来组件封装要求，使得代码量增大；</li>
-</ul>
-<h2 id="产生一个随机数"><a href="#产生一个随机数" class="headerlink" title="产生一个随机数"></a>产生一个随机数</h2><blockquote>
-<p>利用系统函数产生一个随机数</p>
-</blockquote>
-<ul>
-<li><code>randomize</code>函数产生随机数，如果随机成功，返回1,否则0；</li>
-<li>通过系统函数<code>std::randomize()</code>对一些变量完成随机化，即产生随机数并赋值给这些向量；</li>
-<li>还有一些其他的系统函数：<ul>
-<li><code>$urandom()</code> 产生一个32位无符号的随机数；</li>
-<li><code>$urandom_range(max_val, minval=0)</code>， 可以生成介于maxval和minval之间的随机数；</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> stim;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">15</span>:<span class="number">0</span>] addr;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] data;</span><br><span class="line">    <span class="keyword">function</span> <span class="keyword">bit</span> get_stim();</span><br><span class="line">        <span class="keyword">bit</span> success, rd_wr;</span><br><span class="line">        success = randomize(add, data, rd_wr);</span><br><span class="line">        <span class="keyword">return</span> rd_wr;</span><br><span class="line">    <span class="keyword">endfunction</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="系统有机的组织随机变量"><a href="#系统有机的组织随机变量" class="headerlink" title="系统有机的组织随机变量"></a>系统有机的组织随机变量</h2><ul>
-<li>比起独立的产生随机数，在向DUT产生随机激励时，为了符合协议、满足测试需求，还需要添加一些约束；</li>
-<li>这些约束会使得变量朝着希望他们变化的方向去随机；</li>
-<li>这些约束也会对变量和变量之间的关系生效；</li>
-<li>需要一个载体去容纳变量和他们之间的约束；</li>
-<li><strong>这个载体是类，类的成员变量可以声明“随机”属性，用rand或者randc表示</strong>；</li>
-</ul>
-<h2 id="随机变量-1"><a href="#随机变量-1" class="headerlink" title="随机变量"></a>随机变量</h2><ul>
-<li>任何类中的整型（bit、byte、int）变量都可以声明为rand、randc；</li>
-<li>定长数组、动态数组、关联数组和队列都可以声明为rand、randc；</li>
-<li>可以对动态数组和队列的长度加以约束；</li>
-<li><strong>指向对象的句柄，也可以声明为rand，不能randc，随机时该句柄指向的对象中的随机变量会一起被随机化</strong>；</li>
-<li>非组合型结构体可以声明为rand，非组合型的成员也可以声明为rand、randc；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] len;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> data[];</span><br><span class="line"><span class="keyword">constraint</span> db &#123;data<span class="variable">.size</span> == len;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">int</span> addr = <span class="number">1</span> + constant;</span><br><span class="line">    <span class="keyword">int</span> crc;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> data [] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line">&#125; header;</span><br><span class="line"><span class="keyword">rand</span> header h1;</span><br></pre></td></tr></table></figure>
-
-<h2 id="rand和randc"><a href="#rand和randc" class="headerlink" title="rand和randc"></a>rand和randc</h2><ul>
-<li>rand： 表示在可生成范围内，每个值得可能性是相同的–&gt;每次都是有放回！！<ul>
-<li><code>rand bit [7:0] y;</code></li>
-</ul>
-</li>
-<li>randc: 它的值会随机，并且遍历可取值范围，–&gt;无放回！！</li>
-</ul>
-<h1 id="随机约束"><a href="#随机约束" class="headerlink" title="随机约束"></a>随机约束</h1><h2 id="带有随机约束的简单类"><a href="#带有随机约束的简单类" class="headerlink" title="带有随机约束的简单类"></a>带有随机约束的简单类</h2><figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] src, dst, data[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] kind;</span><br><span class="line">    <span class="comment">// src的约束</span></span><br><span class="line">    <span class="keyword">constraint</span> c &#123;src &gt; <span class="number">10</span>; src &lt; <span class="number">15</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p;</span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span></span><br><span class="line">    p = <span class="keyword">new</span>();</span><br><span class="line">    <span class="keyword">if</span> (!p<span class="variable">.randomize</span>())</span><br><span class="line">        <span class="built_in">$finish</span>;</span><br><span class="line">    transmit(p);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="约束块"><a href="#约束块" class="headerlink" title="约束块"></a>约束块</h2><ul>
-<li>有用的激励不仅会约束随机变量，变量之间也存在互相约束关系；</li>
-<li>没有约束的随机变量会包含很多无效的和非法的值，会使得有效激励变得低效；</li>
-<li>类需要<strong>用一个或者多个约束块来描述变量之间的关系</strong>；</li>
-<li><strong>约束块支持整型通过<code>inside</code>操作符来设置可取值的范围</strong>；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> x,y,z;</span><br><span class="line"><span class="keyword">constraint</span> c1 &#123;x <span class="keyword">inside</span> &#123;<span class="number">3</span>, <span class="number">5</span>, [<span class="number">9</span>:<span class="number">15</span>], [<span class="number">24</span>:<span class="number">32</span>], [y:<span class="number">2</span>*y], z&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> a,b,c;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;a <span class="keyword">inside</span> &#123;b, c&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">integer</span> fives[<span class="number">4</span>] = &#x27;&#123;<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>&#125;;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> v;</span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;v <span class="keyword">inside</span> &#123;fives&#125;;&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="权重分布"><a href="#权重分布" class="headerlink" title="权重分布"></a>权重分布</h2><ul>
-<li>除了成员集合设置，约束块也支持设置可取值的同事为其设置随机时的权重；</li>
-<li><strong><code>:=</code> : 表示每个值的权重都是相同的；</strong></li>
-<li><strong><code>:/</code> : 表示权重会平均分配到每一个值；</strong></li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] := <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1 1 1 2 5</span></span><br><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] :/ <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1/3 1/3 1/3 2 5</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="唯一标识"><a href="#唯一标识" class="headerlink" title="唯一标识"></a>唯一标识</h2><ul>
-<li><code>unique</code> : 可以用来约束一组变量，使得其随机后变量之间不会有相同的数值；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> a[<span class="number">5</span>];</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> b;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> excluded;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> u &#123;<span class="keyword">unique</span> &#123;b, a[<span class="number">2</span>:<span class="number">3</span>], excluded&#125;;&#125;</span><br><span class="line"><span class="keyword">constraint</span> exclusion &#123;excluded == <span class="number">5</span>;&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="条件约束"><a href="#条件约束" class="headerlink" title="条件约束"></a>条件约束</h2><ul>
-<li>可以使用<code>if-else</code>或者<code>-&gt;</code>操作符表示条件约束；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">    mode == little -&gt; len &lt; <span class="number">10</span>;</span><br><span class="line">    mode == big -&gt; len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bit</span> [<span class="number">3</span>:<span class="number">0</span>] a, b;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;(a==<span class="number">0</span>) -&gt; (b==<span class="number">1</span>);&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;</span><br><span class="line">    <span class="keyword">if</span> (mode == little)</span><br><span class="line">        len &lt; <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (mode == big)</span><br><span class="line">        len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="迭代约束"><a href="#迭代约束" class="headerlink" title="迭代约束"></a>迭代约束</h2><ul>
-<li><code>foreach</code>可以用来迭代约束数组中的元素，这些数组可以是定长数组、动态数组、关联数组或者队列；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[i])</span><br><span class="line">            A[i] <span class="keyword">inside</span> &#123;<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[j])</span><br><span class="line">            A[j] &gt; <span class="number">2</span>*j;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>也可以用数组的缩减方法进行迭代约束</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;A<span class="variable">.size</span>() == <span class="number">5</span>;&#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;A<span class="variable">.sum</span>() &lt; <span class="number">1000</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h2><ul>
-<li>有时候，在一些表达式中不能简单的描述约束，比如计算一个组合数组中的’1’；</li>
-<li>可以写成一个函数，然后约束调用这个函数；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> count_ones (<span class="keyword">bit</span> [<span class="number">9</span>:<span class="number">0</span>] w);</span><br><span class="line">    <span class="keyword">for</span> (count_onts=<span class="number">0</span>; w!=<span class="number">0</span>; w = w&gt;&gt;<span class="number">1</span>)</span><br><span class="line">        count_ones += w &amp; <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> C1 &#123;length == count_ones(v);&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="软约束-和-硬约束"><a href="#软约束-和-硬约束" class="headerlink" title="软约束 和 硬约束"></a>软约束 和 硬约束</h2><ul>
-<li>为了防止约束冲突时执行失败，分为软约束和硬约束；</li>
-<li><code>soft</code> : soft描述的约束是软，没有soft是硬；</li>
-<li>如果用户在使用时，制订了外部约束对同一个变量做了二次约束，或者用户定义了子类，也对同一个变量做了二次约束，<strong>那么硬约束可以覆盖软约束</strong>，不会导致随机失败；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">int</span> length;</span><br><span class="line">    <span class="keyword">constraint</span> deflt &#123;<span class="keyword">soft</span> length <span class="keyword">inside</span> &#123;<span class="number">32</span>, <span class="number">1024</span>&#125;;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p = <span class="keyword">new</span>();</span><br><span class="line">p<span class="variable">.randomize</span>() <span class="keyword">with</span> &#123;length == <span class="number">1512</span>;&#125;        <span class="comment">// 覆盖了内部的软约束，执行成功</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="约束控制"><a href="#约束控制" class="headerlink" title="约束控制"></a>约束控制</h1><h2 id="随机方法"><a href="#随机方法" class="headerlink" title="随机方法"></a>随机方法</h2><ul>
-<li>类的声明中的随机变量，需要伴随类的句柄的调用randomize()，这是SV的内建方法<code>virtual function int randomize();</code></li>
-<li>随机化成功返回1,否则0；</li>
-<li>随机化之前需要先对对象完成例化，例化时没有随机的过程；</li>
-</ul>
-<h2 id="内嵌约束"><a href="#内嵌约束" class="headerlink" title="内嵌约束"></a>内嵌约束</h2><ul>
-<li>在调用<code>randomize()</code>时伴随<code>with</code>，称为内嵌约束；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> y);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span> (x) &#123;x &lt; y;&#125;;      <span class="comment">//这种方式对x的指向明确了，不在参数列表中，所以是C的x</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="local域指向"><a href="#local域指向" class="headerlink" title="local域指向"></a>local域指向</h2><ul>
-<li>同名的变量处于不同的域中，可能出现指向模糊，可以使用上文的方法；</li>
-<li>也可以使用<code>local::</code>域索引到方式；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> x);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span>&#123;x &lt; <span class="keyword">local</span>::x;&#125;;      <span class="comment">//第一个x是C的，第二个local的x是参数</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="随机控制"><a href="#随机控制" class="headerlink" title="随机控制"></a>随机控制</h2><ul>
-<li><code>rand_mode</code>可以用来使能或者禁止成员变量的随机属性；<ul>
-<li>当随机模式被禁止时，就相当于一个普通变量了；</li>
-<li>可以禁止某个变量的随机模式，也可以对整个对象调用<code>rand_mode</code>进行控制；</li>
-</ul>
-</li>
-<li><code>constraint_mode()</code>用来关闭或者使能约束块；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> object[<span class="variable">.random_variable</span>]::rand_mode(<span class="keyword">bit</span> on_off);</span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> object<span class="variable">.rand_variable</span>::rand_mode();</span><br></pre></td></tr></table></figure>
-
-<h2 id="内嵌变量控制"><a href="#内嵌变量控制" class="headerlink" title="内嵌变量控制"></a>内嵌变量控制</h2><ul>
-<li>一个有意思的点，如果在<code>randomize()</code>中有参数，则只会对这个参数进行随机化，别的就算是rand也不随机化了；</li>
-</ul>
-<h1 id="任务和函数"><a href="#任务和函数" class="headerlink" title="任务和函数"></a>任务和函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
-<li>function和task都是提高代码复用性和整洁度；</li>
-<li>function：<ul>
-<li>首要目的在于为运算表达式提供返回值，便于简化原有代码，提高维护性；</li>
-<li>void函数无返回值；</li>
-<li><strong>一个function只能有一个返回值</strong>，所以函数可以作为表达式的操作数，因为就一个值；</li>
-<li>函数的参数方向可以声明为：input、output、inout、ref</li>
-<li><strong>函数可以调用函数，但是必须立即返回，不能阻塞等待</strong>！</li>
-<li><strong>函数返回方式有两种，一个是return直接返回，一个是将值或者表达式赋给函数的同名变量</strong>；</li>
-<li>区别在于return会立即返回，但是赋值同名变量之后，后续的代码还会执行下去；</li>
-<li>可以对有返回值的函数进行类型转换，<code>void&#39;(func1)</code>,这时候用不到函数的返回值；</li>
-</ul>
-</li>
-<li>task：<ul>
-<li>同样的参数列表指名四个方向；</li>
-<li>task无返回值！</li>
-<li>task可以用来消耗仿真时间，内置一些阻塞语句；</li>
-<li>可以使用return立刻结束task；</li>
-<li>task可以调用task和function，但是function只能调用function，不能调用task；</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">logic</span> red;</span><br><span class="line"><span class="keyword">parameter</span> red_tics = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">always</span> <span class="keyword">begin</span></span><br><span class="line">    red = on;</span><br><span class="line">    light(red, red_tics);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> light(<span class="keyword">output</span> color, <span class="keyword">input</span> [<span class="number">31</span>:<span class="number">0</span>] tics);</span><br><span class="line">    <span class="keyword">repeat</span>(tics) @(<span class="keyword">posedge</span> clock);</span><br><span class="line">    color = off;</span><br><span class="line"><span class="keyword">endtask</span>: light</span><br></pre></td></tr></table></figure>
-
-<h2 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h2><ul>
-<li>input ： 在方法调用时，<strong>属于值传递</strong>，在传递的过程中，外部变量的值<strong>经过拷贝</strong>，赋值给输入参数；</li>
-<li>output、inout都是值传递，发生在方法调用和返回时；</li>
-<li><strong>ref参数不会传递值拷贝，而是将变量指针传递到方法中，所以方法内部的操作会影响到外部的变量；</strong></li>
-<li><strong>为了避免外部传入的ref参数被方法修改，可以添加const修饰符</strong>；</li>
-<li>SV允许在声明输入参数时，指定参数的默认值；</li>
-<li>除了按照参数位置传递参数，SV也允许像module例化一样，<strong>用参数名字映射的方式传递参数</strong>；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> read(<span class="keyword">int</span> j=<span class="number">0</span>, <span class="keyword">int</span> k, <span class="keyword">int</span> data=<span class="number">1</span>);</span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"></span><br><span class="line">read(,<span class="number">5</span>);  <span class="comment">// 即0 5 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> func(<span class="keyword">int</span> j=<span class="number">1</span>, <span class="keyword">string</span> s= <span class="string">&quot;no&quot;</span>);</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line">func(<span class="variable">.j</span>(<span class="number">2</span>), <span class="variable">.s</span>(<span class="string">&quot;yes&quot;</span>));  <span class="comment">// 即2 yes</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>路科V0</category>
-      </categories>
-      <tags>
-        <tag>UVM</tag>
-        <tag>System Verilog</tag>
-        <tag>IC验证</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>路科V0P13P18SV数组-类-对象-包</title>
     <url>/2022/05/13/24/</url>
     <content><![CDATA[<h1 id="数组操作"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作</h1><blockquote>
@@ -6826,6 +6651,181 @@ Vector Table
 <li>lib库可以容纳硬件类型，也能容纳软件类型（类、方法和包等）</li>
 <li>package包只能容纳软件类型，比如类、方法和参数；</li>
 </ul>
+]]></content>
+      <categories>
+        <category>路科V0</category>
+      </categories>
+      <tags>
+        <tag>UVM</tag>
+        <tag>System Verilog</tag>
+        <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>路科V0P19P22随机变量-随机约束-约束控制-任务和函数</title>
+    <url>/2022/05/13/17/</url>
+    <content><![CDATA[<h1 id="随机变量"><a href="#随机变量" class="headerlink" title="随机变量"></a>随机变量</h1><ul>
+<li>随着设计越来越大，要产生完整的激励来测试设计的功能变得越来越困难；</li>
+<li>定向激励的测试方法已经无法满足检查功能完整性的要求；</li>
+<li>Soc集成度提高带来的模块之间交互的复杂性也指数提高，验证工程师无法预测用户使用过程中发生什么样的情况；</li>
+</ul>
+<h2 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h2><ul>
+<li><strong>随机-约束</strong>： 构成目前动态仿真验证的主流方法；</li>
+<li><strong>随机约束测试</strong>：CRT， constrained-random test，即能够产生感兴趣的、想不到的测试向量，<strong>通过回归测试、替换随机种子的方式来提高单位测试用例的覆盖率收集效率</strong>；</li>
+<li>随机测试带来的负担是验证环境的复杂度提高，不再只需要发送激励的组件，还包括监测器、比较器等；</li>
+<li>对环境复杂度还包括环境的复用和测试的复用，带来组件封装要求，使得代码量增大；</li>
+</ul>
+<h2 id="产生一个随机数"><a href="#产生一个随机数" class="headerlink" title="产生一个随机数"></a>产生一个随机数</h2><blockquote>
+<p>利用系统函数产生一个随机数</p>
+</blockquote>
+<ul>
+<li><code>randomize</code>函数产生随机数，如果随机成功，返回1,否则0；</li>
+<li>通过系统函数<code>std::randomize()</code>对一些变量完成随机化，即产生随机数并赋值给这些向量；</li>
+<li>还有一些其他的系统函数：<ul>
+<li><code>$urandom()</code> 产生一个32位无符号的随机数；</li>
+<li><code>$urandom_range(max_val, minval=0)</code>， 可以生成介于maxval和minval之间的随机数；</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> stim;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">15</span>:<span class="number">0</span>] addr;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] data;</span><br><span class="line">    <span class="keyword">function</span> <span class="keyword">bit</span> get_stim();</span><br><span class="line">        <span class="keyword">bit</span> success, rd_wr;</span><br><span class="line">        success = randomize(add, data, rd_wr);</span><br><span class="line">        <span class="keyword">return</span> rd_wr;</span><br><span class="line">    <span class="keyword">endfunction</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="系统有机的组织随机变量"><a href="#系统有机的组织随机变量" class="headerlink" title="系统有机的组织随机变量"></a>系统有机的组织随机变量</h2><ul>
+<li>比起独立的产生随机数，在向DUT产生随机激励时，为了符合协议、满足测试需求，还需要添加一些约束；</li>
+<li>这些约束会使得变量朝着希望他们变化的方向去随机；</li>
+<li>这些约束也会对变量和变量之间的关系生效；</li>
+<li>需要一个载体去容纳变量和他们之间的约束；</li>
+<li><strong>这个载体是类，类的成员变量可以声明“随机”属性，用rand或者randc表示</strong>；</li>
+</ul>
+<h2 id="随机变量-1"><a href="#随机变量-1" class="headerlink" title="随机变量"></a>随机变量</h2><ul>
+<li>任何类中的整型（bit、byte、int）变量都可以声明为rand、randc；</li>
+<li>定长数组、动态数组、关联数组和队列都可以声明为rand、randc；</li>
+<li>可以对动态数组和队列的长度加以约束；</li>
+<li><strong>指向对象的句柄，也可以声明为rand，不能randc，随机时该句柄指向的对象中的随机变量会一起被随机化</strong>；</li>
+<li>非组合型结构体可以声明为rand，非组合型的成员也可以声明为rand、randc；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] len;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> data[];</span><br><span class="line"><span class="keyword">constraint</span> db &#123;data<span class="variable">.size</span> == len;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">int</span> addr = <span class="number">1</span> + constant;</span><br><span class="line">    <span class="keyword">int</span> crc;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> data [] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line">&#125; header;</span><br><span class="line"><span class="keyword">rand</span> header h1;</span><br></pre></td></tr></table></figure>
+
+<h2 id="rand和randc"><a href="#rand和randc" class="headerlink" title="rand和randc"></a>rand和randc</h2><ul>
+<li>rand： 表示在可生成范围内，每个值得可能性是相同的–&gt;每次都是有放回！！<ul>
+<li><code>rand bit [7:0] y;</code></li>
+</ul>
+</li>
+<li>randc: 它的值会随机，并且遍历可取值范围，–&gt;无放回！！</li>
+</ul>
+<h1 id="随机约束"><a href="#随机约束" class="headerlink" title="随机约束"></a>随机约束</h1><h2 id="带有随机约束的简单类"><a href="#带有随机约束的简单类" class="headerlink" title="带有随机约束的简单类"></a>带有随机约束的简单类</h2><figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] src, dst, data[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] kind;</span><br><span class="line">    <span class="comment">// src的约束</span></span><br><span class="line">    <span class="keyword">constraint</span> c &#123;src &gt; <span class="number">10</span>; src &lt; <span class="number">15</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p;</span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span></span><br><span class="line">    p = <span class="keyword">new</span>();</span><br><span class="line">    <span class="keyword">if</span> (!p<span class="variable">.randomize</span>())</span><br><span class="line">        <span class="built_in">$finish</span>;</span><br><span class="line">    transmit(p);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="约束块"><a href="#约束块" class="headerlink" title="约束块"></a>约束块</h2><ul>
+<li>有用的激励不仅会约束随机变量，变量之间也存在互相约束关系；</li>
+<li>没有约束的随机变量会包含很多无效的和非法的值，会使得有效激励变得低效；</li>
+<li>类需要<strong>用一个或者多个约束块来描述变量之间的关系</strong>；</li>
+<li><strong>约束块支持整型通过<code>inside</code>操作符来设置可取值的范围</strong>；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> x,y,z;</span><br><span class="line"><span class="keyword">constraint</span> c1 &#123;x <span class="keyword">inside</span> &#123;<span class="number">3</span>, <span class="number">5</span>, [<span class="number">9</span>:<span class="number">15</span>], [<span class="number">24</span>:<span class="number">32</span>], [y:<span class="number">2</span>*y], z&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> a,b,c;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;a <span class="keyword">inside</span> &#123;b, c&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">integer</span> fives[<span class="number">4</span>] = &#x27;&#123;<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>&#125;;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> v;</span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;v <span class="keyword">inside</span> &#123;fives&#125;;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="权重分布"><a href="#权重分布" class="headerlink" title="权重分布"></a>权重分布</h2><ul>
+<li>除了成员集合设置，约束块也支持设置可取值的同事为其设置随机时的权重；</li>
+<li><strong><code>:=</code> : 表示每个值的权重都是相同的；</strong></li>
+<li><strong><code>:/</code> : 表示权重会平均分配到每一个值；</strong></li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] := <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1 1 1 2 5</span></span><br><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] :/ <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1/3 1/3 1/3 2 5</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="唯一标识"><a href="#唯一标识" class="headerlink" title="唯一标识"></a>唯一标识</h2><ul>
+<li><code>unique</code> : 可以用来约束一组变量，使得其随机后变量之间不会有相同的数值；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> a[<span class="number">5</span>];</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> b;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> excluded;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> u &#123;<span class="keyword">unique</span> &#123;b, a[<span class="number">2</span>:<span class="number">3</span>], excluded&#125;;&#125;</span><br><span class="line"><span class="keyword">constraint</span> exclusion &#123;excluded == <span class="number">5</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="条件约束"><a href="#条件约束" class="headerlink" title="条件约束"></a>条件约束</h2><ul>
+<li>可以使用<code>if-else</code>或者<code>-&gt;</code>操作符表示条件约束；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">    mode == little -&gt; len &lt; <span class="number">10</span>;</span><br><span class="line">    mode == big -&gt; len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bit</span> [<span class="number">3</span>:<span class="number">0</span>] a, b;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;(a==<span class="number">0</span>) -&gt; (b==<span class="number">1</span>);&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;</span><br><span class="line">    <span class="keyword">if</span> (mode == little)</span><br><span class="line">        len &lt; <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (mode == big)</span><br><span class="line">        len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代约束"><a href="#迭代约束" class="headerlink" title="迭代约束"></a>迭代约束</h2><ul>
+<li><code>foreach</code>可以用来迭代约束数组中的元素，这些数组可以是定长数组、动态数组、关联数组或者队列；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[i])</span><br><span class="line">            A[i] <span class="keyword">inside</span> &#123;<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[j])</span><br><span class="line">            A[j] &gt; <span class="number">2</span>*j;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>也可以用数组的缩减方法进行迭代约束</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;A<span class="variable">.size</span>() == <span class="number">5</span>;&#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;A<span class="variable">.sum</span>() &lt; <span class="number">1000</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h2><ul>
+<li>有时候，在一些表达式中不能简单的描述约束，比如计算一个组合数组中的’1’；</li>
+<li>可以写成一个函数，然后约束调用这个函数；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> count_ones (<span class="keyword">bit</span> [<span class="number">9</span>:<span class="number">0</span>] w);</span><br><span class="line">    <span class="keyword">for</span> (count_onts=<span class="number">0</span>; w!=<span class="number">0</span>; w = w&gt;&gt;<span class="number">1</span>)</span><br><span class="line">        count_ones += w &amp; <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> C1 &#123;length == count_ones(v);&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="软约束-和-硬约束"><a href="#软约束-和-硬约束" class="headerlink" title="软约束 和 硬约束"></a>软约束 和 硬约束</h2><ul>
+<li>为了防止约束冲突时执行失败，分为软约束和硬约束；</li>
+<li><code>soft</code> : soft描述的约束是软，没有soft是硬；</li>
+<li>如果用户在使用时，制订了外部约束对同一个变量做了二次约束，或者用户定义了子类，也对同一个变量做了二次约束，<strong>那么硬约束可以覆盖软约束</strong>，不会导致随机失败；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">int</span> length;</span><br><span class="line">    <span class="keyword">constraint</span> deflt &#123;<span class="keyword">soft</span> length <span class="keyword">inside</span> &#123;<span class="number">32</span>, <span class="number">1024</span>&#125;;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p = <span class="keyword">new</span>();</span><br><span class="line">p<span class="variable">.randomize</span>() <span class="keyword">with</span> &#123;length == <span class="number">1512</span>;&#125;        <span class="comment">// 覆盖了内部的软约束，执行成功</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="约束控制"><a href="#约束控制" class="headerlink" title="约束控制"></a>约束控制</h1><h2 id="随机方法"><a href="#随机方法" class="headerlink" title="随机方法"></a>随机方法</h2><ul>
+<li>类的声明中的随机变量，需要伴随类的句柄的调用randomize()，这是SV的内建方法<code>virtual function int randomize();</code></li>
+<li>随机化成功返回1,否则0；</li>
+<li>随机化之前需要先对对象完成例化，例化时没有随机的过程；</li>
+</ul>
+<h2 id="内嵌约束"><a href="#内嵌约束" class="headerlink" title="内嵌约束"></a>内嵌约束</h2><ul>
+<li>在调用<code>randomize()</code>时伴随<code>with</code>，称为内嵌约束；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> y);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span> (x) &#123;x &lt; y;&#125;;      <span class="comment">//这种方式对x的指向明确了，不在参数列表中，所以是C的x</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="local域指向"><a href="#local域指向" class="headerlink" title="local域指向"></a>local域指向</h2><ul>
+<li>同名的变量处于不同的域中，可能出现指向模糊，可以使用上文的方法；</li>
+<li>也可以使用<code>local::</code>域索引到方式；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> x);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span>&#123;x &lt; <span class="keyword">local</span>::x;&#125;;      <span class="comment">//第一个x是C的，第二个local的x是参数</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="随机控制"><a href="#随机控制" class="headerlink" title="随机控制"></a>随机控制</h2><ul>
+<li><code>rand_mode</code>可以用来使能或者禁止成员变量的随机属性；<ul>
+<li>当随机模式被禁止时，就相当于一个普通变量了；</li>
+<li>可以禁止某个变量的随机模式，也可以对整个对象调用<code>rand_mode</code>进行控制；</li>
+</ul>
+</li>
+<li><code>constraint_mode()</code>用来关闭或者使能约束块；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> object[<span class="variable">.random_variable</span>]::rand_mode(<span class="keyword">bit</span> on_off);</span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> object<span class="variable">.rand_variable</span>::rand_mode();</span><br></pre></td></tr></table></figure>
+
+<h2 id="内嵌变量控制"><a href="#内嵌变量控制" class="headerlink" title="内嵌变量控制"></a>内嵌变量控制</h2><ul>
+<li>一个有意思的点，如果在<code>randomize()</code>中有参数，则只会对这个参数进行随机化，别的就算是rand也不随机化了；</li>
+</ul>
+<h1 id="任务和函数"><a href="#任务和函数" class="headerlink" title="任务和函数"></a>任务和函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>function和task都是提高代码复用性和整洁度；</li>
+<li>function：<ul>
+<li>首要目的在于为运算表达式提供返回值，便于简化原有代码，提高维护性；</li>
+<li>void函数无返回值；</li>
+<li><strong>一个function只能有一个返回值</strong>，所以函数可以作为表达式的操作数，因为就一个值；</li>
+<li>函数的参数方向可以声明为：input、output、inout、ref</li>
+<li><strong>函数可以调用函数，但是必须立即返回，不能阻塞等待</strong>！</li>
+<li><strong>函数返回方式有两种，一个是return直接返回，一个是将值或者表达式赋给函数的同名变量</strong>；</li>
+<li>区别在于return会立即返回，但是赋值同名变量之后，后续的代码还会执行下去；</li>
+<li>可以对有返回值的函数进行类型转换，<code>void&#39;(func1)</code>,这时候用不到函数的返回值；</li>
+</ul>
+</li>
+<li>task：<ul>
+<li>同样的参数列表指名四个方向；</li>
+<li>task无返回值！</li>
+<li>task可以用来消耗仿真时间，内置一些阻塞语句；</li>
+<li>可以使用return立刻结束task；</li>
+<li>task可以调用task和function，但是function只能调用function，不能调用task；</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">logic</span> red;</span><br><span class="line"><span class="keyword">parameter</span> red_tics = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">always</span> <span class="keyword">begin</span></span><br><span class="line">    red = on;</span><br><span class="line">    light(red, red_tics);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> light(<span class="keyword">output</span> color, <span class="keyword">input</span> [<span class="number">31</span>:<span class="number">0</span>] tics);</span><br><span class="line">    <span class="keyword">repeat</span>(tics) @(<span class="keyword">posedge</span> clock);</span><br><span class="line">    color = off;</span><br><span class="line"><span class="keyword">endtask</span>: light</span><br></pre></td></tr></table></figure>
+
+<h2 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h2><ul>
+<li>input ： 在方法调用时，<strong>属于值传递</strong>，在传递的过程中，外部变量的值<strong>经过拷贝</strong>，赋值给输入参数；</li>
+<li>output、inout都是值传递，发生在方法调用和返回时；</li>
+<li><strong>ref参数不会传递值拷贝，而是将变量指针传递到方法中，所以方法内部的操作会影响到外部的变量；</strong></li>
+<li><strong>为了避免外部传入的ref参数被方法修改，可以添加const修饰符</strong>；</li>
+<li>SV允许在声明输入参数时，指定参数的默认值；</li>
+<li>除了按照参数位置传递参数，SV也允许像module例化一样，<strong>用参数名字映射的方式传递参数</strong>；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> read(<span class="keyword">int</span> j=<span class="number">0</span>, <span class="keyword">int</span> k, <span class="keyword">int</span> data=<span class="number">1</span>);</span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"></span><br><span class="line">read(,<span class="number">5</span>);  <span class="comment">// 即0 5 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> func(<span class="keyword">int</span> j=<span class="number">1</span>, <span class="keyword">string</span> s= <span class="string">&quot;no&quot;</span>);</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line">func(<span class="variable">.j</span>(<span class="number">2</span>), <span class="variable">.s</span>(<span class="string">&quot;yes&quot;</span>));  <span class="comment">// 即2 yes</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>路科V0</category>
