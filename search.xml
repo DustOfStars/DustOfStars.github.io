@@ -2173,6 +2173,23 @@
       </tags>
   </entry>
   <entry>
+    <title>基础准备1_Numpy</title>
+    <url>/2022/04/01/29/</url>
+    <content><![CDATA[<h2 id="0-Numpy的随机数"><a href="#0-Numpy的随机数" class="headerlink" title="0. Numpy的随机数"></a>0. Numpy的随机数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">随机数</span></span><br><span class="line"><span class="string">numpy.random.rand() 产生一个[0,1)之间的随机数, 包含0不包含1</span></span><br><span class="line"><span class="string">numpy.random.randn() 产生一个标准正态分布的随机数 np.random.randn(2,4)</span></span><br><span class="line"><span class="string">np.random.normal(loc=0.0, scale=1.0, size=None)  参数loc决定均值，参数scale决定标准差，参数size决定数量</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.randint(low, high=None, size=None, dtype=&#x27;l&#x27;) 产生一个或多个随机整数，范围区间为[low, high)   np.random.randint(-5,5,size=(2,2))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.random_sample(size=None)</span></span><br><span class="line"><span class="string">numpy.random.random(size=None)</span></span><br><span class="line"><span class="string">numpy.random.ranf(size=None)</span></span><br><span class="line"><span class="string">numpy.random.sample(size=None) 都是产生[0,1)之间的随机数</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">np.random.choice(5,size=(3,2)) 产生一个或多个随机整数，范围区间为[0,5)   np.random.choice([1,2,3,4,5],size=(3,2))</span></span><br><span class="line"><span class="string">demo_list = [&#x27;lenovo&#x27;, &#x27;sansumg&#x27;,&#x27;moto&#x27;,&#x27;xiaomi&#x27;, &#x27;iphone&#x27;]</span></span><br><span class="line"><span class="string">np.random.choice(demo_list,size=(3,3), p=[0.1,0.6,0.1,0.1,0.1])    注意p的长度必须和demo_list的长度一致,且p的和为1</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.seed() 设置随机数种子</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="1-Numpy的数组"><a href="#1-Numpy的数组" class="headerlink" title="1. Numpy的数组"></a>1. Numpy的数组</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>NLP</category>
+        <category>Numpy</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Numpy</tag>
+        <tag>基础</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>代码解读之fsl_gpio</title>
     <url>/2023/03/21/40/</url>
     <content><![CDATA[<h1 id="读fsl-gpio-c-和-fsl-gpio-h-代码"><a href="#读fsl-gpio-c-和-fsl-gpio-h-代码" class="headerlink" title="读fsl_gpio.c 和 fsl_gpio.h 代码"></a>读fsl_gpio.c 和 fsl_gpio.h 代码</h1><blockquote>
@@ -2282,23 +2299,6 @@
         <tag>嵌入式</tag>
         <tag>代码解读</tag>
         <tag>GPIO</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基础准备1_Numpy</title>
-    <url>/2022/04/01/29/</url>
-    <content><![CDATA[<h2 id="0-Numpy的随机数"><a href="#0-Numpy的随机数" class="headerlink" title="0. Numpy的随机数"></a>0. Numpy的随机数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">随机数</span></span><br><span class="line"><span class="string">numpy.random.rand() 产生一个[0,1)之间的随机数, 包含0不包含1</span></span><br><span class="line"><span class="string">numpy.random.randn() 产生一个标准正态分布的随机数 np.random.randn(2,4)</span></span><br><span class="line"><span class="string">np.random.normal(loc=0.0, scale=1.0, size=None)  参数loc决定均值，参数scale决定标准差，参数size决定数量</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.randint(low, high=None, size=None, dtype=&#x27;l&#x27;) 产生一个或多个随机整数，范围区间为[low, high)   np.random.randint(-5,5,size=(2,2))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.random_sample(size=None)</span></span><br><span class="line"><span class="string">numpy.random.random(size=None)</span></span><br><span class="line"><span class="string">numpy.random.ranf(size=None)</span></span><br><span class="line"><span class="string">numpy.random.sample(size=None) 都是产生[0,1)之间的随机数</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">np.random.choice(5,size=(3,2)) 产生一个或多个随机整数，范围区间为[0,5)   np.random.choice([1,2,3,4,5],size=(3,2))</span></span><br><span class="line"><span class="string">demo_list = [&#x27;lenovo&#x27;, &#x27;sansumg&#x27;,&#x27;moto&#x27;,&#x27;xiaomi&#x27;, &#x27;iphone&#x27;]</span></span><br><span class="line"><span class="string">np.random.choice(demo_list,size=(3,3), p=[0.1,0.6,0.1,0.1,0.1])    注意p的长度必须和demo_list的长度一致,且p的和为1</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">numpy.random.seed() 设置随机数种子</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="1-Numpy的数组"><a href="#1-Numpy的数组" class="headerlink" title="1. Numpy的数组"></a>1. Numpy的数组</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>NLP</category>
-        <category>Numpy</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>Numpy</tag>
-        <tag>基础</tag>
       </tags>
   </entry>
   <entry>
