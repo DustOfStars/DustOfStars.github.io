@@ -6662,6 +6662,27 @@ Vector Table
       </tags>
   </entry>
   <entry>
+    <title>路科V0P1P2P4验证概览</title>
+    <url>/2022/05/09/13/</url>
+    <content><![CDATA[<h1 id="什么是验证"><a href="#什么是验证" class="headerlink" title="什么是验证"></a>什么是验证</h1><p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%81.png" alt="什么是验证"></p>
+<p>什么是验证?</p>
+<p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%812.png" alt="什么是验证2"></p>
+<p>测试平台：</p>
+<p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0.png" alt="什么是测试平台"></p>
+<h1 id="验证的任务和目标"><a href="#验证的任务和目标" class="headerlink" title="验证的任务和目标"></a>验证的任务和目标</h1><p>验证的目标：</p>
+<p><img src="/2022/05/09/13/%E9%AA%8C%E8%AF%81%E7%9A%84%E7%9B%AE%E6%A0%87.png" alt="验证的目标"></p>
+<h1 id="验证的周期"><a href="#验证的周期" class="headerlink" title="验证的周期"></a>验证的周期</h1><p><img src="/2022/05/09/13/%E9%AA%8C%E8%AF%81%E5%91%A8%E6%9C%9F.png" alt="验证周期"></p>
+]]></content>
+      <categories>
+        <category>路科V0</category>
+      </categories>
+      <tags>
+        <tag>UVM</tag>
+        <tag>System Verilog</tag>
+        <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>路科V0P19P22随机变量-随机约束-约束控制-任务和函数</title>
     <url>/2022/05/13/17/</url>
     <content><![CDATA[<h1 id="随机变量"><a href="#随机变量" class="headerlink" title="随机变量"></a>随机变量</h1><ul>
@@ -6826,27 +6847,6 @@ Vector Table
 <li>除了按照参数位置传递参数，SV也允许像module例化一样，<strong>用参数名字映射的方式传递参数</strong>；</li>
 </ul>
 <figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> read(<span class="keyword">int</span> j=<span class="number">0</span>, <span class="keyword">int</span> k, <span class="keyword">int</span> data=<span class="number">1</span>);</span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"></span><br><span class="line">read(,<span class="number">5</span>);  <span class="comment">// 即0 5 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> func(<span class="keyword">int</span> j=<span class="number">1</span>, <span class="keyword">string</span> s= <span class="string">&quot;no&quot;</span>);</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line">func(<span class="variable">.j</span>(<span class="number">2</span>), <span class="variable">.s</span>(<span class="string">&quot;yes&quot;</span>));  <span class="comment">// 即2 yes</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>路科V0</category>
-      </categories>
-      <tags>
-        <tag>UVM</tag>
-        <tag>System Verilog</tag>
-        <tag>IC验证</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>路科V0P1P2P4验证概览</title>
-    <url>/2022/05/09/13/</url>
-    <content><![CDATA[<h1 id="什么是验证"><a href="#什么是验证" class="headerlink" title="什么是验证"></a>什么是验证</h1><p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%81.png" alt="什么是验证"></p>
-<p>什么是验证?</p>
-<p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%812.png" alt="什么是验证2"></p>
-<p>测试平台：</p>
-<p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0.png" alt="什么是测试平台"></p>
-<h1 id="验证的任务和目标"><a href="#验证的任务和目标" class="headerlink" title="验证的任务和目标"></a>验证的任务和目标</h1><p>验证的目标：</p>
-<p><img src="/2022/05/09/13/%E9%AA%8C%E8%AF%81%E7%9A%84%E7%9B%AE%E6%A0%87.png" alt="验证的目标"></p>
-<h1 id="验证的周期"><a href="#验证的周期" class="headerlink" title="验证的周期"></a>验证的周期</h1><p><img src="/2022/05/09/13/%E9%AA%8C%E8%AF%81%E5%91%A8%E6%9C%9F.png" alt="验证周期"></p>
 ]]></content>
       <categories>
         <category>路科V0</category>
