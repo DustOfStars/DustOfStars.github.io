@@ -254,87 +254,6 @@
       </tags>
   </entry>
   <entry>
-    <title>RT1050开发--第1节 ARM Cortex-M7体系结构</title>
-    <url>/2023/12/04/22/</url>
-    <content><![CDATA[<h1 id="第一节-ARM-Cortex-M7体系结构"><a href="#第一节-ARM-Cortex-M7体系结构" class="headerlink" title="第一节 ARM Cortex-M7体系结构"></a>第一节 ARM Cortex-M7体系结构</h1><blockquote>
-<p><img src="/2023/12/04/22/image-20231204205936163.png" alt="image-20231204205936163"></p>
-</blockquote>
-<hr>
-<h2 id="认识ARM"><a href="#认识ARM" class="headerlink" title="认识ARM"></a>认识ARM</h2><p><img src="/2023/12/04/22/image-20231204210036757.png" alt="image-20231204210036757"></p>
-<h3 id="A系列-–-移动的王者"><a href="#A系列-–-移动的王者" class="headerlink" title="A系列 – 移动的王者"></a>A系列 – 移动的王者</h3><p><img src="/2023/12/04/22/image-20231204210232296.png" alt="image-20231204210232296"></p>
-<h2 id="M系列-–-无处不在"><a href="#M系列-–-无处不在" class="headerlink" title="M系列 – 无处不在"></a>M系列 – 无处不在</h2><p><img src="/2023/12/04/22/image-20231204210508859.png" alt="image-20231204210508859"></p>
-<p><img src="/2023/12/04/22/image-20231204210629438.png" alt="image-20231204210629438"></p>
-<p><img src="/2023/12/04/22/image-20231204210816730.png" alt="image-20231204210816730"></p>
-<hr>
-<h2 id="Cortex-M7介绍"><a href="#Cortex-M7介绍" class="headerlink" title="Cortex-M7介绍"></a>Cortex-M7介绍</h2><p><img src="/2023/12/04/22/image-20231204210956321.png" alt="image-20231204210956321"></p>
-<h3 id="规格特点"><a href="#规格特点" class="headerlink" title="规格特点"></a>规格特点</h3><p><img src="/2023/12/04/22/image-20231204211218436.png" alt="image-20231204211218436"></p>
-<h3 id="对外接口"><a href="#对外接口" class="headerlink" title="对外接口"></a>对外接口</h3><p><img src="/2023/12/04/22/image-20231204211325476.png" alt="image-20231204211325476"></p>
-<hr>
-<h2 id="Cortex-M7-编程模型"><a href="#Cortex-M7-编程模型" class="headerlink" title="Cortex-M7 编程模型"></a>Cortex-M7 编程模型</h2><h3 id="运行模式"><a href="#运行模式" class="headerlink" title="运行模式"></a>运行模式</h3><p><img src="/2023/12/04/22/image-20231204211548215.png" alt="image-20231204211548215"></p>
-<blockquote>
-<p>所有M系列都是这两个模式：线程模式 + 处理模式（中断模式）</p>
-<p>即：主程序都是在线程模式，中断处理函数都是处理模式，处理模式下拥有特权；</p>
-</blockquote>
-<hr>
-<h3 id="操作状态"><a href="#操作状态" class="headerlink" title="操作状态"></a>操作状态</h3><p><img src="/2023/12/04/22/image-20231204211740877.png" alt="image-20231204211740877"></p>
-<blockquote>
-<p>即：一个运行，一个调试；</p>
-</blockquote>
-<h3 id="特权访问和非特权访问"><a href="#特权访问和非特权访问" class="headerlink" title="特权访问和非特权访问"></a>特权访问和非特权访问</h3><p><img src="/2023/12/04/22/image-20231204211828379.png" alt="image-20231204211828379"></p>
-<blockquote>
-<p>特权访问：即可以触碰到CPU所有的资源；非特权访问有些资源碰不到！</p>
-<p><mark><strong><u>线程模式一般就是非特权的，处理模式都是特权的！</u></strong></mark></p>
-</blockquote>
-<hr>
-<h3 id="系统的地址映射"><a href="#系统的地址映射" class="headerlink" title="系统的地址映射"></a>系统的地址映射</h3><blockquote>
-<p><img src="/2023/12/04/22/image-20231204212206094.png" alt="image-20231204212206094"></p>
-</blockquote>
-<p><img src="/2023/12/04/22/image-20231204212237605.png" alt="image-20231204212237605"></p>
-<blockquote>
-<p>0x0000_0000 ~ 0xFFFF_FFFF  一共 4GB；</p>
-<p>Code ： 即 ROM；</p>
-<p>SRAM：即数据；</p>
-<p>Peripheral：放外设，M7把代码、数据、外设 都映射到同一片地址空间；</p>
-<p>External RAM： 外部存储器！</p>
-<p>External device：外部设备</p>
-<p>内部私有外设总线；</p>
-<p>外部私有外设总线；–》 M7内核的；</p>
-</blockquote>
-<h3 id="处理器的核心寄存器"><a href="#处理器的核心寄存器" class="headerlink" title="处理器的核心寄存器"></a>处理器的核心寄存器</h3><blockquote>
-<p><img src="/2023/12/04/22/image-20231204212830460.png" alt="image-20231204212830460"></p>
-</blockquote>
-<p><img src="/2023/12/04/22/image-20231204212848276.png" alt="image-20231204212848276"></p>
-<p>R13栈指针一个寄存器映射两个区域：<mark><strong><code>MSP</code></strong> 和 **<code>PSP</code>**；</mark></p>
-<blockquote>
-<p><strong><u><em>纯裸机编程时，只有一个栈，所以只有MSP主栈指针；</em></u></strong></p>
-<p>FreeRTOS才会用到PSP进程栈指针；</p>
-</blockquote>
-<hr>
-<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><p><img src="/2023/12/04/22/image-20231204213402264.png" alt="image-20231204213402264"></p>
-<p><img src="/2023/12/04/22/image-20231204213423024.png" alt="image-20231204213423024"></p>
-<p><strong><mark><u>ARM的异常处理流程：</u></mark></strong></p>
-<ul>
-<li>1– 保存当前程序的上下文，即：xPSR、PC、LR、R0-R3,R12;<ul>
-<li>通过MSP或者PSP读取地址，把这些寄存器全都入栈，就保存了下来；</li>
-</ul>
-</li>
-<li>2– 把当前要返回的地址放在LR链接寄存器中；</li>
-<li>3a– 切换模式，从线程模式切换到处理模式；</li>
-<li>3b– 指针指向新的栈顶；</li>
-<li>4– 找到该中断的向量地址，赋值给PC指针，执行中断处理函数；</li>
-</ul>
-]]></content>
-      <categories>
-        <category>NXP</category>
-        <category>RT1050EVKB</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>RT1050EVKB</tag>
-        <tag>嵌入式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>RT1050开发--第2节 NXP RT1050系列芯片</title>
     <url>/2023/12/04/29/</url>
     <content><![CDATA[<h1 id="第二节-RT1050系列芯片"><a href="#第二节-RT1050系列芯片" class="headerlink" title="第二节 RT1050系列芯片"></a>第二节 RT1050系列芯片</h1><blockquote>
@@ -462,6 +381,87 @@
 </blockquote>
 <p><img src="/2023/12/04/32/image-20231205110458191.png" alt="image-20231205110458191"></p>
 <h3 id="使用要求"><a href="#使用要求" class="headerlink" title="使用要求"></a>使用要求</h3><p><img src="/2023/12/04/32/image-20231205110606490.png" alt="image-20231205110606490"></p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+        <category>RT1050EVKB</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>RT1050EVKB</tag>
+        <tag>嵌入式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RT1050开发--第1节 ARM Cortex-M7体系结构</title>
+    <url>/2023/12/04/22/</url>
+    <content><![CDATA[<h1 id="第一节-ARM-Cortex-M7体系结构"><a href="#第一节-ARM-Cortex-M7体系结构" class="headerlink" title="第一节 ARM Cortex-M7体系结构"></a>第一节 ARM Cortex-M7体系结构</h1><blockquote>
+<p><img src="/2023/12/04/22/image-20231204205936163.png" alt="image-20231204205936163"></p>
+</blockquote>
+<hr>
+<h2 id="认识ARM"><a href="#认识ARM" class="headerlink" title="认识ARM"></a>认识ARM</h2><p><img src="/2023/12/04/22/image-20231204210036757.png" alt="image-20231204210036757"></p>
+<h3 id="A系列-–-移动的王者"><a href="#A系列-–-移动的王者" class="headerlink" title="A系列 – 移动的王者"></a>A系列 – 移动的王者</h3><p><img src="/2023/12/04/22/image-20231204210232296.png" alt="image-20231204210232296"></p>
+<h2 id="M系列-–-无处不在"><a href="#M系列-–-无处不在" class="headerlink" title="M系列 – 无处不在"></a>M系列 – 无处不在</h2><p><img src="/2023/12/04/22/image-20231204210508859.png" alt="image-20231204210508859"></p>
+<p><img src="/2023/12/04/22/image-20231204210629438.png" alt="image-20231204210629438"></p>
+<p><img src="/2023/12/04/22/image-20231204210816730.png" alt="image-20231204210816730"></p>
+<hr>
+<h2 id="Cortex-M7介绍"><a href="#Cortex-M7介绍" class="headerlink" title="Cortex-M7介绍"></a>Cortex-M7介绍</h2><p><img src="/2023/12/04/22/image-20231204210956321.png" alt="image-20231204210956321"></p>
+<h3 id="规格特点"><a href="#规格特点" class="headerlink" title="规格特点"></a>规格特点</h3><p><img src="/2023/12/04/22/image-20231204211218436.png" alt="image-20231204211218436"></p>
+<h3 id="对外接口"><a href="#对外接口" class="headerlink" title="对外接口"></a>对外接口</h3><p><img src="/2023/12/04/22/image-20231204211325476.png" alt="image-20231204211325476"></p>
+<hr>
+<h2 id="Cortex-M7-编程模型"><a href="#Cortex-M7-编程模型" class="headerlink" title="Cortex-M7 编程模型"></a>Cortex-M7 编程模型</h2><h3 id="运行模式"><a href="#运行模式" class="headerlink" title="运行模式"></a>运行模式</h3><p><img src="/2023/12/04/22/image-20231204211548215.png" alt="image-20231204211548215"></p>
+<blockquote>
+<p>所有M系列都是这两个模式：线程模式 + 处理模式（中断模式）</p>
+<p>即：主程序都是在线程模式，中断处理函数都是处理模式，处理模式下拥有特权；</p>
+</blockquote>
+<hr>
+<h3 id="操作状态"><a href="#操作状态" class="headerlink" title="操作状态"></a>操作状态</h3><p><img src="/2023/12/04/22/image-20231204211740877.png" alt="image-20231204211740877"></p>
+<blockquote>
+<p>即：一个运行，一个调试；</p>
+</blockquote>
+<h3 id="特权访问和非特权访问"><a href="#特权访问和非特权访问" class="headerlink" title="特权访问和非特权访问"></a>特权访问和非特权访问</h3><p><img src="/2023/12/04/22/image-20231204211828379.png" alt="image-20231204211828379"></p>
+<blockquote>
+<p>特权访问：即可以触碰到CPU所有的资源；非特权访问有些资源碰不到！</p>
+<p><mark><strong><u>线程模式一般就是非特权的，处理模式都是特权的！</u></strong></mark></p>
+</blockquote>
+<hr>
+<h3 id="系统的地址映射"><a href="#系统的地址映射" class="headerlink" title="系统的地址映射"></a>系统的地址映射</h3><blockquote>
+<p><img src="/2023/12/04/22/image-20231204212206094.png" alt="image-20231204212206094"></p>
+</blockquote>
+<p><img src="/2023/12/04/22/image-20231204212237605.png" alt="image-20231204212237605"></p>
+<blockquote>
+<p>0x0000_0000 ~ 0xFFFF_FFFF  一共 4GB；</p>
+<p>Code ： 即 ROM；</p>
+<p>SRAM：即数据；</p>
+<p>Peripheral：放外设，M7把代码、数据、外设 都映射到同一片地址空间；</p>
+<p>External RAM： 外部存储器！</p>
+<p>External device：外部设备</p>
+<p>内部私有外设总线；</p>
+<p>外部私有外设总线；–》 M7内核的；</p>
+</blockquote>
+<h3 id="处理器的核心寄存器"><a href="#处理器的核心寄存器" class="headerlink" title="处理器的核心寄存器"></a>处理器的核心寄存器</h3><blockquote>
+<p><img src="/2023/12/04/22/image-20231204212830460.png" alt="image-20231204212830460"></p>
+</blockquote>
+<p><img src="/2023/12/04/22/image-20231204212848276.png" alt="image-20231204212848276"></p>
+<p>R13栈指针一个寄存器映射两个区域：<mark><strong><code>MSP</code></strong> 和 **<code>PSP</code>**；</mark></p>
+<blockquote>
+<p><strong><u><em>纯裸机编程时，只有一个栈，所以只有MSP主栈指针；</em></u></strong></p>
+<p>FreeRTOS才会用到PSP进程栈指针；</p>
+</blockquote>
+<hr>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><p><img src="/2023/12/04/22/image-20231204213402264.png" alt="image-20231204213402264"></p>
+<p><img src="/2023/12/04/22/image-20231204213423024.png" alt="image-20231204213423024"></p>
+<p><strong><mark><u>ARM的异常处理流程：</u></mark></strong></p>
+<ul>
+<li>1– 保存当前程序的上下文，即：xPSR、PC、LR、R0-R3,R12;<ul>
+<li>通过MSP或者PSP读取地址，把这些寄存器全都入栈，就保存了下来；</li>
+</ul>
+</li>
+<li>2– 把当前要返回的地址放在LR链接寄存器中；</li>
+<li>3a– 切换模式，从线程模式切换到处理模式；</li>
+<li>3b– 指针指向新的栈顶；</li>
+<li>4– 找到该中断的向量地址，赋值给PC指针，执行中断处理函数；</li>
+</ul>
 ]]></content>
       <categories>
         <category>NXP</category>
@@ -2404,6 +2404,28 @@ Vector Table
       </tags>
   </entry>
   <entry>
+    <title>嵌入式系统2--开发板介绍</title>
+    <url>/2022/09/01/18/</url>
+    <content><![CDATA[<h1 id="嵌入式系统2–开发板介绍"><a href="#嵌入式系统2–开发板介绍" class="headerlink" title="嵌入式系统2–开发板介绍"></a>嵌入式系统2–开发板介绍</h1><h2 id="T-PAD开发板简介"><a href="#T-PAD开发板简介" class="headerlink" title="T-PAD开发板简介"></a>T-PAD开发板简介</h2><p>核心板+底板：</p>
+<p><img src="/2022/09/01/18/TPAD.PNG" alt="TPAD"></p>
+<p>核心板：</p>
+<p><img src="/2022/09/01/18/%E6%A0%B8%E5%BF%83%E6%9D%BF.PNG" alt="核心板"></p>
+<ul>
+<li>DDRAM: 1G</li>
+<li>EMMC: 掉电不丢失，相当于硬盘，8G</li>
+</ul>
+<p>接线方式：</p>
+<p><img src="/2022/09/01/18/%E6%8E%A5%E7%BA%BF%E6%96%B9%E5%BC%8F.PNG" alt="接线方式"></p>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+      </categories>
+      <tags>
+        <tag>嵌入式</tag>
+        <tag>ARM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>嵌入式系统1--简介</title>
     <url>/2022/09/01/08/</url>
     <content><![CDATA[<h1 id="嵌入式系统1–简介"><a href="#嵌入式系统1–简介" class="headerlink" title="嵌入式系统1–简介"></a>嵌入式系统1–简介</h1><h2 id="实时操作系统"><a href="#实时操作系统" class="headerlink" title="实时操作系统"></a>实时操作系统</h2><p>是不是RTOS，由<strong>任务调度策略</strong>决定：</p>
@@ -2455,28 +2477,6 @@ Vector Table
 <li>连接介质</li>
 </ul>
 <p><img src="/2022/09/01/08/1.PNG"></p>
-]]></content>
-      <categories>
-        <category>嵌入式</category>
-      </categories>
-      <tags>
-        <tag>嵌入式</tag>
-        <tag>ARM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>嵌入式系统2--开发板介绍</title>
-    <url>/2022/09/01/18/</url>
-    <content><![CDATA[<h1 id="嵌入式系统2–开发板介绍"><a href="#嵌入式系统2–开发板介绍" class="headerlink" title="嵌入式系统2–开发板介绍"></a>嵌入式系统2–开发板介绍</h1><h2 id="T-PAD开发板简介"><a href="#T-PAD开发板简介" class="headerlink" title="T-PAD开发板简介"></a>T-PAD开发板简介</h2><p>核心板+底板：</p>
-<p><img src="/2022/09/01/18/TPAD.PNG" alt="TPAD"></p>
-<p>核心板：</p>
-<p><img src="/2022/09/01/18/%E6%A0%B8%E5%BF%83%E6%9D%BF.PNG" alt="核心板"></p>
-<ul>
-<li>DDRAM: 1G</li>
-<li>EMMC: 掉电不丢失，相当于硬盘，8G</li>
-</ul>
-<p>接线方式：</p>
-<p><img src="/2022/09/01/18/%E6%8E%A5%E7%BA%BF%E6%96%B9%E5%BC%8F.PNG" alt="接线方式"></p>
 ]]></content>
       <categories>
         <category>嵌入式</category>
@@ -2850,6 +2850,50 @@ Vector Table
       </tags>
   </entry>
   <entry>
+    <title>数组05螺旋矩阵Ⅱ</title>
+    <url>/2022/08/29/21/</url>
+    <content><![CDATA[<h1 id="数组05–螺旋矩阵Ⅱ"><a href="#数组05–螺旋矩阵Ⅱ" class="headerlink" title="数组05–螺旋矩阵Ⅱ"></a>数组05–螺旋矩阵Ⅱ</h1><h2 id="59-Spiral-Matrix-II"><a href="#59-Spiral-Matrix-II" class="headerlink" title="59. Spiral Matrix II"></a>59. Spiral Matrix II</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><blockquote>
+<p>给定一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。</p>
+</blockquote>
+<p>示例:</p>
+<blockquote>
+<p>输入: 3</p>
+<p>输出: [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]</p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>本题并不涉及到什么算法，就是模拟过程，考察对代码的掌控能力。如何画出这个螺旋排列的正方形矩阵呢？</p>
+<blockquote>
+<p>很多同学刚开始做这种题目的时候，上来就是一波判断猛如虎。</p>
+<p>结果运行的时候各种问题，然后开始各种修修补补，最后发现改了这里那里有问题，改了那里这里又跑不起来了。</p>
+</blockquote>
+<p>求解本题依然是要<strong>坚持循环不变量原则</strong>。</p>
+<p>模拟顺时针画矩阵的过程:</p>
+<ul>
+<li>填充上行，从左到右；</li>
+<li>右列，从上到下；</li>
+<li>下行，从右到左；</li>
+<li>左列，从下到上；</li>
+</ul>
+<p>要画每四条边，这四条边怎么画，每画一条边都要<strong>坚持一致的左闭右开，或者左开右闭的原则</strong>，这样这一圈才能按照统一的规则画下来。</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">generateMatrix</span>(<span class="type">int</span> n) &#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">res</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(n, <span class="number">0</span>)); <span class="comment">//使用vector定义一个二维数组</span></span><br><span class="line">        <span class="type">int</span> startx = <span class="number">0</span>, starty = <span class="number">0</span>; <span class="comment">//循环一个圈的起始位置</span></span><br><span class="line">        <span class="type">int</span> loop = n / <span class="number">2</span>;  <span class="comment">// 循环几个圈，</span></span><br><span class="line">        <span class="type">int</span> mid = n / <span class="number">2</span>;  <span class="comment">//矩阵中间的位置，比如，n=3时，中心点为(1,1)</span></span><br><span class="line">        <span class="type">int</span> count = <span class="number">1</span>; <span class="comment">// 用来给矩阵中每一个格子赋值</span></span><br><span class="line">        <span class="type">int</span> offset = <span class="number">1</span>; <span class="comment">// 控制每一条边遍历的长度，每次循环右边界收缩一位</span></span><br><span class="line">        <span class="type">int</span> i, j;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (loop --) &#123;</span><br><span class="line">            i = startx;</span><br><span class="line">            j = starty;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 四个for循环模拟四条边转圈</span></span><br><span class="line">            <span class="keyword">for</span> (j = starty; j &lt; n - offset; j++) &#123;</span><br><span class="line">                res[startx][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (i = startx; i &lt; n - offset; i++) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (; j &gt; starty; j--) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (; i &gt; startx; i--) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 第二圈开始的时候，起始位置各自加一</span></span><br><span class="line">            startx++;</span><br><span class="line">            starty++;</span><br><span class="line">            </span><br><span class="line">            offset += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 当n为奇数时，需要单独给最后中心值赋值</span></span><br><span class="line">        <span class="keyword">if</span>(n % <span class="number">2</span>) &#123;</span><br><span class="line">            res[mid][mid] = count;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="相关题目"><a href="#相关题目" class="headerlink" title="相关题目"></a>相关题目</h2><ul>
+<li>54.螺旋矩阵</li>
+<li>剑指Offer 29.顺时针打印矩阵</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Leetcode</category>
+      </categories>
+      <tags>
+        <tag>Leetcode</tag>
+        <tag>代码随想录</tag>
+        <tag>数组</tag>
+        <tag>螺旋矩阵Ⅱ</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>数组04长度最小的子数组</title>
     <url>/2022/07/21/21/</url>
     <content><![CDATA[<h1 id="数组04–长度最小的子数组"><a href="#数组04–长度最小的子数组" class="headerlink" title="数组04–长度最小的子数组"></a>数组04–长度最小的子数组</h1><h2 id="209-Minimum-Size-Subarray-Sum"><a href="#209-Minimum-Size-Subarray-Sum" class="headerlink" title="209. Minimum Size Subarray Sum"></a>209. Minimum Size Subarray Sum</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><blockquote>
@@ -2915,50 +2959,6 @@ Vector Table
         <tag>数组</tag>
         <tag>滑动窗口</tag>
         <tag>长度最小的子数组</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数组05螺旋矩阵Ⅱ</title>
-    <url>/2022/08/29/21/</url>
-    <content><![CDATA[<h1 id="数组05–螺旋矩阵Ⅱ"><a href="#数组05–螺旋矩阵Ⅱ" class="headerlink" title="数组05–螺旋矩阵Ⅱ"></a>数组05–螺旋矩阵Ⅱ</h1><h2 id="59-Spiral-Matrix-II"><a href="#59-Spiral-Matrix-II" class="headerlink" title="59. Spiral Matrix II"></a>59. Spiral Matrix II</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><blockquote>
-<p>给定一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。</p>
-</blockquote>
-<p>示例:</p>
-<blockquote>
-<p>输入: 3</p>
-<p>输出: [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]</p>
-</blockquote>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>本题并不涉及到什么算法，就是模拟过程，考察对代码的掌控能力。如何画出这个螺旋排列的正方形矩阵呢？</p>
-<blockquote>
-<p>很多同学刚开始做这种题目的时候，上来就是一波判断猛如虎。</p>
-<p>结果运行的时候各种问题，然后开始各种修修补补，最后发现改了这里那里有问题，改了那里这里又跑不起来了。</p>
-</blockquote>
-<p>求解本题依然是要<strong>坚持循环不变量原则</strong>。</p>
-<p>模拟顺时针画矩阵的过程:</p>
-<ul>
-<li>填充上行，从左到右；</li>
-<li>右列，从上到下；</li>
-<li>下行，从右到左；</li>
-<li>左列，从下到上；</li>
-</ul>
-<p>要画每四条边，这四条边怎么画，每画一条边都要<strong>坚持一致的左闭右开，或者左开右闭的原则</strong>，这样这一圈才能按照统一的规则画下来。</p>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">generateMatrix</span>(<span class="type">int</span> n) &#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">res</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(n, <span class="number">0</span>)); <span class="comment">//使用vector定义一个二维数组</span></span><br><span class="line">        <span class="type">int</span> startx = <span class="number">0</span>, starty = <span class="number">0</span>; <span class="comment">//循环一个圈的起始位置</span></span><br><span class="line">        <span class="type">int</span> loop = n / <span class="number">2</span>;  <span class="comment">// 循环几个圈，</span></span><br><span class="line">        <span class="type">int</span> mid = n / <span class="number">2</span>;  <span class="comment">//矩阵中间的位置，比如，n=3时，中心点为(1,1)</span></span><br><span class="line">        <span class="type">int</span> count = <span class="number">1</span>; <span class="comment">// 用来给矩阵中每一个格子赋值</span></span><br><span class="line">        <span class="type">int</span> offset = <span class="number">1</span>; <span class="comment">// 控制每一条边遍历的长度，每次循环右边界收缩一位</span></span><br><span class="line">        <span class="type">int</span> i, j;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (loop --) &#123;</span><br><span class="line">            i = startx;</span><br><span class="line">            j = starty;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 四个for循环模拟四条边转圈</span></span><br><span class="line">            <span class="keyword">for</span> (j = starty; j &lt; n - offset; j++) &#123;</span><br><span class="line">                res[startx][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (i = startx; i &lt; n - offset; i++) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (; j &gt; starty; j--) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (; i &gt; startx; i--) &#123;</span><br><span class="line">                res[i][j] = count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 第二圈开始的时候，起始位置各自加一</span></span><br><span class="line">            startx++;</span><br><span class="line">            starty++;</span><br><span class="line">            </span><br><span class="line">            offset += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 当n为奇数时，需要单独给最后中心值赋值</span></span><br><span class="line">        <span class="keyword">if</span>(n % <span class="number">2</span>) &#123;</span><br><span class="line">            res[mid][mid] = count;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="相关题目"><a href="#相关题目" class="headerlink" title="相关题目"></a>相关题目</h2><ul>
-<li>54.螺旋矩阵</li>
-<li>剑指Offer 29.顺时针打印矩阵</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Leetcode</category>
-      </categories>
-      <tags>
-        <tag>Leetcode</tag>
-        <tag>代码随想录</tag>
-        <tag>数组</tag>
-        <tag>螺旋矩阵Ⅱ</tag>
       </tags>
   </entry>
   <entry>
@@ -3305,99 +3305,6 @@ Vector Table
       </tags>
   </entry>
   <entry>
-    <title>考研英语100句Day12</title>
-    <url>/2022/09/06/23/</url>
-    <content><![CDATA[<h1 id="考研英语100句–Day12"><a href="#考研英语100句–Day12" class="headerlink" title="考研英语100句–Day12"></a>考研英语100句–Day12</h1><h2 id="Sentence-56"><a href="#Sentence-56" class="headerlink" title="Sentence 56"></a>Sentence 56</h2><p><em>The policy follows similar efforts from other journals, after widespread concern that basic mistakes in data analysis are contributing to the irreproducibility of many published research findings.</em></p>
-<blockquote>
-<p>这项政策效仿了与其他杂志类似的尝试，此前人们普遍担忧数据分析中的基本错误正导致许多已发表的研究结果无法被再现。</p>
-</blockquote>
-<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>policy</li>
-<li>widespread</li>
-<li>irreproducibility</li>
-</ul>
-<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>follows similar efforts from other journals</li>
-<li>widespread concern that ..</li>
-<li>sth are contributing to ..</li>
-<li>the irreproducibility of published research findings</li>
-</ul>
-<h2 id="Sentence-57"><a href="#Sentence-57" class="headerlink" title="Sentence 57"></a>Sentence 57</h2><p><em>They should exhibit strong interest and respect for whatever currently interests their fledgling adult （as naive or ill conceived as it may seem） while becoming a partner in exploring options for the future.</em></p>
-<blockquote>
-<p>对当前让这些羽翼未丰的成年人感兴趣的任何事物（也许看上去很幼稚或欠考虑周全），父母都应该表现出强烈的兴趣和尊重，同时要成为他们的伙伴，与他们一起探索未来的选择。</p>
-</blockquote>
-<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>exhibit</li>
-<li>fledgling</li>
-<li>conceived</li>
-</ul>
-<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>exhibit strong interest and respect</li>
-<li>become a partner in doing sth</li>
-<li>explore options for the future  探索未来的选择</li>
-<li>as naive or ill conceived as it may seem</li>
-<li>ill conceived</li>
-</ul>
-<h2 id="Sentence-58"><a href="#Sentence-58" class="headerlink" title="Sentence 58"></a>Sentence 58</h2><p><em>In other words, at a time when the working class has turned the country on its political head, frustrated that the opportunity that once defined America is vanishing, one obvious solution is staring us in the face.</em></p>
-<blockquote>
-<p>换句话说，在工人阶级彻底改变这个国家的政治格局，对曾经使美国之所以成为美国的机会正在消失而感到沮丧的时候，一个显而易见的解决方案就摆在我们面前。</p>
-</blockquote>
-<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>frustrated</li>
-<li>opportunity</li>
-<li>vanish</li>
-</ul>
-<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>In other words</li>
-<li>at a time when ..</li>
-<li>the working class  工人阶级</li>
-<li>turned the country on its political head</li>
-<li>one obvious solution is staring us in the face</li>
-</ul>
-<h2 id="Sentence-59"><a href="#Sentence-59" class="headerlink" title="Sentence 59"></a>Sentence 59</h2><p><em>Brain researchers have discovered that when we consciously develop new habits, we create parallel synaptic paths, and even entirely new brain cells, that can jump our trains of thought onto new, innovative tracks.</em></p>
-<blockquote>
-<p>大脑研究人员发现，当我们有意识地培养新习惯的时候，大脑会创建出平行的突触路径，甚至是全新的脑细胞，这样可以使我们的思路跳转到全新的、创造性的轨道中。</p>
-</blockquote>
-<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>consciously</li>
-<li>certainty</li>
-<li>parallel</li>
-<li>synaptic</li>
-<li>innovative</li>
-</ul>
-<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>discovered that ..</li>
-<li>develop new habits</li>
-<li>synaptic paths</li>
-<li>jump our trains of thought onto new, innovative tracks</li>
-<li>trains of thought</li>
-<li>innovative track</li>
-</ul>
-<h2 id="Sentence-60"><a href="#Sentence-60" class="headerlink" title="Sentence 60"></a>Sentence 60</h2><p><em>This type of integrity requires well-enforced laws in government transparency, such as records of official meetings, rules on lobbying, and information about each elected leader’s source of wealth.</em></p>
-<blockquote>
-<p>这种廉政要求在政府透明度方面有严格执行的法律，如官方会议记录、游说规则以及每位当选领导人的财富来源的信息。</p>
-</blockquote>
-<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>integrity</li>
-<li>transparency</li>
-<li>lobbying</li>
-</ul>
-<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>well-enforced law</li>
-<li>official meetings</li>
-<li>rules on ..</li>
-<li>source of wealth</li>
-</ul>
-]]></content>
-      <categories>
-        <category>英语</category>
-      </categories>
-      <tags>
-        <tag>英语</tag>
-        <tag>考研英语100句</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>考研英语100句Day13</title>
     <url>/2022/09/07/24/</url>
     <content><![CDATA[<h1 id="考研英语100句–Day13"><a href="#考研英语100句–Day13" class="headerlink" title="考研英语100句–Day13"></a>考研英语100句–Day13</h1><h2 id="Sentence-61"><a href="#Sentence-61" class="headerlink" title="Sentence 61"></a>Sentence 61</h2><p><em>In the past couple of weeks a quarrel has illustrated the value to advertisers of such fine-grained information: Should advertisers assume that people are happy to be tracked and sent behavioural ads?</em></p>
@@ -3489,6 +3396,99 @@ Vector Table
 <li>give a pass to sb</li>
 <li>because of complicated family lives</li>
 <li>it is going riskily close to sth</li>
+</ul>
+]]></content>
+      <categories>
+        <category>英语</category>
+      </categories>
+      <tags>
+        <tag>英语</tag>
+        <tag>考研英语100句</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考研英语100句Day12</title>
+    <url>/2022/09/06/23/</url>
+    <content><![CDATA[<h1 id="考研英语100句–Day12"><a href="#考研英语100句–Day12" class="headerlink" title="考研英语100句–Day12"></a>考研英语100句–Day12</h1><h2 id="Sentence-56"><a href="#Sentence-56" class="headerlink" title="Sentence 56"></a>Sentence 56</h2><p><em>The policy follows similar efforts from other journals, after widespread concern that basic mistakes in data analysis are contributing to the irreproducibility of many published research findings.</em></p>
+<blockquote>
+<p>这项政策效仿了与其他杂志类似的尝试，此前人们普遍担忧数据分析中的基本错误正导致许多已发表的研究结果无法被再现。</p>
+</blockquote>
+<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>policy</li>
+<li>widespread</li>
+<li>irreproducibility</li>
+</ul>
+<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>follows similar efforts from other journals</li>
+<li>widespread concern that ..</li>
+<li>sth are contributing to ..</li>
+<li>the irreproducibility of published research findings</li>
+</ul>
+<h2 id="Sentence-57"><a href="#Sentence-57" class="headerlink" title="Sentence 57"></a>Sentence 57</h2><p><em>They should exhibit strong interest and respect for whatever currently interests their fledgling adult （as naive or ill conceived as it may seem） while becoming a partner in exploring options for the future.</em></p>
+<blockquote>
+<p>对当前让这些羽翼未丰的成年人感兴趣的任何事物（也许看上去很幼稚或欠考虑周全），父母都应该表现出强烈的兴趣和尊重，同时要成为他们的伙伴，与他们一起探索未来的选择。</p>
+</blockquote>
+<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>exhibit</li>
+<li>fledgling</li>
+<li>conceived</li>
+</ul>
+<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>exhibit strong interest and respect</li>
+<li>become a partner in doing sth</li>
+<li>explore options for the future  探索未来的选择</li>
+<li>as naive or ill conceived as it may seem</li>
+<li>ill conceived</li>
+</ul>
+<h2 id="Sentence-58"><a href="#Sentence-58" class="headerlink" title="Sentence 58"></a>Sentence 58</h2><p><em>In other words, at a time when the working class has turned the country on its political head, frustrated that the opportunity that once defined America is vanishing, one obvious solution is staring us in the face.</em></p>
+<blockquote>
+<p>换句话说，在工人阶级彻底改变这个国家的政治格局，对曾经使美国之所以成为美国的机会正在消失而感到沮丧的时候，一个显而易见的解决方案就摆在我们面前。</p>
+</blockquote>
+<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>frustrated</li>
+<li>opportunity</li>
+<li>vanish</li>
+</ul>
+<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>In other words</li>
+<li>at a time when ..</li>
+<li>the working class  工人阶级</li>
+<li>turned the country on its political head</li>
+<li>one obvious solution is staring us in the face</li>
+</ul>
+<h2 id="Sentence-59"><a href="#Sentence-59" class="headerlink" title="Sentence 59"></a>Sentence 59</h2><p><em>Brain researchers have discovered that when we consciously develop new habits, we create parallel synaptic paths, and even entirely new brain cells, that can jump our trains of thought onto new, innovative tracks.</em></p>
+<blockquote>
+<p>大脑研究人员发现，当我们有意识地培养新习惯的时候，大脑会创建出平行的突触路径，甚至是全新的脑细胞，这样可以使我们的思路跳转到全新的、创造性的轨道中。</p>
+</blockquote>
+<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>consciously</li>
+<li>certainty</li>
+<li>parallel</li>
+<li>synaptic</li>
+<li>innovative</li>
+</ul>
+<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>discovered that ..</li>
+<li>develop new habits</li>
+<li>synaptic paths</li>
+<li>jump our trains of thought onto new, innovative tracks</li>
+<li>trains of thought</li>
+<li>innovative track</li>
+</ul>
+<h2 id="Sentence-60"><a href="#Sentence-60" class="headerlink" title="Sentence 60"></a>Sentence 60</h2><p><em>This type of integrity requires well-enforced laws in government transparency, such as records of official meetings, rules on lobbying, and information about each elected leader’s source of wealth.</em></p>
+<blockquote>
+<p>这种廉政要求在政府透明度方面有严格执行的法律，如官方会议记录、游说规则以及每位当选领导人的财富来源的信息。</p>
+</blockquote>
+<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>integrity</li>
+<li>transparency</li>
+<li>lobbying</li>
+</ul>
+<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>well-enforced law</li>
+<li>official meetings</li>
+<li>rules on ..</li>
+<li>source of wealth</li>
 </ul>
 ]]></content>
       <categories>
