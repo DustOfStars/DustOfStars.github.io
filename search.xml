@@ -1065,6 +1065,131 @@
       </tags>
   </entry>
   <entry>
+    <title>UART总结</title>
+    <url>/2022/10/17/02/</url>
+    <content><![CDATA[<h1 id="总线协议-–-UART"><a href="#总线协议-–-UART" class="headerlink" title="总线协议 – UART"></a>总线协议 – UART</h1><h2 id="一、-UART简介"><a href="#一、-UART简介" class="headerlink" title="一、 UART简介"></a>一、 UART简介</h2><blockquote>
+<p>UART: Universal Asynchronous Receiver Transmitter（通用异步收发器），</p>
+<p>通用的<em>串行、异步</em>通信总线，它有<strong>两条</strong>数据线，实现<strong>全双工</strong>发送和接收。</p>
+</blockquote>
+<h3 id="1-1-通信基础"><a href="#1-1-通信基础" class="headerlink" title="1.1 通信基础"></a>1.1 通信基础</h3><p>串行、并行：</p>
+<ul>
+<li>并行通信：总线在传递数据的时候，可以一次性收发多个位的数据。并行虽然快，但是要考虑多个线的<em>资源占用</em>，以及多条线<em>互相干扰</em>的问题；</li>
+<li>串行通信：每一位数据逐次传递；（<strong>IIC\SPI都是串行通信</strong>）</li>
+</ul>
+<p>单工、双工：</p>
+<ul>
+<li>单工通信：只能是单向的，<mark>发送器给接收器发送数据</mark>，而不能反过来；</li>
+<li>双工通信：可以是A到B，也可以是B到A；<ul>
+<li>半双工：不能同时发生；只有一根线，发送时就不能接收；</li>
+<li>全双工：可以同时发送和接收，有两根线；</li>
+</ul>
+</li>
+</ul>
+<p>波特率：</p>
+<ul>
+<li><p>波特率：描述UART通信速度，单位<strong>bps</strong>，(bit per second)，每秒传送的bit的数量；</p>
+<ul>
+<li>每秒的波特数，波特等于单个信号包含的码元数量</li>
+</ul>
+</li>
+<li><p>比特率：是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，每秒传送数据就越多。</p>
+</li>
+<li><p>波特率：表示每秒钟传送码元符号的个数，是衡量数据传送速率的指标。</p>
+<ul>
+<li>在信息传输通道中，携带数据信息的信号单元叫码元，每秒钟通过信道传输的码元数称为码元传输速率，简称<strong>波特率</strong>。波特率是传输通道频宽的指标。</li>
+<li>比特率&#x3D;波特率x单个调制状态对应的二进制位数</li>
+<li>两相调制(单个调制状态对应1个二进制位)的比特率等于波特率;四相调制(单个调制状态对应2个二进制位)的比特率为波特率的两倍;八相调制(单个调制状态对应3个二进制位)的比特率为波特率的三倍;依次类推。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-UART帧格式"><a href="#1-2-UART帧格式" class="headerlink" title="1.2 UART帧格式"></a>1.2 UART帧格式</h3><p><img src="/2022/10/17/02/frame_struct.JPG" alt="UART帧格式"></p>
+<ul>
+<li><input disabled type="checkbox"> 起始位：1bit的0，标志发送开始；因为空闲时为1，所以开始为0；</li>
+<li><input checked disabled type="checkbox"> 数据位： 5-8bit，<strong>先发低位，后发高位</strong>；</li>
+<li><input disabled type="checkbox"> 校验位：可有可无；奇偶校验，是校验奇数还是偶数个1； </li>
+<li><input disabled type="checkbox"> 停止位：高电平1；</li>
+<li><input disabled type="checkbox"> 空闲位：</li>
+</ul>
+<blockquote>
+<p>注意： UART<strong>空闲</strong>的时候，用<strong>高电平</strong>表示；</p>
+<p>串口协议从低位先发，最后发高位；</p>
+<p><mark>串口每次都只发一个byte，下一个byte又重新开始起始位，是因为它是<strong>异步的</strong>，发送方和接收方的时钟不是同一个，防止由于时钟不同步导致误差累积；</mark></p>
+<p>IIC和SPI都是同步通信，可以发多个字节；</p>
+</blockquote>
+<h3 id="1-3-Tx-amp-Rx"><a href="#1-3-Tx-amp-Rx" class="headerlink" title="1.3 Tx &amp; Rx"></a>1.3 Tx &amp; Rx</h3><blockquote>
+<p>串口的信号一般较弱，通信距离短，容易被干扰，所以增加了一块专有芯片用来增加抗干扰能力，使发送距离更远；(TTL信号转为232信号)</p>
+</blockquote>
+<p>发送STEPs：</p>
+<ol>
+<li>待发送数据放入FIFO</li>
+<li>增加了UART协议的各种头，比如起始和校验，然后拷贝放入shifter；</li>
+<li>shifter每个bit依次移位到引脚来发送，<strong>先发低位，后发高位</strong>；</li>
+</ol>
+<p><em>即发送时：      FIFO –&gt; shifter –&gt; TxD;</em></p>
+<p><em>接收时顺序相反，RxD –&gt; shifter –&gt; FIFO;</em></p>
+<h3 id="1-4-UART工作模式"><a href="#1-4-UART工作模式" class="headerlink" title="1.4 UART工作模式"></a>1.4 UART工作模式</h3><p><em><strong>CPU会通过总线，和接收和发送的BUFFer相连，用来读写数据，另外，也和控制单元相连，对控制单元的设置进行修改；</strong></em></p>
+<blockquote>
+<p>look-back: <strong>回环模式look-back</strong>是在内部将Tx和Rx短接，一般用于测试；</p>
+</blockquote>
+<p><img src="/2022/10/17/02/workMode.JPG" alt="几种工作模式"></p>
+<p>三种常见的工作模式：</p>
+<ol>
+<li>polling  轮询<ul>
+<li>CPU不断地对FIFO进行访问，查询需要的数据有没有发过来；</li>
+<li>CPU的状态： 工作 –&gt; 轮询 –&gt; 工作 –&gt; 轮询 …</li>
+<li>直到查找到需要的数据；</li>
+<li>费时费力，消耗资源</li>
+</ul>
+</li>
+<li>interrupt  中断<ul>
+<li>CPU和FIFO约定，CPU<strong>不主动</strong>去查询，当FIFO收到数据要发送过来的时候，给CPU发送<strong>中断信号</strong>，CPU中断当前工作，接收FIFO的数据；</li>
+<li><strong>比polling模式省资源</strong>；</li>
+</ul>
+</li>
+<li>DMA  直接存储器访问<ul>
+<li>CPU收到FIFO的数据，最终也是要放入某一块内存中去使用的；</li>
+<li>DMA模式<strong>跳过CPU</strong>，当FIFO数据过来时，直接放入需要的内存中；</li>
+</ul>
+</li>
+</ol>
+<h2 id="二、-polling模式实验（以qn9090为例）"><a href="#二、-polling模式实验（以qn9090为例）" class="headerlink" title="二、 polling模式实验（以qn9090为例）"></a>二、 polling模式实验（以qn9090为例）</h2><h3 id="2-1-主函数"><a href="#2-1-主函数" class="headerlink" title="2.1 主函数"></a>2.1 主函数</h3><blockquote>
+<p>usart_polling.c</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> ch;</span><br><span class="line">    <span class="type">usart_config_t</span> config;                              <span class="comment">// 配置波特率、帧格式、上升下降沿、奇偶校验、停止位等</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);                    <span class="comment">// 使用默认配置，传入config的引用</span></span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;    <span class="comment">// 客制化usart配置</span></span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);           <span class="comment">// 使用config和外部时钟初始化USART实例，其中外部时钟只在设置波特率时使用</span></span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);    <span class="comment">// 将数组中的值写入</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                     <span class="comment">// 数据逐个从FIFORD读入ch，这里只读入一位</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                    <span class="comment">// 数据逐个从ch写入FIFOWR，这里只读入一位，等待TX进入IDLE模式结束</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-只接收一个char"><a href="#2-2-只接收一个char" class="headerlink" title="2.2 只接收一个char"></a>2.2 只接收一个char</h3><p>实验结果：</p>
+<p><img src="/2022/10/17/02/%E5%8D%95%E5%AD%97%E7%AC%A6%E5%AE%9E%E9%AA%8C.jpg" alt="单字符实验"></p>
+<h2 id="接收字符串"><a href="#接收字符串" class="headerlink" title="接收字符串"></a>接收字符串</h2><p>原始代码修改为接收一个定长5的array，代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> <span class="built_in">array</span>[<span class="number">6</span>];</span><br><span class="line">    <span class="type">usart_config_t</span> config;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);</span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;</span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);</span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实验结果：</p>
+<p><img src="/2022/10/17/02/%E5%AE%9A%E9%95%BFarray%E5%AE%9E%E9%AA%8C.jpg" alt="定长array实验"></p>
+<h2 id="三、补充"><a href="#三、补充" class="headerlink" title="三、补充"></a>三、补充</h2><h3 id="3-1-SDK中典型使用"><a href="#3-1-SDK中典型使用" class="headerlink" title="3.1 SDK中典型使用"></a>3.1 SDK中典型使用</h3><p>在NXP的QN9090的SDK中，提供了丰富的示例：</p>
+<ul>
+<li>polling method 收发</li>
+<li>interrupt method 收发</li>
+<li>ringbuffer接收数据</li>
+<li>DMA method 收发</li>
+</ul>
+<p>文档 ： <code>MCUXpresso SDK API Reference Manual.pdf</code></p>
+<p><img src="/2022/10/17/02/%E5%85%B8%E5%9E%8B%E7%A4%BA%E4%BE%8B.jpg" alt="典型示例"></p>
+<h3 id="3-2-串口的工作原理"><a href="#3-2-串口的工作原理" class="headerlink" title="3.2 串口的工作原理"></a>3.2 串口的工作原理</h3><p>一个byte的数据，如何转为串口输出的bit？ 通过移位寄存器原理实现</p>
+<p>移位寄存器原理：</p>
+<p><img src="/2022/10/17/02/%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8.jpg" alt="移位寄存器"></p>
+<p>初始状态： A3A2A1A0＝ 1011</p>
+<p>然后Q3的输出，是在每个时钟节拍，按照这个先后顺序，把A3A2A1A0串行的输出出去。(小端)</p>
+<p>其实利用的就是D触发器的特性。</p>
+<p>如果我们使用8位的移位寄存器，就可以利用8个clk的时间，发一组8bit的数据通过一根导线传输出去。</p>
+]]></content>
+      <categories>
+        <category>NXP</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>UART</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Vim使用</title>
     <url>/2022/04/05/20/</url>
     <content><![CDATA[<h1 id="Vim使用"><a href="#Vim使用" class="headerlink" title="Vim使用"></a>Vim使用</h1><p>本周学习了小彭老师的vim教程，很受启发，学习记录在这。</p>
@@ -1435,131 +1560,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>UART总结</title>
-    <url>/2022/10/17/02/</url>
-    <content><![CDATA[<h1 id="总线协议-–-UART"><a href="#总线协议-–-UART" class="headerlink" title="总线协议 – UART"></a>总线协议 – UART</h1><h2 id="一、-UART简介"><a href="#一、-UART简介" class="headerlink" title="一、 UART简介"></a>一、 UART简介</h2><blockquote>
-<p>UART: Universal Asynchronous Receiver Transmitter（通用异步收发器），</p>
-<p>通用的<em>串行、异步</em>通信总线，它有<strong>两条</strong>数据线，实现<strong>全双工</strong>发送和接收。</p>
-</blockquote>
-<h3 id="1-1-通信基础"><a href="#1-1-通信基础" class="headerlink" title="1.1 通信基础"></a>1.1 通信基础</h3><p>串行、并行：</p>
-<ul>
-<li>并行通信：总线在传递数据的时候，可以一次性收发多个位的数据。并行虽然快，但是要考虑多个线的<em>资源占用</em>，以及多条线<em>互相干扰</em>的问题；</li>
-<li>串行通信：每一位数据逐次传递；（<strong>IIC\SPI都是串行通信</strong>）</li>
-</ul>
-<p>单工、双工：</p>
-<ul>
-<li>单工通信：只能是单向的，<mark>发送器给接收器发送数据</mark>，而不能反过来；</li>
-<li>双工通信：可以是A到B，也可以是B到A；<ul>
-<li>半双工：不能同时发生；只有一根线，发送时就不能接收；</li>
-<li>全双工：可以同时发送和接收，有两根线；</li>
-</ul>
-</li>
-</ul>
-<p>波特率：</p>
-<ul>
-<li><p>波特率：描述UART通信速度，单位<strong>bps</strong>，(bit per second)，每秒传送的bit的数量；</p>
-<ul>
-<li>每秒的波特数，波特等于单个信号包含的码元数量</li>
-</ul>
-</li>
-<li><p>比特率：是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，每秒传送数据就越多。</p>
-</li>
-<li><p>波特率：表示每秒钟传送码元符号的个数，是衡量数据传送速率的指标。</p>
-<ul>
-<li>在信息传输通道中，携带数据信息的信号单元叫码元，每秒钟通过信道传输的码元数称为码元传输速率，简称<strong>波特率</strong>。波特率是传输通道频宽的指标。</li>
-<li>比特率&#x3D;波特率x单个调制状态对应的二进制位数</li>
-<li>两相调制(单个调制状态对应1个二进制位)的比特率等于波特率;四相调制(单个调制状态对应2个二进制位)的比特率为波特率的两倍;八相调制(单个调制状态对应3个二进制位)的比特率为波特率的三倍;依次类推。</li>
-</ul>
-</li>
-</ul>
-<h3 id="1-2-UART帧格式"><a href="#1-2-UART帧格式" class="headerlink" title="1.2 UART帧格式"></a>1.2 UART帧格式</h3><p><img src="/2022/10/17/02/frame_struct.JPG" alt="UART帧格式"></p>
-<ul>
-<li><input disabled type="checkbox"> 起始位：1bit的0，标志发送开始；因为空闲时为1，所以开始为0；</li>
-<li><input checked disabled type="checkbox"> 数据位： 5-8bit，<strong>先发低位，后发高位</strong>；</li>
-<li><input disabled type="checkbox"> 校验位：可有可无；奇偶校验，是校验奇数还是偶数个1； </li>
-<li><input disabled type="checkbox"> 停止位：高电平1；</li>
-<li><input disabled type="checkbox"> 空闲位：</li>
-</ul>
-<blockquote>
-<p>注意： UART<strong>空闲</strong>的时候，用<strong>高电平</strong>表示；</p>
-<p>串口协议从低位先发，最后发高位；</p>
-<p><mark>串口每次都只发一个byte，下一个byte又重新开始起始位，是因为它是<strong>异步的</strong>，发送方和接收方的时钟不是同一个，防止由于时钟不同步导致误差累积；</mark></p>
-<p>IIC和SPI都是同步通信，可以发多个字节；</p>
-</blockquote>
-<h3 id="1-3-Tx-amp-Rx"><a href="#1-3-Tx-amp-Rx" class="headerlink" title="1.3 Tx &amp; Rx"></a>1.3 Tx &amp; Rx</h3><blockquote>
-<p>串口的信号一般较弱，通信距离短，容易被干扰，所以增加了一块专有芯片用来增加抗干扰能力，使发送距离更远；(TTL信号转为232信号)</p>
-</blockquote>
-<p>发送STEPs：</p>
-<ol>
-<li>待发送数据放入FIFO</li>
-<li>增加了UART协议的各种头，比如起始和校验，然后拷贝放入shifter；</li>
-<li>shifter每个bit依次移位到引脚来发送，<strong>先发低位，后发高位</strong>；</li>
-</ol>
-<p><em>即发送时：      FIFO –&gt; shifter –&gt; TxD;</em></p>
-<p><em>接收时顺序相反，RxD –&gt; shifter –&gt; FIFO;</em></p>
-<h3 id="1-4-UART工作模式"><a href="#1-4-UART工作模式" class="headerlink" title="1.4 UART工作模式"></a>1.4 UART工作模式</h3><p><em><strong>CPU会通过总线，和接收和发送的BUFFer相连，用来读写数据，另外，也和控制单元相连，对控制单元的设置进行修改；</strong></em></p>
-<blockquote>
-<p>look-back: <strong>回环模式look-back</strong>是在内部将Tx和Rx短接，一般用于测试；</p>
-</blockquote>
-<p><img src="/2022/10/17/02/workMode.JPG" alt="几种工作模式"></p>
-<p>三种常见的工作模式：</p>
-<ol>
-<li>polling  轮询<ul>
-<li>CPU不断地对FIFO进行访问，查询需要的数据有没有发过来；</li>
-<li>CPU的状态： 工作 –&gt; 轮询 –&gt; 工作 –&gt; 轮询 …</li>
-<li>直到查找到需要的数据；</li>
-<li>费时费力，消耗资源</li>
-</ul>
-</li>
-<li>interrupt  中断<ul>
-<li>CPU和FIFO约定，CPU<strong>不主动</strong>去查询，当FIFO收到数据要发送过来的时候，给CPU发送<strong>中断信号</strong>，CPU中断当前工作，接收FIFO的数据；</li>
-<li><strong>比polling模式省资源</strong>；</li>
-</ul>
-</li>
-<li>DMA  直接存储器访问<ul>
-<li>CPU收到FIFO的数据，最终也是要放入某一块内存中去使用的；</li>
-<li>DMA模式<strong>跳过CPU</strong>，当FIFO数据过来时，直接放入需要的内存中；</li>
-</ul>
-</li>
-</ol>
-<h2 id="二、-polling模式实验（以qn9090为例）"><a href="#二、-polling模式实验（以qn9090为例）" class="headerlink" title="二、 polling模式实验（以qn9090为例）"></a>二、 polling模式实验（以qn9090为例）</h2><h3 id="2-1-主函数"><a href="#2-1-主函数" class="headerlink" title="2.1 主函数"></a>2.1 主函数</h3><blockquote>
-<p>usart_polling.c</p>
-</blockquote>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> ch;</span><br><span class="line">    <span class="type">usart_config_t</span> config;                              <span class="comment">// 配置波特率、帧格式、上升下降沿、奇偶校验、停止位等</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);                    <span class="comment">// 使用默认配置，传入config的引用</span></span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;    <span class="comment">// 客制化usart配置</span></span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);           <span class="comment">// 使用config和外部时钟初始化USART实例，其中外部时钟只在设置波特率时使用</span></span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);    <span class="comment">// 将数组中的值写入</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                     <span class="comment">// 数据逐个从FIFORD读入ch，这里只读入一位</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;ch, <span class="number">1</span>);                    <span class="comment">// 数据逐个从ch写入FIFOWR，这里只读入一位，等待TX进入IDLE模式结束</span></span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-2-只接收一个char"><a href="#2-2-只接收一个char" class="headerlink" title="2.2 只接收一个char"></a>2.2 只接收一个char</h3><p>实验结果：</p>
-<p><img src="/2022/10/17/02/%E5%8D%95%E5%AD%97%E7%AC%A6%E5%AE%9E%E9%AA%8C.jpg" alt="单字符实验"></p>
-<h2 id="接收字符串"><a href="#接收字符串" class="headerlink" title="接收字符串"></a>接收字符串</h2><p>原始代码修改为接收一个定长5的array，代码：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> <span class="built_in">array</span>[<span class="number">6</span>];</span><br><span class="line">    <span class="type">usart_config_t</span> config;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Security code to allow debug access */</span></span><br><span class="line">    SYSCON-&gt;CODESECURITYPROT = <span class="number">0x87654320</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* attach clock for USART(debug console) */</span></span><br><span class="line">    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* reset FLEXCOMM for USART */</span></span><br><span class="line">    RESET_PeripheralReset(kFC0_RST_SHIFT_RSTn);</span><br><span class="line"></span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * config.baudRate_Bps = 115200U;</span></span><br><span class="line"><span class="comment">     * config.parityMode = kUSART_ParityDisabled;</span></span><br><span class="line"><span class="comment">     * config.stopBitCount = kUSART_OneStopBit;</span></span><br><span class="line"><span class="comment">     * config.loopback = false;</span></span><br><span class="line"><span class="comment">     * config.enableTx = false;</span></span><br><span class="line"><span class="comment">     * config.enableRx = false;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    USART_GetDefaultConfig(&amp;config);</span><br><span class="line">    config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;</span><br><span class="line">    config.enableTx     = <span class="literal">true</span>;</span><br><span class="line">    config.enableRx     = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    USART_Init(DEMO_USART, &amp;config, DEMO_USART_CLK_FREQ);</span><br><span class="line"></span><br><span class="line">    USART_WriteBlocking(DEMO_USART, txbuff, <span class="keyword">sizeof</span>(txbuff) - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        PRINTF(<span class="string">&quot;READ:\n\r&quot;</span>);</span><br><span class="line">        USART_ReadBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\rWRITE:\n\r&quot;</span>);</span><br><span class="line">        USART_WriteBlocking(DEMO_USART, &amp;<span class="built_in">array</span>, <span class="keyword">sizeof</span>(<span class="built_in">array</span>) - <span class="number">1</span>);</span><br><span class="line">        PRINTF(<span class="string">&quot;\n\r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>实验结果：</p>
-<p><img src="/2022/10/17/02/%E5%AE%9A%E9%95%BFarray%E5%AE%9E%E9%AA%8C.jpg" alt="定长array实验"></p>
-<h2 id="三、补充"><a href="#三、补充" class="headerlink" title="三、补充"></a>三、补充</h2><h3 id="3-1-SDK中典型使用"><a href="#3-1-SDK中典型使用" class="headerlink" title="3.1 SDK中典型使用"></a>3.1 SDK中典型使用</h3><p>在NXP的QN9090的SDK中，提供了丰富的示例：</p>
-<ul>
-<li>polling method 收发</li>
-<li>interrupt method 收发</li>
-<li>ringbuffer接收数据</li>
-<li>DMA method 收发</li>
-</ul>
-<p>文档 ： <code>MCUXpresso SDK API Reference Manual.pdf</code></p>
-<p><img src="/2022/10/17/02/%E5%85%B8%E5%9E%8B%E7%A4%BA%E4%BE%8B.jpg" alt="典型示例"></p>
-<h3 id="3-2-串口的工作原理"><a href="#3-2-串口的工作原理" class="headerlink" title="3.2 串口的工作原理"></a>3.2 串口的工作原理</h3><p>一个byte的数据，如何转为串口输出的bit？ 通过移位寄存器原理实现</p>
-<p>移位寄存器原理：</p>
-<p><img src="/2022/10/17/02/%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8.jpg" alt="移位寄存器"></p>
-<p>初始状态： A3A2A1A0＝ 1011</p>
-<p>然后Q3的输出，是在每个时钟节拍，按照这个先后顺序，把A3A2A1A0串行的输出出去。(小端)</p>
-<p>其实利用的就是D触发器的特性。</p>
-<p>如果我们使用8位的移位寄存器，就可以利用8个clk的时间，发一组8bit的数据通过一根导线传输出去。</p>
-]]></content>
-      <categories>
-        <category>NXP</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>UART</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>kw38点灯大师</title>
     <url>/2023/03/24/42/</url>
     <content><![CDATA[<h1 id="KW38点灯大师"><a href="#KW38点灯大师" class="headerlink" title="KW38点灯大师"></a>KW38点灯大师</h1><blockquote>
@@ -1656,6 +1656,48 @@
       </tags>
   </entry>
   <entry>
+    <title>kw38点灯大师2_GPIO中断</title>
+    <url>/2023/03/29/43/</url>
+    <content><![CDATA[<h1 id="kw38点灯大师2-GPIO中断"><a href="#kw38点灯大师2-GPIO中断" class="headerlink" title="kw38点灯大师2_GPIO中断"></a>kw38点灯大师2_GPIO中断</h1><blockquote>
+<p>frdmkw38_gpio_led_output   工程<br>frdmkw38_gpio_input_interrupt   工程</p>
+</blockquote>
+<p><img src="/2023/03/29/43/gpio%E4%B8%AD%E6%96%AD%E6%8E%A7%E5%88%B6LED.gif" alt="light"></p>
+<h2 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* Define the init structure for the output LED pin*/</span></span><br><span class="line">    <span class="type">gpio_pin_config_t</span> led_config = &#123;</span><br><span class="line">        kGPIO_DigitalOutput,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Define the init structure for the input switch pin */</span></span><br><span class="line">    <span class="type">gpio_pin_config_t</span> sw_config = &#123;</span><br><span class="line">        kGPIO_DigitalInput,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Board pin, clock, debug console init */</span></span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Print a note to terminal. */</span></span><br><span class="line">    PRINTF(<span class="string">&quot;\r\n GPIO Driver example\r\n&quot;</span>);</span><br><span class="line">    PRINTF(<span class="string">&quot;\r\n The LED is blinking.\r\n&quot;</span>);</span><br><span class="line">    PRINTF(<span class="string">&quot;\r\n 按压开关 %s 来开关和切换LED.\r\n&quot;</span>, BOARD_SW_NAME);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Init input switch GPIO. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> (defined(FSL_FEATURE_PORT_HAS_NO_INTERRUPT) &amp;&amp; FSL_FEATURE_PORT_HAS_NO_INTERRUPT)</span></span><br><span class="line">    GPIO_SetPinInterruptConfig(BOARD_SW2_GPIO, BOARD_SW2_GPIO_PIN, kGPIO_InterruptFallingEdge);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    PORT_SetPinInterruptConfig(BOARD_SW2_PORT, BOARD_SW2_GPIO_PIN, kPORT_InterruptFallingEdge);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    EnableIRQ(BOARD_SW2_IRQ);</span><br><span class="line">    GPIO_PinInit(BOARD_SW2_GPIO, BOARD_SW2_GPIO_PIN, &amp;sw_config);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init output LED GPIO. */</span></span><br><span class="line">    GPIO_PinInit(BOARD_LED_GPIO0, BOARD_LED_GPIO_PIN0, &amp;led_config);</span><br><span class="line">    GPIO_PinInit(BOARD_LED_GPIO1, BOARD_LED_GPIO_PIN1, &amp;led_config);</span><br><span class="line">    GPIO_PinInit(BOARD_LED_GPIO2, BOARD_LED_GPIO_PIN2, &amp;led_config);</span><br><span class="line"></span><br><span class="line">    <span class="type">uint32_t</span> temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (g_ButtonPress)</span><br><span class="line">        &#123;</span><br><span class="line">            temp ++;</span><br><span class="line">            PRINTF(<span class="string">&quot; %s is pressed, it is time: %d \r\n&quot;</span>, BOARD_SW_NAME, temp);</span><br><span class="line">            <span class="keyword">switch</span>(temp%<span class="number">3</span>)</span><br><span class="line">            &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">                PRINTF(<span class="string">&quot; case 0, BLUE LED ON&quot;</span>);</span><br><span class="line">                LED_RED_OFF();</span><br><span class="line">                LED_GREEN_OFF();</span><br><span class="line">                LED_BLUE_ON();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                PRINTF(<span class="string">&quot; case 1, GREEN LED ON&quot;</span>);</span><br><span class="line">                LED_RED_OFF();</span><br><span class="line">                LED_GREEN_ON();</span><br><span class="line">                LED_BLUE_OFF();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                PRINTF(<span class="string">&quot; case 2, RED LED ON&quot;</span>);</span><br><span class="line">                LED_RED_ON();</span><br><span class="line">                LED_GREEN_OFF();</span><br><span class="line">                LED_BLUE_OFF();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"><span class="comment">//            /* Toggle LED. */</span></span><br><span class="line"><span class="comment">//            GPIO_PortToggle(BOARD_LED_GPIO, 1U &lt;&lt; BOARD_LED_GPIO_PIN);</span></span><br><span class="line"><span class="comment">//            /* Reset state of button. */</span></span><br><span class="line">            g_ButtonPress = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="中断处理函数"><a href="#中断处理函数" class="headerlink" title="中断处理函数"></a>中断处理函数</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">BOARD_SW2_IRQ_HANDLER</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* Clear external interrupt flag. */</span></span><br><span class="line">    GPIO_PortClearInterruptFlags(BOARD_SW2_GPIO, <span class="number">1U</span> &lt;&lt; BOARD_SW2_GPIO_PIN);</span><br><span class="line">    <span class="comment">/* Change state of button. */</span></span><br><span class="line">    g_ButtonPress = <span class="literal">true</span>;</span><br><span class="line"><span class="comment">/* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping</span></span><br><span class="line"><span class="comment">  exception return operation might vector to incorrect interrupt */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined __CORTEX_M &amp;&amp; (__CORTEX_M == 4U)</span></span><br><span class="line">    __DSB();</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="预定义"><a href="#预定义" class="headerlink" title="预定义"></a>预定义</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO0 BOARD_LED_RED_GPIO</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO_PIN0 BOARD_LED_RED_GPIO_PIN</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO1 BOARD_LED_GREEN_GPIO</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO_PIN1 BOARD_LED_GREEN_GPIO_PIN</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO2 BOARD_LED_BLUE_GPIO</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO_PIN2 BOARD_LED_BLUE_GPIO_PIN</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_SW_NAME BOARD_SW2_NAME</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="总结GPIO中断的流程"><a href="#总结GPIO中断的流程" class="headerlink" title="总结GPIO中断的流程"></a>总结GPIO中断的流程</h1><ol>
+<li>变量flag <code>volatile bool g_ButtonPress = false;</code>  指示是否按下开关</li>
+<li>中断处理函数 <code>void BOARD_SW2_IRQ_HANDLER()</code><ol>
+<li>先清空外部中断，<code>GPIO_PortClearInterruptFlags(BOARD_SW2_GPIO, 1U &lt;&lt; BOARD_SW2_GPIO_PIN);</code></li>
+<li>再对flag置一，表示中断已经发生；</li>
+<li>之后，它会进入到main的while循环里面的<code>if(g_ButtonPress)</code>;</li>
+</ol>
+</li>
+<li>main函数里面初始化板子之后，要初始化SW的GPIO；<ol>
+<li>中断config设置  <code>GPIO_SetPinInterruptConfig(BOARD_SW2_GPIO, BOARD_SW2_GPIO_PIN, kGPIO_InterruptFallingEdge);</code>;</li>
+<li>GPIO_PinInit   <code>GPIO_PinInit(BOARD_SW2_GPIO, BOARD_SW2_GPIO_PIN, &amp;sw_config);</code></li>
+</ol>
+</li>
+<li>然后 <code>EnableIRQ(BOARD_SW2_IRQ);</code></li>
+</ol>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+        <category>代码解读</category>
+        <category>中断</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>嵌入式</tag>
+        <tag>LED</tag>
+        <tag>GPIO中断</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>pyTorch学习</title>
     <url>/2022/03/17/11/</url>
     <content><![CDATA[<h2 id="一、-MLP-模型的实现"><a href="#一、-MLP-模型的实现" class="headerlink" title="一、 MLP 模型的实现"></a>一、 MLP 模型的实现</h2><ul>
@@ -1696,48 +1738,6 @@
       <tags>
         <tag>NLP</tag>
         <tag>pyTorch</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>kw38点灯大师2_GPIO中断</title>
-    <url>/2023/03/29/43/</url>
-    <content><![CDATA[<h1 id="kw38点灯大师2-GPIO中断"><a href="#kw38点灯大师2-GPIO中断" class="headerlink" title="kw38点灯大师2_GPIO中断"></a>kw38点灯大师2_GPIO中断</h1><blockquote>
-<p>frdmkw38_gpio_led_output   工程<br>frdmkw38_gpio_input_interrupt   工程</p>
-</blockquote>
-<p><img src="/2023/03/29/43/gpio%E4%B8%AD%E6%96%AD%E6%8E%A7%E5%88%B6LED.gif" alt="light"></p>
-<h2 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* Define the init structure for the output LED pin*/</span></span><br><span class="line">    <span class="type">gpio_pin_config_t</span> led_config = &#123;</span><br><span class="line">        kGPIO_DigitalOutput,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Define the init structure for the input switch pin */</span></span><br><span class="line">    <span class="type">gpio_pin_config_t</span> sw_config = &#123;</span><br><span class="line">        kGPIO_DigitalInput,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Board pin, clock, debug console init */</span></span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Print a note to terminal. */</span></span><br><span class="line">    PRINTF(<span class="string">&quot;\r\n GPIO Driver example\r\n&quot;</span>);</span><br><span class="line">    PRINTF(<span class="string">&quot;\r\n The LED is blinking.\r\n&quot;</span>);</span><br><span class="line">    PRINTF(<span class="string">&quot;\r\n 按压开关 %s 来开关和切换LED.\r\n&quot;</span>, BOARD_SW_NAME);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Init input switch GPIO. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> (defined(FSL_FEATURE_PORT_HAS_NO_INTERRUPT) &amp;&amp; FSL_FEATURE_PORT_HAS_NO_INTERRUPT)</span></span><br><span class="line">    GPIO_SetPinInterruptConfig(BOARD_SW2_GPIO, BOARD_SW2_GPIO_PIN, kGPIO_InterruptFallingEdge);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    PORT_SetPinInterruptConfig(BOARD_SW2_PORT, BOARD_SW2_GPIO_PIN, kPORT_InterruptFallingEdge);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    EnableIRQ(BOARD_SW2_IRQ);</span><br><span class="line">    GPIO_PinInit(BOARD_SW2_GPIO, BOARD_SW2_GPIO_PIN, &amp;sw_config);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init output LED GPIO. */</span></span><br><span class="line">    GPIO_PinInit(BOARD_LED_GPIO0, BOARD_LED_GPIO_PIN0, &amp;led_config);</span><br><span class="line">    GPIO_PinInit(BOARD_LED_GPIO1, BOARD_LED_GPIO_PIN1, &amp;led_config);</span><br><span class="line">    GPIO_PinInit(BOARD_LED_GPIO2, BOARD_LED_GPIO_PIN2, &amp;led_config);</span><br><span class="line"></span><br><span class="line">    <span class="type">uint32_t</span> temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (g_ButtonPress)</span><br><span class="line">        &#123;</span><br><span class="line">            temp ++;</span><br><span class="line">            PRINTF(<span class="string">&quot; %s is pressed, it is time: %d \r\n&quot;</span>, BOARD_SW_NAME, temp);</span><br><span class="line">            <span class="keyword">switch</span>(temp%<span class="number">3</span>)</span><br><span class="line">            &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">                PRINTF(<span class="string">&quot; case 0, BLUE LED ON&quot;</span>);</span><br><span class="line">                LED_RED_OFF();</span><br><span class="line">                LED_GREEN_OFF();</span><br><span class="line">                LED_BLUE_ON();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                PRINTF(<span class="string">&quot; case 1, GREEN LED ON&quot;</span>);</span><br><span class="line">                LED_RED_OFF();</span><br><span class="line">                LED_GREEN_ON();</span><br><span class="line">                LED_BLUE_OFF();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                PRINTF(<span class="string">&quot; case 2, RED LED ON&quot;</span>);</span><br><span class="line">                LED_RED_ON();</span><br><span class="line">                LED_GREEN_OFF();</span><br><span class="line">                LED_BLUE_OFF();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"><span class="comment">//            /* Toggle LED. */</span></span><br><span class="line"><span class="comment">//            GPIO_PortToggle(BOARD_LED_GPIO, 1U &lt;&lt; BOARD_LED_GPIO_PIN);</span></span><br><span class="line"><span class="comment">//            /* Reset state of button. */</span></span><br><span class="line">            g_ButtonPress = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="中断处理函数"><a href="#中断处理函数" class="headerlink" title="中断处理函数"></a>中断处理函数</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">BOARD_SW2_IRQ_HANDLER</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* Clear external interrupt flag. */</span></span><br><span class="line">    GPIO_PortClearInterruptFlags(BOARD_SW2_GPIO, <span class="number">1U</span> &lt;&lt; BOARD_SW2_GPIO_PIN);</span><br><span class="line">    <span class="comment">/* Change state of button. */</span></span><br><span class="line">    g_ButtonPress = <span class="literal">true</span>;</span><br><span class="line"><span class="comment">/* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping</span></span><br><span class="line"><span class="comment">  exception return operation might vector to incorrect interrupt */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined __CORTEX_M &amp;&amp; (__CORTEX_M == 4U)</span></span><br><span class="line">    __DSB();</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="预定义"><a href="#预定义" class="headerlink" title="预定义"></a>预定义</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO0 BOARD_LED_RED_GPIO</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO_PIN0 BOARD_LED_RED_GPIO_PIN</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO1 BOARD_LED_GREEN_GPIO</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO_PIN1 BOARD_LED_GREEN_GPIO_PIN</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO2 BOARD_LED_BLUE_GPIO</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_LED_GPIO_PIN2 BOARD_LED_BLUE_GPIO_PIN</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOARD_SW_NAME BOARD_SW2_NAME</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="总结GPIO中断的流程"><a href="#总结GPIO中断的流程" class="headerlink" title="总结GPIO中断的流程"></a>总结GPIO中断的流程</h1><ol>
-<li>变量flag <code>volatile bool g_ButtonPress = false;</code>  指示是否按下开关</li>
-<li>中断处理函数 <code>void BOARD_SW2_IRQ_HANDLER()</code><ol>
-<li>先清空外部中断，<code>GPIO_PortClearInterruptFlags(BOARD_SW2_GPIO, 1U &lt;&lt; BOARD_SW2_GPIO_PIN);</code></li>
-<li>再对flag置一，表示中断已经发生；</li>
-<li>之后，它会进入到main的while循环里面的<code>if(g_ButtonPress)</code>;</li>
-</ol>
-</li>
-<li>main函数里面初始化板子之后，要初始化SW的GPIO；<ol>
-<li>中断config设置  <code>GPIO_SetPinInterruptConfig(BOARD_SW2_GPIO, BOARD_SW2_GPIO_PIN, kGPIO_InterruptFallingEdge);</code>;</li>
-<li>GPIO_PinInit   <code>GPIO_PinInit(BOARD_SW2_GPIO, BOARD_SW2_GPIO_PIN, &amp;sw_config);</code></li>
-</ol>
-</li>
-<li>然后 <code>EnableIRQ(BOARD_SW2_IRQ);</code></li>
-</ol>
-]]></content>
-      <categories>
-        <category>嵌入式</category>
-        <category>代码解读</category>
-        <category>中断</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>嵌入式</tag>
-        <tag>LED</tag>
-        <tag>GPIO中断</tag>
       </tags>
   </entry>
   <entry>
@@ -3023,95 +3023,6 @@ Vector Table
       </tags>
   </entry>
   <entry>
-    <title>考研英语100句Day1</title>
-    <url>/2022/07/21/59/</url>
-    <content><![CDATA[<h1 id="考研英语100句–Day1"><a href="#考研英语100句–Day1" class="headerlink" title="考研英语100句–Day1"></a>考研英语100句–Day1</h1><h2 id="Sentence-01"><a href="#Sentence-01" class="headerlink" title="Sentence 01"></a>Sentence 01</h2><p><em>We become defensive when criticised, and apply negative stereotypes to others to boost our own esteem.</em></p>
-<blockquote>
-<p>一旦受到批评，我们就会为自己辩护，并将他人定格为消极的老套形象，以此增强自己的<br>自尊心。</p>
-</blockquote>
-<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>defensive</li>
-<li>criticised</li>
-<li>negative</li>
-<li>stereotypes</li>
-<li>boost</li>
-<li>esteem</li>
-</ul>
-<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>when criticised</li>
-<li>apply sth to sb</li>
-<li>boost our esteem</li>
-</ul>
-<h2 id="Sentence-02"><a href="#Sentence-02" class="headerlink" title="Sentence 02"></a>Sentence 02</h2><p><em>Devoted concertgoers who reply that recordings are no substitute for live performance are missing the point.</em></p>
-<blockquote>
-<p>那些忠诚的音乐会听众回应说现场演出绝非是唱片所能替代的，可这些听众没有领会到问题<br>的关键点。</p>
-</blockquote>
-<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>devoted</li>
-<li>concertgoers</li>
-<li>recordings</li>
-<li>substitute</li>
-<li>live performance</li>
-</ul>
-<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>recordings are no substitute for live performance</li>
-<li>miss the point</li>
-</ul>
-<h2 id="Sentence-03"><a href="#Sentence-03" class="headerlink" title="Sentence 03"></a>Sentence 03</h2><p><em>Ants keep predatory insects away from where their aphids feed;</em></p>
-<p><em>Gmail keeps the spammers out of our inboxes.</em></p>
-<blockquote>
-<p>蚂蚁让食肉昆虫远离蚜虫进食的地方；谷歌邮箱让滥发垃圾邮件的人远离我们的收件箱。</p>
-</blockquote>
-<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>predatory</li>
-<li>insect</li>
-<li>aphid</li>
-<li>spammer</li>
-</ul>
-<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>keep sb away from sb</li>
-</ul>
-<h2 id="Sentence-04"><a href="#Sentence-04" class="headerlink" title="Sentence 04"></a>Sentence 04</h2><p><em>At the same time, people continue to treat fire as an event that needs to be wholly controlled and unleashed only out of necessity.</em></p>
-<blockquote>
-<p>与此同时，人们继续把用火视为一种需要全面控制的事件，只有在必要之时才放出来使用。</p>
-</blockquote>
-<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>wholly</li>
-<li>unleash</li>
-</ul>
-<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>continue to do sth</li>
-<li>needs to be wholly controlled</li>
-<li>needs to be unleashed only out of necessity</li>
-<li>treat fire as an event ..</li>
-</ul>
-<h2 id="Sentence-05"><a href="#Sentence-05" class="headerlink" title="Sentence 05"></a>Sentence 05</h2><p><em>As boards scrutinize succession plans in response to shareholder pressure, executives who don’t get the nod also may wish to move on.</em></p>
-<blockquote>
-<p>在董事会迫于股东的压力严格审查继任计划的时候，那些没被选中的高管们也可能想离开。</p>
-</blockquote>
-<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>boards</li>
-<li>scrutinize</li>
-<li>succession plans</li>
-<li>shareholder</li>
-<li>executive</li>
-</ul>
-<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>in response to sth</li>
-<li>get the nod</li>
-<li>wish to do</li>
-<li>move on</li>
-</ul>
-]]></content>
-      <categories>
-        <category>英语</category>
-      </categories>
-      <tags>
-        <tag>英语</tag>
-        <tag>考研英语100句</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>考研英语100句Day10</title>
     <url>/2022/09/06/20/</url>
     <content><![CDATA[<h1 id="考研英语100句–Day10"><a href="#考研英语100句–Day10" class="headerlink" title="考研英语100句–Day10"></a>考研英语100句–Day10</h1><h2 id="Sentence-46"><a href="#Sentence-46" class="headerlink" title="Sentence 46"></a>Sentence 46</h2><p><em>While the researchers assumed that the well-structured daily plans would be most effective when it came to the execution of tasks, they were wrong: the detailed daily plans demotivated students.</em></p>
@@ -3198,6 +3109,95 @@ Vector Table
 <li>cultural diversity</li>
 <li>be traced to</li>
 <li>more constrained beginnings</li>
+</ul>
+]]></content>
+      <categories>
+        <category>英语</category>
+      </categories>
+      <tags>
+        <tag>英语</tag>
+        <tag>考研英语100句</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考研英语100句Day1</title>
+    <url>/2022/07/21/59/</url>
+    <content><![CDATA[<h1 id="考研英语100句–Day1"><a href="#考研英语100句–Day1" class="headerlink" title="考研英语100句–Day1"></a>考研英语100句–Day1</h1><h2 id="Sentence-01"><a href="#Sentence-01" class="headerlink" title="Sentence 01"></a>Sentence 01</h2><p><em>We become defensive when criticised, and apply negative stereotypes to others to boost our own esteem.</em></p>
+<blockquote>
+<p>一旦受到批评，我们就会为自己辩护，并将他人定格为消极的老套形象，以此增强自己的<br>自尊心。</p>
+</blockquote>
+<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>defensive</li>
+<li>criticised</li>
+<li>negative</li>
+<li>stereotypes</li>
+<li>boost</li>
+<li>esteem</li>
+</ul>
+<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>when criticised</li>
+<li>apply sth to sb</li>
+<li>boost our esteem</li>
+</ul>
+<h2 id="Sentence-02"><a href="#Sentence-02" class="headerlink" title="Sentence 02"></a>Sentence 02</h2><p><em>Devoted concertgoers who reply that recordings are no substitute for live performance are missing the point.</em></p>
+<blockquote>
+<p>那些忠诚的音乐会听众回应说现场演出绝非是唱片所能替代的，可这些听众没有领会到问题<br>的关键点。</p>
+</blockquote>
+<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>devoted</li>
+<li>concertgoers</li>
+<li>recordings</li>
+<li>substitute</li>
+<li>live performance</li>
+</ul>
+<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>recordings are no substitute for live performance</li>
+<li>miss the point</li>
+</ul>
+<h2 id="Sentence-03"><a href="#Sentence-03" class="headerlink" title="Sentence 03"></a>Sentence 03</h2><p><em>Ants keep predatory insects away from where their aphids feed;</em></p>
+<p><em>Gmail keeps the spammers out of our inboxes.</em></p>
+<blockquote>
+<p>蚂蚁让食肉昆虫远离蚜虫进食的地方；谷歌邮箱让滥发垃圾邮件的人远离我们的收件箱。</p>
+</blockquote>
+<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>predatory</li>
+<li>insect</li>
+<li>aphid</li>
+<li>spammer</li>
+</ul>
+<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>keep sb away from sb</li>
+</ul>
+<h2 id="Sentence-04"><a href="#Sentence-04" class="headerlink" title="Sentence 04"></a>Sentence 04</h2><p><em>At the same time, people continue to treat fire as an event that needs to be wholly controlled and unleashed only out of necessity.</em></p>
+<blockquote>
+<p>与此同时，人们继续把用火视为一种需要全面控制的事件，只有在必要之时才放出来使用。</p>
+</blockquote>
+<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>wholly</li>
+<li>unleash</li>
+</ul>
+<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>continue to do sth</li>
+<li>needs to be wholly controlled</li>
+<li>needs to be unleashed only out of necessity</li>
+<li>treat fire as an event ..</li>
+</ul>
+<h2 id="Sentence-05"><a href="#Sentence-05" class="headerlink" title="Sentence 05"></a>Sentence 05</h2><p><em>As boards scrutinize succession plans in response to shareholder pressure, executives who don’t get the nod also may wish to move on.</em></p>
+<blockquote>
+<p>在董事会迫于股东的压力严格审查继任计划的时候，那些没被选中的高管们也可能想离开。</p>
+</blockquote>
+<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>boards</li>
+<li>scrutinize</li>
+<li>succession plans</li>
+<li>shareholder</li>
+<li>executive</li>
+</ul>
+<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>in response to sth</li>
+<li>get the nod</li>
+<li>wish to do</li>
+<li>move on</li>
 </ul>
 ]]></content>
       <categories>
@@ -3387,108 +3387,6 @@ Vector Table
 <li>official meetings</li>
 <li>rules on ..</li>
 <li>source of wealth</li>
-</ul>
-]]></content>
-      <categories>
-        <category>英语</category>
-      </categories>
-      <tags>
-        <tag>英语</tag>
-        <tag>考研英语100句</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>考研英语100句Day13</title>
-    <url>/2022/09/07/24/</url>
-    <content><![CDATA[<h1 id="考研英语100句–Day13"><a href="#考研英语100句–Day13" class="headerlink" title="考研英语100句–Day13"></a>考研英语100句–Day13</h1><h2 id="Sentence-61"><a href="#Sentence-61" class="headerlink" title="Sentence 61"></a>Sentence 61</h2><p><em>In the past couple of weeks a quarrel has illustrated the value to advertisers of such fine-grained information: Should advertisers assume that people are happy to be tracked and sent behavioural ads?</em></p>
-<blockquote>
-<p>在过去几周里，一场争论已经阐明了这种精确的信息对于广告商的价值：广告商是否可以认为用户愿意被追踪其在网络上的行为并接收基于他们在网络上的行为而制定的广告？</p>
-</blockquote>
-<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>quarrel</li>
-<li>illustrate</li>
-<li>fine-grained</li>
-<li>assume</li>
-<li>behavioural</li>
-</ul>
-<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>the value to advertisers of such fine-grained information</li>
-<li>sb is happy to be tracked</li>
-<li>behavioural ads</li>
-</ul>
-<h2 id="Sentence-62"><a href="#Sentence-62" class="headerlink" title="Sentence 62"></a>Sentence 62</h2><p><em>Last year, the Transportation Security Administration （ TSA ） found in a secret check that undercover investigators were able to sneak weapons—both fake and real—past airport security nearly every time they tried.</em></p>
-<blockquote>
-<p>去年，美国运输安全管理局，在一次秘密检查中发现，便衣调查员几乎每次尝试私携武器——无论是伪造的武器还是真的武器——都能顺利通过机场安检。</p>
-</blockquote>
-<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>transportation</li>
-<li>security</li>
-<li>administration</li>
-<li>secret</li>
-<li>undercover</li>
-<li>investigator</li>
-<li>sneak</li>
-<li>weapon</li>
-</ul>
-<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>the Transportation Security Administration</li>
-<li>in a secret check</li>
-<li>nearly every time they tried</li>
-</ul>
-<h2 id="Sentence-63"><a href="#Sentence-63" class="headerlink" title="Sentence 63"></a>Sentence 63</h2><p><em>California has asked the justices to refrain from a sweeping ruling, particularly one that upsets the old assumptions that authorities may search through the possessions of suspects at the time of their arrest.</em></p>
-<blockquote>
-<p>加利福尼亚州已经要求法官们避免做出一刀切的裁决，尤其是不能做出那种颠覆了当局在逮捕嫌疑人时可以搜查其财产这些存在已久的假定的裁决。</p>
-</blockquote>
-<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>justice</li>
-<li>refrain    避免</li>
-<li>particularly</li>
-<li>upset</li>
-<li>assumption</li>
-<li>authority</li>
-<li>possession</li>
-<li>suspect</li>
-<li>arrest</li>
-</ul>
-<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>ask sb to do sth</li>
-<li>refrain from</li>
-<li>refrain from a sweeping ruling</li>
-<li>search through</li>
-<li>at the time of their arrest</li>
-</ul>
-<h2 id="Sentence-64"><a href="#Sentence-64" class="headerlink" title="Sentence 64"></a>Sentence 64</h2><p><em>Priestly explains how the deep blue color of the assistant’s sweater descended over the years from fashion shows to department stores and to the bargain bin in which the poor girl doubtless found her garment.</em></p>
-<blockquote>
-<p>普里斯特利解释了这位助理身上这件针织衫所采用的深蓝色这些年来是如何从时装秀没落到百货商店，最后沦落到商品打折处理区的，而这位可怜的女孩无疑是在那里淘到了这件衣服。</p>
-</blockquote>
-<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>explain</li>
-<li>assistant</li>
-<li>sweater</li>
-<li>descend</li>
-<li>bargain</li>
-<li>doubtless</li>
-<li>garment</li>
-</ul>
-<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>over the years</li>
-<li>the bargain bin</li>
-</ul>
-<h2 id="Sentence-65"><a href="#Sentence-65" class="headerlink" title="Sentence 65"></a>Sentence 65</h2><p><em>If the district is essentially giving a pass to students who do not do their homework because of complicated family lives, it is going riskily close to the implication that standards need to be lowered for poor children.</em></p>
-<blockquote>
-<p>如果该学区让那些因为家庭环境复杂而不做家庭作业的学生通过考试的话，那么这就危险地近乎于暗示着，对于贫穷的孩子，学业标准需要降低。</p>
-</blockquote>
-<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>district</li>
-<li>essentially    实质上</li>
-<li>complicated</li>
-<li>implication    暗示</li>
-<li>standard</li>
-</ul>
-<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>give a pass to sb</li>
-<li>because of complicated family lives</li>
-<li>it is going riskily close to sth</li>
 </ul>
 ]]></content>
       <categories>
@@ -3696,6 +3594,108 @@ Vector Table
 <li>dip in often enough</li>
 <li>default state</li>
 <li>drop back down</li>
+</ul>
+]]></content>
+      <categories>
+        <category>英语</category>
+      </categories>
+      <tags>
+        <tag>英语</tag>
+        <tag>考研英语100句</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考研英语100句Day13</title>
+    <url>/2022/09/07/24/</url>
+    <content><![CDATA[<h1 id="考研英语100句–Day13"><a href="#考研英语100句–Day13" class="headerlink" title="考研英语100句–Day13"></a>考研英语100句–Day13</h1><h2 id="Sentence-61"><a href="#Sentence-61" class="headerlink" title="Sentence 61"></a>Sentence 61</h2><p><em>In the past couple of weeks a quarrel has illustrated the value to advertisers of such fine-grained information: Should advertisers assume that people are happy to be tracked and sent behavioural ads?</em></p>
+<blockquote>
+<p>在过去几周里，一场争论已经阐明了这种精确的信息对于广告商的价值：广告商是否可以认为用户愿意被追踪其在网络上的行为并接收基于他们在网络上的行为而制定的广告？</p>
+</blockquote>
+<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>quarrel</li>
+<li>illustrate</li>
+<li>fine-grained</li>
+<li>assume</li>
+<li>behavioural</li>
+</ul>
+<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>the value to advertisers of such fine-grained information</li>
+<li>sb is happy to be tracked</li>
+<li>behavioural ads</li>
+</ul>
+<h2 id="Sentence-62"><a href="#Sentence-62" class="headerlink" title="Sentence 62"></a>Sentence 62</h2><p><em>Last year, the Transportation Security Administration （ TSA ） found in a secret check that undercover investigators were able to sneak weapons—both fake and real—past airport security nearly every time they tried.</em></p>
+<blockquote>
+<p>去年，美国运输安全管理局，在一次秘密检查中发现，便衣调查员几乎每次尝试私携武器——无论是伪造的武器还是真的武器——都能顺利通过机场安检。</p>
+</blockquote>
+<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>transportation</li>
+<li>security</li>
+<li>administration</li>
+<li>secret</li>
+<li>undercover</li>
+<li>investigator</li>
+<li>sneak</li>
+<li>weapon</li>
+</ul>
+<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>the Transportation Security Administration</li>
+<li>in a secret check</li>
+<li>nearly every time they tried</li>
+</ul>
+<h2 id="Sentence-63"><a href="#Sentence-63" class="headerlink" title="Sentence 63"></a>Sentence 63</h2><p><em>California has asked the justices to refrain from a sweeping ruling, particularly one that upsets the old assumptions that authorities may search through the possessions of suspects at the time of their arrest.</em></p>
+<blockquote>
+<p>加利福尼亚州已经要求法官们避免做出一刀切的裁决，尤其是不能做出那种颠覆了当局在逮捕嫌疑人时可以搜查其财产这些存在已久的假定的裁决。</p>
+</blockquote>
+<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>justice</li>
+<li>refrain    避免</li>
+<li>particularly</li>
+<li>upset</li>
+<li>assumption</li>
+<li>authority</li>
+<li>possession</li>
+<li>suspect</li>
+<li>arrest</li>
+</ul>
+<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>ask sb to do sth</li>
+<li>refrain from</li>
+<li>refrain from a sweeping ruling</li>
+<li>search through</li>
+<li>at the time of their arrest</li>
+</ul>
+<h2 id="Sentence-64"><a href="#Sentence-64" class="headerlink" title="Sentence 64"></a>Sentence 64</h2><p><em>Priestly explains how the deep blue color of the assistant’s sweater descended over the years from fashion shows to department stores and to the bargain bin in which the poor girl doubtless found her garment.</em></p>
+<blockquote>
+<p>普里斯特利解释了这位助理身上这件针织衫所采用的深蓝色这些年来是如何从时装秀没落到百货商店，最后沦落到商品打折处理区的，而这位可怜的女孩无疑是在那里淘到了这件衣服。</p>
+</blockquote>
+<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>explain</li>
+<li>assistant</li>
+<li>sweater</li>
+<li>descend</li>
+<li>bargain</li>
+<li>doubtless</li>
+<li>garment</li>
+</ul>
+<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>over the years</li>
+<li>the bargain bin</li>
+</ul>
+<h2 id="Sentence-65"><a href="#Sentence-65" class="headerlink" title="Sentence 65"></a>Sentence 65</h2><p><em>If the district is essentially giving a pass to students who do not do their homework because of complicated family lives, it is going riskily close to the implication that standards need to be lowered for poor children.</em></p>
+<blockquote>
+<p>如果该学区让那些因为家庭环境复杂而不做家庭作业的学生通过考试的话，那么这就危险地近乎于暗示着，对于贫穷的孩子，学业标准需要降低。</p>
+</blockquote>
+<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>district</li>
+<li>essentially    实质上</li>
+<li>complicated</li>
+<li>implication    暗示</li>
+<li>standard</li>
+</ul>
+<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>give a pass to sb</li>
+<li>because of complicated family lives</li>
+<li>it is going riskily close to sth</li>
 </ul>
 ]]></content>
       <categories>
@@ -3992,110 +3992,6 @@ Vector Table
       </tags>
   </entry>
   <entry>
-    <title>考研英语100句Day19</title>
-    <url>/2022/09/14/31/</url>
-    <content><![CDATA[<h1 id="考研英语100句–Day19"><a href="#考研英语100句–Day19" class="headerlink" title="考研英语100句–Day19"></a>考研英语100句–Day19</h1><h2 id="Sentence-91"><a href="#Sentence-91" class="headerlink" title="Sentence 91"></a>Sentence 91</h2><p><em>But in her new book Join the Club, Tina Rosenberg contends that peer pressure can also be a positive force through what she calls the social cure, in which organizations and officials use the power of group dynamics to help individuals improve their lives and possibly the world.</em></p>
-<blockquote>
-<p>但是，蒂娜·罗森堡在她的新书《加入俱乐部》中主张，同辈压力也可以通过她所说的“社会治疗”转化成一种积极的力量。在社会治疗的过程中，各机构及官员可以利用群体动力来帮助个人改善生活，甚至可能改善整个世界。</p>
-</blockquote>
-<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>contend</li>
-<li>cure</li>
-</ul>
-<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>peer pressure</li>
-<li>a positive force</li>
-<li>the social cure</li>
-<li>help individuals improve their lives</li>
-</ul>
-<h2 id="Sentence-92"><a href="#Sentence-92" class="headerlink" title="Sentence 92"></a>Sentence 92</h2><p><em>Fundamentally, the USPS is in a historic squeeze between technological change that has permanently decreased demand for its bread-and-butter product, first-class mail, and a regulatory structure that denies management the flexibility to adjust its operations to the new reality.</em></p>
-<blockquote>
-<p>从根本上说，美国邮政署（USPS）正处于一个历史性的困境之中，一方面是技术变革永久性地降低了对其主要产品——普通邮件的需求，另一方面是监管结构拒绝让管理部门灵活调整其业务以适应新形势。</p>
-</blockquote>
-<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>fundamentally</li>
-<li>historic</li>
-<li>squeeze</li>
-<li>permanently</li>
-<li>decrease</li>
-<li>demand</li>
-<li>deny</li>
-<li>flexibility</li>
-<li>operations    经营，手术，操作，执行</li>
-</ul>
-<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>in a historic squeeze</li>
-<li>permanently decreased demand for sth.</li>
-<li>its bread-and-butter product</li>
-<li>adjust its operations to the new reality</li>
-</ul>
-<h2 id="Sentence-93"><a href="#Sentence-93" class="headerlink" title="Sentence 93"></a>Sentence 93</h2><p><em>Unhappy parents rarely are provoked to wonder if they shouldn’t have had kids, but unhappy childless folks are bothered with the message that children are the single most important thing in the world: obviously their misery must be a direct result of the gaping baby-size holes in their lives.</em></p>
-<blockquote>
-<p>几乎没有事情会促使不幸福的父母去琢磨自己是否不该养孩子，但是不幸福的且没有孩子的人们却总是被“孩子是世上唯一最重要的东西”这一信息所困扰：显然他们的不幸肯定是他们一生中没有孩子的缺憾造成的。</p>
-</blockquote>
-<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>rarely</li>
-<li>provoke    诱导，挑衅，煽动</li>
-<li>folks    人们</li>
-<li>obviously</li>
-<li>misery</li>
-</ul>
-<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>be provoked to wonder if they should ..</li>
-<li>be bothered with sth ..</li>
-<li>must be a direct result of sth.</li>
-</ul>
-<h2 id="Sentence-94"><a href="#Sentence-94" class="headerlink" title="Sentence 94"></a>Sentence 94</h2><p><em>To encourage innovation and competition, the report calls for increased investment in research, the crafting of coherent curricula that improve students’ ability to solve problems and communicate effectively in the 21st century, increased funding for teachers and the encouragement of scholars to bring their learning to bear on the great challenges of the day.</em></p>
-<blockquote>
-<p>为了鼓励创新和竞争，报告呼吁增加对此项研究的投资，呼吁精心设计系统连贯的课程以提高学生在21世纪解决问题和有效沟通的能力，呼吁增加教师的经费，并鼓励学者应用他们的学识来应对当今巨大的挑战。</p>
-</blockquote>
-<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>encourage</li>
-<li>innovation</li>
-<li>competition</li>
-<li>investment</li>
-<li>craft    制定</li>
-<li>coherent    配套的，连贯的</li>
-<li>curricula    课程表，课程</li>
-</ul>
-<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>calls for sth ..    呼吁</li>
-<li>increased investment in research</li>
-<li>increased funding for teachers</li>
-<li>improve students’ ability to solve problems</li>
-<li>communicate effectively</li>
-<li>bring their learning to bear on the great challenges of the day</li>
-</ul>
-<h2 id="Sentence-95"><a href="#Sentence-95" class="headerlink" title="Sentence 95"></a>Sentence 95</h2><p><em>Moreover, average overall margins are higher in wholesale than in retail; wholesale demand from the food service sector is growing quickly as more Europeans eat out more often; and changes in the competitive dynamics of this fragmented industry are at last making it feasible for wholesalers to consolidate.</em></p>
-<blockquote>
-<p>此外，批发业的平均总利润高于零售业；随着越来越多的欧洲人更加频繁地外出就餐，餐饮服务业的批发需求也迅速增长；这一零散产业竞争力量的变化最终会使批发商们的联合成为可能。</p>
-</blockquote>
-<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>moreover</li>
-<li>overall</li>
-<li>margin</li>
-<li>wholesale</li>
-<li>retail</li>
-<li>sector    行业</li>
-<li>competitive</li>
-<li>fragmented</li>
-<li>feasible    可行的</li>
-<li>consolidate    整顿，整并</li>
-</ul>
-<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>average overall margins</li>
-<li>this fragmented industry</li>
-</ul>
-]]></content>
-      <categories>
-        <category>英语</category>
-      </categories>
-      <tags>
-        <tag>英语</tag>
-        <tag>考研英语100句</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>考研英语100句Day2</title>
     <url>/2022/07/27/01/</url>
     <content><![CDATA[<h1 id="考研英语100句–Day2"><a href="#考研英语100句–Day2" class="headerlink" title="考研英语100句–Day2"></a>考研英语100句–Day2</h1><h2 id="Sentence-06"><a href="#Sentence-06" class="headerlink" title="Sentence 06"></a>Sentence 06</h2><p><em>Everyone needs to find their extra – their unique value contribution that makes them stand out in whatever is their field of employment.</em></p>
@@ -4285,6 +4181,110 @@ Vector Table
 <li>personal fulfillment</li>
 <li>be financially secure</li>
 <li>get married</li>
+</ul>
+]]></content>
+      <categories>
+        <category>英语</category>
+      </categories>
+      <tags>
+        <tag>英语</tag>
+        <tag>考研英语100句</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考研英语100句Day19</title>
+    <url>/2022/09/14/31/</url>
+    <content><![CDATA[<h1 id="考研英语100句–Day19"><a href="#考研英语100句–Day19" class="headerlink" title="考研英语100句–Day19"></a>考研英语100句–Day19</h1><h2 id="Sentence-91"><a href="#Sentence-91" class="headerlink" title="Sentence 91"></a>Sentence 91</h2><p><em>But in her new book Join the Club, Tina Rosenberg contends that peer pressure can also be a positive force through what she calls the social cure, in which organizations and officials use the power of group dynamics to help individuals improve their lives and possibly the world.</em></p>
+<blockquote>
+<p>但是，蒂娜·罗森堡在她的新书《加入俱乐部》中主张，同辈压力也可以通过她所说的“社会治疗”转化成一种积极的力量。在社会治疗的过程中，各机构及官员可以利用群体动力来帮助个人改善生活，甚至可能改善整个世界。</p>
+</blockquote>
+<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>contend</li>
+<li>cure</li>
+</ul>
+<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>peer pressure</li>
+<li>a positive force</li>
+<li>the social cure</li>
+<li>help individuals improve their lives</li>
+</ul>
+<h2 id="Sentence-92"><a href="#Sentence-92" class="headerlink" title="Sentence 92"></a>Sentence 92</h2><p><em>Fundamentally, the USPS is in a historic squeeze between technological change that has permanently decreased demand for its bread-and-butter product, first-class mail, and a regulatory structure that denies management the flexibility to adjust its operations to the new reality.</em></p>
+<blockquote>
+<p>从根本上说，美国邮政署（USPS）正处于一个历史性的困境之中，一方面是技术变革永久性地降低了对其主要产品——普通邮件的需求，另一方面是监管结构拒绝让管理部门灵活调整其业务以适应新形势。</p>
+</blockquote>
+<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>fundamentally</li>
+<li>historic</li>
+<li>squeeze</li>
+<li>permanently</li>
+<li>decrease</li>
+<li>demand</li>
+<li>deny</li>
+<li>flexibility</li>
+<li>operations    经营，手术，操作，执行</li>
+</ul>
+<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>in a historic squeeze</li>
+<li>permanently decreased demand for sth.</li>
+<li>its bread-and-butter product</li>
+<li>adjust its operations to the new reality</li>
+</ul>
+<h2 id="Sentence-93"><a href="#Sentence-93" class="headerlink" title="Sentence 93"></a>Sentence 93</h2><p><em>Unhappy parents rarely are provoked to wonder if they shouldn’t have had kids, but unhappy childless folks are bothered with the message that children are the single most important thing in the world: obviously their misery must be a direct result of the gaping baby-size holes in their lives.</em></p>
+<blockquote>
+<p>几乎没有事情会促使不幸福的父母去琢磨自己是否不该养孩子，但是不幸福的且没有孩子的人们却总是被“孩子是世上唯一最重要的东西”这一信息所困扰：显然他们的不幸肯定是他们一生中没有孩子的缺憾造成的。</p>
+</blockquote>
+<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>rarely</li>
+<li>provoke    诱导，挑衅，煽动</li>
+<li>folks    人们</li>
+<li>obviously</li>
+<li>misery</li>
+</ul>
+<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>be provoked to wonder if they should ..</li>
+<li>be bothered with sth ..</li>
+<li>must be a direct result of sth.</li>
+</ul>
+<h2 id="Sentence-94"><a href="#Sentence-94" class="headerlink" title="Sentence 94"></a>Sentence 94</h2><p><em>To encourage innovation and competition, the report calls for increased investment in research, the crafting of coherent curricula that improve students’ ability to solve problems and communicate effectively in the 21st century, increased funding for teachers and the encouragement of scholars to bring their learning to bear on the great challenges of the day.</em></p>
+<blockquote>
+<p>为了鼓励创新和竞争，报告呼吁增加对此项研究的投资，呼吁精心设计系统连贯的课程以提高学生在21世纪解决问题和有效沟通的能力，呼吁增加教师的经费，并鼓励学者应用他们的学识来应对当今巨大的挑战。</p>
+</blockquote>
+<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>encourage</li>
+<li>innovation</li>
+<li>competition</li>
+<li>investment</li>
+<li>craft    制定</li>
+<li>coherent    配套的，连贯的</li>
+<li>curricula    课程表，课程</li>
+</ul>
+<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>calls for sth ..    呼吁</li>
+<li>increased investment in research</li>
+<li>increased funding for teachers</li>
+<li>improve students’ ability to solve problems</li>
+<li>communicate effectively</li>
+<li>bring their learning to bear on the great challenges of the day</li>
+</ul>
+<h2 id="Sentence-95"><a href="#Sentence-95" class="headerlink" title="Sentence 95"></a>Sentence 95</h2><p><em>Moreover, average overall margins are higher in wholesale than in retail; wholesale demand from the food service sector is growing quickly as more Europeans eat out more often; and changes in the competitive dynamics of this fragmented industry are at last making it feasible for wholesalers to consolidate.</em></p>
+<blockquote>
+<p>此外，批发业的平均总利润高于零售业；随着越来越多的欧洲人更加频繁地外出就餐，餐饮服务业的批发需求也迅速增长；这一零散产业竞争力量的变化最终会使批发商们的联合成为可能。</p>
+</blockquote>
+<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>moreover</li>
+<li>overall</li>
+<li>margin</li>
+<li>wholesale</li>
+<li>retail</li>
+<li>sector    行业</li>
+<li>competitive</li>
+<li>fragmented</li>
+<li>feasible    可行的</li>
+<li>consolidate    整顿，整并</li>
+</ul>
+<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>average overall margins</li>
+<li>this fragmented industry</li>
 </ul>
 ]]></content>
       <categories>
@@ -4918,55 +4918,6 @@ Vector Table
       </tags>
   </entry>
   <entry>
-    <title>芯片验证漫游指南0</title>
-    <url>/2022/05/06/21/</url>
-    <content><![CDATA[<p>本书从结构上分为四个部分，分别是：</p>
-<ul>
-<li>验证的通识部分（第1章至第6章）： 具备不同经验的读者都可以从中获取验证世界的全貌。<ul>
-<li>第1章是对芯片验证的总览；</li>
-<li>第2章从各个维度来介绍验证的策略；</li>
-<li>第3章描述目前所有的验证方法；</li>
-<li>第4章则从验证计划入手介绍如何量化验证；</li>
-<li>第5章从验证管理的角度来论述其各个要素；</li>
-<li>而第6章则作为进入下一部分（SystemVerilog语言）的准备来介绍验证环境的结构和组件。</li>
-</ul>
-</li>
-<li>SystemVerilog语言部分（第7章至第9章）： 该部分不同于以往的语言类学习书籍，它的重点不在于提供完整的语法要点，而是结合贯穿于本书的设计MCDF来展开实践，带领读者思考如何利用SV的主要特性去构建一个完整的验证环境。因此，该部分是从<ul>
-<li>验证环境基础要素学习（第7章）到</li>
-<li>基本组件的实现（第8章），再到最后的</li>
-<li>环境集成（第9章）。</li>
-<li>这一部分对于缺少SV语言基础的读者会有帮助，同时建议参考对照SV语言的标准手册一同学习。对于具备SV经验的读者，阅读这一部分也会帮助其梳理以往容易出错的知识点。</li>
-</ul>
-</li>
-<li>UVM验证方法学部分（第10章至第14章）：通过SV语言部分的学习，读者可以利用MCDF的 SV 轻量级环境来理解验证环境的共性，包括环境的组织、构建、通信和运行。当进入到UVM部分时，建议读者逐章阅读，以此达到循序渐进的效果。  <ul>
-<li>第10章带领读者游览UVM世界，了解其重要的各个特性；</li>
-<li>第11章则仿照SV的学习步骤，给读者介绍UVM的各个组件和环境构成；</li>
-<li>第12章是UVM的TLM通信部分；</li>
-<li>第13章是UVM的运行部分，即介绍序列的各种用法；</li>
-<li>第14章是平行于UVM结构的部分但又不可或缺，即寄存器模型部分。</li>
-<li>从SV部分过渡到UVM部分的读者会在这部分的各章节中有似曾相似识的感觉，因为UVM的主要特性和结构已经在SV部分中有类似的实现，这种连续性有助于将SV与UVM进行特性对比和学习。</li>
-</ul>
-</li>
-<li>高级应用部分（第15章至第18章）： 该部分结合了实际项目和验证潮流，对中高级验证工程师有启示作用。我也希望读者可以从这些部分了解到，语言和方法学是验证的技能基础，但要解决项目的实际需求、提高整体的验证效率和一致性、实现跨平台、跨研发部分的验证平台，还需要做出更多的定制化解决方案。而对于目前还没有令人满意的解决方案的验证难题，我们还需要时间去构想推动新的验证方法和工具。<ul>
-<li>第15章给出了如何实现验证平台自动化和测试标准化的方案，适用于大中型公司的验证效率提升；</li>
-<li>第16章着眼于目前在标准制定过程中的便携激励标准，介绍了已有的便携激励工具和跨平台的验证结构；</li>
-<li>第17章针对SV与UVM同其他语言的接口给予实践指导；</li>
-<li>第18章则将一些分散的高级话题给出行业的解决方案。读者可以将这一部分作为工作的指导手册，在将来遇到相关问题时参考。</li>
-</ul>
-</li>
-<li>尽管试图给出动态验证的全貌，但我也不得不遗憾地指出，几个重要内容暂未在本书首版中囊括，包括：从验证计划到功能覆盖率的量化手段和标准，功能覆盖率驱动的智能化收敛验证，断言的应用场景和复用实践，验证IP的开发模式和推广等，未尽的地方只能寄希望于在下一版中补缺，而在那时，验证世界风起云涌，又将出现什么新的技术还未尽可知，且让我们拭目以待吧。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>IC验证</category>
-      </categories>
-      <tags>
-        <tag>UVM</tag>
-        <tag>System Verilog</tag>
-        <tag>IC验证</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>芯片验证漫游指南1芯片验证全视</title>
     <url>/2022/05/06/31/</url>
     <content><![CDATA[<h1 id="1-功能验证简介"><a href="#1-功能验证简介" class="headerlink" title="1 功能验证简介"></a>1 功能验证简介</h1><p>如果你在设计一款处理器，你需要考虑将其拆分成为运算器（算术逻辑运算单元，ALU,Arithmetic Logic Unit）、高速缓冲存储器（Cache）和连接它们的总线（Bus）；如果你在设计一款系统集成芯片（SoC、System-on-Chip），那么它可能包括的子系统包括处理器、片上网络（NoC,Network-on-Chip）、存储器、I&#x2F;O 控制器（例如 USB,PCIe）等。你会发现，随着系统集成度的提高，系统自身的复杂性增加，而且结合实际工程项目来看，系统复杂度的提高对于功能验证的要求是首当其冲的。由于功能验证在芯片全流程中占据关键位置，验证工程师需要充分理解系统验证的全过程，这个过程就是功能验证的生命周期。功能验证在项目的延续中（目前芯片迭代周期越来越短的一个重要原因，就是依靠剪裁以前项目来做快速的芯片设计）得到不断的提升，而这要求验证工程师考虑如何完善验证流程和环境。在本书一开始，路桑将带领读者从芯片开发流程进入，检视芯片验证在整个项目中的作用（见图1.1）。</p>
@@ -5165,6 +5116,55 @@ Vector Table
 <h1 id="6-作者结束语"><a href="#6-作者结束语" class="headerlink" title="6 作者结束语"></a>6 作者结束语</h1><blockquote>
 <p>在刚进入职场时，我每天都在公司工作到很晚，倒不是工作太多、效率不高导致的，而是给自己设定了目标，需要在更短的时间熟悉公司的流程。我翻阅了公司内部和外部的很多文档，一天从早到晚除了睡觉以外，手边都放着各种文档。如果将这些文档分类，那么一部分是技术文档，我大致用了三年的时间掌握了主流验证技术；而另外一部分是验证流程的相关文档，这部分文档是常读常新的，我总可以在不懂时翻阅文档，或者请教更有经验的同事。有句话说，“自己知道得越多，知道自己不知道的也就越多”。在IC验证这条道路上我们面对的不仅仅是更新很快的验证知识，也包括一些“常识”。所谓常识，就同前辈教的道理一样，往往在遇到挫折时才想得起来，对此我也深有体会。之所以将这一章作为本书的开头，就是为了让读者能够清楚：在通往专业化的验证道路上，需要经历不少的磨炼。接下来，我们将从验证通识的各个方面分别展开论述。当然，你也可以跳过验证通识的内容部分，转而阅读SystemVerilog和UVM的知识。但请不要忘记一点，验证通识对于你提升自己的专业化素质会有很大的帮助。</p>
 </blockquote>
+]]></content>
+      <categories>
+        <category>IC验证</category>
+      </categories>
+      <tags>
+        <tag>UVM</tag>
+        <tag>System Verilog</tag>
+        <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>芯片验证漫游指南0</title>
+    <url>/2022/05/06/21/</url>
+    <content><![CDATA[<p>本书从结构上分为四个部分，分别是：</p>
+<ul>
+<li>验证的通识部分（第1章至第6章）： 具备不同经验的读者都可以从中获取验证世界的全貌。<ul>
+<li>第1章是对芯片验证的总览；</li>
+<li>第2章从各个维度来介绍验证的策略；</li>
+<li>第3章描述目前所有的验证方法；</li>
+<li>第4章则从验证计划入手介绍如何量化验证；</li>
+<li>第5章从验证管理的角度来论述其各个要素；</li>
+<li>而第6章则作为进入下一部分（SystemVerilog语言）的准备来介绍验证环境的结构和组件。</li>
+</ul>
+</li>
+<li>SystemVerilog语言部分（第7章至第9章）： 该部分不同于以往的语言类学习书籍，它的重点不在于提供完整的语法要点，而是结合贯穿于本书的设计MCDF来展开实践，带领读者思考如何利用SV的主要特性去构建一个完整的验证环境。因此，该部分是从<ul>
+<li>验证环境基础要素学习（第7章）到</li>
+<li>基本组件的实现（第8章），再到最后的</li>
+<li>环境集成（第9章）。</li>
+<li>这一部分对于缺少SV语言基础的读者会有帮助，同时建议参考对照SV语言的标准手册一同学习。对于具备SV经验的读者，阅读这一部分也会帮助其梳理以往容易出错的知识点。</li>
+</ul>
+</li>
+<li>UVM验证方法学部分（第10章至第14章）：通过SV语言部分的学习，读者可以利用MCDF的 SV 轻量级环境来理解验证环境的共性，包括环境的组织、构建、通信和运行。当进入到UVM部分时，建议读者逐章阅读，以此达到循序渐进的效果。  <ul>
+<li>第10章带领读者游览UVM世界，了解其重要的各个特性；</li>
+<li>第11章则仿照SV的学习步骤，给读者介绍UVM的各个组件和环境构成；</li>
+<li>第12章是UVM的TLM通信部分；</li>
+<li>第13章是UVM的运行部分，即介绍序列的各种用法；</li>
+<li>第14章是平行于UVM结构的部分但又不可或缺，即寄存器模型部分。</li>
+<li>从SV部分过渡到UVM部分的读者会在这部分的各章节中有似曾相似识的感觉，因为UVM的主要特性和结构已经在SV部分中有类似的实现，这种连续性有助于将SV与UVM进行特性对比和学习。</li>
+</ul>
+</li>
+<li>高级应用部分（第15章至第18章）： 该部分结合了实际项目和验证潮流，对中高级验证工程师有启示作用。我也希望读者可以从这些部分了解到，语言和方法学是验证的技能基础，但要解决项目的实际需求、提高整体的验证效率和一致性、实现跨平台、跨研发部分的验证平台，还需要做出更多的定制化解决方案。而对于目前还没有令人满意的解决方案的验证难题，我们还需要时间去构想推动新的验证方法和工具。<ul>
+<li>第15章给出了如何实现验证平台自动化和测试标准化的方案，适用于大中型公司的验证效率提升；</li>
+<li>第16章着眼于目前在标准制定过程中的便携激励标准，介绍了已有的便携激励工具和跨平台的验证结构；</li>
+<li>第17章针对SV与UVM同其他语言的接口给予实践指导；</li>
+<li>第18章则将一些分散的高级话题给出行业的解决方案。读者可以将这一部分作为工作的指导手册，在将来遇到相关问题时参考。</li>
+</ul>
+</li>
+<li>尽管试图给出动态验证的全貌，但我也不得不遗憾地指出，几个重要内容暂未在本书首版中囊括，包括：从验证计划到功能覆盖率的量化手段和标准，功能覆盖率驱动的智能化收敛验证，断言的应用场景和复用实践，验证IP的开发模式和推广等，未尽的地方只能寄希望于在下一版中补缺，而在那时，验证世界风起云涌，又将出现什么新的技术还未尽可知，且让我们拭目以待吧。</li>
+</ul>
 ]]></content>
       <categories>
         <category>IC验证</category>
@@ -6382,254 +6382,6 @@ Vector Table
       </tags>
   </entry>
   <entry>
-    <title>路科V0P19P22随机变量-随机约束-约束控制-任务和函数</title>
-    <url>/2022/05/13/17/</url>
-    <content><![CDATA[<h1 id="随机变量"><a href="#随机变量" class="headerlink" title="随机变量"></a>随机变量</h1><ul>
-<li>随着设计越来越大，要产生完整的激励来测试设计的功能变得越来越困难；</li>
-<li>定向激励的测试方法已经无法满足检查功能完整性的要求；</li>
-<li>Soc集成度提高带来的模块之间交互的复杂性也指数提高，验证工程师无法预测用户使用过程中发生什么样的情况；</li>
-</ul>
-<h2 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h2><ul>
-<li><strong>随机-约束</strong>： 构成目前动态仿真验证的主流方法；</li>
-<li><strong>随机约束测试</strong>：CRT， constrained-random test，即能够产生感兴趣的、想不到的测试向量，<strong>通过回归测试、替换随机种子的方式来提高单位测试用例的覆盖率收集效率</strong>；</li>
-<li>随机测试带来的负担是验证环境的复杂度提高，不再只需要发送激励的组件，还包括监测器、比较器等；</li>
-<li>对环境复杂度还包括环境的复用和测试的复用，带来组件封装要求，使得代码量增大；</li>
-</ul>
-<h2 id="产生一个随机数"><a href="#产生一个随机数" class="headerlink" title="产生一个随机数"></a>产生一个随机数</h2><blockquote>
-<p>利用系统函数产生一个随机数</p>
-</blockquote>
-<ul>
-<li><code>randomize</code>函数产生随机数，如果随机成功，返回1,否则0；</li>
-<li>通过系统函数<code>std::randomize()</code>对一些变量完成随机化，即产生随机数并赋值给这些向量；</li>
-<li>还有一些其他的系统函数：<ul>
-<li><code>$urandom()</code> 产生一个32位无符号的随机数；</li>
-<li><code>$urandom_range(max_val, minval=0)</code>， 可以生成介于maxval和minval之间的随机数；</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> stim;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">15</span>:<span class="number">0</span>] addr;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] data;</span><br><span class="line">    <span class="keyword">function</span> <span class="keyword">bit</span> get_stim();</span><br><span class="line">        <span class="keyword">bit</span> success, rd_wr;</span><br><span class="line">        success = randomize(add, data, rd_wr);</span><br><span class="line">        <span class="keyword">return</span> rd_wr;</span><br><span class="line">    <span class="keyword">endfunction</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="系统有机的组织随机变量"><a href="#系统有机的组织随机变量" class="headerlink" title="系统有机的组织随机变量"></a>系统有机的组织随机变量</h2><ul>
-<li>比起独立的产生随机数，在向DUT产生随机激励时，为了符合协议、满足测试需求，还需要添加一些约束；</li>
-<li>这些约束会使得变量朝着希望他们变化的方向去随机；</li>
-<li>这些约束也会对变量和变量之间的关系生效；</li>
-<li>需要一个载体去容纳变量和他们之间的约束；</li>
-<li><strong>这个载体是类，类的成员变量可以声明“随机”属性，用rand或者randc表示</strong>；</li>
-</ul>
-<h2 id="随机变量-1"><a href="#随机变量-1" class="headerlink" title="随机变量"></a>随机变量</h2><ul>
-<li>任何类中的整型（bit、byte、int）变量都可以声明为rand、randc；</li>
-<li>定长数组、动态数组、关联数组和队列都可以声明为rand、randc；</li>
-<li>可以对动态数组和队列的长度加以约束；</li>
-<li><strong>指向对象的句柄，也可以声明为rand，不能randc，随机时该句柄指向的对象中的随机变量会一起被随机化</strong>；</li>
-<li>非组合型结构体可以声明为rand，非组合型的成员也可以声明为rand、randc；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] len;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> data[];</span><br><span class="line"><span class="keyword">constraint</span> db &#123;data<span class="variable">.size</span> == len;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">int</span> addr = <span class="number">1</span> + constant;</span><br><span class="line">    <span class="keyword">int</span> crc;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> data [] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line">&#125; header;</span><br><span class="line"><span class="keyword">rand</span> header h1;</span><br></pre></td></tr></table></figure>
-
-<h2 id="rand和randc"><a href="#rand和randc" class="headerlink" title="rand和randc"></a>rand和randc</h2><ul>
-<li>rand： 表示在可生成范围内，每个值得可能性是相同的–&gt;每次都是有放回！！<ul>
-<li><code>rand bit [7:0] y;</code></li>
-</ul>
-</li>
-<li>randc: 它的值会随机，并且遍历可取值范围，–&gt;无放回！！</li>
-</ul>
-<h1 id="随机约束"><a href="#随机约束" class="headerlink" title="随机约束"></a>随机约束</h1><h2 id="带有随机约束的简单类"><a href="#带有随机约束的简单类" class="headerlink" title="带有随机约束的简单类"></a>带有随机约束的简单类</h2><figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] src, dst, data[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] kind;</span><br><span class="line">    <span class="comment">// src的约束</span></span><br><span class="line">    <span class="keyword">constraint</span> c &#123;src &gt; <span class="number">10</span>; src &lt; <span class="number">15</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p;</span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span></span><br><span class="line">    p = <span class="keyword">new</span>();</span><br><span class="line">    <span class="keyword">if</span> (!p<span class="variable">.randomize</span>())</span><br><span class="line">        <span class="built_in">$finish</span>;</span><br><span class="line">    transmit(p);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="约束块"><a href="#约束块" class="headerlink" title="约束块"></a>约束块</h2><ul>
-<li>有用的激励不仅会约束随机变量，变量之间也存在互相约束关系；</li>
-<li>没有约束的随机变量会包含很多无效的和非法的值，会使得有效激励变得低效；</li>
-<li>类需要<strong>用一个或者多个约束块来描述变量之间的关系</strong>；</li>
-<li><strong>约束块支持整型通过<code>inside</code>操作符来设置可取值的范围</strong>；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> x,y,z;</span><br><span class="line"><span class="keyword">constraint</span> c1 &#123;x <span class="keyword">inside</span> &#123;<span class="number">3</span>, <span class="number">5</span>, [<span class="number">9</span>:<span class="number">15</span>], [<span class="number">24</span>:<span class="number">32</span>], [y:<span class="number">2</span>*y], z&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> a,b,c;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;a <span class="keyword">inside</span> &#123;b, c&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">integer</span> fives[<span class="number">4</span>] = &#x27;&#123;<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>&#125;;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> v;</span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;v <span class="keyword">inside</span> &#123;fives&#125;;&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="权重分布"><a href="#权重分布" class="headerlink" title="权重分布"></a>权重分布</h2><ul>
-<li>除了成员集合设置，约束块也支持设置可取值的同事为其设置随机时的权重；</li>
-<li><strong><code>:=</code> : 表示每个值的权重都是相同的；</strong></li>
-<li><strong><code>:/</code> : 表示权重会平均分配到每一个值；</strong></li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] := <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1 1 1 2 5</span></span><br><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] :/ <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1/3 1/3 1/3 2 5</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="唯一标识"><a href="#唯一标识" class="headerlink" title="唯一标识"></a>唯一标识</h2><ul>
-<li><code>unique</code> : 可以用来约束一组变量，使得其随机后变量之间不会有相同的数值；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> a[<span class="number">5</span>];</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> b;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> excluded;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> u &#123;<span class="keyword">unique</span> &#123;b, a[<span class="number">2</span>:<span class="number">3</span>], excluded&#125;;&#125;</span><br><span class="line"><span class="keyword">constraint</span> exclusion &#123;excluded == <span class="number">5</span>;&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="条件约束"><a href="#条件约束" class="headerlink" title="条件约束"></a>条件约束</h2><ul>
-<li>可以使用<code>if-else</code>或者<code>-&gt;</code>操作符表示条件约束；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">    mode == little -&gt; len &lt; <span class="number">10</span>;</span><br><span class="line">    mode == big -&gt; len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bit</span> [<span class="number">3</span>:<span class="number">0</span>] a, b;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;(a==<span class="number">0</span>) -&gt; (b==<span class="number">1</span>);&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;</span><br><span class="line">    <span class="keyword">if</span> (mode == little)</span><br><span class="line">        len &lt; <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (mode == big)</span><br><span class="line">        len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="迭代约束"><a href="#迭代约束" class="headerlink" title="迭代约束"></a>迭代约束</h2><ul>
-<li><code>foreach</code>可以用来迭代约束数组中的元素，这些数组可以是定长数组、动态数组、关联数组或者队列；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[i])</span><br><span class="line">            A[i] <span class="keyword">inside</span> &#123;<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[j])</span><br><span class="line">            A[j] &gt; <span class="number">2</span>*j;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>也可以用数组的缩减方法进行迭代约束</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;A<span class="variable">.size</span>() == <span class="number">5</span>;&#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;A<span class="variable">.sum</span>() &lt; <span class="number">1000</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h2><ul>
-<li>有时候，在一些表达式中不能简单的描述约束，比如计算一个组合数组中的’1’；</li>
-<li>可以写成一个函数，然后约束调用这个函数；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> count_ones (<span class="keyword">bit</span> [<span class="number">9</span>:<span class="number">0</span>] w);</span><br><span class="line">    <span class="keyword">for</span> (count_onts=<span class="number">0</span>; w!=<span class="number">0</span>; w = w&gt;&gt;<span class="number">1</span>)</span><br><span class="line">        count_ones += w &amp; <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> C1 &#123;length == count_ones(v);&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="软约束-和-硬约束"><a href="#软约束-和-硬约束" class="headerlink" title="软约束 和 硬约束"></a>软约束 和 硬约束</h2><ul>
-<li>为了防止约束冲突时执行失败，分为软约束和硬约束；</li>
-<li><code>soft</code> : soft描述的约束是软，没有soft是硬；</li>
-<li>如果用户在使用时，制订了外部约束对同一个变量做了二次约束，或者用户定义了子类，也对同一个变量做了二次约束，<strong>那么硬约束可以覆盖软约束</strong>，不会导致随机失败；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">int</span> length;</span><br><span class="line">    <span class="keyword">constraint</span> deflt &#123;<span class="keyword">soft</span> length <span class="keyword">inside</span> &#123;<span class="number">32</span>, <span class="number">1024</span>&#125;;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p = <span class="keyword">new</span>();</span><br><span class="line">p<span class="variable">.randomize</span>() <span class="keyword">with</span> &#123;length == <span class="number">1512</span>;&#125;        <span class="comment">// 覆盖了内部的软约束，执行成功</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="约束控制"><a href="#约束控制" class="headerlink" title="约束控制"></a>约束控制</h1><h2 id="随机方法"><a href="#随机方法" class="headerlink" title="随机方法"></a>随机方法</h2><ul>
-<li>类的声明中的随机变量，需要伴随类的句柄的调用randomize()，这是SV的内建方法<code>virtual function int randomize();</code></li>
-<li>随机化成功返回1,否则0；</li>
-<li>随机化之前需要先对对象完成例化，例化时没有随机的过程；</li>
-</ul>
-<h2 id="内嵌约束"><a href="#内嵌约束" class="headerlink" title="内嵌约束"></a>内嵌约束</h2><ul>
-<li>在调用<code>randomize()</code>时伴随<code>with</code>，称为内嵌约束；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> y);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span> (x) &#123;x &lt; y;&#125;;      <span class="comment">//这种方式对x的指向明确了，不在参数列表中，所以是C的x</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="local域指向"><a href="#local域指向" class="headerlink" title="local域指向"></a>local域指向</h2><ul>
-<li>同名的变量处于不同的域中，可能出现指向模糊，可以使用上文的方法；</li>
-<li>也可以使用<code>local::</code>域索引到方式；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> x);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span>&#123;x &lt; <span class="keyword">local</span>::x;&#125;;      <span class="comment">//第一个x是C的，第二个local的x是参数</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="随机控制"><a href="#随机控制" class="headerlink" title="随机控制"></a>随机控制</h2><ul>
-<li><code>rand_mode</code>可以用来使能或者禁止成员变量的随机属性；<ul>
-<li>当随机模式被禁止时，就相当于一个普通变量了；</li>
-<li>可以禁止某个变量的随机模式，也可以对整个对象调用<code>rand_mode</code>进行控制；</li>
-</ul>
-</li>
-<li><code>constraint_mode()</code>用来关闭或者使能约束块；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> object[<span class="variable">.random_variable</span>]::rand_mode(<span class="keyword">bit</span> on_off);</span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> object<span class="variable">.rand_variable</span>::rand_mode();</span><br></pre></td></tr></table></figure>
-
-<h2 id="内嵌变量控制"><a href="#内嵌变量控制" class="headerlink" title="内嵌变量控制"></a>内嵌变量控制</h2><ul>
-<li>一个有意思的点，如果在<code>randomize()</code>中有参数，则只会对这个参数进行随机化，别的就算是rand也不随机化了；</li>
-</ul>
-<h1 id="任务和函数"><a href="#任务和函数" class="headerlink" title="任务和函数"></a>任务和函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
-<li>function和task都是提高代码复用性和整洁度；</li>
-<li>function：<ul>
-<li>首要目的在于为运算表达式提供返回值，便于简化原有代码，提高维护性；</li>
-<li>void函数无返回值；</li>
-<li><strong>一个function只能有一个返回值</strong>，所以函数可以作为表达式的操作数，因为就一个值；</li>
-<li>函数的参数方向可以声明为：input、output、inout、ref</li>
-<li><strong>函数可以调用函数，但是必须立即返回，不能阻塞等待</strong>！</li>
-<li><strong>函数返回方式有两种，一个是return直接返回，一个是将值或者表达式赋给函数的同名变量</strong>；</li>
-<li>区别在于return会立即返回，但是赋值同名变量之后，后续的代码还会执行下去；</li>
-<li>可以对有返回值的函数进行类型转换，<code>void&#39;(func1)</code>,这时候用不到函数的返回值；</li>
-</ul>
-</li>
-<li>task：<ul>
-<li>同样的参数列表指名四个方向；</li>
-<li>task无返回值！</li>
-<li>task可以用来消耗仿真时间，内置一些阻塞语句；</li>
-<li>可以使用return立刻结束task；</li>
-<li>task可以调用task和function，但是function只能调用function，不能调用task；</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">logic</span> red;</span><br><span class="line"><span class="keyword">parameter</span> red_tics = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">always</span> <span class="keyword">begin</span></span><br><span class="line">    red = on;</span><br><span class="line">    light(red, red_tics);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> light(<span class="keyword">output</span> color, <span class="keyword">input</span> [<span class="number">31</span>:<span class="number">0</span>] tics);</span><br><span class="line">    <span class="keyword">repeat</span>(tics) @(<span class="keyword">posedge</span> clock);</span><br><span class="line">    color = off;</span><br><span class="line"><span class="keyword">endtask</span>: light</span><br></pre></td></tr></table></figure>
-
-<h2 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h2><ul>
-<li>input ： 在方法调用时，<strong>属于值传递</strong>，在传递的过程中，外部变量的值<strong>经过拷贝</strong>，赋值给输入参数；</li>
-<li>output、inout都是值传递，发生在方法调用和返回时；</li>
-<li><strong>ref参数不会传递值拷贝，而是将变量指针传递到方法中，所以方法内部的操作会影响到外部的变量；</strong></li>
-<li><strong>为了避免外部传入的ref参数被方法修改，可以添加const修饰符</strong>；</li>
-<li>SV允许在声明输入参数时，指定参数的默认值；</li>
-<li>除了按照参数位置传递参数，SV也允许像module例化一样，<strong>用参数名字映射的方式传递参数</strong>；</li>
-</ul>
-<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> read(<span class="keyword">int</span> j=<span class="number">0</span>, <span class="keyword">int</span> k, <span class="keyword">int</span> data=<span class="number">1</span>);</span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"></span><br><span class="line">read(,<span class="number">5</span>);  <span class="comment">// 即0 5 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> func(<span class="keyword">int</span> j=<span class="number">1</span>, <span class="keyword">string</span> s= <span class="string">&quot;no&quot;</span>);</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line">func(<span class="variable">.j</span>(<span class="number">2</span>), <span class="variable">.s</span>(<span class="string">&quot;yes&quot;</span>));  <span class="comment">// 即2 yes</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>路科V0</category>
-      </categories>
-      <tags>
-        <tag>UVM</tag>
-        <tag>System Verilog</tag>
-        <tag>IC验证</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>路科V0P1P2P4验证概览</title>
-    <url>/2022/05/09/13/</url>
-    <content><![CDATA[<h1 id="什么是验证"><a href="#什么是验证" class="headerlink" title="什么是验证"></a>什么是验证</h1><p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%81.png" alt="什么是验证"></p>
-<p>什么是验证?</p>
-<p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%812.png" alt="什么是验证2"></p>
-<p>测试平台：</p>
-<p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0.png" alt="什么是测试平台"></p>
-<h1 id="验证的任务和目标"><a href="#验证的任务和目标" class="headerlink" title="验证的任务和目标"></a>验证的任务和目标</h1><p>验证的目标：</p>
-<p><img src="/2022/05/09/13/%E9%AA%8C%E8%AF%81%E7%9A%84%E7%9B%AE%E6%A0%87.png" alt="验证的目标"></p>
-<h1 id="验证的周期"><a href="#验证的周期" class="headerlink" title="验证的周期"></a>验证的周期</h1><p><img src="/2022/05/09/13/%E9%AA%8C%E8%AF%81%E5%91%A8%E6%9C%9F.png" alt="验证周期"></p>
-]]></content>
-      <categories>
-        <category>路科V0</category>
-      </categories>
-      <tags>
-        <tag>UVM</tag>
-        <tag>System Verilog</tag>
-        <tag>IC验证</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>路科V0P1SV学习</title>
-    <url>/2022/05/09/06/</url>
-    <content><![CDATA[<blockquote>
-<p><a href="https://www.bilibili.com/video/BV1k7411H7Jo?spm_id_from=333.337.search-card.all.click">Bilibili</a></p>
-</blockquote>
-<p>几个必备技术要求：</p>
-<ul>
-<li>动态验证技术<ul>
-<li>代码覆盖率</li>
-<li>功能覆盖率</li>
-<li>断言</li>
-<li>随机约束</li>
-</ul>
-</li>
-<li>静态验证技术<ul>
-<li>人工的形式验证（属性检查）</li>
-<li>自动的形式验证</li>
-</ul>
-</li>
-<li>硬件加速技术<ul>
-<li>Emulation以及FPGA原型开发</li>
-</ul>
-</li>
-</ul>
-<p>背景要求：</p>
-<ul>
-<li>课程：<ul>
-<li>数字电路</li>
-<li>Verilog</li>
-<li>C&#x2F;C++</li>
-</ul>
-</li>
-</ul>
-<p><img src="/2022/05/09/06/%E5%8A%A8%E6%80%81%E9%AA%8C%E8%AF%81%E6%8A%80%E6%9C%AF.png" alt="动态验证技术"></p>
-<p><img src="/2022/05/09/06/%E9%9D%99%E6%80%81%E9%AA%8C%E8%AF%81%E6%8A%80%E6%9C%AF.png" alt="静态验证技术"></p>
-<p><img src="/2022/05/09/06/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F.png" alt="硬件加速"></p>
-<p><img src="/2022/05/09/06/QuestaSim%E4%BB%BF%E7%9C%9F%E5%99%A8.png" alt="QuestaSim仿真器"></p>
-<p><img src="/2022/05/09/06/%E5%A4%A7%E8%B1%A1%E8%A3%85%E8%BF%9B%E5%86%B0%E7%AE%B1lab.png" alt="大象装进冰箱lab"></p>
-<p><img src="/2022/05/09/06/%E8%B5%84%E6%96%99%E4%B9%A6.png" alt="资料书"></p>
-<p><img src="/2022/05/09/06/DVT%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.png" alt="DVT集成开发环境"></p>
-<p><img src="/2022/05/09/06/%E5%85%B6%E4%BB%96%E8%AF%BE%E7%A8%8B.png" alt="其他课程"></p>
-]]></content>
-      <categories>
-        <category>路科V0</category>
-      </categories>
-      <tags>
-        <tag>UVM</tag>
-        <tag>System Verilog</tag>
-        <tag>IC验证</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>路科V0P13P18SV数组-类-对象-包</title>
     <url>/2022/05/13/24/</url>
     <content><![CDATA[<h1 id="数组操作"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作</h1><blockquote>
@@ -6899,6 +6651,254 @@ Vector Table
 <li>lib库可以容纳硬件类型，也能容纳软件类型（类、方法和包等）</li>
 <li>package包只能容纳软件类型，比如类、方法和参数；</li>
 </ul>
+]]></content>
+      <categories>
+        <category>路科V0</category>
+      </categories>
+      <tags>
+        <tag>UVM</tag>
+        <tag>System Verilog</tag>
+        <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>路科V0P19P22随机变量-随机约束-约束控制-任务和函数</title>
+    <url>/2022/05/13/17/</url>
+    <content><![CDATA[<h1 id="随机变量"><a href="#随机变量" class="headerlink" title="随机变量"></a>随机变量</h1><ul>
+<li>随着设计越来越大，要产生完整的激励来测试设计的功能变得越来越困难；</li>
+<li>定向激励的测试方法已经无法满足检查功能完整性的要求；</li>
+<li>Soc集成度提高带来的模块之间交互的复杂性也指数提高，验证工程师无法预测用户使用过程中发生什么样的情况；</li>
+</ul>
+<h2 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h2><ul>
+<li><strong>随机-约束</strong>： 构成目前动态仿真验证的主流方法；</li>
+<li><strong>随机约束测试</strong>：CRT， constrained-random test，即能够产生感兴趣的、想不到的测试向量，<strong>通过回归测试、替换随机种子的方式来提高单位测试用例的覆盖率收集效率</strong>；</li>
+<li>随机测试带来的负担是验证环境的复杂度提高，不再只需要发送激励的组件，还包括监测器、比较器等；</li>
+<li>对环境复杂度还包括环境的复用和测试的复用，带来组件封装要求，使得代码量增大；</li>
+</ul>
+<h2 id="产生一个随机数"><a href="#产生一个随机数" class="headerlink" title="产生一个随机数"></a>产生一个随机数</h2><blockquote>
+<p>利用系统函数产生一个随机数</p>
+</blockquote>
+<ul>
+<li><code>randomize</code>函数产生随机数，如果随机成功，返回1,否则0；</li>
+<li>通过系统函数<code>std::randomize()</code>对一些变量完成随机化，即产生随机数并赋值给这些向量；</li>
+<li>还有一些其他的系统函数：<ul>
+<li><code>$urandom()</code> 产生一个32位无符号的随机数；</li>
+<li><code>$urandom_range(max_val, minval=0)</code>， 可以生成介于maxval和minval之间的随机数；</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> stim;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">15</span>:<span class="number">0</span>] addr;</span><br><span class="line">    <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] data;</span><br><span class="line">    <span class="keyword">function</span> <span class="keyword">bit</span> get_stim();</span><br><span class="line">        <span class="keyword">bit</span> success, rd_wr;</span><br><span class="line">        success = randomize(add, data, rd_wr);</span><br><span class="line">        <span class="keyword">return</span> rd_wr;</span><br><span class="line">    <span class="keyword">endfunction</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="系统有机的组织随机变量"><a href="#系统有机的组织随机变量" class="headerlink" title="系统有机的组织随机变量"></a>系统有机的组织随机变量</h2><ul>
+<li>比起独立的产生随机数，在向DUT产生随机激励时，为了符合协议、满足测试需求，还需要添加一些约束；</li>
+<li>这些约束会使得变量朝着希望他们变化的方向去随机；</li>
+<li>这些约束也会对变量和变量之间的关系生效；</li>
+<li>需要一个载体去容纳变量和他们之间的约束；</li>
+<li><strong>这个载体是类，类的成员变量可以声明“随机”属性，用rand或者randc表示</strong>；</li>
+</ul>
+<h2 id="随机变量-1"><a href="#随机变量-1" class="headerlink" title="随机变量"></a>随机变量</h2><ul>
+<li>任何类中的整型（bit、byte、int）变量都可以声明为rand、randc；</li>
+<li>定长数组、动态数组、关联数组和队列都可以声明为rand、randc；</li>
+<li>可以对动态数组和队列的长度加以约束；</li>
+<li><strong>指向对象的句柄，也可以声明为rand，不能randc，随机时该句柄指向的对象中的随机变量会一起被随机化</strong>；</li>
+<li>非组合型结构体可以声明为rand，非组合型的成员也可以声明为rand、randc；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] len;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> data[];</span><br><span class="line"><span class="keyword">constraint</span> db &#123;data<span class="variable">.size</span> == len;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">int</span> addr = <span class="number">1</span> + constant;</span><br><span class="line">    <span class="keyword">int</span> crc;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> data [] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line">&#125; header;</span><br><span class="line"><span class="keyword">rand</span> header h1;</span><br></pre></td></tr></table></figure>
+
+<h2 id="rand和randc"><a href="#rand和randc" class="headerlink" title="rand和randc"></a>rand和randc</h2><ul>
+<li>rand： 表示在可生成范围内，每个值得可能性是相同的–&gt;每次都是有放回！！<ul>
+<li><code>rand bit [7:0] y;</code></li>
+</ul>
+</li>
+<li>randc: 它的值会随机，并且遍历可取值范围，–&gt;无放回！！</li>
+</ul>
+<h1 id="随机约束"><a href="#随机约束" class="headerlink" title="随机约束"></a>随机约束</h1><h2 id="带有随机约束的简单类"><a href="#带有随机约束的简单类" class="headerlink" title="带有随机约束的简单类"></a>带有随机约束的简单类</h2><figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">31</span>:<span class="number">0</span>] src, dst, data[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">randc</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] kind;</span><br><span class="line">    <span class="comment">// src的约束</span></span><br><span class="line">    <span class="keyword">constraint</span> c &#123;src &gt; <span class="number">10</span>; src &lt; <span class="number">15</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p;</span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span></span><br><span class="line">    p = <span class="keyword">new</span>();</span><br><span class="line">    <span class="keyword">if</span> (!p<span class="variable">.randomize</span>())</span><br><span class="line">        <span class="built_in">$finish</span>;</span><br><span class="line">    transmit(p);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="约束块"><a href="#约束块" class="headerlink" title="约束块"></a>约束块</h2><ul>
+<li>有用的激励不仅会约束随机变量，变量之间也存在互相约束关系；</li>
+<li>没有约束的随机变量会包含很多无效的和非法的值，会使得有效激励变得低效；</li>
+<li>类需要<strong>用一个或者多个约束块来描述变量之间的关系</strong>；</li>
+<li><strong>约束块支持整型通过<code>inside</code>操作符来设置可取值的范围</strong>；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> x,y,z;</span><br><span class="line"><span class="keyword">constraint</span> c1 &#123;x <span class="keyword">inside</span> &#123;<span class="number">3</span>, <span class="number">5</span>, [<span class="number">9</span>:<span class="number">15</span>], [<span class="number">24</span>:<span class="number">32</span>], [y:<span class="number">2</span>*y], z&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> a,b,c;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;a <span class="keyword">inside</span> &#123;b, c&#125;;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">integer</span> fives[<span class="number">4</span>] = &#x27;&#123;<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>&#125;;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">integer</span> v;</span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;v <span class="keyword">inside</span> &#123;fives&#125;;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="权重分布"><a href="#权重分布" class="headerlink" title="权重分布"></a>权重分布</h2><ul>
+<li>除了成员集合设置，约束块也支持设置可取值的同事为其设置随机时的权重；</li>
+<li><strong><code>:=</code> : 表示每个值的权重都是相同的；</strong></li>
+<li><strong><code>:/</code> : 表示权重会平均分配到每一个值；</strong></li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] := <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1 1 1 2 5</span></span><br><span class="line">x <span class="keyword">dist</span> &#123; [<span class="number">100</span>:<span class="number">102</span>] :/ <span class="number">1</span>, <span class="number">200</span> := <span class="number">2</span>, <span class="number">300</span> := <span class="number">5</span>&#125;;   <span class="comment">// 权重分布：1/3 1/3 1/3 2 5</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="唯一标识"><a href="#唯一标识" class="headerlink" title="唯一标识"></a>唯一标识</h2><ul>
+<li><code>unique</code> : 可以用来约束一组变量，使得其随机后变量之间不会有相同的数值；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> a[<span class="number">5</span>];</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> b;</span><br><span class="line"><span class="keyword">rand</span> <span class="keyword">byte</span> excluded;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> u &#123;<span class="keyword">unique</span> &#123;b, a[<span class="number">2</span>:<span class="number">3</span>], excluded&#125;;&#125;</span><br><span class="line"><span class="keyword">constraint</span> exclusion &#123;excluded == <span class="number">5</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="条件约束"><a href="#条件约束" class="headerlink" title="条件约束"></a>条件约束</h2><ul>
+<li>可以使用<code>if-else</code>或者<code>-&gt;</code>操作符表示条件约束；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">    mode == little -&gt; len &lt; <span class="number">10</span>;</span><br><span class="line">    mode == big -&gt; len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bit</span> [<span class="number">3</span>:<span class="number">0</span>] a, b;</span><br><span class="line"><span class="keyword">constraint</span> c2 &#123;(a==<span class="number">0</span>) -&gt; (b==<span class="number">1</span>);&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> c3 &#123;</span><br><span class="line">    <span class="keyword">if</span> (mode == little)</span><br><span class="line">        len &lt; <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (mode == big)</span><br><span class="line">        len &gt; <span class="number">100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代约束"><a href="#迭代约束" class="headerlink" title="迭代约束"></a>迭代约束</h2><ul>
+<li><code>foreach</code>可以用来迭代约束数组中的元素，这些数组可以是定长数组、动态数组、关联数组或者队列；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">byte</span> A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[i])</span><br><span class="line">            A[i] <span class="keyword">inside</span> &#123;<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;</span><br><span class="line">        <span class="keyword">foreach</span> (A[j])</span><br><span class="line">            A[j] &gt; <span class="number">2</span>*j;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>也可以用数组的缩减方法进行迭代约束</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">bit</span> [<span class="number">7</span>:<span class="number">0</span>] A[];</span><br><span class="line">    <span class="keyword">constraint</span> c1 &#123;A<span class="variable">.size</span>() == <span class="number">5</span>;&#125;</span><br><span class="line">    <span class="keyword">constraint</span> c2 &#123;A<span class="variable">.sum</span>() &lt; <span class="number">1000</span>;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h2><ul>
+<li>有时候，在一些表达式中不能简单的描述约束，比如计算一个组合数组中的’1’；</li>
+<li>可以写成一个函数，然后约束调用这个函数；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> count_ones (<span class="keyword">bit</span> [<span class="number">9</span>:<span class="number">0</span>] w);</span><br><span class="line">    <span class="keyword">for</span> (count_onts=<span class="number">0</span>; w!=<span class="number">0</span>; w = w&gt;&gt;<span class="number">1</span>)</span><br><span class="line">        count_ones += w &amp; <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">constraint</span> C1 &#123;length == count_ones(v);&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="软约束-和-硬约束"><a href="#软约束-和-硬约束" class="headerlink" title="软约束 和 硬约束"></a>软约束 和 硬约束</h2><ul>
+<li>为了防止约束冲突时执行失败，分为软约束和硬约束；</li>
+<li><code>soft</code> : soft描述的约束是软，没有soft是硬；</li>
+<li>如果用户在使用时，制订了外部约束对同一个变量做了二次约束，或者用户定义了子类，也对同一个变量做了二次约束，<strong>那么硬约束可以覆盖软约束</strong>，不会导致随机失败；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Packet;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">int</span> length;</span><br><span class="line">    <span class="keyword">constraint</span> deflt &#123;<span class="keyword">soft</span> length <span class="keyword">inside</span> &#123;<span class="number">32</span>, <span class="number">1024</span>&#125;;&#125;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line">Packet p = <span class="keyword">new</span>();</span><br><span class="line">p<span class="variable">.randomize</span>() <span class="keyword">with</span> &#123;length == <span class="number">1512</span>;&#125;        <span class="comment">// 覆盖了内部的软约束，执行成功</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="约束控制"><a href="#约束控制" class="headerlink" title="约束控制"></a>约束控制</h1><h2 id="随机方法"><a href="#随机方法" class="headerlink" title="随机方法"></a>随机方法</h2><ul>
+<li>类的声明中的随机变量，需要伴随类的句柄的调用randomize()，这是SV的内建方法<code>virtual function int randomize();</code></li>
+<li>随机化成功返回1,否则0；</li>
+<li>随机化之前需要先对对象完成例化，例化时没有随机的过程；</li>
+</ul>
+<h2 id="内嵌约束"><a href="#内嵌约束" class="headerlink" title="内嵌约束"></a>内嵌约束</h2><ul>
+<li>在调用<code>randomize()</code>时伴随<code>with</code>，称为内嵌约束；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> y);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span> (x) &#123;x &lt; y;&#125;;      <span class="comment">//这种方式对x的指向明确了，不在参数列表中，所以是C的x</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="local域指向"><a href="#local域指向" class="headerlink" title="local域指向"></a>local域指向</h2><ul>
+<li>同名的变量处于不同的域中，可能出现指向模糊，可以使用上文的方法；</li>
+<li>也可以使用<code>local::</code>域索引到方式；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> C;</span><br><span class="line">    <span class="keyword">rand</span> <span class="keyword">integer</span> x;</span><br><span class="line"><span class="keyword">endclass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> F(C obj, <span class="keyword">integer</span> x);</span><br><span class="line">    F = obj<span class="variable">.randomize</span>() <span class="keyword">with</span>&#123;x &lt; <span class="keyword">local</span>::x;&#125;;      <span class="comment">//第一个x是C的，第二个local的x是参数</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="随机控制"><a href="#随机控制" class="headerlink" title="随机控制"></a>随机控制</h2><ul>
+<li><code>rand_mode</code>可以用来使能或者禁止成员变量的随机属性；<ul>
+<li>当随机模式被禁止时，就相当于一个普通变量了；</li>
+<li>可以禁止某个变量的随机模式，也可以对整个对象调用<code>rand_mode</code>进行控制；</li>
+</ul>
+</li>
+<li><code>constraint_mode()</code>用来关闭或者使能约束块；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> object[<span class="variable">.random_variable</span>]::rand_mode(<span class="keyword">bit</span> on_off);</span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> object<span class="variable">.rand_variable</span>::rand_mode();</span><br></pre></td></tr></table></figure>
+
+<h2 id="内嵌变量控制"><a href="#内嵌变量控制" class="headerlink" title="内嵌变量控制"></a>内嵌变量控制</h2><ul>
+<li>一个有意思的点，如果在<code>randomize()</code>中有参数，则只会对这个参数进行随机化，别的就算是rand也不随机化了；</li>
+</ul>
+<h1 id="任务和函数"><a href="#任务和函数" class="headerlink" title="任务和函数"></a>任务和函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>function和task都是提高代码复用性和整洁度；</li>
+<li>function：<ul>
+<li>首要目的在于为运算表达式提供返回值，便于简化原有代码，提高维护性；</li>
+<li>void函数无返回值；</li>
+<li><strong>一个function只能有一个返回值</strong>，所以函数可以作为表达式的操作数，因为就一个值；</li>
+<li>函数的参数方向可以声明为：input、output、inout、ref</li>
+<li><strong>函数可以调用函数，但是必须立即返回，不能阻塞等待</strong>！</li>
+<li><strong>函数返回方式有两种，一个是return直接返回，一个是将值或者表达式赋给函数的同名变量</strong>；</li>
+<li>区别在于return会立即返回，但是赋值同名变量之后，后续的代码还会执行下去；</li>
+<li>可以对有返回值的函数进行类型转换，<code>void&#39;(func1)</code>,这时候用不到函数的返回值；</li>
+</ul>
+</li>
+<li>task：<ul>
+<li>同样的参数列表指名四个方向；</li>
+<li>task无返回值！</li>
+<li>task可以用来消耗仿真时间，内置一些阻塞语句；</li>
+<li>可以使用return立刻结束task；</li>
+<li>task可以调用task和function，但是function只能调用function，不能调用task；</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">logic</span> red;</span><br><span class="line"><span class="keyword">parameter</span> red_tics = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">always</span> <span class="keyword">begin</span></span><br><span class="line">    red = on;</span><br><span class="line">    light(red, red_tics);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> light(<span class="keyword">output</span> color, <span class="keyword">input</span> [<span class="number">31</span>:<span class="number">0</span>] tics);</span><br><span class="line">    <span class="keyword">repeat</span>(tics) @(<span class="keyword">posedge</span> clock);</span><br><span class="line">    color = off;</span><br><span class="line"><span class="keyword">endtask</span>: light</span><br></pre></td></tr></table></figure>
+
+<h2 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h2><ul>
+<li>input ： 在方法调用时，<strong>属于值传递</strong>，在传递的过程中，外部变量的值<strong>经过拷贝</strong>，赋值给输入参数；</li>
+<li>output、inout都是值传递，发生在方法调用和返回时；</li>
+<li><strong>ref参数不会传递值拷贝，而是将变量指针传递到方法中，所以方法内部的操作会影响到外部的变量；</strong></li>
+<li><strong>为了避免外部传入的ref参数被方法修改，可以添加const修饰符</strong>；</li>
+<li>SV允许在声明输入参数时，指定参数的默认值；</li>
+<li>除了按照参数位置传递参数，SV也允许像module例化一样，<strong>用参数名字映射的方式传递参数</strong>；</li>
+</ul>
+<figure class="highlight sv"><table><tr><td class="code"><pre><span class="line"><span class="keyword">task</span> read(<span class="keyword">int</span> j=<span class="number">0</span>, <span class="keyword">int</span> k, <span class="keyword">int</span> data=<span class="number">1</span>);</span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"></span><br><span class="line">read(,<span class="number">5</span>);  <span class="comment">// 即0 5 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="keyword">int</span> func(<span class="keyword">int</span> j=<span class="number">1</span>, <span class="keyword">string</span> s= <span class="string">&quot;no&quot;</span>);</span><br><span class="line"><span class="keyword">endfunction</span></span><br><span class="line"></span><br><span class="line">func(<span class="variable">.j</span>(<span class="number">2</span>), <span class="variable">.s</span>(<span class="string">&quot;yes&quot;</span>));  <span class="comment">// 即2 yes</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>路科V0</category>
+      </categories>
+      <tags>
+        <tag>UVM</tag>
+        <tag>System Verilog</tag>
+        <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>路科V0P1P2P4验证概览</title>
+    <url>/2022/05/09/13/</url>
+    <content><![CDATA[<h1 id="什么是验证"><a href="#什么是验证" class="headerlink" title="什么是验证"></a>什么是验证</h1><p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%81.png" alt="什么是验证"></p>
+<p>什么是验证?</p>
+<p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%812.png" alt="什么是验证2"></p>
+<p>测试平台：</p>
+<p><img src="/2022/05/09/13/%E4%BB%80%E4%B9%88%E6%98%AF%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0.png" alt="什么是测试平台"></p>
+<h1 id="验证的任务和目标"><a href="#验证的任务和目标" class="headerlink" title="验证的任务和目标"></a>验证的任务和目标</h1><p>验证的目标：</p>
+<p><img src="/2022/05/09/13/%E9%AA%8C%E8%AF%81%E7%9A%84%E7%9B%AE%E6%A0%87.png" alt="验证的目标"></p>
+<h1 id="验证的周期"><a href="#验证的周期" class="headerlink" title="验证的周期"></a>验证的周期</h1><p><img src="/2022/05/09/13/%E9%AA%8C%E8%AF%81%E5%91%A8%E6%9C%9F.png" alt="验证周期"></p>
+]]></content>
+      <categories>
+        <category>路科V0</category>
+      </categories>
+      <tags>
+        <tag>UVM</tag>
+        <tag>System Verilog</tag>
+        <tag>IC验证</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>路科V0P1SV学习</title>
+    <url>/2022/05/09/06/</url>
+    <content><![CDATA[<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1k7411H7Jo?spm_id_from=333.337.search-card.all.click">Bilibili</a></p>
+</blockquote>
+<p>几个必备技术要求：</p>
+<ul>
+<li>动态验证技术<ul>
+<li>代码覆盖率</li>
+<li>功能覆盖率</li>
+<li>断言</li>
+<li>随机约束</li>
+</ul>
+</li>
+<li>静态验证技术<ul>
+<li>人工的形式验证（属性检查）</li>
+<li>自动的形式验证</li>
+</ul>
+</li>
+<li>硬件加速技术<ul>
+<li>Emulation以及FPGA原型开发</li>
+</ul>
+</li>
+</ul>
+<p>背景要求：</p>
+<ul>
+<li>课程：<ul>
+<li>数字电路</li>
+<li>Verilog</li>
+<li>C&#x2F;C++</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2022/05/09/06/%E5%8A%A8%E6%80%81%E9%AA%8C%E8%AF%81%E6%8A%80%E6%9C%AF.png" alt="动态验证技术"></p>
+<p><img src="/2022/05/09/06/%E9%9D%99%E6%80%81%E9%AA%8C%E8%AF%81%E6%8A%80%E6%9C%AF.png" alt="静态验证技术"></p>
+<p><img src="/2022/05/09/06/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F.png" alt="硬件加速"></p>
+<p><img src="/2022/05/09/06/QuestaSim%E4%BB%BF%E7%9C%9F%E5%99%A8.png" alt="QuestaSim仿真器"></p>
+<p><img src="/2022/05/09/06/%E5%A4%A7%E8%B1%A1%E8%A3%85%E8%BF%9B%E5%86%B0%E7%AE%B1lab.png" alt="大象装进冰箱lab"></p>
+<p><img src="/2022/05/09/06/%E8%B5%84%E6%96%99%E4%B9%A6.png" alt="资料书"></p>
+<p><img src="/2022/05/09/06/DVT%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.png" alt="DVT集成开发环境"></p>
+<p><img src="/2022/05/09/06/%E5%85%B6%E4%BB%96%E8%AF%BE%E7%A8%8B.png" alt="其他课程"></p>
 ]]></content>
       <categories>
         <category>路科V0</category>
