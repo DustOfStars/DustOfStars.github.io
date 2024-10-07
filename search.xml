@@ -1741,98 +1741,6 @@
       </tags>
   </entry>
   <entry>
-    <title>kw38_helloworld</title>
-    <url>/2023/03/24/45/</url>
-    <content><![CDATA[<h1 id="kw38-helloworld"><a href="#kw38-helloworld" class="headerlink" title="kw38_helloworld"></a>kw38_helloworld</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init board hardware. */</span></span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line"></span><br><span class="line">    PRINTF(<span class="string">&quot;hello world.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ch = GETCHAR();</span><br><span class="line">        PUTCHAR(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="main功能"><a href="#main功能" class="headerlink" title="main功能"></a>main功能</h2><p>这段代码是一个简单的hello world程序，它的作用是在终端输出”hello world.”，并且可以接收终端输入的字符并将其输出。</p>
-<p>在main函数中，首先调用了BOARD_InitPins()函数来初始化板子的引脚，然后调用了BOARD_BootClockRUN()函数来初始化时钟，最后调用了BOARD_InitDebugConsole()函数来初始化调试控制台。</p>
-<p>接下来，使用PRINTF函数在终端输出”hello world.”，然后进入一个死循环，不断地接收终端输入的字符并将其输出，直到程序结束。</p>
-<p>其中，GETCHAR函数用于接收终端输入的字符，PUTCHAR函数用于将字符输出到终端。</p>
-<h2 id="main的函数调用"><a href="#main的函数调用" class="headerlink" title="main的函数调用"></a>main的函数调用</h2><p>这段代码调用了三个函数，分别是BOARD_InitPins()、BOARD_BootClockRUN()和BOARD_InitDebugConsole()。</p>
-<ul>
-<li>BOARD_InitPins()函数用于初始化板子的引脚，</li>
-<li>BOARD_BootClockRUN()函数用于初始化时钟，</li>
-<li>BOARD_InitDebugConsole()函数用于初始化调试控制台。</li>
-</ul>
-<p>在这个程序中，这三个函数的作用是为了确保程序能够正常运行，因为程序需要使用板子的引脚、时钟和调试控制台。</p>
-<h2 id="main的包含头文件"><a href="#main的包含头文件" class="headerlink" title="main的包含头文件"></a>main的包含头文件</h2><p>这段代码include了以下几个文件：</p>
-<ul>
-<li>fsl_device_registers.h：包含了芯片的寄存器定义，用于访问芯片的寄存器。</li>
-<li>fsl_debug_console.h：包含了调试控制台的相关函数，用于在终端输出和输入字符。</li>
-<li>board.h：包含了板子的相关函数和宏定义，用于初始化板子的引脚和时钟。</li>
-<li>pin_mux.h：包含了引脚的配置信息，用于初始化板子的引脚。</li>
-<li>stdbool.h：包含了bool类型的定义，用于定义布尔类型的变量。</li>
-<li>clock_config.h：包含了时钟的配置信息，用于初始化时钟。</li>
-</ul>
-<p>其中，fsl_device_registers.h、fsl_debug_console.h、board.h和pin_mux.h是MCUXpresso SDK提供的库文件，而stdbool.h和clock_config.h是标准C库文件。这些文件的作用是为了确保程序能够正常运行，因为程序需要使用芯片的寄存器、调试控制台、板子的引脚和时钟。</p>
-<h2 id="pin-mux-h"><a href="#pin-mux-h" class="headerlink" title="pin_mux.h"></a>pin_mux.h</h2><p>这是一个头文件，用于使用 MCUXpresso 配置工具为微控制器配置引脚复用和电气特性。</p>
-<p>它提供了一个函数来初始化微控制器使用的引脚，可以在启动期间调用。 该文件定义了用于配置引脚电气特性的宏常量 <code>SOPT5_LPUART0ODE_0b0</code>、<code>SOPT5_LPUART0RXSRC_0b0</code> 和 <code>SOPT5_LPUART0TXSRC_0b00</code>。 </p>
-<p>头文件由包含保护 (<code>#ifndef _PIN_MUX_H_</code>) 保护，确保它在编译单元中仅包含一次。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0ODE_0b0 0x00u    <span class="comment">/*LPUART0开漏禁用*/</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0RXSRC_0b0 0x00u  <span class="comment">/*LPUART0接收数据源选择：LPUART_RX pin */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0TXSRC_0b00 0x00u <span class="comment">/*LPUART0发送数据源选择：LPUART_TX pin */</span></span></span><br></pre></td></tr></table></figure>
-
-<p>声明了两个函数：</p>
-<ul>
-<li>void BOARD_InitPins(void);  配置引脚routing和可选引脚电气特性</li>
-<li>void BOARD_InitBootPins(void);  初始化启动引脚；</li>
-</ul>
-<h2 id="pin-mux-c"><a href="#pin-mux-c" class="headerlink" title="pin_mux.c"></a>pin_mux.c</h2><h3 id="void-BOARD-IninPins-void"><a href="#void-BOARD-IninPins-void" class="headerlink" title="void BOARD_IninPins(void)"></a>void BOARD_IninPins(void)</h3><p>这段代码是来自项目中的“pin_mux.c”文件，该文件包含了MKW38A512微控制器的引脚配置函数。</p>
-<p>所选代码块是函数“BOARD_InitPins()”，它配置了LPUART0外设的引脚路由和电气特性。</p>
-<p>具体来说，它将</p>
-<ol>
-<li>使能PortC的时钟；</li>
-<li>42号和43号引脚的引脚复用设置为LPUART0_RX和LPUART0_TX。</li>
-<li>将LPUART0传输数据源设置为LPUART0_TX引脚，将LPUART0接收数据源设置为LPUART_RX引脚，并在LPUART0上禁用了开漏特性。</li>
-</ol>
-<p>该函数由“BOARD_InitBootPins()”调用，在引导过程中调用以初始化引脚。</p>
-<h2 id="clock-config-c"><a href="#clock-config-c" class="headerlink" title="clock_config.c"></a>clock_config.c</h2><h3 id="void-BOARD-BootClockRUN-void"><a href="#void-BOARD-BootClockRUN-void" class="headerlink" title="void BOARD_BootClockRUN(void)"></a>void BOARD_BootClockRUN(void)</h3><p>这段代码是MKW38A512芯片的时钟配置代码，主要包括两个函数：BOARD_BootClockRUN和BOARD_BootClockVLPR。</p>
-<p>这两个函数分别用于配置系统在RUN模式和VLPR模式下的时钟。在这两个函数中，主要使用了MCUXpresso Config Tools提供的时钟驱动函数来配置系统时钟。具体来说，这两个函数的主要步骤如下：</p>
-<ol>
-<li>BOARD_RfOscInit函数：<strong>初始化射频晶振，用于提供系统时钟的参考时钟</strong>。</li>
-<li>CLOCK_SetSimSafeDivs函数：设置<strong>系统时钟分频器的初始值</strong>，以确保在时钟模式切换时，核心时钟、总线时钟、flexbus时钟和flash时钟都在允许的范围内。</li>
-<li>BOARD_InitOsc0函数：初始化MCG OSC，用于提供系统时钟的参考时钟。</li>
-<li>CLOCK_BootToFeeMode函数：<strong>将MCG模式设置为FEE模式</strong>，即FLL Engaged External模式，此时FLL时钟和外部参考时钟都被使能。</li>
-<li>CLOCK_SetInternalRefClkConfig函数：配置<strong>内部参考时钟MCGIRCLK</strong>。</li>
-<li>CLOCK_SetSimConfig函数：设置<strong>SIM模块的时钟配置</strong>。</li>
-<li>SystemCoreClock变量：设置当前系统核心时钟的频率。</li>
-</ol>
-<p>其中，BOARD_BootClockRUN函数用于配置系统在RUN模式下的时钟，而BOARD_BootClockVLPR函数用于配置系统在VLPR模式下的时钟。</p>
-<p>在这两个函数中，<strong>主要的区别在于MCG模式的设置不同，以及时钟分频器的设置不同</strong>。</p>
-<ul>
-<li>在RUN模式下，MCG模式被设置为<strong>FEE</strong>模式，时钟分频器的初始值为1，2，2，5，</li>
-<li>而在VLPR模式下，MCG模式被设置为<strong>BLPI</strong>模式，时钟分频器的初始值为1，5，1，</li>
-</ul>
-<h2 id="board-c"><a href="#board-c" class="headerlink" title="board.c"></a>board.c</h2><h3 id="void-BOARD-InitDebugConsole-void"><a href="#void-BOARD-InitDebugConsole-void" class="headerlink" title="void BOARD_InitDebugConsole(void)"></a>void BOARD_InitDebugConsole(void)</h3><p>这段代码是初始化调试控制台的函数。在这个函数中，首先设置了<strong>LPUART0的时钟源为OSCERCLK</strong>，然后初始化了调试控制台。</p>
-<p>调试控制台的初始化使用了MCUXpresso SDK提供的DbgConsole_Init函数，该函数需要传入调试控制台的实例、波特率、类型和时钟源频率等参数。在这个函数中，调试控制台的实例为BOARD_DEBUG_UART_INSTANCE，波特率为BOARD_DEBUG_UART_BAUDRATE，类型为BOARD_DEBUG_UART_TYPE，时钟源频率为uartClkSrcFreq。</p>
-<h2 id="fsl-debug-console-c"><a href="#fsl-debug-console-c" class="headerlink" title="fsl_debug_console.c"></a>fsl_debug_console.c</h2><h3 id="int-DbgConsole-Printf-const-char-formatString-…"><a href="#int-DbgConsole-Printf-const-char-formatString-…" class="headerlink" title="int DbgConsole_Printf(const char *formatString, …)"></a>int DbgConsole_Printf(const char *formatString, …)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* See fsl_debug_console.h for documentation of this function. */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">DbgConsole_Printf</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *formatString, ...)</span></span><br><span class="line">&#123;</span><br><span class="line">    va_list ap;</span><br><span class="line">    <span class="type">int</span> logLength = <span class="number">0</span>, dbgResult = <span class="number">0</span>;</span><br><span class="line">    <span class="type">char</span> printBuf[DEBUG_CONSOLE_PRINTF_MAX_LOG_LEN] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> != g_serialHandle)</span><br><span class="line">    &#123;</span><br><span class="line">        va_start(ap, formatString);</span><br><span class="line">        <span class="comment">/* format print log first */</span></span><br><span class="line">        logLength = StrFormatPrintf(formatString, ap, printBuf, DbgConsole_PrintCallback);</span><br><span class="line">        <span class="comment">/* print log */</span></span><br><span class="line">        dbgResult = DbgConsole_SendDataReliable((<span class="type">uint8_t</span> *)printBuf, (<span class="type">size_t</span>)logLength);</span><br><span class="line"></span><br><span class="line">        va_end(ap);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dbgResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段代码是fsl_debug_console.c文件的一部分。该文件包含了调试控制台模块的实现。调试控制台模块提供了一组函数来初始化、去初始化、打印和从调试控制台读取数据。</p>
-<p>所选代码是DbgConsole_Printf函数的实现。该函数用于将格式化数据打印到调试控制台。</p>
-<blockquote>
-<p>该函数接受<strong>一个格式字符串</strong>和<strong>一个可变数量的参数</strong>。格式字符串指定输出字符串的格式，参数是要格式化和打印的值。</p>
-</blockquote>
-<p>该函数首先使用StrFormatPrintf函数格式化输出字符串。该函数将格式字符串、可变参数和回调函数作为输入。<strong>回调函数用于输出格式化数据</strong>。在这种情况下，回调函数是DbgConsole_PrintCallback。</p>
-<p>格式化输出字符串后，该函数使用DbgConsole_SendDataReliable函数将数据发送到调试控制台。该函数可靠地发送数据，这意味着它将重试发送数据，直到成功发送为止。</p>
-<p>后缀代码包含了DbgConsole_Putchar和DbgConsole_Scanf函数的实现。DbgConsole_Putchar函数用于<strong>将单个字符打印到调试控制台</strong>。该函数只需调用DbgConsole_SendDataReliable函数并传递要打印的字符即可。</p>
-<p>DbgConsole_Scanf函数用于从调试控制台读取格式化数据。该函数接受一个格式字符串和一个可变数量的参数。格式字符串指定输入数据的格式，参数是指向存储输入数据的变量的指针。</p>
-<p>该函数首先使用DbgConsole_ReadLine<strong>函数读取一行输入</strong>。然后使用StrFormatScanf函数格式化输入数据，并将格式化数据存储在由参数指向的变量中。</p>
-<p>总的来说，这些函数提供了一种方便的方式来与调试控制台交互，并打印和读取格式化数据。</p>
-<h2 id="关于引脚的四种输出情况"><a href="#关于引脚的四种输出情况" class="headerlink" title="关于引脚的四种输出情况"></a>关于引脚的四种输出情况</h2><p>上拉 (Pull-up) 和下拉 (Pull-down) 是指在数字电路中使用电阻将输入或输出引脚连接到电源或地，以确保在没有输入信号的情况下，引脚保持在一个已知状态。具体来说，上拉是指将引脚连接到电源（通常是高电平），下拉是指将引脚连接到地（通常是低电平）。在某些情况下，还可以使用弱上拉或弱下拉，即使用较大阻值的电阻。</p>
-<p>开漏 (Open-Drain) 和推挽 (Push-Pull) 是指输出引脚的驱动方式。<strong>开漏输出只能将引脚拉到低电平，而不能将其拉到高电平，而推挽输出可以将引脚驱动到高电平或低电平。</strong>在使用开漏输出时，还需要在输出引脚和电源之间连接一个上拉电阻，以确保输出引脚能够被拉到高电平。</p>
-<p>开漏输出通常用于需要将多个设备连接到同一个总线上的情况，而推挽输出则更适用于需要直接驱动其他器件的情况。</p>
-]]></content>
-      <categories>
-        <category>嵌入式</category>
-        <category>代码解读</category>
-      </categories>
-      <tags>
-        <tag>NXP</tag>
-        <tag>嵌入式</tag>
-        <tag>代码解读</tag>
-        <tag>BOARD</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>代码解读之GPIO_Adapter</title>
     <url>/2023/03/20/38/</url>
     <content><![CDATA[<h1 id="读fsl-adapter-gpio-c-和-h-代码"><a href="#读fsl-adapter-gpio-c-和-h-代码" class="headerlink" title="读fsl_adapter_gpio.c 和 .h 代码"></a>读fsl_adapter_gpio.c 和 .h 代码</h1><h2 id="1-fsl-adapter-gpio-c"><a href="#1-fsl-adapter-gpio-c" class="headerlink" title="1. fsl_adapter_gpio.c"></a>1. fsl_adapter_gpio.c</h2><p>这个代码是一个包含头文件并定义与MCU中的GPIO（通用输入&#x2F;输出）功能相关的一些宏的 C 源文件。它是为 NXP 公司制造的特定MCU编写的。</p>
@@ -2173,6 +2081,98 @@
       </tags>
   </entry>
   <entry>
+    <title>kw38_helloworld</title>
+    <url>/2023/03/24/45/</url>
+    <content><![CDATA[<h1 id="kw38-helloworld"><a href="#kw38-helloworld" class="headerlink" title="kw38_helloworld"></a>kw38_helloworld</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Init board hardware. */</span></span><br><span class="line">    BOARD_InitPins();</span><br><span class="line">    BOARD_BootClockRUN();</span><br><span class="line">    BOARD_InitDebugConsole();</span><br><span class="line"></span><br><span class="line">    PRINTF(<span class="string">&quot;hello world.\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ch = GETCHAR();</span><br><span class="line">        PUTCHAR(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="main功能"><a href="#main功能" class="headerlink" title="main功能"></a>main功能</h2><p>这段代码是一个简单的hello world程序，它的作用是在终端输出”hello world.”，并且可以接收终端输入的字符并将其输出。</p>
+<p>在main函数中，首先调用了BOARD_InitPins()函数来初始化板子的引脚，然后调用了BOARD_BootClockRUN()函数来初始化时钟，最后调用了BOARD_InitDebugConsole()函数来初始化调试控制台。</p>
+<p>接下来，使用PRINTF函数在终端输出”hello world.”，然后进入一个死循环，不断地接收终端输入的字符并将其输出，直到程序结束。</p>
+<p>其中，GETCHAR函数用于接收终端输入的字符，PUTCHAR函数用于将字符输出到终端。</p>
+<h2 id="main的函数调用"><a href="#main的函数调用" class="headerlink" title="main的函数调用"></a>main的函数调用</h2><p>这段代码调用了三个函数，分别是BOARD_InitPins()、BOARD_BootClockRUN()和BOARD_InitDebugConsole()。</p>
+<ul>
+<li>BOARD_InitPins()函数用于初始化板子的引脚，</li>
+<li>BOARD_BootClockRUN()函数用于初始化时钟，</li>
+<li>BOARD_InitDebugConsole()函数用于初始化调试控制台。</li>
+</ul>
+<p>在这个程序中，这三个函数的作用是为了确保程序能够正常运行，因为程序需要使用板子的引脚、时钟和调试控制台。</p>
+<h2 id="main的包含头文件"><a href="#main的包含头文件" class="headerlink" title="main的包含头文件"></a>main的包含头文件</h2><p>这段代码include了以下几个文件：</p>
+<ul>
+<li>fsl_device_registers.h：包含了芯片的寄存器定义，用于访问芯片的寄存器。</li>
+<li>fsl_debug_console.h：包含了调试控制台的相关函数，用于在终端输出和输入字符。</li>
+<li>board.h：包含了板子的相关函数和宏定义，用于初始化板子的引脚和时钟。</li>
+<li>pin_mux.h：包含了引脚的配置信息，用于初始化板子的引脚。</li>
+<li>stdbool.h：包含了bool类型的定义，用于定义布尔类型的变量。</li>
+<li>clock_config.h：包含了时钟的配置信息，用于初始化时钟。</li>
+</ul>
+<p>其中，fsl_device_registers.h、fsl_debug_console.h、board.h和pin_mux.h是MCUXpresso SDK提供的库文件，而stdbool.h和clock_config.h是标准C库文件。这些文件的作用是为了确保程序能够正常运行，因为程序需要使用芯片的寄存器、调试控制台、板子的引脚和时钟。</p>
+<h2 id="pin-mux-h"><a href="#pin-mux-h" class="headerlink" title="pin_mux.h"></a>pin_mux.h</h2><p>这是一个头文件，用于使用 MCUXpresso 配置工具为微控制器配置引脚复用和电气特性。</p>
+<p>它提供了一个函数来初始化微控制器使用的引脚，可以在启动期间调用。 该文件定义了用于配置引脚电气特性的宏常量 <code>SOPT5_LPUART0ODE_0b0</code>、<code>SOPT5_LPUART0RXSRC_0b0</code> 和 <code>SOPT5_LPUART0TXSRC_0b00</code>。 </p>
+<p>头文件由包含保护 (<code>#ifndef _PIN_MUX_H_</code>) 保护，确保它在编译单元中仅包含一次。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0ODE_0b0 0x00u    <span class="comment">/*LPUART0开漏禁用*/</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0RXSRC_0b0 0x00u  <span class="comment">/*LPUART0接收数据源选择：LPUART_RX pin */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SOPT5_LPUART0TXSRC_0b00 0x00u <span class="comment">/*LPUART0发送数据源选择：LPUART_TX pin */</span></span></span><br></pre></td></tr></table></figure>
+
+<p>声明了两个函数：</p>
+<ul>
+<li>void BOARD_InitPins(void);  配置引脚routing和可选引脚电气特性</li>
+<li>void BOARD_InitBootPins(void);  初始化启动引脚；</li>
+</ul>
+<h2 id="pin-mux-c"><a href="#pin-mux-c" class="headerlink" title="pin_mux.c"></a>pin_mux.c</h2><h3 id="void-BOARD-IninPins-void"><a href="#void-BOARD-IninPins-void" class="headerlink" title="void BOARD_IninPins(void)"></a>void BOARD_IninPins(void)</h3><p>这段代码是来自项目中的“pin_mux.c”文件，该文件包含了MKW38A512微控制器的引脚配置函数。</p>
+<p>所选代码块是函数“BOARD_InitPins()”，它配置了LPUART0外设的引脚路由和电气特性。</p>
+<p>具体来说，它将</p>
+<ol>
+<li>使能PortC的时钟；</li>
+<li>42号和43号引脚的引脚复用设置为LPUART0_RX和LPUART0_TX。</li>
+<li>将LPUART0传输数据源设置为LPUART0_TX引脚，将LPUART0接收数据源设置为LPUART_RX引脚，并在LPUART0上禁用了开漏特性。</li>
+</ol>
+<p>该函数由“BOARD_InitBootPins()”调用，在引导过程中调用以初始化引脚。</p>
+<h2 id="clock-config-c"><a href="#clock-config-c" class="headerlink" title="clock_config.c"></a>clock_config.c</h2><h3 id="void-BOARD-BootClockRUN-void"><a href="#void-BOARD-BootClockRUN-void" class="headerlink" title="void BOARD_BootClockRUN(void)"></a>void BOARD_BootClockRUN(void)</h3><p>这段代码是MKW38A512芯片的时钟配置代码，主要包括两个函数：BOARD_BootClockRUN和BOARD_BootClockVLPR。</p>
+<p>这两个函数分别用于配置系统在RUN模式和VLPR模式下的时钟。在这两个函数中，主要使用了MCUXpresso Config Tools提供的时钟驱动函数来配置系统时钟。具体来说，这两个函数的主要步骤如下：</p>
+<ol>
+<li>BOARD_RfOscInit函数：<strong>初始化射频晶振，用于提供系统时钟的参考时钟</strong>。</li>
+<li>CLOCK_SetSimSafeDivs函数：设置<strong>系统时钟分频器的初始值</strong>，以确保在时钟模式切换时，核心时钟、总线时钟、flexbus时钟和flash时钟都在允许的范围内。</li>
+<li>BOARD_InitOsc0函数：初始化MCG OSC，用于提供系统时钟的参考时钟。</li>
+<li>CLOCK_BootToFeeMode函数：<strong>将MCG模式设置为FEE模式</strong>，即FLL Engaged External模式，此时FLL时钟和外部参考时钟都被使能。</li>
+<li>CLOCK_SetInternalRefClkConfig函数：配置<strong>内部参考时钟MCGIRCLK</strong>。</li>
+<li>CLOCK_SetSimConfig函数：设置<strong>SIM模块的时钟配置</strong>。</li>
+<li>SystemCoreClock变量：设置当前系统核心时钟的频率。</li>
+</ol>
+<p>其中，BOARD_BootClockRUN函数用于配置系统在RUN模式下的时钟，而BOARD_BootClockVLPR函数用于配置系统在VLPR模式下的时钟。</p>
+<p>在这两个函数中，<strong>主要的区别在于MCG模式的设置不同，以及时钟分频器的设置不同</strong>。</p>
+<ul>
+<li>在RUN模式下，MCG模式被设置为<strong>FEE</strong>模式，时钟分频器的初始值为1，2，2，5，</li>
+<li>而在VLPR模式下，MCG模式被设置为<strong>BLPI</strong>模式，时钟分频器的初始值为1，5，1，</li>
+</ul>
+<h2 id="board-c"><a href="#board-c" class="headerlink" title="board.c"></a>board.c</h2><h3 id="void-BOARD-InitDebugConsole-void"><a href="#void-BOARD-InitDebugConsole-void" class="headerlink" title="void BOARD_InitDebugConsole(void)"></a>void BOARD_InitDebugConsole(void)</h3><p>这段代码是初始化调试控制台的函数。在这个函数中，首先设置了<strong>LPUART0的时钟源为OSCERCLK</strong>，然后初始化了调试控制台。</p>
+<p>调试控制台的初始化使用了MCUXpresso SDK提供的DbgConsole_Init函数，该函数需要传入调试控制台的实例、波特率、类型和时钟源频率等参数。在这个函数中，调试控制台的实例为BOARD_DEBUG_UART_INSTANCE，波特率为BOARD_DEBUG_UART_BAUDRATE，类型为BOARD_DEBUG_UART_TYPE，时钟源频率为uartClkSrcFreq。</p>
+<h2 id="fsl-debug-console-c"><a href="#fsl-debug-console-c" class="headerlink" title="fsl_debug_console.c"></a>fsl_debug_console.c</h2><h3 id="int-DbgConsole-Printf-const-char-formatString-…"><a href="#int-DbgConsole-Printf-const-char-formatString-…" class="headerlink" title="int DbgConsole_Printf(const char *formatString, …)"></a>int DbgConsole_Printf(const char *formatString, …)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* See fsl_debug_console.h for documentation of this function. */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">DbgConsole_Printf</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *formatString, ...)</span></span><br><span class="line">&#123;</span><br><span class="line">    va_list ap;</span><br><span class="line">    <span class="type">int</span> logLength = <span class="number">0</span>, dbgResult = <span class="number">0</span>;</span><br><span class="line">    <span class="type">char</span> printBuf[DEBUG_CONSOLE_PRINTF_MAX_LOG_LEN] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> != g_serialHandle)</span><br><span class="line">    &#123;</span><br><span class="line">        va_start(ap, formatString);</span><br><span class="line">        <span class="comment">/* format print log first */</span></span><br><span class="line">        logLength = StrFormatPrintf(formatString, ap, printBuf, DbgConsole_PrintCallback);</span><br><span class="line">        <span class="comment">/* print log */</span></span><br><span class="line">        dbgResult = DbgConsole_SendDataReliable((<span class="type">uint8_t</span> *)printBuf, (<span class="type">size_t</span>)logLength);</span><br><span class="line"></span><br><span class="line">        va_end(ap);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dbgResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码是fsl_debug_console.c文件的一部分。该文件包含了调试控制台模块的实现。调试控制台模块提供了一组函数来初始化、去初始化、打印和从调试控制台读取数据。</p>
+<p>所选代码是DbgConsole_Printf函数的实现。该函数用于将格式化数据打印到调试控制台。</p>
+<blockquote>
+<p>该函数接受<strong>一个格式字符串</strong>和<strong>一个可变数量的参数</strong>。格式字符串指定输出字符串的格式，参数是要格式化和打印的值。</p>
+</blockquote>
+<p>该函数首先使用StrFormatPrintf函数格式化输出字符串。该函数将格式字符串、可变参数和回调函数作为输入。<strong>回调函数用于输出格式化数据</strong>。在这种情况下，回调函数是DbgConsole_PrintCallback。</p>
+<p>格式化输出字符串后，该函数使用DbgConsole_SendDataReliable函数将数据发送到调试控制台。该函数可靠地发送数据，这意味着它将重试发送数据，直到成功发送为止。</p>
+<p>后缀代码包含了DbgConsole_Putchar和DbgConsole_Scanf函数的实现。DbgConsole_Putchar函数用于<strong>将单个字符打印到调试控制台</strong>。该函数只需调用DbgConsole_SendDataReliable函数并传递要打印的字符即可。</p>
+<p>DbgConsole_Scanf函数用于从调试控制台读取格式化数据。该函数接受一个格式字符串和一个可变数量的参数。格式字符串指定输入数据的格式，参数是指向存储输入数据的变量的指针。</p>
+<p>该函数首先使用DbgConsole_ReadLine<strong>函数读取一行输入</strong>。然后使用StrFormatScanf函数格式化输入数据，并将格式化数据存储在由参数指向的变量中。</p>
+<p>总的来说，这些函数提供了一种方便的方式来与调试控制台交互，并打印和读取格式化数据。</p>
+<h2 id="关于引脚的四种输出情况"><a href="#关于引脚的四种输出情况" class="headerlink" title="关于引脚的四种输出情况"></a>关于引脚的四种输出情况</h2><p>上拉 (Pull-up) 和下拉 (Pull-down) 是指在数字电路中使用电阻将输入或输出引脚连接到电源或地，以确保在没有输入信号的情况下，引脚保持在一个已知状态。具体来说，上拉是指将引脚连接到电源（通常是高电平），下拉是指将引脚连接到地（通常是低电平）。在某些情况下，还可以使用弱上拉或弱下拉，即使用较大阻值的电阻。</p>
+<p>开漏 (Open-Drain) 和推挽 (Push-Pull) 是指输出引脚的驱动方式。<strong>开漏输出只能将引脚拉到低电平，而不能将其拉到高电平，而推挽输出可以将引脚驱动到高电平或低电平。</strong>在使用开漏输出时，还需要在输出引脚和电源之间连接一个上拉电阻，以确保输出引脚能够被拉到高电平。</p>
+<p>开漏输出通常用于需要将多个设备连接到同一个总线上的情况，而推挽输出则更适用于需要直接驱动其他器件的情况。</p>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+        <category>代码解读</category>
+      </categories>
+      <tags>
+        <tag>NXP</tag>
+        <tag>嵌入式</tag>
+        <tag>代码解读</tag>
+        <tag>BOARD</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>代码解读之fsl_gpio</title>
     <url>/2023/03/21/40/</url>
     <content><![CDATA[<h1 id="读fsl-gpio-c-和-fsl-gpio-h-代码"><a href="#读fsl-gpio-c-和-fsl-gpio-h-代码" class="headerlink" title="读fsl_gpio.c 和 fsl_gpio.h 代码"></a>读fsl_gpio.c 和 fsl_gpio.h 代码</h1><blockquote>
@@ -2487,6 +2487,84 @@ Vector Table
       </tags>
   </entry>
   <entry>
+    <title>数字设计流程</title>
+    <url>/2022/05/06/22/</url>
+    <content><![CDATA[<h1 id="数字设计流程"><a href="#数字设计流程" class="headerlink" title="数字设计流程"></a>数字设计流程</h1><blockquote>
+<p>先放地址，来源于B站比特大陆相关的学习资料。 <a href="https://www.bilibili.com/video/BV1yY411P7SR?spm_id_from=333.999.0.0">链接</a></p>
+</blockquote>
+<h2 id="一、-项目立项"><a href="#一、-项目立项" class="headerlink" title="一、 项目立项"></a>一、 项目立项</h2><h3 id="1-1-项目解读"><a href="#1-1-项目解读" class="headerlink" title="1.1 项目解读"></a>1.1 项目解读</h3><p>市场、研发、架构、编译器 等相关人员，进行市场需求和竞品分析，初步决定芯片功能、面积、功耗等相关指标。</p>
+<h3 id="1-2-技术调研"><a href="#1-2-技术调研" class="headerlink" title="1.2 技术调研"></a>1.2 技术调研</h3><p>软件建模、硬件预实现、方案可行性分析等，生成一个市场需求报告。</p>
+<h3 id="1-3-开发计划制定"><a href="#1-3-开发计划制定" class="headerlink" title="1.3 开发计划制定"></a>1.3 开发计划制定</h3><p>有几个方面会影响到芯片开发的时间线：</p>
+<ul>
+<li>购买IP，比如PCI接口、DDR等，IP供应商也要时间准备进行定制化开发；</li>
+<li>代工厂排期；</li>
+<li>预留研发调试时间；</li>
+</ul>
+<h2 id="二、-研发阶段"><a href="#二、-研发阶段" class="headerlink" title="二、 研发阶段"></a>二、 研发阶段</h2><h3 id="2-1-技术研讨方案制定"><a href="#2-1-技术研讨方案制定" class="headerlink" title="2.1 技术研讨方案制定"></a>2.1 技术研讨方案制定</h3><p>划分芯片的子系统和模块、软硬件工作的划分和规划、各个子系统也要有性能指标定义等。</p>
+<h3 id="2-2-详细设计"><a href="#2-2-详细设计" class="headerlink" title="2.2 详细设计"></a>2.2 详细设计</h3><p><img src="/2022/05/06/22/%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%AD%A5%E9%AA%A4.png" alt="详细设计"></p>
+<blockquote>
+<p>算法和硬件架构、硬件电路设计、功能验证都属于前端设计部分；</p>
+<p>逻辑综合、静态时序分析、一致性验证算是中端；</p>
+<p>布局布线等等都属于后端；</p>
+</blockquote>
+<p>下面，对这些步骤进行详细介绍：</p>
+<h4 id="2-2-1-算法和硬件架构设计"><a href="#2-2-1-算法和硬件架构设计" class="headerlink" title="2.2.1 算法和硬件架构设计"></a>2.2.1 算法和硬件架构设计</h4><ul>
+<li>输入： 功能需求</li>
+<li>输出： 软件参考模型</li>
+<li>过程： 架构人员使用Matlab、C++、System C、 System Verilog 等语言工具，完成芯片中数字部分的高层次算法或架构的分析和建模，为硬件提供正确的软件功能模型，更为重要的是，通过大量的高层次仿真和调试，为RTL实现提供总体性的设计指导。越是复杂的数字电路，这部分算法模型仿真越重要。</li>
+</ul>
+<p><img src="/2022/05/06/22/%E7%AE%97%E6%B3%95%E5%92%8C%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.png" alt="算法和硬件架构设计"></p>
+<h4 id="2-2-2-硬件电路设计"><a href="#2-2-2-硬件电路设计" class="headerlink" title="2.2.2 硬件电路设计"></a>2.2.2 硬件电路设计</h4><ul>
+<li>输入： 从架构拿到的软件参考模型</li>
+<li>输出： RTL代码、详细的设计文档、逻辑综合报告、语法检查报告</li>
+</ul>
+<p><img src="/2022/05/06/22/%E7%A1%AC%E4%BB%B6%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1.png" alt="硬件电路设计"></p>
+<ul>
+<li>spyglass: 时序校验、语法校验等</li>
+<li>Design Compiler： 预综合，观察时序面积功耗等是否达到要求；</li>
+</ul>
+<h4 id="2-2-3-功能验证"><a href="#2-2-3-功能验证" class="headerlink" title="2.2.3 功能验证"></a>2.2.3 功能验证</h4><ul>
+<li>输入： 设计规格、设计代码、软件模型；</li>
+<li>输出： 代码覆盖率和功能覆盖率报告；</li>
+</ul>
+<p><img src="/2022/05/06/22/%E5%8A%9F%E8%83%BD%E9%AA%8C%E8%AF%81.png" alt="功能验证"></p>
+<h4 id="2-2-4-逻辑综合"><a href="#2-2-4-逻辑综合" class="headerlink" title="2.2.4 逻辑综合"></a>2.2.4 逻辑综合</h4><ul>
+<li>输入： RTL代码、工艺库、约束；</li>
+<li>输出： 网表、标准延迟文件SDF、工程文件(.ddc)、各类报告；</li>
+</ul>
+<p><img src="/2022/05/06/22/%E9%80%BB%E8%BE%91%E7%BB%BC%E5%90%88.png" alt="逻辑综合"></p>
+<h4 id="2-2-5-静态时序分析"><a href="#2-2-5-静态时序分析" class="headerlink" title="2.2.5 静态时序分析"></a>2.2.5 静态时序分析</h4><ul>
+<li>中端人员使用静态时序分析工具 Prime Time，从静态分析角度，保证设计中所有的路径，满足内部时序单元对建立时间和保持时间的要求。</li>
+<li>即无论起点是什么，信号都可以被及时的传递到该路径的终点，并且在电路正常工作所需的时间段内保持恒定；</li>
+</ul>
+<p><img src="/2022/05/06/22/%E9%9D%99%E6%80%81%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90.png" alt="静态时序分析"></p>
+<h4 id="2-2-6-一致性验证"><a href="#2-2-6-一致性验证" class="headerlink" title="2.2.6 一致性验证"></a>2.2.6 一致性验证</h4><ul>
+<li>输入： RTL代码、网表、约束；</li>
+<li>输出： match（两张图的节点是否一致）和verify（计算得到的两张图的功能是否一致）的报告；</li>
+<li>过程： RTL和网表都可以抽象成两幅图，由节点和边组成，中端人员使用Formality、Conformal工具进行一致性验证，采用类似于直接比较两幅图是否一致的方法，来确定网表是否正确。</li>
+</ul>
+<p><img src="/2022/05/06/22/%E4%B8%80%E8%87%B4%E6%80%A7%E9%AA%8C%E8%AF%81.png" alt="一致性验证"></p>
+<h4 id="2-2-7-布局布线"><a href="#2-2-7-布局布线" class="headerlink" title="2.2.7 布局布线"></a>2.2.7 布局布线</h4><ul>
+<li>布图规划（floor plan）： 后端人员使用IC complier、 Encounter等工具进行布局前的规划，目标是优化芯片的面积，时序收敛，稳定，方便走线。是整个后端最重要的一步，也是弹性最大的一步。因为没有标准的最佳方案，但又有很多细节需要考虑。</li>
+<li>布局： 布局就是摆放标准单元，I&#x2F;o pad（用于胡须连接芯片引脚），宏单元来实现电路逻辑。布局目标：利用率越高越好，总线越短越好，时序越快越好。但是利用率高布线就困难，总线就长，时序就慢，因此要做个平衡取舍。</li>
+<li>时钟树综合（clock tree synthesis）： 简单说就是时钟的布线，因为时钟信号在数字电路的全局指挥最用，它的分布应该是对称式连接到各个寄存器单元的，从而时钟从一个时钟源到各个寄存器时，时钟延迟差异最小。这也是为什么时钟信号需要单独布线的原因。</li>
+<li>布线： 在满足工艺规则和布线层数限制、线宽、线间距限制和各线网可靠绝缘的电性能约束条件下，根据电路的连接关系，将各单元和I&#x2F;O pad用互连线连接起来。</li>
+</ul>
+<p><img src="/2022/05/06/22/%E5%B8%83%E5%B1%80%E5%B8%83%E7%BA%BF.png" alt="布局布线"></p>
+<h4 id="2-2-8-生成版图并验证"><a href="#2-2-8-生成版图并验证" class="headerlink" title="2.2.8 生成版图并验证"></a>2.2.8 生成版图并验证</h4><ul>
+<li>寄生参数提取： 由于导线本身存在电阻，相邻导线之间的互感，耦合电容在芯片内部会产生信号噪声，串扰和反射。这些效应会产生信号完整性的问题，导致信号电压波动和变化，如果严重就会导致信号失真错误。提取寄生参数进行再次分析验证，分析信号完整性是非常重要的。</li>
+<li>生成版图并验证： 对完成布线的物理版图进行功能和时序上的验证，大概包括以下方面： LVS（layout vs schematic）、 DRC（Design Rule Checking）、 ERC（Electrical Rule Checking）</li>
+</ul>
+<p><img src="/2022/05/06/22/%E7%94%9F%E6%88%90%E7%89%88%E5%9B%BE%E5%B9%B6%E9%AA%8C%E8%AF%81.png" alt="生成版图并验证"></p>
+]]></content>
+      <categories>
+        <category>数字IC</category>
+      </categories>
+      <tags>
+        <tag>设计流程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>总线协议之 -- UART</title>
     <url>/2022/09/21/59/</url>
     <content><![CDATA[<h1 id="总线协议之-–-UART"><a href="#总线协议之-–-UART" class="headerlink" title="总线协议之 – UART"></a>总线协议之 – UART</h1><h2 id="UART简介"><a href="#UART简介" class="headerlink" title="UART简介"></a>UART简介</h2><blockquote>
@@ -2604,84 +2682,6 @@ Vector Table
       <tags>
         <tag>NXP</tag>
         <tag>UART</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数字设计流程</title>
-    <url>/2022/05/06/22/</url>
-    <content><![CDATA[<h1 id="数字设计流程"><a href="#数字设计流程" class="headerlink" title="数字设计流程"></a>数字设计流程</h1><blockquote>
-<p>先放地址，来源于B站比特大陆相关的学习资料。 <a href="https://www.bilibili.com/video/BV1yY411P7SR?spm_id_from=333.999.0.0">链接</a></p>
-</blockquote>
-<h2 id="一、-项目立项"><a href="#一、-项目立项" class="headerlink" title="一、 项目立项"></a>一、 项目立项</h2><h3 id="1-1-项目解读"><a href="#1-1-项目解读" class="headerlink" title="1.1 项目解读"></a>1.1 项目解读</h3><p>市场、研发、架构、编译器 等相关人员，进行市场需求和竞品分析，初步决定芯片功能、面积、功耗等相关指标。</p>
-<h3 id="1-2-技术调研"><a href="#1-2-技术调研" class="headerlink" title="1.2 技术调研"></a>1.2 技术调研</h3><p>软件建模、硬件预实现、方案可行性分析等，生成一个市场需求报告。</p>
-<h3 id="1-3-开发计划制定"><a href="#1-3-开发计划制定" class="headerlink" title="1.3 开发计划制定"></a>1.3 开发计划制定</h3><p>有几个方面会影响到芯片开发的时间线：</p>
-<ul>
-<li>购买IP，比如PCI接口、DDR等，IP供应商也要时间准备进行定制化开发；</li>
-<li>代工厂排期；</li>
-<li>预留研发调试时间；</li>
-</ul>
-<h2 id="二、-研发阶段"><a href="#二、-研发阶段" class="headerlink" title="二、 研发阶段"></a>二、 研发阶段</h2><h3 id="2-1-技术研讨方案制定"><a href="#2-1-技术研讨方案制定" class="headerlink" title="2.1 技术研讨方案制定"></a>2.1 技术研讨方案制定</h3><p>划分芯片的子系统和模块、软硬件工作的划分和规划、各个子系统也要有性能指标定义等。</p>
-<h3 id="2-2-详细设计"><a href="#2-2-详细设计" class="headerlink" title="2.2 详细设计"></a>2.2 详细设计</h3><p><img src="/2022/05/06/22/%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%AD%A5%E9%AA%A4.png" alt="详细设计"></p>
-<blockquote>
-<p>算法和硬件架构、硬件电路设计、功能验证都属于前端设计部分；</p>
-<p>逻辑综合、静态时序分析、一致性验证算是中端；</p>
-<p>布局布线等等都属于后端；</p>
-</blockquote>
-<p>下面，对这些步骤进行详细介绍：</p>
-<h4 id="2-2-1-算法和硬件架构设计"><a href="#2-2-1-算法和硬件架构设计" class="headerlink" title="2.2.1 算法和硬件架构设计"></a>2.2.1 算法和硬件架构设计</h4><ul>
-<li>输入： 功能需求</li>
-<li>输出： 软件参考模型</li>
-<li>过程： 架构人员使用Matlab、C++、System C、 System Verilog 等语言工具，完成芯片中数字部分的高层次算法或架构的分析和建模，为硬件提供正确的软件功能模型，更为重要的是，通过大量的高层次仿真和调试，为RTL实现提供总体性的设计指导。越是复杂的数字电路，这部分算法模型仿真越重要。</li>
-</ul>
-<p><img src="/2022/05/06/22/%E7%AE%97%E6%B3%95%E5%92%8C%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.png" alt="算法和硬件架构设计"></p>
-<h4 id="2-2-2-硬件电路设计"><a href="#2-2-2-硬件电路设计" class="headerlink" title="2.2.2 硬件电路设计"></a>2.2.2 硬件电路设计</h4><ul>
-<li>输入： 从架构拿到的软件参考模型</li>
-<li>输出： RTL代码、详细的设计文档、逻辑综合报告、语法检查报告</li>
-</ul>
-<p><img src="/2022/05/06/22/%E7%A1%AC%E4%BB%B6%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1.png" alt="硬件电路设计"></p>
-<ul>
-<li>spyglass: 时序校验、语法校验等</li>
-<li>Design Compiler： 预综合，观察时序面积功耗等是否达到要求；</li>
-</ul>
-<h4 id="2-2-3-功能验证"><a href="#2-2-3-功能验证" class="headerlink" title="2.2.3 功能验证"></a>2.2.3 功能验证</h4><ul>
-<li>输入： 设计规格、设计代码、软件模型；</li>
-<li>输出： 代码覆盖率和功能覆盖率报告；</li>
-</ul>
-<p><img src="/2022/05/06/22/%E5%8A%9F%E8%83%BD%E9%AA%8C%E8%AF%81.png" alt="功能验证"></p>
-<h4 id="2-2-4-逻辑综合"><a href="#2-2-4-逻辑综合" class="headerlink" title="2.2.4 逻辑综合"></a>2.2.4 逻辑综合</h4><ul>
-<li>输入： RTL代码、工艺库、约束；</li>
-<li>输出： 网表、标准延迟文件SDF、工程文件(.ddc)、各类报告；</li>
-</ul>
-<p><img src="/2022/05/06/22/%E9%80%BB%E8%BE%91%E7%BB%BC%E5%90%88.png" alt="逻辑综合"></p>
-<h4 id="2-2-5-静态时序分析"><a href="#2-2-5-静态时序分析" class="headerlink" title="2.2.5 静态时序分析"></a>2.2.5 静态时序分析</h4><ul>
-<li>中端人员使用静态时序分析工具 Prime Time，从静态分析角度，保证设计中所有的路径，满足内部时序单元对建立时间和保持时间的要求。</li>
-<li>即无论起点是什么，信号都可以被及时的传递到该路径的终点，并且在电路正常工作所需的时间段内保持恒定；</li>
-</ul>
-<p><img src="/2022/05/06/22/%E9%9D%99%E6%80%81%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90.png" alt="静态时序分析"></p>
-<h4 id="2-2-6-一致性验证"><a href="#2-2-6-一致性验证" class="headerlink" title="2.2.6 一致性验证"></a>2.2.6 一致性验证</h4><ul>
-<li>输入： RTL代码、网表、约束；</li>
-<li>输出： match（两张图的节点是否一致）和verify（计算得到的两张图的功能是否一致）的报告；</li>
-<li>过程： RTL和网表都可以抽象成两幅图，由节点和边组成，中端人员使用Formality、Conformal工具进行一致性验证，采用类似于直接比较两幅图是否一致的方法，来确定网表是否正确。</li>
-</ul>
-<p><img src="/2022/05/06/22/%E4%B8%80%E8%87%B4%E6%80%A7%E9%AA%8C%E8%AF%81.png" alt="一致性验证"></p>
-<h4 id="2-2-7-布局布线"><a href="#2-2-7-布局布线" class="headerlink" title="2.2.7 布局布线"></a>2.2.7 布局布线</h4><ul>
-<li>布图规划（floor plan）： 后端人员使用IC complier、 Encounter等工具进行布局前的规划，目标是优化芯片的面积，时序收敛，稳定，方便走线。是整个后端最重要的一步，也是弹性最大的一步。因为没有标准的最佳方案，但又有很多细节需要考虑。</li>
-<li>布局： 布局就是摆放标准单元，I&#x2F;o pad（用于胡须连接芯片引脚），宏单元来实现电路逻辑。布局目标：利用率越高越好，总线越短越好，时序越快越好。但是利用率高布线就困难，总线就长，时序就慢，因此要做个平衡取舍。</li>
-<li>时钟树综合（clock tree synthesis）： 简单说就是时钟的布线，因为时钟信号在数字电路的全局指挥最用，它的分布应该是对称式连接到各个寄存器单元的，从而时钟从一个时钟源到各个寄存器时，时钟延迟差异最小。这也是为什么时钟信号需要单独布线的原因。</li>
-<li>布线： 在满足工艺规则和布线层数限制、线宽、线间距限制和各线网可靠绝缘的电性能约束条件下，根据电路的连接关系，将各单元和I&#x2F;O pad用互连线连接起来。</li>
-</ul>
-<p><img src="/2022/05/06/22/%E5%B8%83%E5%B1%80%E5%B8%83%E7%BA%BF.png" alt="布局布线"></p>
-<h4 id="2-2-8-生成版图并验证"><a href="#2-2-8-生成版图并验证" class="headerlink" title="2.2.8 生成版图并验证"></a>2.2.8 生成版图并验证</h4><ul>
-<li>寄生参数提取： 由于导线本身存在电阻，相邻导线之间的互感，耦合电容在芯片内部会产生信号噪声，串扰和反射。这些效应会产生信号完整性的问题，导致信号电压波动和变化，如果严重就会导致信号失真错误。提取寄生参数进行再次分析验证，分析信号完整性是非常重要的。</li>
-<li>生成版图并验证： 对完成布线的物理版图进行功能和时序上的验证，大概包括以下方面： LVS（layout vs schematic）、 DRC（Design Rule Checking）、 ERC（Electrical Rule Checking）</li>
-</ul>
-<p><img src="/2022/05/06/22/%E7%94%9F%E6%88%90%E7%89%88%E5%9B%BE%E5%B9%B6%E9%AA%8C%E8%AF%81.png" alt="生成版图并验证"></p>
-]]></content>
-      <categories>
-        <category>数字IC</category>
-      </categories>
-      <tags>
-        <tag>设计流程</tag>
       </tags>
   </entry>
   <entry>
@@ -4661,6 +4661,86 @@ Vector Table
       </tags>
   </entry>
   <entry>
+    <title>考研英语100句Day8</title>
+    <url>/2022/09/05/05/</url>
+    <content><![CDATA[<h1 id="考研英语100句–Day8"><a href="#考研英语100句–Day8" class="headerlink" title="考研英语100句–Day8"></a>考研英语100句–Day8</h1><h2 id="Sentence-36"><a href="#Sentence-36" class="headerlink" title="Sentence 36"></a>Sentence 36</h2><p><em>In a workplace that’s fundamentally indifferent to your life and its meaning, office speak can help you figure out how you relate to your work—and how your work defines who you are.</em></p>
+<blockquote>
+<p>在一个根本不关心你的生活及其意义的职场中，办公室用语能帮助你理清自己和工作的关系，以及工作对你的身份的定义。</p>
+</blockquote>
+<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>fundamentally</li>
+</ul>
+<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>is indifferent to your life and its meaning</li>
+<li>figure out</li>
+<li>how you relate to your work</li>
+</ul>
+<h2 id="Sentence-37"><a href="#Sentence-37" class="headerlink" title="Sentence 37"></a>Sentence 37</h2><p><em>Conversations are links, which means when you have a conversation with a new person a link gets formed and every conversation you have after that moment will strengthen the link.</em></p>
+<blockquote>
+<p>交谈是一种联系，这意味着当你和一个刚认识的人交谈时，一种联系就形成了，而在那之后的每一次交谈都会强化这一联系。</p>
+</blockquote>
+<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>strengthen</li>
+</ul>
+<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>which means ..</li>
+<li>have a conversation with a new person</li>
+<li>a link gets formed</li>
+<li>strengthen the link</li>
+</ul>
+<h2 id="Sentence-38"><a href="#Sentence-38" class="headerlink" title="Sentence 38"></a>Sentence 38</h2><p><em>Researchers measured people’s cortisol, which is a stress marker, while they were at work and while they were at home and found it higher at what is supposed to be a place of refuge.</em></p>
+<blockquote>
+<p>研究人员测量了人们在工作和在家时的皮质醇，它是一种压力标志，并发现在家这个理应是庇护所的地方，人们的皮质醇水平更高。</p>
+</blockquote>
+<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>measure</li>
+<li>cortisol</li>
+<li>refuge</li>
+</ul>
+<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>a stress marker</li>
+<li>what is supposed to be</li>
+<li>a place of refuge</li>
+</ul>
+<h2 id="Sentence-39"><a href="#Sentence-39" class="headerlink" title="Sentence 39"></a>Sentence 39</h2><p><em>While Washington and Jefferson privately expressed distaste for slavery, they also understood that it was part of the political and economic bedrock of the country they helped to create.</em></p>
+<blockquote>
+<p>尽管华盛顿和杰斐逊私下都表达过对奴隶制的不满，但是他们也明白，奴隶制是他们帮助创建的这个国家的政治和经济基础的一部分。</p>
+</blockquote>
+<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>privately</li>
+<li>express</li>
+<li>distaste</li>
+<li>slavery</li>
+<li>political</li>
+<li>economic</li>
+<li>bedrock  基石</li>
+</ul>
+<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>it is part of the political bedrock</li>
+<li>privately expressed distaste for ..</li>
+</ul>
+<h2 id="Sentence-40"><a href="#Sentence-40" class="headerlink" title="Sentence 40"></a>Sentence 40</h2><p><em>When younger kids learn computer science, they learn that it’s not just a confusing, endless string of letters and numbers—but a tool to build apps, or create artwork, or test hypotheses.</em></p>
+<blockquote>
+<p>当小孩子们学习计算机科学的时候，他们会发现它并不仅仅是一串令人困惑的、无穷无尽的字母和数字——它还是一种工具，这种工具能编写应用程序、创作艺术作品或测试假设。</p>
+</blockquote>
+<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
+<li>confusing</li>
+<li>hypotheses</li>
+</ul>
+<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
+<li>a tool to build apps</li>
+<li>test hypotheses</li>
+</ul>
+]]></content>
+      <categories>
+        <category>英语</category>
+      </categories>
+      <tags>
+        <tag>英语</tag>
+        <tag>考研英语100句</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>考研英语100句Day7</title>
     <url>/2022/09/05/01/</url>
     <content><![CDATA[<h1 id="考研英语100句–Day7"><a href="#考研英语100句–Day7" class="headerlink" title="考研英语100句–Day7"></a>考研英语100句–Day7</h1><h2 id="Sentence-31"><a href="#Sentence-31" class="headerlink" title="Sentence 31"></a>Sentence 31</h2><p><em>Social media allows users to experience news events more intimately and immediately while also permitting them to re-share news as a projection of their values and interests.</em></p>
@@ -4735,86 +4815,6 @@ Vector Table
 <li>the cascade of change</li>
 <li>prove resistant</li>
 <li>two degrees removed from</li>
-</ul>
-]]></content>
-      <categories>
-        <category>英语</category>
-      </categories>
-      <tags>
-        <tag>英语</tag>
-        <tag>考研英语100句</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>考研英语100句Day8</title>
-    <url>/2022/09/05/05/</url>
-    <content><![CDATA[<h1 id="考研英语100句–Day8"><a href="#考研英语100句–Day8" class="headerlink" title="考研英语100句–Day8"></a>考研英语100句–Day8</h1><h2 id="Sentence-36"><a href="#Sentence-36" class="headerlink" title="Sentence 36"></a>Sentence 36</h2><p><em>In a workplace that’s fundamentally indifferent to your life and its meaning, office speak can help you figure out how you relate to your work—and how your work defines who you are.</em></p>
-<blockquote>
-<p>在一个根本不关心你的生活及其意义的职场中，办公室用语能帮助你理清自己和工作的关系，以及工作对你的身份的定义。</p>
-</blockquote>
-<h3 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>fundamentally</li>
-</ul>
-<h3 id="词组"><a href="#词组" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>is indifferent to your life and its meaning</li>
-<li>figure out</li>
-<li>how you relate to your work</li>
-</ul>
-<h2 id="Sentence-37"><a href="#Sentence-37" class="headerlink" title="Sentence 37"></a>Sentence 37</h2><p><em>Conversations are links, which means when you have a conversation with a new person a link gets formed and every conversation you have after that moment will strengthen the link.</em></p>
-<blockquote>
-<p>交谈是一种联系，这意味着当你和一个刚认识的人交谈时，一种联系就形成了，而在那之后的每一次交谈都会强化这一联系。</p>
-</blockquote>
-<h3 id="单词-1"><a href="#单词-1" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>strengthen</li>
-</ul>
-<h3 id="词组-1"><a href="#词组-1" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>which means ..</li>
-<li>have a conversation with a new person</li>
-<li>a link gets formed</li>
-<li>strengthen the link</li>
-</ul>
-<h2 id="Sentence-38"><a href="#Sentence-38" class="headerlink" title="Sentence 38"></a>Sentence 38</h2><p><em>Researchers measured people’s cortisol, which is a stress marker, while they were at work and while they were at home and found it higher at what is supposed to be a place of refuge.</em></p>
-<blockquote>
-<p>研究人员测量了人们在工作和在家时的皮质醇，它是一种压力标志，并发现在家这个理应是庇护所的地方，人们的皮质醇水平更高。</p>
-</blockquote>
-<h3 id="单词-2"><a href="#单词-2" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>measure</li>
-<li>cortisol</li>
-<li>refuge</li>
-</ul>
-<h3 id="词组-2"><a href="#词组-2" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>a stress marker</li>
-<li>what is supposed to be</li>
-<li>a place of refuge</li>
-</ul>
-<h2 id="Sentence-39"><a href="#Sentence-39" class="headerlink" title="Sentence 39"></a>Sentence 39</h2><p><em>While Washington and Jefferson privately expressed distaste for slavery, they also understood that it was part of the political and economic bedrock of the country they helped to create.</em></p>
-<blockquote>
-<p>尽管华盛顿和杰斐逊私下都表达过对奴隶制的不满，但是他们也明白，奴隶制是他们帮助创建的这个国家的政治和经济基础的一部分。</p>
-</blockquote>
-<h3 id="单词-3"><a href="#单词-3" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>privately</li>
-<li>express</li>
-<li>distaste</li>
-<li>slavery</li>
-<li>political</li>
-<li>economic</li>
-<li>bedrock  基石</li>
-</ul>
-<h3 id="词组-3"><a href="#词组-3" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>it is part of the political bedrock</li>
-<li>privately expressed distaste for ..</li>
-</ul>
-<h2 id="Sentence-40"><a href="#Sentence-40" class="headerlink" title="Sentence 40"></a>Sentence 40</h2><p><em>When younger kids learn computer science, they learn that it’s not just a confusing, endless string of letters and numbers—but a tool to build apps, or create artwork, or test hypotheses.</em></p>
-<blockquote>
-<p>当小孩子们学习计算机科学的时候，他们会发现它并不仅仅是一串令人困惑的、无穷无尽的字母和数字——它还是一种工具，这种工具能编写应用程序、创作艺术作品或测试假设。</p>
-</blockquote>
-<h3 id="单词-4"><a href="#单词-4" class="headerlink" title="单词"></a>单词</h3><ul>
-<li>confusing</li>
-<li>hypotheses</li>
-</ul>
-<h3 id="词组-4"><a href="#词组-4" class="headerlink" title="词组"></a>词组</h3><ul>
-<li>a tool to build apps</li>
-<li>test hypotheses</li>
 </ul>
 ]]></content>
       <categories>
