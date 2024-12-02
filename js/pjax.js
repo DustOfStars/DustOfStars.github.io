@@ -7,19 +7,15 @@
             const Pjax = window.Pjax || function() {};
             pjax = new Pjax({
                 selectors: [
-                    '[data-pjax]',
-                    '.pjax-reload',
                     'head title',
                     '.columns',
                     '.navbar-start',
                     '.navbar-end',
-                    '.searchbox link',
-                    '.searchbox script',
+                    '.searchbox',
                     '#back-to-top',
-                    '#comments link',
-                    '#comments script'
-                ],
-                cacheBust: false
+                    '[data-pjax]',
+                    '.pjax-reload'
+                ]
             });
         } catch (e) {
             console.warn('PJAX error: ' + e);
