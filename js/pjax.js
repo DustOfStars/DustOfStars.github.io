@@ -1,34 +1,42 @@
-/* global NexT, CONFIG, Pjax */
+(function() {
+    // eslint-disable-next-line no-unused-vars
+    let pjax;
 
-const pjax = new Pjax({
-  selectors: [
-    'head title',
-    'script[type="application/json"]',
-    '.main-inner',
-    '.post-toc-wrap',
-    '.languages',
-    '.pjax'
-  ],
-  analytics: false,
-  cacheBust: false,
-  scrollTo : !CONFIG.bookmark.enable
-});
+    function initPjax() {
+        try {
+            const Pjax = window.Pjax || function() {};
+            pjax = new Pjax({
+                selectors: [
+                    '[data-pjax]',
+                    '.pjax-reload',
+                    'head title',
+                    '.columns',
+                    '.navbar-start',
+                    '.navbar-end',
+                    '.searchbox link',
+                    '.searchbox script',
+                    '#back-to-top',
+                    '#comments link',
+                    '#comments script'
+                ],
+                cacheBust: false
+            });
+        } catch (e) {
+            console.warn('PJAX error: ' + e);
+        }
+    }
 
-document.addEventListener('pjax:success', () => {
-  pjax.executeScripts(document.querySelectorAll('script[data-pjax]'));
-  NexT.boot.refresh();
-  // Define Motion Sequence & Bootstrap Motion.
-  if (CONFIG.motion.enable) {
-    NexT.motion.integrator
-      .init()
-      .add(NexT.motion.middleWares.subMenu)
-      .add(NexT.motion.middleWares.postList)
-      .bootstrap();
-  }
-  if (CONFIG.sidebar.display !== 'remove') {
-    const hasTOC = document.querySelector('.post-toc');
-    document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
-    NexT.utils.activateSidebarPanel(hasTOC ? 0 : 1);
-    NexT.utils.updateSidebarPosition();
-  }
-});
+    // // Listen for start of Pjax
+    // document.addEventListener('pjax:send', function() {
+    //     return;
+    //     // TODO pace start loading animation
+    // })
+
+    // // Listen for completion of Pjax
+    // document.addEventListener('pjax:complete', function() {
+    //     return;
+    //     // TODO pace stop loading animation
+    // })
+
+    document.addEventListener('DOMContentLoaded', () => initPjax());
+}());
