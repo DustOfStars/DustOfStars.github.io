@@ -87,7 +87,10 @@
 </ul>
 </li>
 </ol>
-<h3 id="数据-中断-callback调用流程图"><a href="#数据-中断-callback调用流程图" class="headerlink" title="数据/中断/callback调用流程图"></a><strong>数据/中断/callback调用流程图</strong></h3><p><img src="/RT1060--%E4%B8%B2%E5%8F%A3%E4%B8%AD%E6%96%AD%E4%BC%A0%E8%BE%93%E8%AF%A6%E8%A7%A3(SDK)/image-20241217175339831.png" alt="image-20241217175339831"></p>
+<h3 id="数据-中断-callback调用流程图"><a href="#数据-中断-callback调用流程图" class="headerlink" title="数据/中断/callback调用流程图"></a><strong>数据/中断/callback调用流程图</strong></h3><img src="/NXP/RT1060/rt1060-%E4%B8%B2%E5%8F%A3%E4%B8%AD%E6%96%AD%E4%BC%A0%E8%BE%93%E8%AF%A6%E8%A7%A3-sdk/image-20241217175339831.png" class="" title="image-20241217175339831">
+
+
+
 <p><strong>详细流程解释：</strong></p>
 <ol>
 <li>中断处理：<ul>
@@ -207,14 +210,15 @@
 </ul>
 <figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    subgraph 初始化</span><br><span class="line">        A[初始化 LPUART] --&gt; B{发送提示信息}</span><br><span class="line">        B --&gt; C[启动发送&lt;br&gt;LPUART_TransferSendNonBlocking]</span><br><span class="line">        C --&gt; D{等待发送完成&lt;br&gt; txOnGoing }</span><br><span class="line">    end</span><br><span class="line">    D --&gt; E[回显循环]</span><br><span class="line">    subgraph 接收</span><br><span class="line">        E --&gt; F{接收空闲 &amp; 接收缓冲区为空&lt;br&gt; !rxOnGoing &amp;&amp; rxBufferEmpty }</span><br><span class="line">        F -- 是 --&gt; G[启动接收&lt;br&gt;LPUART_TransferReceiveNonBlocking]</span><br><span class="line">        G --&gt; H[LPUART 硬件接收数据&lt;br&gt;RxDataRegFullFlag 置位]</span><br><span class="line">        H --&gt; I[产生中断信号]</span><br><span class="line">        I --&gt; J[NVIC 处理中断&lt;br&gt;调用中断服务例程&lt;br&gt;LPUART_TransferHandleIRQ]</span><br><span class="line">        J --&gt; K[中断服务例程&lt;br&gt;调用 LPUART_UserCallback&lt;br&gt;kStatus_LPUART_RxIdle&lt;br&gt;rxBufferEmpty = false&lt;br&gt;rxOnGoing = false]</span><br><span class="line">    end</span><br><span class="line">    subgraph 发送</span><br><span class="line">        E --&gt; L{发送空闲 &amp; 发送缓冲区满&lt;br&gt; !txOnGoing &amp;&amp; txBufferFull }</span><br><span class="line">        L -- 是 --&gt; M[启动发送&lt;br&gt;LPUART_TransferSendNonBlocking]</span><br><span class="line">        M --&gt; N[LPUART 硬件发送数据]</span><br><span class="line">        N --&gt; O[发送完成&lt;br&gt;产生中断信号]</span><br><span class="line">        O --&gt; P[NVIC 处理中断&lt;br&gt;调用中断服务例程&lt;br&gt;LPUART_TransferHandleIRQ]</span><br><span class="line">        P --&gt; Q[中断服务例程&lt;br&gt;调用 LPUART_UserCallback&lt;br&gt;kStatus_LPUART_TxIdle&lt;br&gt;txBufferFull = false&lt;br&gt;txOnGoing = false]</span><br><span class="line">    end</span><br><span class="line">    E --&gt; R{接收缓冲区非空 &amp; 发送缓冲区未满&lt;br&gt; !rxBufferEmpty &amp;&amp; !txBufferFull}</span><br><span class="line">    R -- 是 --&gt; S[数据复制&lt;br&gt;memcpy&lt;br&gt;rxBufferEmpty = true&lt;br&gt;txBufferFull = true]</span><br><span class="line">    K --&gt; E</span><br><span class="line">    Q --&gt; E</span><br><span class="line">    S --&gt; E</span><br></pre></td></tr></tbody></table></figure>
 
-<p><img src="/RT1060--%E4%B8%B2%E5%8F%A3%E4%B8%AD%E6%96%AD%E4%BC%A0%E8%BE%93%E8%AF%A6%E8%A7%A3(SDK)/export.svg"></p>
+<img src="/NXP/RT1060/rt1060-%E4%B8%B2%E5%8F%A3%E4%B8%AD%E6%96%AD%E4%BC%A0%E8%BE%93%E8%AF%A6%E8%A7%A3-sdk/export.svg" class="">
+
 <h3 id="代码逻辑解释："><a href="#代码逻辑解释：" class="headerlink" title="代码逻辑解释："></a><strong>代码逻辑解释：</strong></h3><ol>
 <li><p><strong>初始化：</strong> 程序首先初始化 LPUART 外设，然后发送一个提示信息。</p>
 </li>
 <li><p>回显循环：</p>
 <p> 程序进入一个无限循环，不断检查以下条件：</p>
 <ul>
-<li><span style="color:red"><u><strong>接收：</strong></u></span><ul>
+<li><span style="color:green"><strong>接收：</strong></span><ul>
 <li>如果当前没有正在接收数据 (<code>!rxOnGoing</code>) 并且接收缓冲区为空 (<code>rxBufferEmpty</code>)，则启动一次非阻塞的接收操作 (<code>LPUART_TransferReceiveNonBlocking</code>)。</li>
 <li>当 LPUART 硬件接收到数据后，<code>RxDataRegFullFlag</code> 标志位会被置位，触发中断。</li>
 <li>NVIC 接收到中断请求后，会调用中断服务例程。在中断服务例程中，会调用用户定义的回调函数 <code>LPUART_UserCallback</code>。<ul>
@@ -223,7 +227,7 @@
 </li>
 </ul>
 </li>
-<li><span style="color:red"><strong><u>发送：</u></strong></span><ul>
+<li><span style="color:green"><strong>发送：</strong></span><ul>
 <li>如果当前没有正在发送数据 (<code>!txOnGoing</code>) 并且发送缓冲区已满 (<code>txBufferFull</code>)，则启动一次非阻塞的发送操作 (<code>LPUART_TransferSendNonBlocking</code>)。</li>
 <li>LPUART 硬件发送完数据后，会产生中断。</li>
 <li>NVIC 处理中断，并调用回调函数 <code>LPUART_UserCallback</code>。<ul>
@@ -232,7 +236,7 @@
 </li>
 </ul>
 </li>
-<li><strong>数据复制：</strong> 如果接收缓冲区非空 (<code>!rxBufferEmpty</code>) 并且发送缓冲区未满 (<code>!txBufferFull</code>)，则使用 <code>memcpy</code> 函数将接收缓冲区的数据复制到发送缓冲区，并将 <code>rxBufferEmpty</code> 设置为 <code>true</code>，<code>txBufferFull</code> 设置为 <code>true</code>，为下一次接收和发送做准备。</li>
+<li><span style="color:green"><strong>数据复制：</strong></span>如果接收缓冲区非空 (<code>!rxBufferEmpty</code>) 并且发送缓冲区未满 (<code>!txBufferFull</code>)，则使用 <code>memcpy</code> 函数将接收缓冲区的数据复制到发送缓冲区，并将 <code>rxBufferEmpty</code> 设置为 <code>true</code>，<code>txBufferFull</code> 设置为 <code>true</code>，为下一次接收和发送做准备。</li>
 </ul>
 </li>
 </ol>
