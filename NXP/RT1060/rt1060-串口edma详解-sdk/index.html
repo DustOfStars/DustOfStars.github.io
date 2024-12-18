@@ -89,7 +89,7 @@
 <li><code>LPUART_TransferEdmaHandleIRQ</code> - LPUART的EDMA中断处理函数</li>
 </ol>
 </blockquote>
-<p><span style="color: green;"><strong>从代码中可以看到调用链路:</strong></span></p>
+<p><span style="color: blue; font-weight: bold;">从代码中可以看到调用链路:</span></p>
 <ol>
 <li><p>在main中通过<code>LPUART_TransferCreateHandleEDMA</code>注册了用户回调:</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Create LPUART DMA handle. */</span></span><br><span class="line">LPUART_TransferCreateHandleEDMA(DEMO_LPUART, &amp;g_lpuartEdmaHandle, LPUART_UserCallback, <span class="literal">NULL</span>, &amp;g_lpuartTxEdmaHandle,</span><br><span class="line">                                &amp;g_lpuartRxEdmaHandle);</span><br></pre></td></tr></tbody></table></figure>
@@ -107,7 +107,7 @@
 
 <img src="/NXP/RT1060/rt1060-%E4%B8%B2%E5%8F%A3edma%E8%AF%A6%E8%A7%A3-sdk/image-20241218231344599.png" class="" title="image-20241218231344599">
 
-<p><span style="color: blue;"><strong>所以整个调用链是:</strong></span></p>
+<p><span style="color: blue; font-weight: bold;">所以整个调用链是:</span></p>
 <ol>
 <li>EDMA完成传输</li>
 <li>触发LPUART传输完成中断</li>
