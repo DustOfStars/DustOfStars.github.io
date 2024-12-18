@@ -74,7 +74,20 @@
 <li>主循环只负责检测标志并启动新的发送</li>
 </ol>
 <p>这种设计实现了高效的非阻塞式数据收发,同时正确处理了RS485半双工通信的方向切换时序。</p>
-<h2 id="备注：详细的回调-中断实现的自动收发切换"><a href="#备注：详细的回调-中断实现的自动收发切换" class="headerlink" title="备注：详细的回调/中断实现的自动收发切换"></a>备注：详细的回调/中断实现的自动收发切换</h2><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">flowchart TD</span><br><span class="line">    A[初始状态: 接收模式] --&gt;|DMA接收数据| B[接收数据]</span><br><span class="line">    </span><br><span class="line">    B --&gt;|检测到IDLE| C[IDLE中断处理]</span><br><span class="line">    C --&gt;|1. 获取接收数据长度&lt;br&gt;2. 复制数据到TX buffer&lt;br&gt;3. 设置reciveFrame标志| D[主循环]</span><br><span class="line">    </span><br><span class="line">    D --&gt;|检测到reciveFrame| E[开始发送]</span><br><span class="line">    E --&gt;|1. 切换RS485方向&lt;br&gt;2. 启动DMA发送| F[DMA发送数据]</span><br><span class="line">    </span><br><span class="line">    F --&gt;|DMA发送完成| G[DMA完成回调&lt;br&gt;LPUART_UserCallback]</span><br><span class="line">    G --&gt;|使能TC中断| H[等待最后一个字节发送]</span><br><span class="line">    </span><br><span class="line">    H --&gt;|TC中断触发| I[TC中断处理]</span><br><span class="line">    I --&gt;|1. 禁用TC中断&lt;br&gt;2. 切换RS485方向&lt;br&gt;3. 重启DMA接收| A</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="备注：详细的回调-中断实现的自动收发切换"><a href="#备注：详细的回调-中断实现的自动收发切换" class="headerlink" title="备注：详细的回调/中断实现的自动收发切换"></a>备注：详细的回调/中断实现的自动收发切换</h2><pre class="mermaid">flowchart TD
+    A[初始状态: 接收模式] --&gt;|DMA接收数据| B[接收数据]
+    
+    B --&gt;|检测到IDLE| C[IDLE中断处理]
+    C --&gt;|1. 获取接收数据长度<br>2. 复制数据到TX buffer<br>3. 设置reciveFrame标志| D[主循环]
+    
+    D --&gt;|检测到reciveFrame| E[开始发送]
+    E --&gt;|1. 切换RS485方向<br>2. 启动DMA发送| F[DMA发送数据]
+    
+    F --&gt;|DMA发送完成| G[DMA完成回调<br>LPUART_UserCallback]
+    G --&gt;|使能TC中断| H[等待最后一个字节发送]
+    
+    H --&gt;|TC中断触发| I[TC中断处理]
+    I --&gt;|1. 禁用TC中断<br>2. 切换RS485方向<br>3. 重启DMA接收| A</pre>
 
 <p>让我详细解释每个阶段的切换过程：</p>
 <ol>
