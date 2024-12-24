@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>RT1024 EVK 学习笔记Part3 - DustOfStars</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="DustOfStars"><meta name="msapplication-TileImage" content="/img/favicon.png"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DustOfStars"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="RT1024 EVK 学习笔记Part3 Page5 MCU PINOUT 部分！ 以及额外的，Page14 BOOT！"><meta property="og:type" content="blog"><meta property="og:title" content="RT1024 EVK 学习笔记Part3"><meta property="og:url" content="https://dustofstars.github.io/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/"><meta property="og:site_name" content="DustOfStars"><meta property="og:description" content="RT1024 EVK 学习笔记Part3 Page5 MCU PINOUT 部分！ 以及额外的，Page14 BOOT！"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://dustofstars.github.io/gallery/covers/rt1024_bootcfg.jpg"><meta property="article:published_time" content="2024-12-24T11:47:46.000Z"><meta property="article:modified_time" content="2024-12-24T11:47:47.000Z"><meta property="article:author" content="Gavin"><meta property="article:tag" content="NXP"><meta property="article:tag" content="hardware"><meta property="article:tag" content="原理图"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://dustofstars.github.io/gallery/covers/rt1024_bootcfg.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://dustofstars.github.io/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/"},"headline":"RT1024 EVK 学习笔记Part3","image":["https://dustofstars.github.io/gallery/covers/rt1024_bootcfg.jpg"],"datePublished":"2024-12-24T11:47:46.000Z","dateModified":"2024-12-24T11:47:47.000Z","author":{"@type":"Person","name":"Gavin"},"publisher":{"@type":"Organization","name":"DustOfStars","logo":{"@type":"ImageObject","url":"https://dustofstars.github.io/img/logo.png"}},"description":"RT1024 EVK 学习笔记Part3 Page5 MCU PINOUT 部分！ 以及额外的，Page14 BOOT！"}</script><link rel="canonical" href="https://dustofstars.github.io/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/"><link rel="icon" href="/img/favicon.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
+<style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/gallery/covers/rt1024_bootcfg.jpg" alt="RT1024 EVK 学习笔记Part3"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2024-12-24T11:47:46.000Z" title="12/24/2024, 11:47:46 AM">2024-12-24</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1024/">RT1024</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/">原理图</a></span><span class="level-item">11 分钟读完 (大约1636个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT1024 EVK 学习笔记Part3</h1><div class="content"><h1 id="RT1024-EVK-学习笔记Part3"><a href="#RT1024-EVK-学习笔记Part3" class="headerlink" title="RT1024 EVK 学习笔记Part3"></a>RT1024 EVK 学习笔记Part3</h1><blockquote>
+<p>Page5 MCU PINOUT 部分！</p>
+<p>以及额外的，Page14 BOOT！</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="U1D-SEMC-部分"><a href="#U1D-SEMC-部分" class="headerlink" title="U1D SEMC 部分"></a>U1D SEMC 部分</h2><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/image-20241224104557031.png" class="" title="image-20241224104557031">
+
+<p>SEM接口部分共有42个引脚，为<code>GPIO_EMC_00</code> ~ <code>GPIO_EMC_41</code>。 它的功能分组如下：</p>
+<h3 id="引脚功能分组"><a href="#引脚功能分组" class="headerlink" title="引脚功能分组"></a>引脚功能分组</h3><ul>
+<li>数据线: <code>SEMC_D0</code> ~ <code>SEMC_D15</code> <span style="color: green; font-weight: bold; ">(16位数据总线)；</span></li>
+<li>地址线: <code>SEMC_A0</code> ~ <code>SEMC_A12</code> <span style="color: green; font-weight: bold; ">(13位地址总线)；</span></li>
+<li>控制信号13个: <ul>
+<li>SEMC_DM0, SEMC_WE, SEMC_CAS, SEMC_RAS, SEMC_CS0, <code>SEMC_BA0</code>, <code>SEMC_BA1</code>;</li>
+<li>SEMC_CKE, SEMC_CLK, SEMC_DM1;</li>
+<li>SAI3_MCLK, ENET_MDIO, ENET_MDC;</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据选通信号DQS说明"><a href="#数据选通信号DQS说明" class="headerlink" title="数据选通信号DQS说明"></a>数据选通信号DQS说明</h3><ul>
+<li><p><code>SEMC_DQS</code>: 数据选通信号,用于高速数据传输时的同步; 在MCU端的Pin是<code>GPIO_EMC_28</code>, 它默认用于<code>SAI3_MCLK</code>, 如果需要SEMC的DQS功能，则要断开0Ω电阻<code>R426</code>；</p>
+<ul>
+<li><p><code>SAI3_MCLK</code>: <span style="color: green; font-weight: bold; ">音频接口主时钟信号；</span></p>
+<blockquote>
+<p><span style="color: blue; font-weight: bold; ">如果使用了SEMC_DQS, 且读写时Pin脚float，则能达到133MHz；否则，不使用SEMC_DQS, 读写速度只能达到66MHz；</span></p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="控制信号详解"><a href="#控制信号详解" class="headerlink" title="控制信号详解"></a>控制信号详解</h3><ul>
+<li><p><code>SEMC_DM0 / SEMC_DM1</code> (Data Mask):</p>
+<ul>
+<li>这是数据掩码信号</li>
+<li>分别控制低8位和高8位；</li>
+</ul>
+</li>
+<li><p><code>SEMC_WE</code> (Write Enable):</p>
+<ul>
+<li>写使能信号</li>
+<li>低电平有效</li>
+<li>用于指示当前是写操作</li>
+<li>与RAS/CAS配合使用来控制读写时序</li>
+</ul>
+</li>
+<li><p><code>SEMC_CAS</code> (Column Address Strobe):</p>
+<ul>
+<li>列地址选通信号</li>
+<li>低电平有效</li>
+<li>用于锁存列地址</li>
+<li><span style="color: green;">SDRAM访问需要先给行地址再给列地址；</span></li>
+</ul>
+</li>
+<li><p><code>SEMC_RAS</code> (Row Address Strobe):</p>
+<ul>
+<li>行地址选通信号</li>
+<li>低电平有效</li>
+<li>用于锁存行地址</li>
+<li>与CAS的组合可以产生不同的SDRAM命令</li>
+</ul>
+</li>
+<li><p><code>SEMC_CS0</code> (Chip Select):</p>
+<ul>
+<li><span style="color: green;">片选信号；</span>–&gt; <span style="color: blue; font-weight: bold; ">因为只有一个片选信号，RT1024应该是只能外接一片SDRAM的；</span></li>
+<li>低电平有效</li>
+<li>系统可以有多个CS信号连接多个SDRAM</li>
+</ul>
+</li>
+<li><p><code>SEMC_BA0/BA1</code> (Bank Address):</p>
+<ul>
+<li><span style="color: green;">SDRAM内部bank地址信号；</span></li>
+<li>用于选择SDRAM内部的存储体</li>
+<li>通常SDRAM有4个bank,需要2位地址</li>
+<li>可以实现bank交错访问提高性能</li>
+</ul>
+</li>
+</ul>
+<h2 id="U1F-NVCC-SD-部分"><a href="#U1F-NVCC-SD-部分" class="headerlink" title="U1F NVCC_SD 部分"></a>U1F NVCC_SD 部分</h2><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/image-20241224104624579.png" class="" title="image-20241224104624579">
+
+<h3 id="电源设计"><a href="#电源设计" class="headerlink" title="电源设计"></a>电源设计</h3><ul>
+<li><code>NVCC_SD</code>为SD接口<code>NVCC_SD0</code>供电；</li>
+<li>使用两个去耦电容:<ul>
+<li>C76(4.7μF): 大电容用于稳定电源</li>
+<li>C77(0.1μF): 小电容用于滤除高频噪声</li>
+</ul>
+</li>
+</ul>
+<h3 id="SD卡接口信号-GPIO-SD-B0-xx组"><a href="#SD卡接口信号-GPIO-SD-B0-xx组" class="headerlink" title="SD卡接口信号(GPIO_SD_B0_xx组)"></a>SD卡接口信号(<code>GPIO_SD_B0_xx</code>组)</h3><p>（7个Pin：00~06）</p>
+<ul>
+<li><code>SD1_D0~D3</code>: <span style="color: green;"> 4位数据线，其中，D0有上拉到<code>NVCC_SD</code>高电平；</span></li>
+<li><code>SD1_CMD</code>: <span style="color: green;">命令线，上拉到<code>NVCC_SD</code>高电平；</span></li>
+<li><code>SD1_CLK</code>: 时钟线；</li>
+<li><code>SD_CD_SW</code>: <span style="color: green;">SD卡检测信号，</span>注意这个Pin脚是<code>GPIO_SD_B0_06</code>；</li>
+</ul>
+<h3 id="其他复用功能-GPIO-SD-B1-xx组"><a href="#其他复用功能-GPIO-SD-B1-xx组" class="headerlink" title="其他复用功能(GPIO_SD_B1_xx组)"></a>其他复用功能(GPIO_SD_B1_xx组)</h3><p>（12个Pin：00~11）</p>
+<ul>
+<li><p><code>CAN1_TX/RX:</code> CAN通信接口；</p>
+</li>
+<li><p><code>I2C4_SCL/SDA</code>: I2C通信接口；</p>
+</li>
+<li><p><code>SAI3</code>相关信号: 音频接口信号：</p>
+<ul>
+<li><code>SAI3_TX_BCLK</code></li>
+<li><code>SAI3_TX_SYNC</code></li>
+<li><code>SAI3_TXD</code></li>
+<li><code>SAI3_RXD</code></li>
+</ul>
+</li>
+<li><p><code>INT1/2_COMBO</code>以及<code>AUD_INT</code>: 中断信号；</p>
+<blockquote>
+<p><span style="color: blue; font-weight: bold; ">其中<code>INT2_COMBO</code>通过DNP未连接0Ω电阻R243到<code>GPIO_SD_B1_05</code>，它也是FlexSPI DQS线，需要floating，使QSPI Flash读写速度达到133MHz；</span></p>
+</blockquote>
+</li>
+<li><p><code>SD_PWREN</code>:<span style="color: green; ">这个也是个重要控制信号，来决定SD卡是否上电！</span></p>
+</li>
+</ul>
+<h2 id="U1C-5V-USB-OTG-部分"><a href="#U1C-5V-USB-OTG-部分" class="headerlink" title="U1C 5V_USB_OTG 部分"></a>U1C 5V_USB_OTG 部分</h2><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/image-20241224110847726.png" class="" title="image-20241224110847726">
+
+
+
+<p>MCU的USB OTG接口电路部分</p>
+<ol>
+<li><strong>电源设计</strong><ul>
+<li><code>5V_USB_OTG</code>: USB 5V供电，限流25mA，连接到<code>USB_OTG1_VBUS</code>引脚；</li>
+<li><code>VDD_USB_3V</code>: 3.3V供电，连接到<code>VDD_USB_CAP</code>；</li>
+</ul>
+</li>
+<li><strong>信号线</strong><ul>
+<li><code>OTG1_DN / OTG1_DP</code>: USB差分数据对</li>
+<li><code>USB_OTG1_VBUS</code>: VBUS电源检测引脚;</li>
+<li><code>USB_OTG1_CHD</code>: 充电检测引脚;</li>
+</ul>
+</li>
+</ol>
+<h2 id="U1E-NVCC-GPIO-3V3-部分"><a href="#U1E-NVCC-GPIO-3V3-部分" class="headerlink" title="U1E NVCC_GPIO_3V3 部分"></a>U1E NVCC_GPIO_3V3 部分</h2><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/image-20241224112223432.png" class="" title="image-20241224112223432">
+
+
+
+<h3 id="电源设计-1"><a href="#电源设计-1" class="headerlink" title="电源设计"></a><strong>电源设计</strong></h3><ul>
+<li><span style="color: green; font-weight: bold; "><code>DCDC_3V3</code>转换为<code>NVCC_GPIO_3V3</code>供电；</span></li>
+<li>采用双级去耦电容设计：<ul>
+<li>5个4.7μF大电容：处理低频噪声</li>
+<li>5个0.1μF小电容：处理高频噪声</li>
+</ul>
+</li>
+<li>这种配置确保了GPIO供电的稳定性</li>
+</ul>
+<h3 id="GPIO配置"><a href="#GPIO配置" class="headerlink" title="GPIO配置"></a><strong>GPIO配置</strong></h3><ul>
+<li><code>NVCC_GPIO</code>：<span style="color: green;">5个Pin给GPIO组进行独立供电；</span></li>
+<li><code>GPIO_AD_B0_xx</code>和<code>GPIO_AD_B1_xx</code>：两组GPIO端口，B0组有16个Pin，B1组有10个Pin；</li>
+</ul>
+<h4 id="GPIO-AD-B0-xx-组"><a href="#GPIO-AD-B0-xx-组" class="headerlink" title="GPIO_AD_B0_xx 组"></a>GPIO_AD_B0_xx 组</h4><ol>
+<li><strong>调试接口</strong><ul>
+<li>JTAG接口：<ul>
+<li>JTAG_TMS：测试模式选择</li>
+<li>JTAG_TCK：时钟</li>
+<li>JTAG_TDI：测试数据输入</li>
+<li>JTAG_TDO：测试数据输出</li>
+<li>JTAG_nTRST：复位</li>
+<li><span style="color: blue;">JTAG_MOD 默认接地；</span></li>
+</ul>
+</li>
+<li>SWD接口：<ul>
+<li>SWD_CLK：时钟，复用JTAG_TCK；</li>
+<li>SWD_DIO：数据输入输出，复用JTAG_TMS;</li>
+<li><code>TRACE_SWO</code>：<span style="color: blue; font-weight: bold; ">默认DNP的，复用了<code>GPIO_AD_B0_12</code>;</span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>通信接口</strong><ul>
+<li>UART1_TXD / RXD：串口通信</li>
+<li>ENET：以太网接口信号<ul>
+<li>4个接收/发送数据线：<ul>
+<li>ENET_RXD1/ ENET_RXD0；</li>
+<li>ENET_TXD1/ ENET_TXD0；</li>
+</ul>
+</li>
+<li>1个时钟线：ENET_TX_REF_CLK</li>
+<li>1个使能线：ENET_TXEN</li>
+<li>1个复位线：ENET_RST</li>
+<li>其他控制线：<ul>
+<li><code>ENET_RXER</code></li>
+<li><code>ENET_CRS_DV</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>特殊功能</strong><ul>
+<li><code>WDOG_B</code>：看门狗复位，和<code>JTAG_TDI</code>复用；</li>
+<li><code>TRACE_SWO</code>：跟踪调试输出</li>
+</ul>
+</li>
+</ol>
+<h4 id="GPIO-AD-B1-xx-组"><a href="#GPIO-AD-B1-xx-组" class="headerlink" title="GPIO_AD_B1_xx 组"></a>GPIO_AD_B1_xx 组</h4><blockquote>
+<p><span style="color: green; font-weight: bold; ">好像放的是一些外设的重要控制信号？！</span></p>
+</blockquote>
+<ul>
+<li>ENET_INT：以太网中断信号</li>
+<li>SD0_VSELECT：SD卡电压选择，支持1.8V/3.3V双电压模式；</li>
+<li>USER_LED</li>
+<li>USB_OTG1_PWR ： 控制外部USB设备供电</li>
+<li>USB_OTG1_ID ： 用于确定USB角色(主机/设备)</li>
+<li>USB_OTG1_OC ： 检测USB端口是否发生过流</li>
+<li>CAN_STBY</li>
+<li>I2C1_SCL / I2C1_SDA</li>
+</ul>
+<hr>
+<h2 id="Page-14-BOOT"><a href="#Page-14-BOOT" class="headerlink" title="Page 14 BOOT"></a>Page 14 BOOT</h2><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/image-20241224134408689.png" class="" title="image-20241224134408689">
+
+<img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/image-20241224134346036.png" class="" title="image-20241224134346036">
+
+
+
+
+<p>启动配置部分<code>BOOT_CFG[0:9]</code>：</p>
+<ol>
+<li><strong>FUSE MAP配置表</strong><ul>
+<li><strong>FlexSPI - Serial NOR配置</strong>：<ul>
+<li><code>HOLD TIME</code>可选：500us/1ms/3ms/10ms</li>
+<li>FLASH类型支持多种选项：<ul>
+<li><code>3B/4B读取模式</code></li>
+<li>HyperFlash 1V8/3V3</li>
+<li>QSPI设备 3B读取模式–&gt; <span style="color: blue; font-weight: bold; ">在secondary pinmux选项上；</span>；</li>
+<li>Micron Octal DDR</li>
+<li>MXIC Octal DDR</li>
+</ul>
+</li>
+<li>EncryptedXIP：使能与否；</li>
+</ul>
+</li>
+<li><strong>SD启动配置</strong>：<ul>
+<li>SD/SDXC速度模式4种选择：<ul>
+<li>Normal/SDR12</li>
+<li>High/SDR25</li>
+<li>SDR50</li>
+<li>SDR104</li>
+</ul>
+</li>
+<li><span style="color: green;">总线宽度：1-bit/4-bit</span></li>
+<li>电源循环和时钟源选项</li>
+<li>端口选择：eSDHC1/eSDHC2</li>
+<li>快速启动选项</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>硬件实现</strong><ul>
+<li>**DIP开关(SW8)**：<ul>
+<li>四个选项连接：BT_CFG[0]、BT_CFG[5]、BOOT_MODE[0]、BOOT_MODE[1]；</li>
+<li>用于选择启动模式：<ul>
+<li>Serial Download: 0001</li>
+<li>FlexSPI Boot:       0010</li>
+<li>SD Boot:              0110</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GPIO连接</strong>：<ul>
+<li>使用GPIO_EMC_16到GPIO_EMC_27</li>
+<li>这些引脚在启动时作为配置引脚</li>
+<li>启动后可以作为普通GPIO使用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>特殊功能</strong><ul>
+<li>支持加密XIP（Execute In Place）</li>
+<li>可配置快速启动模式</li>
+<li>支持多种存储设备类型</li>
+<li>灵活的时序和总线配置</li>
+</ul>
+</li>
+</ol>
+<p>这种设计提供了灵活的启动选项，允许系统从不同类型的存储设备启动，并且可以通过DIP开关轻松更改启动配置，方便开发和调试。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>RT1024 EVK 学习笔记Part3</p><p><a href="https://dustofstars.github.io/NXP/RT1024/原理图/rt1024-evk-学习笔记part3/">https://dustofstars.github.io/NXP/RT1024/原理图/rt1024-evk-学习笔记part3/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Gavin</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2024-12-24</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2024-12-24</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NXP/">NXP</a><a class="link-muted mr-2" rel="tag" href="/tags/hardware/">hardware</a><a class="link-muted mr-2" rel="tag" href="/tags/%E5%8E%9F%E7%90%86%E5%9B%BE/">原理图</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/"><span class="level-item">RT1024 EVK 学习笔记Part2</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="Gavin"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Gavin</p><p class="is-size-6 is-block">Embeded &amp; IC Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shanghai, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">130</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">40</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">45</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/dustofstars/" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/dustofstars/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#RT1024-EVK-学习笔记Part3"><span class="level-left"><span class="level-item">1</span><span class="level-item">RT1024 EVK 学习笔记Part3</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#U1D-SEMC-部分"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">U1D SEMC 部分</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#引脚功能分组"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">引脚功能分组</span></span></a></li><li><a class="level is-mobile" href="#数据选通信号DQS说明"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">数据选通信号DQS说明</span></span></a></li><li><a class="level is-mobile" href="#控制信号详解"><span class="level-left"><span class="level-item">1.1.3</span><span class="level-item">控制信号详解</span></span></a></li></ul></li><li><a class="level is-mobile" href="#U1F-NVCC-SD-部分"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">U1F NVCC_SD 部分</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#电源设计"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">电源设计</span></span></a></li><li><a class="level is-mobile" href="#SD卡接口信号-GPIO-SD-B0-xx组"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">SD卡接口信号(GPIO_SD_B0_xx组)</span></span></a></li><li><a class="level is-mobile" href="#其他复用功能-GPIO-SD-B1-xx组"><span class="level-left"><span class="level-item">1.2.3</span><span class="level-item">其他复用功能(GPIO_SD_B1_xx组)</span></span></a></li></ul></li><li><a class="level is-mobile" href="#U1C-5V-USB-OTG-部分"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">U1C 5V_USB_OTG 部分</span></span></a></li><li><a class="level is-mobile" href="#U1E-NVCC-GPIO-3V3-部分"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">U1E NVCC_GPIO_3V3 部分</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#电源设计-1"><span class="level-left"><span class="level-item">1.4.1</span><span class="level-item">电源设计</span></span></a></li><li><a class="level is-mobile" href="#GPIO配置"><span class="level-left"><span class="level-item">1.4.2</span><span class="level-item">GPIO配置</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Page-14-BOOT"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">Page 14 BOOT</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/"><span class="level-start"><span class="level-item">IC验证</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/"><span class="level-start"><span class="level-item">漫游指南</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/"><span class="level-start"><span class="level-item">路科V0</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">IoT协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/BLE/"><span class="level-start"><span class="level-item">BLE</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/Thread/"><span class="level-start"><span class="level-item">Thread</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/ZigBee/"><span class="level-start"><span class="level-item">ZigBee</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/Leetcode/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">数据结构</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/NLP/PyTorch/"><span class="level-start"><span class="level-item">PyTorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/"><span class="level-start"><span class="level-item">NXP</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/"><span class="level-start"><span class="level-item">KW38</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/GPIO%E4%B8%AD%E6%96%AD/"><span class="level-start"><span class="level-item">GPIO中断</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1024/"><span class="level-start"><span class="level-item">RT1024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="level-start"><span class="level-item">原理图</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1050/"><span class="level-start"><span class="level-item">RT1050</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1050/%E9%87%8E%E7%81%AB/"><span class="level-start"><span class="level-item">野火</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/"><span class="level-start"><span class="level-item">RT1060</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/ReferenceManual/"><span class="level-start"><span class="level-item">ReferenceManual</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Plugins/"><span class="level-start"><span class="level-item">Plugins</span></span><span class="level-end"><span class="level-item tag">12</span></span></a><ul><li><a class="level is-mobile" href="/categories/Plugins/Analytics/"><span class="level-start"><span class="level-item">Analytics</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Comment/"><span class="level-start"><span class="level-item">Comment</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Donation/"><span class="level-start"><span class="level-item">Donation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Other/"><span class="level-start"><span class="level-item">Other</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Search/"><span class="level-start"><span class="level-item">Search</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Share/"><span class="level-start"><span class="level-item">Share</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Widgets/"><span class="level-start"><span class="level-item">Widgets</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/vim/"><span class="level-start"><span class="level-item">vim</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">总线协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/UART/"><span class="level-start"><span class="level-item">UART</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E5%AD%97IC/"><span class="level-start"><span class="level-item">数字IC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%8B%B1%E8%AF%AD/"><span class="level-start"><span class="level-item">英语</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ARM/"><span class="tag">ARM</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BLE/"><span class="tag">BLE</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DMA/"><span class="tag">DMA</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Demo/"><span class="tag">Demo</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/FLASH/"><span class="tag">FLASH</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO/"><span class="tag">GPIO</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO%E4%B8%AD%E6%96%AD/"><span class="tag">GPIO中断</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Getting-Started/"><span class="tag">Getting Started</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IC%E9%AA%8C%E8%AF%81/"><span class="tag">IC验证</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus-User-Guide/"><span class="tag">Icarus User Guide</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97/"><span class="tag">Icarus用户指南</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/KW38/"><span class="tag">KW38</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leetcode/"><span class="tag">Leetcode</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NXP/"><span class="tag">NXP</span><span class="tag">24</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Numpy/"><span class="tag">Numpy</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PDF/"><span class="tag">PDF</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PyTorch/"><span class="tag">PyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RAM/"><span class="tag">RAM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ROM/"><span class="tag">ROM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT1050/"><span class="tag">RT1050</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReferenceManual/"><span class="tag">ReferenceManual</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/STL/"><span class="tag">STL</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/System-Verilog/"><span class="tag">System Verilog</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TIMER/"><span class="tag">TIMER</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Thread/"><span class="tag">Thread</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UART/"><span class="tag">UART</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UVM/"><span class="tag">UVM</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZigBee/"><span class="tag">ZigBee</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hardware/"><span class="tag">hardware</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pyTorch/"><span class="tag">pyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vector/"><span class="tag">vector</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vim/"><span class="tag">vim</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%AD%E6%96%AD/"><span class="tag">中断</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/"><span class="tag">二分查找</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="tag">代码随想录</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="tag">原理图</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2/"><span class="tag">数据探索</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="tag">数据结构</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E7%BB%84/"><span class="tag">数组</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%80%83%E7%A0%94%E8%8B%B1%E8%AF%AD100%E5%8F%A5/"><span class="tag">考研英语100句</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%8B%B1%E8%AF%AD/"><span class="tag">英语</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/"><span class="tag">设计流程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a><p class="is-size-7"><span>&copy; 2024 Gavin</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
