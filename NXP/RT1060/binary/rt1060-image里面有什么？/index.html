@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>RT1060 image里面有什么？ - DustOfStars</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="DustOfStars"><meta name="msapplication-TileImage" content="/img/favicon.png"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DustOfStars"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="RT1060 image里面有什么？ RT MCU 学习有一段时间了，刚好得空，在这篇文章里面，我们一起分析一个完整的image bin文件，它有哪些部分？分别是什么作用？哪些是不可或缺的？哪些是可选的？"><meta property="og:type" content="blog"><meta property="og:title" content="RT1060 image里面有什么？"><meta property="og:url" content="https://dustofstars.github.io/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/"><meta property="og:site_name" content="DustOfStars"><meta property="og:description" content="RT1060 image里面有什么？ RT MCU 学习有一段时间了，刚好得空，在这篇文章里面，我们一起分析一个完整的image bin文件，它有哪些部分？分别是什么作用？哪些是不可或缺的？哪些是可选的？"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://dustofstars.github.io/gallery/covers/image%E9%87%8C%E6%9C%89%E4%BB%80%E4%B9%88.jpg"><meta property="article:published_time" content="2025-02-28T08:43:40.000Z"><meta property="article:modified_time" content="2025-02-28T08:43:41.000Z"><meta property="article:author" content="Gavin"><meta property="article:tag" content="NXP"><meta property="article:tag" content="image"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://dustofstars.github.io/gallery/covers/image%E9%87%8C%E6%9C%89%E4%BB%80%E4%B9%88.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://dustofstars.github.io/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/"},"headline":"RT1060 image里面有什么？","image":["https://dustofstars.github.io/gallery/covers/image%E9%87%8C%E6%9C%89%E4%BB%80%E4%B9%88.jpg"],"datePublished":"2025-02-28T08:43:40.000Z","dateModified":"2025-02-28T08:43:41.000Z","author":{"@type":"Person","name":"Gavin"},"publisher":{"@type":"Organization","name":"DustOfStars","logo":{"@type":"ImageObject","url":"https://dustofstars.github.io/img/logo.png"}},"description":"RT1060 image里面有什么？ RT MCU 学习有一段时间了，刚好得空，在这篇文章里面，我们一起分析一个完整的image bin文件，它有哪些部分？分别是什么作用？哪些是不可或缺的？哪些是可选的？"}</script><link rel="canonical" href="https://dustofstars.github.io/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/"><link rel="icon" href="/img/favicon.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
+<style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/gallery/covers/image%E9%87%8C%E6%9C%89%E4%BB%80%E4%B9%88.jpg" alt="RT1060 image里面有什么？"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-02-28T08:43:40.000Z" title="2/28/2025, 8:43:40 AM">2025-02-28</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/">RT1060</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/binary/">binary</a></span><span class="level-item">6 分钟读完 (大约871个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT1060 image里面有什么？</h1><div class="content"><h1 id="RT1060-image里面有什么？"><a href="#RT1060-image里面有什么？" class="headerlink" title="RT1060 image里面有什么？"></a>RT1060 image里面有什么？</h1><blockquote>
+<p>RT MCU 学习有一段时间了，刚好得空，在这篇文章里面，我们一起分析一个完整的image bin文件，它有哪些部分？分别是什么作用？哪些是不可或缺的？哪些是可选的？</p>
+</blockquote>
+<span id="more"></span>
+
+<p>我们知道，RT MCU作为跨界控制器/处理器，提供了一个高性能的平台，CM7核心的主频可以达到600MHz以上，可以说单凭这个系列，就打出了NXP的差异性和易用性。原来国外原厂也可以这么有性价比😍简直是Amazing -.-</p>
+<p>但是同时呢，由于RT的flash是外置的嘛，它的image结构也和以往的通用MCU的image有很大区别。以我们本文要研究的Flash XIP的image为例，上电之后，BootROM会先把flexspi跑起来，用一个低速时钟去读flash中的配置参数，然后拿这个flash的配置头重配flexspi，就能高效获取image中的指令和数据啦！</p>
+<p>同时呢，因为一些加密啊，外设配置啊，的需求，image不只是包含这个flash的配置header，还分为很多个其他部分，在这里，我们就一起看一下吧！</p>
+<h2 id="FDCB-Header"><a href="#FDCB-Header" class="headerlink" title="FDCB Header"></a>FDCB Header</h2><blockquote>
+<blockquote>
+<p>再次呢，进入正文之前，提前说明一些东西以防止读者疑惑。</p>
+<ul>
+<li><p>使用的是*.bin格式的image，相比于hex或者s-record，它没有指示物理地址，只有offset，在使用JLink烧录时，我们使用如下命令：</p>
+<p><code>jlink loadfile xxx.bin 0x6000_0000</code></p>
+<p>从这里我们可以看出来，这个bin文件的offset，实际上就是从我们的Flash首地址开始偏移的，这是最重要的前置知识，请知悉。</p>
+</li>
+</ul>
+</blockquote>
+</blockquote>
+<p>在MCU BootUtility中，它显示从<code>0x6000_0000</code>到<code>0x6000_0200</code>之前，都是FDCB段。那么它的大小就是<code>512 Byte</code>.</p>
+<p>这里我们先不管，直接看对我们有用的部分。</p>
+<img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155429758.png" class="" title="image-20250228155429758">
+
+
+
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>flash address</th>
+<th>内容</th>
+<th>小端</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x0</td>
+<td>0x6000_0000</td>
+<td>46 43 46 42</td>
+<td>0x42462326</td>
+<td>FCFB<br>flash配置头标志</td>
+</tr>
+<tr>
+<td>0x04-0x07</td>
+<td>0x6000_0004</td>
+<td>00 04 01 56</td>
+<td>0x56010400</td>
+<td>version<br>表示使用flexspi v1.4.0配置</td>
+</tr>
+<tr>
+<td>0x40-0x43</td>
+<td>0x6000_0040</td>
+<td>10 00 00 00</td>
+<td>0x10</td>
+<td>应该是flash的page size<br>16</td>
+</tr>
+<tr>
+<td>0x80-0x83</td>
+<td>0x6000_0080</td>
+<td>EB 04 18 0A</td>
+<td>0x0A1804EB</td>
+<td>Flash的时钟频率<br>典型值133MHz<br>（600/43 x 19 / 2 = 133）</td>
+</tr>
+</tbody></table>
+<h2 id="Image-Version"><a href="#Image-Version" class="headerlink" title="Image Version"></a>Image Version</h2><p>在Offset <code>0x600</code>的地方有个image版本号，用于双image的时候，还没用过。暂且不表。</p>
+<img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155738390.png" class="" title="image-20250228155738390">
+
+
+
+<h2 id="IVT"><a href="#IVT" class="headerlink" title="IVT"></a>IVT</h2><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228161351059.png" class="" title="image-20250228161351059">
+
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>flash address</th>
+<th>内容</th>
+<th>小端</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x1000</td>
+<td>0x6000_1000</td>
+<td>D1 00 20 41</td>
+<td>0x412000D1</td>
+<td>IVT段的起始标志</td>
+</tr>
+<tr>
+<td>0x1004</td>
+<td>0x6000_1004</td>
+<td>00 20 00 60</td>
+<td>0x60002000</td>
+<td>程序中断向量表地址<br>.isr_vector 以及 g_pfnVectors</td>
+</tr>
+<tr>
+<td>0x1008</td>
+<td>0x6000_1008</td>
+<td>00 00 00 00</td>
+<td>0x0</td>
+<td>DCD地址<br>表示未启用DCD</td>
+</tr>
+<tr>
+<td>0x1010</td>
+<td>0x6000_1010</td>
+<td>20 10 00 60</td>
+<td>0x60001020</td>
+<td>BootData地址<br>指向偏移量0x1020的地方</td>
+</tr>
+</tbody></table>
+<h2 id="Boot-Data"><a href="#Boot-Data" class="headerlink" title="Boot Data"></a>Boot Data</h2><p>根据IVT中 Offset <code>0x1010</code>的指引，找到 Boot Data的地址是：<code>0x6000_1020</code></p>
+<img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162214452.png" class="" title="image-20250228162214452">
+
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>flash address</th>
+<th>内容</th>
+<th>小端</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x1020</td>
+<td>0x6000_1020</td>
+<td>00 00 00 60</td>
+<td>0x60000000</td>
+<td>image的起始地址<br>在这时候就是flash的地址</td>
+</tr>
+<tr>
+<td>0x1024</td>
+<td>0x6000_1024</td>
+<td>00 00 80 00</td>
+<td>0x00800000</td>
+<td>image的大小<br>这里默认是8MB</td>
+</tr>
+</tbody></table>
+<h2 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h2><p>终于到了光秃秃的image部分了~</p>
+<p>根据IVT中的指示，它是程序入口，地址是<code>0x6000_2000</code>!</p>
+<img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162759478.png" class="" title="image-20250228162759478">
+
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>flash address</th>
+<th>内容</th>
+<th>小端</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x2000</td>
+<td>0x6000_2000</td>
+<td>00 00 02 20</td>
+<td>0x2002_0000 (DTCM中的地址)</td>
+<td><strong>初始SP</strong>栈指针</td>
+</tr>
+<tr>
+<td>0x2004</td>
+<td>0x6000_2004</td>
+<td>1D 23 00 60</td>
+<td>0x6000231D</td>
+<td>ResetISR 的地址</td>
+</tr>
+</tbody></table>
+</div><div class="article-licensing box"><div class="licensing-title"><p>RT1060 image里面有什么？</p><p><a href="https://dustofstars.github.io/NXP/RT1060/binary/rt1060-image里面有什么？/">https://dustofstars.github.io/NXP/RT1060/binary/rt1060-image里面有什么？/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Gavin</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2025-02-28</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-02-28</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NXP/">NXP</a><a class="link-muted mr-2" rel="tag" href="/tags/image/">image</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part3/"><span class="level-item">RT1024 EVK 学习笔记Part3</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="Gavin"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Gavin</p><p class="is-size-6 is-block">Embeded &amp; IC Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shanghai, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">131</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">41</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">46</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/dustofstars/" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/dustofstars/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#RT1060-image里面有什么？"><span class="level-left"><span class="level-item">1</span><span class="level-item">RT1060 image里面有什么？</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#FDCB-Header"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">FDCB Header</span></span></a></li><li><a class="level is-mobile" href="#Image-Version"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">Image Version</span></span></a></li><li><a class="level is-mobile" href="#IVT"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">IVT</span></span></a></li><li><a class="level is-mobile" href="#Boot-Data"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">Boot Data</span></span></a></li><li><a class="level is-mobile" href="#Image"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">Image</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/"><span class="level-start"><span class="level-item">IC验证</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/"><span class="level-start"><span class="level-item">漫游指南</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/"><span class="level-start"><span class="level-item">路科V0</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">IoT协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/BLE/"><span class="level-start"><span class="level-item">BLE</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/Thread/"><span class="level-start"><span class="level-item">Thread</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/ZigBee/"><span class="level-start"><span class="level-item">ZigBee</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/Leetcode/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">数据结构</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/NLP/PyTorch/"><span class="level-start"><span class="level-item">PyTorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/"><span class="level-start"><span class="level-item">NXP</span></span><span class="level-end"><span class="level-item tag">22</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/"><span class="level-start"><span class="level-item">KW38</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/GPIO%E4%B8%AD%E6%96%AD/"><span class="level-start"><span class="level-item">GPIO中断</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1024/"><span class="level-start"><span class="level-item">RT1024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="level-start"><span class="level-item">原理图</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1050/"><span class="level-start"><span class="level-item">RT1050</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1050/%E9%87%8E%E7%81%AB/"><span class="level-start"><span class="level-item">野火</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/"><span class="level-start"><span class="level-item">RT1060</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1060/binary/"><span class="level-start"><span class="level-item">binary</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/ReferenceManual/"><span class="level-start"><span class="level-item">ReferenceManual</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Plugins/"><span class="level-start"><span class="level-item">Plugins</span></span><span class="level-end"><span class="level-item tag">12</span></span></a><ul><li><a class="level is-mobile" href="/categories/Plugins/Analytics/"><span class="level-start"><span class="level-item">Analytics</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Comment/"><span class="level-start"><span class="level-item">Comment</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Donation/"><span class="level-start"><span class="level-item">Donation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Other/"><span class="level-start"><span class="level-item">Other</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Search/"><span class="level-start"><span class="level-item">Search</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Share/"><span class="level-start"><span class="level-item">Share</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Widgets/"><span class="level-start"><span class="level-item">Widgets</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/vim/"><span class="level-start"><span class="level-item">vim</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">总线协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/UART/"><span class="level-start"><span class="level-item">UART</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E5%AD%97IC/"><span class="level-start"><span class="level-item">数字IC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%8B%B1%E8%AF%AD/"><span class="level-start"><span class="level-item">英语</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ARM/"><span class="tag">ARM</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BLE/"><span class="tag">BLE</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DMA/"><span class="tag">DMA</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Demo/"><span class="tag">Demo</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/FLASH/"><span class="tag">FLASH</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO/"><span class="tag">GPIO</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO%E4%B8%AD%E6%96%AD/"><span class="tag">GPIO中断</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Getting-Started/"><span class="tag">Getting Started</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IC%E9%AA%8C%E8%AF%81/"><span class="tag">IC验证</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus-User-Guide/"><span class="tag">Icarus User Guide</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97/"><span class="tag">Icarus用户指南</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/KW38/"><span class="tag">KW38</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leetcode/"><span class="tag">Leetcode</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NXP/"><span class="tag">NXP</span><span class="tag">25</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Numpy/"><span class="tag">Numpy</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PDF/"><span class="tag">PDF</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PyTorch/"><span class="tag">PyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RAM/"><span class="tag">RAM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ROM/"><span class="tag">ROM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT1050/"><span class="tag">RT1050</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReferenceManual/"><span class="tag">ReferenceManual</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/STL/"><span class="tag">STL</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/System-Verilog/"><span class="tag">System Verilog</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TIMER/"><span class="tag">TIMER</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Thread/"><span class="tag">Thread</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UART/"><span class="tag">UART</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UVM/"><span class="tag">UVM</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZigBee/"><span class="tag">ZigBee</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hardware/"><span class="tag">hardware</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/image/"><span class="tag">image</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pyTorch/"><span class="tag">pyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vector/"><span class="tag">vector</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vim/"><span class="tag">vim</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%AD%E6%96%AD/"><span class="tag">中断</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/"><span class="tag">二分查找</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="tag">代码随想录</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="tag">原理图</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2/"><span class="tag">数据探索</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="tag">数据结构</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E7%BB%84/"><span class="tag">数组</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%80%83%E7%A0%94%E8%8B%B1%E8%AF%AD100%E5%8F%A5/"><span class="tag">考研英语100句</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%8B%B1%E8%AF%AD/"><span class="tag">英语</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/"><span class="tag">设计流程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a><p class="is-size-7"><span>&copy; 2025 Gavin</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
