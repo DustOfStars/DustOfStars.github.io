@@ -33,9 +33,9 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
+
 <style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
-<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
 </head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-12-11T06:11:12.000Z" title="12/11/2023, 6:11:12 AM">2023-12-11</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1050/">RT1050</a></span><span class="level-item">5 分钟读完 (大约795个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT1050开发--第7节 RT1050 硬件启动模式</h1><div class="content"><h1 id="第7节-RT1050-硬件启动模式详解"><a href="#第7节-RT1050-硬件启动模式详解" class="headerlink" title="第7节 RT1050 硬件启动模式详解"></a>第7节 RT1050 硬件启动模式详解</h1><p><img src="/Snipaste_2023-12-11_14-33-24.bmp"></p>
 <span id="more"></span>
 
@@ -62,7 +62,7 @@
 <h2 id="Nor-Flash-启动流程"><a href="#Nor-Flash-启动流程" class="headerlink" title="Nor Flash 启动流程"></a>Nor Flash 启动流程</h2><blockquote>
 <p><img src="/Snipaste_2023-12-11_14-59-46.bmp"></p>
 </blockquote>
-<style>.ahmmlnlcfrrm{zoom:150%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC7%E8%8A%82-rt1050-%E7%A1%AC%E4%BB%B6%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/Snipaste_2023-12-11_16-48-41.bmp" class="ahmmlnlcfrrm">
+<style>.hmqkezxmzizo{zoom:150%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC7%E8%8A%82-rt1050-%E7%A1%AC%E4%BB%B6%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/Snipaste_2023-12-11_16-48-41.bmp" class="hmqkezxmzizo">
 
 <p>BootRom里面的程序：</p>
 <ol>
@@ -86,7 +86,7 @@
 </ol>
 </li>
 </ol>
-<h3 id="Flash的配置参数"><a href="#Flash的配置参数" class="headerlink" title="Flash的配置参数"></a>Flash的配置参数</h3><style>.qrnuwdxmbtkr{zoom:200%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC7%E8%8A%82-rt1050-%E7%A1%AC%E4%BB%B6%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/Snipaste_2023-12-11_16-59-06.bmp" class="qrnuwdxmbtkr">
+<h3 id="Flash的配置参数"><a href="#Flash的配置参数" class="headerlink" title="Flash的配置参数"></a>Flash的配置参数</h3><style>.mgvjpyfyfyvh{zoom:200%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC7%E8%8A%82-rt1050-%E7%A1%AC%E4%BB%B6%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/Snipaste_2023-12-11_16-59-06.bmp" class="mgvjpyfyfyvh">
 
 <p>512字节的串口Nor Flash配置字段：</p>
 <ul>
