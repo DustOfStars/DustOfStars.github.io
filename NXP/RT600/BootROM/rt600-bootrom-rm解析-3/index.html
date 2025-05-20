@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>RT600 BootROM RM解析 (3) - DustOfStars</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="DustOfStars"><meta name="msapplication-TileImage" content="/img/favicon.png"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DustOfStars"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="RT600 RM CH41：RT6xx 非安全BootROM (3)41.4 引导模式ROM 引导加载程序支持以下引导模式：  Master Boot 模式 Recovery Boot 模式 Serial Boot 模式 ISP Boot 模式"><meta property="og:type" content="blog"><meta property="og:title" content="RT600 BootROM RM解析 (3)"><meta property="og:url" content="https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/"><meta property="og:site_name" content="DustOfStars"><meta property="og:description" content="RT600 RM CH41：RT6xx 非安全BootROM (3)41.4 引导模式ROM 引导加载程序支持以下引导模式：  Master Boot 模式 Recovery Boot 模式 Serial Boot 模式 ISP Boot 模式"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://dustofstars.github.io/gallery/covers/RT600_PRIMARY_BOOT_SRC.jpg"><meta property="article:published_time" content="2025-05-19T09:11:04.000Z"><meta property="article:modified_time" content="2025-05-19T09:11:04.000Z"><meta property="article:author" content="Gavin"><meta property="article:tag" content="NXP"><meta property="article:tag" content="RT600"><meta property="article:tag" content="BootROM"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://dustofstars.github.io/gallery/covers/RT600_PRIMARY_BOOT_SRC.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/"},"headline":"RT600 BootROM RM解析 (3)","image":["https://dustofstars.github.io/gallery/covers/RT600_PRIMARY_BOOT_SRC.jpg"],"datePublished":"2025-05-19T09:11:04.000Z","dateModified":"2025-05-19T09:11:04.000Z","author":{"@type":"Person","name":"Gavin"},"publisher":{"@type":"Organization","name":"DustOfStars","logo":{"@type":"ImageObject","url":"https://dustofstars.github.io/img/logo.png"}},"description":"RT600 RM CH41：RT6xx 非安全BootROM (3)41.4 引导模式ROM 引导加载程序支持以下引导模式：  Master Boot 模式 Recovery Boot 模式 Serial Boot 模式 ISP Boot 模式"}</script><link rel="canonical" href="https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/"><link rel="icon" href="/img/favicon.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>RT600 BootROM RM解析 (3) - DustOfStars</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="DustOfStars"><meta name="msapplication-TileImage" content="/img/favicon.png"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DustOfStars"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="RT600 RM CH41：RT6xx 非安全BootROM (3)41.4 引导模式ROM 引导加载程序支持以下引导模式：  Master Boot 模式 Recovery Boot 模式 Serial Boot 模式 ISP Boot 模式"><meta property="og:type" content="blog"><meta property="og:title" content="RT600 BootROM RM解析 (3)"><meta property="og:url" content="https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/"><meta property="og:site_name" content="DustOfStars"><meta property="og:description" content="RT600 RM CH41：RT6xx 非安全BootROM (3)41.4 引导模式ROM 引导加载程序支持以下引导模式：  Master Boot 模式 Recovery Boot 模式 Serial Boot 模式 ISP Boot 模式"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://dustofstars.github.io/gallery/covers/RT600_FlexSPI_Flash_boot_flow.png"><meta property="article:published_time" content="2025-05-19T09:11:04.000Z"><meta property="article:modified_time" content="2025-05-19T09:11:04.000Z"><meta property="article:author" content="Gavin"><meta property="article:tag" content="NXP"><meta property="article:tag" content="RT600"><meta property="article:tag" content="BootROM"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://dustofstars.github.io/gallery/covers/RT600_FlexSPI_Flash_boot_flow.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/"},"headline":"RT600 BootROM RM解析 (3)","image":["https://dustofstars.github.io/gallery/covers/RT600_FlexSPI_Flash_boot_flow.png"],"datePublished":"2025-05-19T09:11:04.000Z","dateModified":"2025-05-19T09:11:04.000Z","author":{"@type":"Person","name":"Gavin"},"publisher":{"@type":"Organization","name":"DustOfStars","logo":{"@type":"ImageObject","url":"https://dustofstars.github.io/img/logo.png"}},"description":"RT600 RM CH41：RT6xx 非安全BootROM (3)41.4 引导模式ROM 引导加载程序支持以下引导模式：  Master Boot 模式 Recovery Boot 模式 Serial Boot 模式 ISP Boot 模式"}</script><link rel="canonical" href="https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/"><link rel="icon" href="/img/favicon.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
     
@@ -36,7 +36,7 @@
   </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
 <style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
-</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/gallery/covers/RT600_PRIMARY_BOOT_SRC.jpg" alt="RT600 BootROM RM解析 (3)"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-19T09:11:04.000Z" title="5/19/2025, 9:11:04 AM">2025-05-19</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT600/">RT600</a><span> / </span><a class="link-muted" href="/categories/NXP/RT600/BootROM/">BootROM</a></span><span class="level-item">1 小时读完 (大约7703个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT600 BootROM RM解析 (3)</h1><div class="content"><h1 id="RT600-RM-CH41：RT6xx-非安全BootROM-3"><a href="#RT600-RM-CH41：RT6xx-非安全BootROM-3" class="headerlink" title="RT600 RM CH41：RT6xx 非安全BootROM (3)"></a>RT600 RM CH41：RT6xx 非安全BootROM (3)</h1><h2 id="41-4-引导模式"><a href="#41-4-引导模式" class="headerlink" title="41.4 引导模式"></a>41.4 引导模式</h2><p>ROM 引导加载程序支持以下引导模式：</p>
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/gallery/covers/RT600_FlexSPI_Flash_boot_flow.png" alt="RT600 BootROM RM解析 (3)"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-19T09:11:04.000Z" title="5/19/2025, 9:11:04 AM">2025-05-19</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT600/">RT600</a><span> / </span><a class="link-muted" href="/categories/NXP/RT600/BootROM/">BootROM</a></span><span class="level-item">1 小时读完 (大约7146个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT600 BootROM RM解析 (3)</h1><div class="content"><h1 id="RT600-RM-CH41：RT6xx-非安全BootROM-3"><a href="#RT600-RM-CH41：RT6xx-非安全BootROM-3" class="headerlink" title="RT600 RM CH41：RT6xx 非安全BootROM (3)"></a>RT600 RM CH41：RT6xx 非安全BootROM (3)</h1><h2 id="41-4-引导模式"><a href="#41-4-引导模式" class="headerlink" title="41.4 引导模式"></a>41.4 引导模式</h2><p>ROM 引导加载程序支持以下引导模式：</p>
 <ul>
 <li>Master Boot 模式</li>
 <li>Recovery Boot 模式</li>
@@ -447,7 +447,7 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>FLEXSPI_AUTO_PROBE_EN</td>
+<td><code>FLEXSPI_AUTO_PROBE_EN</code></td>
 <td>-</td>
 <td>Quad/Octal-SPI 闪存自动探测功能使能。</td>
 <td>0</td>
@@ -540,20 +540,22 @@
 <td>-</td>
 </tr>
 </tbody></table>
-<h4 id="41-5-1-3-FlexSPI-引导流程"><a href="#41-5-1-3-FlexSPI-引导流程" class="headerlink" title="41.5.1.3 FlexSPI 引导流程"></a>41.5.1.3 FlexSPI 引导流程</h4><p>下图说明了简要的 FlexSPI 引导流程。Keyblob 的详细信息见第 42 章 “RT6xx 安全引导 ROM”。正常镜像加载和认证流程的详细信息见图 188。</p>
+<h4 id="41-5-1-3-FlexSPI-引导流程"><a href="#41-5-1-3-FlexSPI-引导流程" class="headerlink" title="41.5.1.3 FlexSPI 引导流程"></a>41.5.1.3 FlexSPI 引导流程</h4><p>下图说明了简要的 FlexSPI 引导流程。<code>Keyblob</code> 的详细信息见第 42 章 “RT6xx 安全引导 ROM”。正常镜像加载和认证流程的详细信息见图 188。</p>
+<style>.joaxnldydote{zoom:80%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/FlexSPI_Flash_boot_flow.png" class="joaxnldydote">
+
 <p><strong>图 188. FlexSPI 闪存引导流程</strong></p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">进入FlexSPI引导</span><br><span class="line">│</span><br><span class="line">├─── FLEXSPI_RESET_PIN_EN？</span><br><span class="line">│   ├─── 是 → 执行闪存复位</span><br><span class="line">│   └─── 否 → 跳过复位</span><br><span class="line">│</span><br><span class="line">├─── FLEXSPI_FLASH_AUTO_PROBE_EN？</span><br><span class="line">│   ├─── 是 → 执行闪存自动探测流程</span><br><span class="line">│   └─── 否 → 从闪存FCB区域（0x400或0x400+镜像重映射偏移量）读取FCB</span><br><span class="line">│</span><br><span class="line">├─── 闪存检测到？</span><br><span class="line">│   ├─── 是 → 生成FCB并配置FlexSPI</span><br><span class="line">│   └─── 否 → 进入ISP模式</span><br><span class="line">│</span><br><span class="line">├─── OTFAD启用？</span><br><span class="line">│   ├─── 是 → 读取Keyblob并配置OTFAD</span><br><span class="line">│   └─── 否 → 跳过</span><br><span class="line">│</span><br><span class="line">├─── 镜像有效？</span><br><span class="line">│   ├─── 是 → 正常镜像加载与认证</span><br><span class="line">│   └─── 否 → 进入恢复引导或ISP模式</span><br><span class="line">│</span><br><span class="line">└─── 跳转至应用程序</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h4 id="41-5-1-4-FlexSPI-双镜像乒乓引导"><a href="#41-5-1-4-FlexSPI-双镜像乒乓引导" class="headerlink" title="41.5.1.4 FlexSPI 双镜像乒乓引导"></a>41.5.1.4 FlexSPI 双镜像乒乓引导</h4><p><span style="color: red; font-weight: bold; ">FlexSPI 控制器支持重映射功能，可将串行 NOR 闪存的 AHB 访问地址重映射到另一个带偏移量的地址，从而在第一个镜像引导失败时支持第二个镜像引导。</span></p>
+<h4 id="41-5-1-4-FlexSPI-双镜像乒乓引导"><a href="#41-5-1-4-FlexSPI-双镜像乒乓引导" class="headerlink" title="41.5.1.4 FlexSPI 双镜像乒乓引导"></a>41.5.1.4 FlexSPI 双镜像乒乓引导</h4><p><span style="color: red; font-weight: bold; ">FlexSPI 控制器支持重映射功能，<u>可将串行 NOR 闪存的 AHB 访问地址重映射到另一个带偏移量的地址</u>，从而在第一个镜像引导失败时支持第二个镜像引导。</span></p>
 <h5 id="41-5-1-4-1-FlexSPI-重映射的基本功能"><a href="#41-5-1-4-1-FlexSPI-重映射的基本功能" class="headerlink" title="41.5.1.4.1 FlexSPI 重映射的基本功能"></a>41.5.1.4.1 FlexSPI 重映射的基本功能</h5><p>下图是 FlexSPI 重映射功能的简单示意图</p>
-<p><strong>图 189. FlexSPI 镜像重映射（偏移量 = 0x200000）</strong></p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0x08000000  ── KeyBlob for 引导镜像0（256字节）</span><br><span class="line">0x08000400  ── FCB（闪存配置块）for 引导镜像0（512字节）</span><br><span class="line">0x08000600  ── 镜像0版本（4字节）</span><br><span class="line">0x08000800  ── KEY STORE for 引导镜像0</span><br><span class="line">0x08001000  ── 引导镜像0</span><br><span class="line">0x08200000  ── KeyBlob for 引导镜像1（256字节）</span><br><span class="line">0x08200400  ── FCB for 引导镜像1（512字节）</span><br><span class="line">0x08200600  ── 镜像1版本（4字节）</span><br><span class="line">0x08200800  ── KEY STORE for 引导镜像1</span><br><span class="line">0x08201000  ── 引导镜像1</span><br><span class="line">闪存设备（8MB）</span><br></pre></td></tr></tbody></table></figure>
+<style>.znybhdpyocby{zoom:30%;}</style>
 
-<p>设置重映射偏移量后，FlexSPI 内存访问将按如下方式更改访问地址（添加偏移量）。例如，当偏移量设置为 2MB（0x200000）时，通过 FlexSPI 对 0x08000000 的访问将重映射到 0x08200000。通过这种方式，可以使用两个镜像实现双镜像引导。偏移量和镜像 1 的大小由用户通过 OTP 熔丝设置。</p>
-<h3 id="41-5-1-4-2-OTP-中的-FlexSPI-重映射大小和引导镜像-1-偏移量配置"><a href="#41-5-1-4-2-OTP-中的-FlexSPI-重映射大小和引导镜像-1-偏移量配置" class="headerlink" title="41.5.1.4.2 OTP 中的 FlexSPI 重映射大小和引导镜像 1 偏移量配置"></a><strong>41.5.1.4.2 OTP 中的 FlexSPI 重映射大小和引导镜像 1 偏移量配置</strong></h3><p>FlexSPI 双镜像引导相关配置分配在 BOOT_CFG2 和 BOOT_CFG3 OTP 字中，更多细节见表 1003 和表 1004。</p>
-<h4 id="表-1003-引导镜像-1-偏移量（BOOT-CFG3）"><a href="#表-1003-引导镜像-1-偏移量（BOOT-CFG3）" class="headerlink" title="表 1003. 引导镜像 1 偏移量（BOOT_CFG3）"></a><strong>表 1003. 引导镜像 1 偏移量（BOOT_CFG3）</strong></h4><table>
+<p><strong>图 189. FlexSPI 镜像重映射（偏移量 = 0x200000）</strong></p>
+<blockquote>
+<p><span style="color: blue;"><em>也就是说，有Remap功能的MCU的FlexSPI可以有两个image，一个在0x8000_0000,一个在0x8000_2000。它们可以有不同的FCB和KeyBlob。</em></span></p>
+</blockquote>
+<p>设置重映射偏移量后，FlexSPI 内存访问将按如下方式更改访问地址：<strong>添加偏移量</strong>。例如，当偏移量设置为 2MB（0x200000）时，通过 FlexSPI 对 0x08000000 的访问将重映射到 0x08200000。<span style="color: blue; font-weight: bold; ">通过这种方式，可以使用两个镜像实现双镜像引导。偏移量和镜像1的大小由用户通过 OTP 熔丝设置。</span></p>
+<h5 id="41-5-1-4-2-OTP-中的-FlexSPI-重映射大小和引导镜像-1-偏移量配置"><a href="#41-5-1-4-2-OTP-中的-FlexSPI-重映射大小和引导镜像-1-偏移量配置" class="headerlink" title="41.5.1.4.2 OTP 中的 FlexSPI 重映射大小和引导镜像 1 偏移量配置"></a>41.5.1.4.2 OTP 中的 FlexSPI 重映射大小和引导镜像 1 偏移量配置</h5><p>FlexSPI 双镜像引导相关配置分配在 <code>BOOT_CFG2</code> 和 <code>BOOT_CFG3</code> OTP 字中，更多细节见表 1003 和表 1004。</p>
+<p><strong>表 1003. 引导镜像 1 偏移量（<code>BOOT_CFG3</code>）</strong></p>
+<table>
 <thead>
 <tr>
 <th>字段名称</th>
@@ -564,14 +566,18 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>第二镜像偏移量</td>
+<td>image1的偏移量</td>
 <td>22</td>
 <td>10</td>
 <td>x</td>
-<td>x × 256 KB</td>
+<td>x * 256 KB</td>
 </tr>
 </tbody></table>
-<h4 id="表-1004-从-0x08001000-开始的-FlexSPI-重映射大小"><a href="#表-1004-从-0x08001000-开始的-FlexSPI-重映射大小" class="headerlink" title="表 1004. 从 0x08001000 开始的 FlexSPI 重映射大小"></a><strong>表 1004. 从 0x08001000 开始的 FlexSPI 重映射大小</strong></h4><table>
+<blockquote>
+<p>Note：<strong>image1是第二镜像，从image0开始！！</strong></p>
+</blockquote>
+<p><strong>表 1004. 从 <code>0x08001000</code> 开始的 FlexSPI 重映射大小</strong></p>
+<table>
 <thead>
 <tr>
 <th>字段名称</th>
@@ -585,31 +591,24 @@
 <td>FlexSPI 重映射大小 [1]</td>
 <td>28</td>
 <td>4</td>
-<td>0</td>
-<td>与第二镜像偏移量大小相同 13 - 256 KB 14 - 512 KB 15 - 768 KB x - x × 1 MB</td>
-</tr>
-<tr>
-<td>[1]</td>
-<td>-</td>
-<td>注意：FlexSPI 重映射大小不能超过引导镜像 1 的起始地址。</td>
 <td></td>
-<td></td>
+<td>0：与第二镜像偏移量大小相同 <br>13 - 256 KB <br>14 - 512 KB <br>15 - 768 KB <br>x  - x * 1 MB</td>
 </tr>
 </tbody></table>
-<h3 id="41-5-1-4-3-双镜像乒乓引导"><a href="#41-5-1-4-3-双镜像乒乓引导" class="headerlink" title="41.5.1.4.3 双镜像乒乓引导"></a><strong>41.5.1.4.3 双镜像乒乓引导</strong></h3><p>对于双镜像乒乓引导，每个引导镜像都有自己的镜像版本，ROM 使用该版本首先选择最新的引导镜像。如果最新镜像引导失败，将尝试使用旧镜像引导。</p>
+<blockquote>
+<p>[1]：注意：FlexSPI 重映射大小不能超过 引导镜像1的起始地址。</p>
+</blockquote>
+<h4 id="41-5-1-4-3-双镜像乒乓引导"><a href="#41-5-1-4-3-双镜像乒乓引导" class="headerlink" title="41.5.1.4.3 双镜像乒乓引导"></a><strong>41.5.1.4.3 双镜像乒乓引导</strong></h4><p>对于双镜像乒乓引导，每个引导镜像都有自己的镜像版本，ROM 使用该版本<span style="color: red;">首先选择最新的引导镜像。如果最新镜像引导失败，将尝试使用旧镜像引导。</span></p>
 <p><strong>乒乓引导流程</strong>
-对于 FlexSPI 引导，ROM 始终尝试查找最新的引导镜像并引导。如果引导失败，ROM 将尝试查找旧的引导镜像。如果旧镜像引导仍失败，则 ROM 将进入 ISP 引导模式。下图是乒乓引导流程图。</p>
+对于 FlexSPI 引导，ROM 始终尝试查找最新的引导镜像并引导。如果引导失败，ROM 将尝试查找旧的引导镜像。如果旧镜像引导仍失败，则 ROM 将进入 ISP Boot 模式。下图是乒乓引导流程图。</p>
+<style>.kgqjpymqgpxt{zoom:80%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/image-20250520120724007.png" class="kgqjpymqgpxt" alt="FlexSPI_boot_image_selection">
+
 <p><strong>图 190. FlexSPI 引导镜像选择</strong></p>
-<p>plaintext</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">进入FlexSPI引导</span><br><span class="line">│</span><br><span class="line">├─── 引导镜像0版本有效？</span><br><span class="line">│   ├─── 是 ──→ 引导镜像0版本 ≥ 引导镜像1版本？ ──→ 是 → 引导镜像0</span><br><span class="line">│   │                             └─── 否 → 引导镜像1</span><br><span class="line">│   └─── 否 ──→ 引导镜像1版本有效？ ──→ 是 → 引导镜像</span><br></pre></td></tr></tbody></table></figure>
+<style>.igdcrnffxkyc{zoom:80%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/image-20250520120922630.png" class="igdcrnffxkyc">
 
-
-
-<h3 id="图-191-FlexSPI-乒乓引导流程"><a href="#图-191-FlexSPI-乒乓引导流程" class="headerlink" title="图 191. FlexSPI 乒乓引导流程"></a><strong>图 191. FlexSPI 乒乓引导流程</strong></h3><p>plaintext</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">进入FlexSPI引导</span><br><span class="line">│</span><br><span class="line">├─── 获取FCB1（镜像1配置块）</span><br><span class="line">│</span><br><span class="line">├─── VER0 ≥ VER1？</span><br><span class="line">│   ├─── 是 ──→ 获取FCB0（镜像0配置块）</span><br><span class="line">│   │   ├─── FCB0有效？</span><br><span class="line">│   │   │   ├─── 是 ──→ 引导镜像0</span><br><span class="line">│   │   │   │   └─── 镜像0有效？ ──→ 是 → 跳转至应用程序；否 → 进入ISP模式</span><br><span class="line">│   │   │   └─── 否 ──→ FCB1有效？ ──→ 是 → 引导镜像1；否 → 进入ISP模式</span><br><span class="line">│   └─── 否 ──→ 获取FCB1</span><br><span class="line">│       ├─── FCB1有效？</span><br><span class="line">│       │   ├─── 是 ──→ 引导镜像1</span><br><span class="line">│       │   │   └─── 镜像1有效？ ──→ 是 → 跳转至应用程序；否 → 进入ISP模式</span><br><span class="line">│       └─── 否 ──→ FCB0有效？ ──→ 是 → 引导镜像0；否 → 进入ISP模式</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="41-5-1-4-4-引导镜像版本"><a href="#41-5-1-4-4-引导镜像版本" class="headerlink" title="41.5.1.4.4 引导镜像版本"></a><strong>41.5.1.4.4 引导镜像版本</strong></h3><p>每个引导镜像版本位于 FlexSPI 引导设备的偏移量 0x600 处（如图 189 所示）。镜像版本用 4 字节定义，低 2 字节为实际镜像版本号，高 2 字节为低 2 字节版本号的取反值。不遵循此规则的任何其他值都将被视为无效值。如果引导镜像版本无效，ROM 将完全不引导该镜像。</p>
-<p>但如果镜像版本为全 0xFFFFFFFF（用户未编程镜像版本的情况），也将被视为有效值。当一个镜像版本为 0xFFFFFFFF，另一个为有效版本时，ROM 始终优先引导有效版本的镜像，而非 0xFFFFFFFF 的镜像。如果两个镜像版本均为 0xFFFFFFFF，ROM 始终引导 FlexSPI NOR 闪存设备中低地址的第一个镜像。</p>
+<p><strong>图 191. FlexSPI 乒乓引导流程</strong></p>
+<h4 id="41-5-1-4-4-Boot-image-版本"><a href="#41-5-1-4-4-Boot-image-版本" class="headerlink" title="41.5.1.4.4 Boot image 版本"></a>41.5.1.4.4 Boot image 版本</h4><p>每个引导镜像版本位于 FlexSPI 引导设备的偏移量 <code>0x600</code> 处（如图 189 所示）。<span style="color: red; font-weight: bold; ">镜像版本用 4 字节定义，低 2 字节为实际镜像版本号，高 2 字节为低 2 字节版本号的取反值。</span>不遵循此规则的任何其他值都将被视为无效值。如果引导镜像版本无效，ROM 将完全不引导该镜像。</p>
+<p>但如果镜像版本为全 <code>0xFFFFFFFF</code>（用户未编程镜像版本的情况），也将被视为有效值。<span style="color: red; font-weight: bold; ">当一个镜像版本为 0xFFFFFFFF，另一个为有效版本时，ROM 始终优先引导有效版本的镜像，而非 0xFFFFFFFF 的镜像。如果两个镜像版本均为 0xFFFFFFFF，ROM 始终引导 FlexSPI NOR 闪存设备中低地址的第一个镜像。</span></p>
 <p>以下是引导镜像版本的一些示例：</p>
 <ul>
 <li><strong>0xFFFE0001</strong>：有效引导镜像版本，版本号为 1。</li>
@@ -618,8 +617,9 @@
 <li><strong>0xFFFFFFFF</strong>：有效镜像版本，但引导顺序较低。</li>
 <li><strong>0x0000FFFF</strong>：有效镜像版本，版本号为最大 0xFFFF。</li>
 </ul>
-<h3 id="41-5-1-5-为-RT6xx-设备配置-FlexSPI-NOR-设备"><a href="#41-5-1-5-为-RT6xx-设备配置-FlexSPI-NOR-设备" class="headerlink" title="41.5.1.5 为 RT6xx 设备配置 FlexSPI NOR 设备"></a><strong>41.5.1.5 为 RT6xx 设备配置 FlexSPI NOR 设备</strong></h3><p>ROM 支持从外部 FlexSPI NOR 闪存设备引导镜像。本节介绍如何使用 blhost 工具将镜像编程到外部非易失性存储器中以进行引导。更多细节请参考第 41.8.16 节 “外部存储器支持”。blhost 工具通过 ROM ISP 模式使用 UART、SPI、I2C、USB HID 与 ROM 代码通信，RT6xx 上的引脚连接见表 1005。</p>
-<h4 id="表-1005-blhost-工具通信的引脚分配"><a href="#表-1005-blhost-工具通信的引脚分配" class="headerlink" title="表 1005. blhost 工具通信的引脚分配"></a><strong>表 1005. blhost 工具通信的引脚分配</strong></h4><table>
+<h4 id="41-5-1-5-为-RT6xx-设备配置-FlexSPI-NOR-设备"><a href="#41-5-1-5-为-RT6xx-设备配置-FlexSPI-NOR-设备" class="headerlink" title="41.5.1.5 为 RT6xx 设备配置 FlexSPI NOR 设备"></a>41.5.1.5 为 RT6xx 设备配置 FlexSPI NOR 设备</h4><p>ROM 支持从外部 FlexSPI NOR 闪存设备引导镜像。本节介绍如何使用 <code>blhost</code> 工具将镜像编程到外部非易失性存储器中以进行引导。更多细节请参考第 41.8.16 节 “外部存储器支持”。blhost 工具通过 ROM ISP 模式使用 UART、SPI、I2C、USB HID 与 ROM 代码通信，RT6xx 上的引脚连接见表 1005。</p>
+<p><strong>表 1005. blhost 工具通信的引脚分配</strong></p>
+<table>
 <thead>
 <tr>
 <th>外设</th>
@@ -630,7 +630,7 @@
 <tbody><tr>
 <td>USB</td>
 <td>-</td>
-<td>USB1_VBUS USB1_VDD1V8 USB1_VDD3V3 USB1_DM USB1_DP</td>
+<td>USB1_VBUS <br>USB1_VDD1V8 <br>USB1_VDD3V3 <br>USB1_DM <br>USB1_DP</td>
 </tr>
 <tr>
 <td>SPI 从机</td>
@@ -673,8 +673,9 @@
 <td>FC0_RXD_SDA_MOSI</td>
 </tr>
 </tbody></table>
-<h3 id="FlexSPI-NOR-闪存引导镜像编程"><a href="#FlexSPI-NOR-闪存引导镜像编程" class="headerlink" title="FlexSPI NOR 闪存引导镜像编程"></a><strong>FlexSPI NOR 闪存引导镜像编程</strong></h3><p>RT6xx ROM 支持从不同类型的 NOR 闪存（如连接到 FlexSPI 引脚的 Quad Flash、Octal Flash、Hyper Flash）引导，FlexSPI 引脚分配见表 1006。对于 FlexSPI NOR 引导，FCB 应编程在偏移量 0x08000400 处，引导镜像应编程在偏移量 0x08001000 处。以下部分将介绍如何为 5 种常见 NOR 闪存类型配置和编程引导镜像。</p>
-<h4 id="表-1006-NOR-闪存连接的-FlexSPI-引脚分配"><a href="#表-1006-NOR-闪存连接的-FlexSPI-引脚分配" class="headerlink" title="表 1006. NOR 闪存连接的 FlexSPI 引脚分配"></a><strong>表 1006. NOR 闪存连接的 FlexSPI 引脚分配</strong></h4><table>
+<h5 id="41-5-1-5-1-FlexSPI-NOR-闪存引导镜像编程"><a href="#41-5-1-5-1-FlexSPI-NOR-闪存引导镜像编程" class="headerlink" title="41.5.1.5.1 FlexSPI NOR 闪存引导镜像编程"></a>41.5.1.5.1 FlexSPI NOR 闪存引导镜像编程</h5><p>RT6xx ROM 支持从不同类型的 NOR 闪存（如连接到 FlexSPI 引脚的 Quad Flash、Octal Flash、Hyper Flash）引导，FlexSPI 引脚分配见表 1006。对于 FlexSPI NOR 引导，FCB 应编程在偏移量 <code>0x08000400</code> 处，引导镜像应编程在偏移量 <code>0x08001000</code> 处。以下部分将介绍如何为 5 种常见 NOR 闪存类型配置和编程引导镜像。</p>
+<p><strong>表 1006. NOR 闪存连接的 FlexSPI 引脚分配</strong></p>
+<table>
 <thead>
 <tr>
 <th>外设</th>
@@ -690,7 +691,7 @@
 <tr>
 <td></td>
 <td>PIO1_19</td>
-<td>FLEXSPI0A_SS0_N</td>
+<td><code>FLEXSPI0A_SS0_N</code></td>
 </tr>
 <tr>
 <td></td>
@@ -735,12 +736,12 @@
 <tr>
 <td></td>
 <td>PIO1_28</td>
-<td>FLEXSPI0A_DQS</td>
+<td><code>FLEXSPI0A_DQS</code></td>
 </tr>
 <tr>
 <td></td>
 <td>PIO1_29</td>
-<td>FLEXSPI0A_SS1_N</td>
+<td><code>FLEXSPI0A_SS1_N</code></td>
 </tr>
 <tr>
 <td>FlexSPI0 端口 B</td>
@@ -750,7 +751,7 @@
 <tr>
 <td></td>
 <td>PIO2_19</td>
-<td>FLEXSPI0B_SS0_N</td>
+<td><code>FLEXSPI0B_SS0_N</code></td>
 </tr>
 <tr>
 <td></td>
@@ -795,14 +796,16 @@
 <tr>
 <td></td>
 <td>PIO2_21</td>
-<td>FLEXSPI0B_SS1_N</td>
+<td><code>FLEXSPI0B_SS1_N</code></td>
 </tr>
 </tbody></table>
-<h3 id="41-5-1-5-2-FlexSPI-NOR-闪存配置参数"><a href="#41-5-1-5-2-FlexSPI-NOR-闪存配置参数" class="headerlink" title="41.5.1.5.2 FlexSPI NOR 闪存配置参数"></a><strong>41.5.1.5.2 FlexSPI NOR 闪存配置参数</strong></h3><p>不同 NOR 闪存需要不同的配置参数来启用和编程。以下是 NOR 闪存的配置参数定义。serial_nor_config_option_t 结构体的详细信息见表 1007、表 1008 和表 1009。</p>
-<p>c</p>
+<h5 id="41-5-1-5-2-FlexSPI-NOR-闪存配置参数"><a href="#41-5-1-5-2-FlexSPI-NOR-闪存配置参数" class="headerlink" title="41.5.1.5.2 FlexSPI NOR 闪存配置参数"></a>41.5.1.5.2 FlexSPI NOR 闪存配置参数</h5><p>不同 NOR 闪存需要不同的配置参数来启用和编程。以下是 NOR 闪存的配置参数定义。<code>serial_nor_config_option_t</code> 结构体的详细信息见表 1007、表 1008 和表 1009。</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">serial_nor_config_option</span> {</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> {</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> {</span></span><br><span class="line">            <span class="type">uint32_t</span> max_freq : <span class="number">4</span>;     <span class="comment">//!&lt; 最大支持频率</span></span><br><span class="line">            <span class="type">uint32_t</span> misc_mode : <span class="number">4</span>;    <span class="comment">//!&lt; 杂项模式</span></span><br><span class="line">            <span class="type">uint32_t</span> quad_mode_setting : <span class="number">4</span>; <span class="comment">//!&lt; 四线模式设置</span></span><br><span class="line">            <span class="type">uint32_t</span> cmd_pads : <span class="number">4</span>;     <span class="comment">//!&lt; 命令焊盘</span></span><br><span class="line">            <span class="type">uint32_t</span> query_pads : <span class="number">4</span>;   <span class="comment">//!&lt; SFDP读取焊盘</span></span><br><span class="line">            <span class="type">uint32_t</span> device_type : <span class="number">4</span>;  <span class="comment">//!&lt; 设备类型</span></span><br><span class="line">            <span class="type">uint32_t</span> option_size : <span class="number">4</span>;  <span class="comment">//!&lt; 选项大小（以uint32_t为单位，大小=(option_size + 1)）</span></span><br><span class="line">            <span class="type">uint32_t</span> tag : <span class="number">4</span>;          <span class="comment">//!&lt; 标签，必须为0x0C</span></span><br><span class="line">        } B;</span><br><span class="line">        <span class="type">uint32_t</span> U;</span><br><span class="line">    } option0;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> {</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> {</span></span><br><span class="line">            <span class="type">uint32_t</span> dummy_cycles : <span class="number">8</span>;    <span class="comment">//!&lt; 读取前的哑周期</span></span><br><span class="line">            <span class="type">uint32_t</span> status_override : <span class="number">8</span>; <span class="comment">//!&lt; 设备模式配置期间覆盖状态寄存器值</span></span><br><span class="line">            <span class="type">uint32_t</span> pinmux_group : <span class="number">4</span>;    <span class="comment">//!&lt; 引脚复用组选择</span></span><br><span class="line">            <span class="type">uint32_t</span> dqs_pinmux_group : <span class="number">4</span>;<span class="comment">//!&lt; DQS引脚复用组选择</span></span><br><span class="line">            <span class="type">uint32_t</span> drive_strength : <span class="number">4</span>;   <span class="comment">//!&lt; FlexSPI焊盘驱动强度</span></span><br><span class="line">            <span class="type">uint32_t</span> flash_connection : <span class="number">4</span>; <span class="comment">//!&lt; 闪存连接选项：0-单闪存连接到端口A，1-并行模式，2-单闪存连接到端口B</span></span><br><span class="line">        } B;</span><br><span class="line">        <span class="type">uint32_t</span> U;</span><br><span class="line">    } option1;</span><br><span class="line">} <span class="type">serial_nor_config_option_t</span>;</span><br></pre></td></tr></tbody></table></figure>
 
-<h4 id="表-1007-serial-nor-config-option-t-定义"><a href="#表-1007-serial-nor-config-option-t-定义" class="headerlink" title="表 1007. serial_nor_config_option_t 定义"></a><strong>表 1007. serial_nor_config_option_t 定义</strong></h4><table>
+
+
+<p><strong>表 1007. serial_nor_config_option_t 定义</strong></p>
+<table>
 <thead>
 <tr>
 <th>偏移量</th>
@@ -818,10 +821,11 @@
 <tr>
 <td>4</td>
 <td>Option1</td>
-<td>可选，仅当 Option0 中的 option_size 字段非零时有效。详见 option1 定义。</td>
+<td>可选，仅当 Option0 中的 <code>option_size</code> 字段非零时有效。详见 option1 定义。</td>
 </tr>
 </tbody></table>
-<h4 id="表-1008-Option0-定义"><a href="#表-1008-Option0-定义" class="headerlink" title="表 1008. Option0 定义"></a><strong>表 1008. Option0 定义</strong></h4><table>
+<p><strong>表 1008. Option0 定义</strong></p>
+<table>
 <thead>
 <tr>
 <th>字段</th>
@@ -832,30 +836,31 @@
 <tbody><tr>
 <td>tag</td>
 <td>31:28</td>
-<td>配置选项标签，固定为 0x0C。</td>
+<td>配置选项标签，固定为 <code>0x0C</code>。</td>
 </tr>
 <tr>
 <td>option_size</td>
 <td>27:24</td>
-<td>大小（字节）=(Option Size + 1) × 4。若仅需要 option0，则为 0。</td>
+<td>大小（字节）=(Option Size + 1) × 4。<span style="color: red; font-weight: bold; ">若仅需要 option0，则为 0</span>。<br>– 实际就是4字节或者8字节两个选项！</td>
 </tr>
 <tr>
 <td>device_type</td>
 <td>23:20</td>
-<td>设备检测类型： 0 - 读取 SFDP 用于 SDR 命令 1 - 读取 SFDP 用于 DDR 读取命令 2 - HyperFLASH 1V8 3 - HyperFLASH 3V 4 - Macronix Octal DDR 5 - Macronix Octal SDR 6 - Micron Octal DDR 7 - Micron Octal SDR 8 - Adesto EcoXiP DDR 9 - Adesto EcoXiP SDR</td>
+<td>设备检测类型： <br>0 - 读取 SFDP 用于 SDR 命令 <br>1 - 读取 SFDP 用于 DDR 读取命令 <br>2 - HyperFLASH 1V8 3 - HyperFLASH 3V 4 - Macronix Octal DDR <br>5 - Macronix Octal SDR <br>6 - Micron Octal DDR <br>7 - Micron Octal SDR <br>8 - Adesto EcoXiP DDR <br>9 - Adesto EcoXiP SDR</td>
 </tr>
 <tr>
 <td>query_pad</td>
 <td>19:16</td>
-<td>查询命令（读取 SFDP 或 MID）期间的数据焊盘： 0 - 1 位 2 - 4 位 3 - 8 位</td>
+<td>查询命令（读取 SFDP 或 MID）期间的数据焊盘： <br>0 - 1 位 <br>2 - 4 位 <br>3 - 8 位</td>
 </tr>
 <tr>
 <td>cmd_pad</td>
 <td>15:12</td>
-<td>闪存访问命令期间的数据焊盘： 0 - 1 位 2 - 4 位 3 - 8 位</td>
+<td>闪存访问命令期间的数据焊盘： <br>0 - 1 位 <br>2 - 4 位 <br>3 - 8 位</td>
 </tr>
 </tbody></table>
-<h3 id="表-1008-Option0-定义（续）"><a href="#表-1008-Option0-定义（续）" class="headerlink" title="表 1008. Option0 定义（续）"></a><strong>表 1008. Option0 定义（续）</strong></h3><table>
+<p><strong>表 1008. Option0 定义（续）</strong></p>
+<table>
 <thead>
 <tr>
 <th>字段</th>
@@ -864,22 +869,23 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>quad_mode_setting</td>
+<td><code>quad_mode_setting</code></td>
 <td>11:8</td>
-<td>四线模式使能设置： 0 - 未配置 1 - 设置状态寄存器 1 的位 6 2 - 设置状态寄存器 2 的位 1 3 - 设置状态寄存器 2 的位 7 4 - 通过 0x31 命令设置状态寄存器 2 的位 1 （此设置将闪存配置为 QPI 模式，用户代码必须将闪存重置为 SPI 模式，ROM 不会自动执行此操作。 注意：此字段仅适用于符合 JESD216 的设备（9 长字 SFDP 表））</td>
+<td>四线模式使能设置： <br>0 - 未配置 <br>1 - 设置状态寄存器1的 bit 6 <br>2 - 设置状态寄存器 2 的位 1 <br>3 - 设置状态寄存器 2 的位 7 <br>4 - 通过 0x31 命令设置状态寄存器 2 的位 1 <br><span style="color: red; font-weight: bold; ">（此设置将闪存配置为 QPI 模式，用户代码必须将闪存重置为 SPI 模式，ROM 不会自动执行此操作。 注意：此字段仅适用于符合 JESD216 的设备（9 长字 SFDP 表））</span></td>
 </tr>
 <tr>
 <td>misc_mode</td>
 <td>7:4</td>
-<td>杂项模式： 0 - 未启用 1 - 启用 0-4-4 模式以提高随机读取性能 3 - 数据顺序交换模式（仅适用于 MXIC OctaFlash） 5 - 选择 FlexSPI 数据采样源为内部环回（详见 FlexSPI 使用说明） 6 - 配置 FlexSPI NOR 闪存以标准 SPI 模式运行 （注意：实验性功能，产品中请勿使用，保持为 0。）</td>
+<td>杂项模式： <br>0 - 未启用 <br>1 - 启用 0-4-4 模式以提高随机读取性能 <br>3 - 数据顺序交换模式（仅适用于 MXIC OctaFlash） <br>5 - 选择 FlexSPI 数据采样源为内部环回（详见 FlexSPI 使用说明） <br>6 - 配置 FlexSPI NOR 闪存以标准 SPI 模式运行 （注意：实验性功能，产品中请勿使用，保持为 0。）</td>
 </tr>
 <tr>
 <td>max_freq</td>
 <td>3:0</td>
-<td>最大闪存操作速度： 0 - 不更改 FlexSPI 时钟设置 其他值 - 见 FlexSPI 时钟设置熔丝图</td>
+<td>最大闪存操作速度： <br>0 - 不更改 FlexSPI 时钟设置 <br>其他值 - 见 FlexSPI 时钟设置熔丝图</td>
 </tr>
 </tbody></table>
-<h4 id="表-1009-Option1-定义"><a href="#表-1009-Option1-定义" class="headerlink" title="表 1009. Option1 定义"></a><strong>表 1009. Option1 定义</strong></h4><table>
+<p><strong>表 1009. Option1 定义</strong></p>
+<table>
 <thead>
 <tr>
 <th>字段</th>
@@ -888,9 +894,9 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>flash_connection</td>
+<td><code>flash_connection</code></td>
 <td>31:28</td>
-<td>闪存连接选项： 0 - 单闪存连接到端口 A 1 - 并行模式 2 - 单闪存连接到端口 B</td>
+<td>闪存连接选项： <br>0 - 单闪存连接到端口 A <br>1 - 并行模式 <br>2 - 单闪存连接到端口 B</td>
 </tr>
 <tr>
 <td>drive_strength</td>
@@ -915,51 +921,50 @@
 <tr>
 <td>dummy_cycles</td>
 <td>7:0</td>
-<td>读取命令的哑周期： 0 - 使用检测到的哑周期 其他值 - 闪存数据表中提供的哑周期数</td>
+<td>读取命令的哑周期： <br>0 - 使用检测到的哑周期 <br>其他值 - 闪存数据表中提供的哑周期数</td>
 </tr>
 </tbody></table>
-<h3 id="41-5-1-5-3-NOR-闪存配置、擦除和编程"><a href="#41-5-1-5-3-NOR-闪存配置、擦除和编程" class="headerlink" title="41.5.1.5.3 NOR 闪存配置、擦除和编程"></a><strong>41.5.1.5.3 NOR 闪存配置、擦除和编程</strong></h3><p>以连接到 FlexSPI 端口 A 的 Macronix MX25L25645G 为例：</p>
+<h5 id="41-5-1-5-3-NOR-闪存配置、擦除和编程"><a href="#41-5-1-5-3-NOR-闪存配置、擦除和编程" class="headerlink" title="41.5.1.5.3 NOR 闪存配置、擦除和编程"></a>41.5.1.5.3 NOR 闪存配置、擦除和编程</h5><p>以连接到 FlexSPI 端口A 的 Macronix MX25L25645G 为例：</p>
 <ol>
 <li><p><strong>配置参数存储到 RAM</strong>：首先将配置参数存储在 RAM 中，供下一步配置 FlexSPI 使用。如图 192 所示，FlexSPI 的配置参数为 0xc0000002，该参数根据闪存类型选择。</p>
-<p>bash</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 fill-memory 0x1c0004 0xc0000002</span><br><span class="line"><span class="comment"># 响应：成功注入命令，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><strong>使用 RAM 中的参数配置 FlexSPI</strong>：如图 193 所示，配置完成后可读取、擦除、编程闪存。</p>
-<p>bash</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 configure-memory 0x9 0x1c000</span><br><span class="line"><span class="comment"># 响应：成功配置内存，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><strong>读取闪存</strong>：如图 194 所示，使用 blhost 工具读取闪存数据。</p>
-<p>bash</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 read-memory 0x08000400 0x100</span><br><span class="line"><span class="comment"># 响应：读取256字节，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><strong>擦除闪存</strong>：如图 195 所示，擦除指定区域。</p>
-<p>bash</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 flash-erase-region 0x08000400 0x200</span><br><span class="line"><span class="comment"># 响应：成功擦除，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><strong>编程引导镜像</strong>：如图 196 所示，将引导镜像写入闪存。</p>
-<p>bash</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 write-memory 0x08001000 boot_image.bin</span><br><span class="line"><span class="comment"># 响应：写入5796字节，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><strong>验证读取</strong>：如图 197 所示，读取已编程的镜像数据。</p>
-<p>bash</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 read-memory 0x08001000 0x100</span><br><span class="line"><span class="comment"># 响应：读取256字节，显示镜像数据，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure></li>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 read-memory 0x08001000 0x100</span><br><span class="line">   <span class="comment"># 响应：读取256字节，显示镜像数据，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure></li>
 </ol>
-<h3 id="生成并编程-FlexSPI-NOR-FCB-到闪存"><a href="#生成并编程-FlexSPI-NOR-FCB-到闪存" class="headerlink" title="生成并编程 FlexSPI NOR FCB 到闪存"></a><strong>生成并编程 FlexSPI NOR FCB 到闪存</strong></h3><p>对于 FlexSPI 引导，需要在偏移量 0x08000400 处放置 FCB（闪存配置块），该 FCB 用于从外部 NOR 闪存通过 FlexSPI 接口引导镜像时配置 FlexSPI 接口。FCB 将根据之前的 FlexSPI 配置参数（如 0xc0000002）生成。</p>
+<p><strong>生成并编程 FlexSPI NOR FCB 到闪存</strong></p>
+<p>对于 FlexSPI 启动，需要在偏移量 <code>0x08000400</code> 处放置 FCB（闪存配置块），该 FCB 用于从外部 NOR 闪存通过 FlexSPI 接口引导镜像时配置 FlexSPI 接口。<span style="color: red; font-weight: bold; ">FCB 将根据之前的 FlexSPI 配置参数（如 <code>0xc0000002</code>）生成。</span></p>
 <ol>
 <li><p><strong>存储 FCB 生成参数到 RAM</strong>：如图 198 所示，将参数存入 RAM。</p>
-<p>bash</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 fill-memory 0x1d0004 0xf000000f</span><br><span class="line"><span class="comment"># 响应：成功注入命令，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure>
 </li>
-<li><p><strong>生成并编程 FCB 到闪存</strong>：如图 199 所示，ROM 自动生成 FCB 并编程到偏移量 0x08000400 处。</p>
-<p>bash</p>
+<li><p><strong>生成并编程 FCB 到闪存</strong>：如图 199 所示，ROM 自动生成 FCB 并编程到偏移量 <code>0x08000400</code> 处。</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 configure-memory 0x9 0x1d000</span><br><span class="line"><span class="comment"># 响应：成功配置，状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><strong>验证 FCB</strong>：如图 200 所示，读取 FCB 数据验证。</p>
-<p>bash</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 read-memory 0x08000400 0x100</span><br><span class="line"><span class="comment"># 响应：读取FCB数据（如标签0x42464346等），状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure></li>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\blhost\blhost&gt;blhost.exe -p com3 read-memory 0x08000400 0x100</span><br><span class="line">   <span class="comment"># 响应：读取FCB数据（如标签0x42464346等），状态0（成功）</span></span><br></pre></td></tr></tbody></table></figure></li>
 </ol>
-<h3 id="41-5-1-5-4-典型-NOR-闪存配置参数"><a href="#41-5-1-5-4-典型-NOR-闪存配置参数" class="headerlink" title="41.5.1.5.4 典型 NOR 闪存配置参数"></a><strong>41.5.1.5.4 典型 NOR 闪存配置参数</strong></h3><p>不同 NOR 闪存类型需要不同的配置参数，下表显示了一些典型闪存的配置参数。</p>
-<h3 id="表-1010-典型-NOR-闪存配置参数（闪存连接到-FlexSPI-端口-A）"><a href="#表-1010-典型-NOR-闪存配置参数（闪存连接到-FlexSPI-端口-A）" class="headerlink" title="表 1010. 典型 NOR 闪存配置参数（闪存连接到 FlexSPI 端口 A）"></a><strong>表 1010. 典型 NOR 闪存配置参数（闪存连接到 FlexSPI 端口 A）</strong></h3><table>
+<blockquote>
+<p><span style="color: red; font-weight: bold; ">这里有个误区，为什么执行了两次？</span></p>
+<p>讲解：</p>
+<p>Step1：只是写入不含FCB的image到0x1000,写入时使用了RAM中存储的FlexSPI配置参数，但这是一次性的写入，并没有固化FCB；</p>
+<p>Step2：写入自动生成的FCB到0x400，这是固化FCB的过程。而生成FCB是blhost和ROM一起完成的！</p>
+</blockquote>
+<h5 id="41-5-1-5-4-典型-NOR-闪存配置参数"><a href="#41-5-1-5-4-典型-NOR-闪存配置参数" class="headerlink" title="41.5.1.5.4 典型 NOR 闪存配置参数"></a>41.5.1.5.4 典型 NOR 闪存配置参数</h5><p>不同 NOR 闪存类型需要不同的配置参数，下表显示了一些典型闪存的配置参数。</p>
+<p><strong>表 1010. 典型 NOR 闪存配置参数<span style="color: red; font-weight: bold; ">（闪存连接到 FlexSPI 端口A）</span></strong></p>
+<table>
 <thead>
 <tr>
 <th>设备厂商</th>
@@ -976,7 +981,7 @@
 <td>ATXP032</td>
 <td>0xC0803006</td>
 <td>DDR</td>
-<td>ATXP032 有 3 个版本（REVA/B/C）。对于 REV A 版本，ROM 仅支持自动探测引导， OTP 熔丝字 BOOT_CFG [0] 应设为 0x7，且无需配置 FCB。</td>
+<td>ATXP032 有 3 个版本（REVA/B/C）。<br>对于 REV A 版本，ROM 仅支持自动探测引导， OTP 熔丝字 BOOT_CFG [0] 应设为 0x7，且无需配置 FCB。</td>
 </tr>
 <tr>
 <td>Spansion</td>
@@ -984,7 +989,7 @@
 <td>S26KS512S</td>
 <td>0xC0233006</td>
 <td>DDR</td>
-<td>对于 Hyper Flash 引导，引导前 BOOT_CFG [0] 应设为 0x20。</td>
+<td>对于 Hyper Flash 引导，引导前 BOOT_CFG [0] 应设为 <code>0x20</code>。</td>
 </tr>
 <tr>
 <td>Macronix</td>
@@ -1019,8 +1024,13 @@
 <td>-</td>
 </tr>
 </tbody></table>
-<h3 id="41-5-1-5-5-连接到-FlexSPI-端口-B-的典型-NOR-闪存配置参数"><a href="#41-5-1-5-5-连接到-FlexSPI-端口-B-的典型-NOR-闪存配置参数" class="headerlink" title="41.5.1.5.5 连接到 FlexSPI 端口 B 的典型 NOR 闪存配置参数"></a><strong>41.5.1.5.5 连接到 FlexSPI 端口 B 的典型 NOR 闪存配置参数</strong></h3><p>对于连接到 FlexSPI 端口 B 的闪存设备，配置时用户需指定参数以告知 ROM 闪存连接到端口 B。由于 FlexSPI 端口 B 没有 DQS 引脚，用户需根据闪存数据表为连接的闪存配置哑周期，参数存储在 Option1 中（见表 1009）。以下是配置连接到 FlexSPI 端口 B 的 MX25UM51345G 闪存的示例。</p>
-<h4 id="表-1011-典型-NOR-闪存配置参数（闪存连接到-FlexSPI-端口-B）"><a href="#表-1011-典型-NOR-闪存配置参数（闪存连接到-FlexSPI-端口-B）" class="headerlink" title="表 1011. 典型 NOR 闪存配置参数（闪存连接到 FlexSPI 端口 B）"></a><strong>表 1011. 典型 NOR 闪存配置参数（闪存连接到 FlexSPI 端口 B）</strong></h4><table>
+<h5 id="41-5-1-5-5-连接到-FlexSPI-端口-B-的典型-NOR-闪存配置参数"><a href="#41-5-1-5-5-连接到-FlexSPI-端口-B-的典型-NOR-闪存配置参数" class="headerlink" title="41.5.1.5.5 连接到 FlexSPI 端口 B 的典型 NOR 闪存配置参数"></a>41.5.1.5.5 连接到 FlexSPI 端口 B 的典型 NOR 闪存配置参数</h5><p>对于连接到 FlexSPI 端口 B 的闪存设备，<span style="color: red; font-weight: bold; "><u>配置时用户需指定参数以告知 ROM 闪存连接到端口 B。由于 FlexSPI 端口 B 没有 DQS 引脚，用户需根据闪存数据表为连接的闪存配置dummy cycle，参数存储在 Option1 中</u></span>（见表 1009）。以下是配置连接到 FlexSPI 端口 B 的 MX25UM51345G 闪存的示例。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">• blhost.exe -p com3 – fill-memory 0x1c000 4 0xC1503051 //配置option0</span><br><span class="line">• blhost.exe -p com3 – fill-memory 0x1c004 4 0x20000014  //option1</span><br><span class="line">• blhost.exe -p com3 – configure-memory 0x9 0x1c000  // 应用配置参数</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><strong>表 1011. 典型 NOR 闪存配置参数（闪存连接到 FlexSPI 端口 B）</strong></p>
+<table>
 <thead>
 <tr>
 <th>设备厂商</th>
@@ -1064,31 +1074,34 @@
 <td>-</td>
 </tr>
 </tbody></table>
-<p><strong>配置命令示例</strong>：</p>
-<p>bash</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">blhost.exe -p com3 fill-memory 0x1c000 4 0xC1503051    <span class="comment"># 配置Option1参数</span></span><br><span class="line">blhost.exe -p com3 fill-memory 0x1c004 4 0x20000014    <span class="comment"># 配置其他参数</span></span><br><span class="line">blhost.exe -p com3 configure-memory 0x9 0x1c000        <span class="comment"># 应用配置</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="41-5-1-6-为端口-B-连接的闪存启用八进制-DDR-模式"><a href="#41-5-1-6-为端口-B-连接的闪存启用八进制-DDR-模式" class="headerlink" title="41.5.1.6 为端口 B 连接的闪存启用八进制 DDR 模式"></a><strong>41.5.1.6 为端口 B 连接的闪存启用八进制 DDR 模式</strong></h3><p>考虑到 FlexSPI 性能和易用性，ROM 假定八进制闪存在 DDR 模式下始终使用 DQS 引脚。若支持外部 DQS 焊盘，FlexSPI IP 可自动检测哑周期数。使用配置选项配置设备时，不支持自定义八进制 DDR 读取的哑周期数，必须使用 DQS 焊盘。然而，RT6xx 系列的 FlexSPI 端口 B 没有 DQS 引脚。要在端口 B 上启用八进制 DDR 读取支持，用户必须准备完整的 FCB（闪存配置块）并在 LUT 中配置适当的哑周期。</p>
+<hr>
+<h5 id="41-5-1-6-为-PortB-连接的闪存启用-Octal-DDR-模式"><a href="#41-5-1-6-为-PortB-连接的闪存启用-Octal-DDR-模式" class="headerlink" title="41.5.1.6 为 PortB 连接的闪存启用 Octal DDR 模式"></a>41.5.1.6 为 PortB 连接的闪存启用 Octal DDR 模式</h5><p>考虑到 FlexSPI 性能和易用性，<span style="color: red; font-weight: bold; ">ROM 假定八进制闪存在 DDR 模式下始终使用 DQS 引脚。</span></p>
+<ul>
+<li>若支持外部 DQS 焊盘，FlexSPI IP 可自动检测dummy cycle数。</li>
+<li>使用配置选项Option0/1配置设备时，不支持自定义Octal DDR Read的Dummy Cycle数，必须使用 DQS 焊盘。</li>
+<li><span style="color: red; font-weight: bold; ">然而，RT6xx 系列的 FlexSPI PortB 没有 DQS 引脚。要在端口 B 上启用Octal DDR Read支持，用户必须准备完整的 FCB（闪存配置块）并在 LUT 中配置适当的Dummy Cycle。</span></li>
+</ul>
 <p><strong>以 MX25UM51345G 为例</strong>：
 以下是用于在 FlexSPI 端口 B 上启用 DDR 模式的 FCB 二进制文件示例。请注意 FCB 中的两个字段需特别处理：</p>
 <ul>
-<li><strong>sflashA1Size</strong> 应设为 0x0，<strong>sflashB1Size</strong> 应设为外部闪存大小。</li>
-<li><strong>FlexSPI LUT 表</strong> 需使用读取命令的正确哑周期更新。</li>
+<li><strong><code>sflashA1Size</code></strong> 应设为 <code>0x0</code>，**<code>sflashB1Size</code>** 应设为外部闪存大小。</li>
+<li><strong>FlexSPI LUT 表</strong> ：需使用读取命令的正确Dummy Cycle更新。</li>
 </ul>
-<p><strong>图 201. 端口 B 连接的闪存启用八进制 DDR 模式示例</strong>
-（此处为 FCB 二进制数据示意图，具体数值需根据闪存规格配置）</p>
+<style>.hgbbfjyjyzko{zoom:80%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/image-20250520131728026.png" class="hgbbfjyjyzko" alt="image-20250520131728026">
+
+<p><strong>图 201. PortB 连接的闪存启用Octal DDR 模式示例</strong></p>
+<p>FCB 准备就绪后，使用以下命令将闪存启用到 DDR 模式–&gt;</p>
 <p><strong>操作步骤</strong>：</p>
 <ol>
 <li><p>写入 FCB 二进制文件到 RAM：</p>
-<p>bash</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">blhost.exe -p comxx write-memory 0x1c000 MX25UM51345G_DDR_FCB.bin</span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>配置 FlexSPI 以应用 FCB：</p>
-<p>bash</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">blhost.exe -p comxx configure-memory 0x9 0x1c000</span><br></pre></td></tr></tbody></table></figure></li>
 </ol>
-<h3 id="41-5-2-SD-eMMC-引导"><a href="#41-5-2-SD-eMMC-引导" class="headerlink" title="41.5.2 SD/eMMC 引导"></a><strong>41.5.2 SD/eMMC 引导</strong></h3><p>引导加载程序支持将镜像从 SD/eMMC 加载到片上 SRAM，然后从片上 SRAM 引导。</p>
-<h4 id="41-5-2-1-SD-eMMC-引导特性"><a href="#41-5-2-1-SD-eMMC-引导特性" class="headerlink" title="41.5.2.1 SD/eMMC 引导特性"></a><strong>41.5.2.1 SD/eMMC 引导特性</strong></h4><p>SD/eMMC 引导可通过 uSDHC 端口执行。引导加载程序支持以下标准卡类型（其他类型卡不保证支持）：</p>
+<hr>
+<h4 id="41-5-2-SD-eMMC-启动"><a href="#41-5-2-SD-eMMC-启动" class="headerlink" title="41.5.2 SD/eMMC 启动"></a>41.5.2 SD/eMMC 启动</h4><p>BootROM支持将镜像从 SD/eMMC 加载到片上 SRAM，然后从片上 SRAM 引导。</p>
+<h5 id="41-5-2-1-SD-eMMC-引导特性"><a href="#41-5-2-1-SD-eMMC-引导特性" class="headerlink" title="41.5.2.1 SD/eMMC 引导特性"></a>41.5.2.1 SD/eMMC 引导特性</h5><p>SD/eMMC 引导可通过 uSDHC 端口执行。BootROM支持以下标准卡类型（其他类型卡不保证支持）：</p>
 <ul>
 <li>eMMC 5.0 或更早版本</li>
 <li>MMC 4.4 或更早版本</li>
@@ -1096,13 +1109,14 @@
 </ul>
 <p>支持的标准模式：</p>
 <ul>
-<li>eMMC/MMC：4 位 / 8 位；全速率 SDR（26 MHz），高速 SDR/DDR（52 MHz）；</li>
+<li>eMMC/MMC：4 位 / 8 位；<span style="color: red; font-weight: bold; ">全速率 SDR（26 MHz），高速 SDR/DDR（52 MHz）；</span></li>
 <li>eMMC 4.4 或更高版本：支持快速引导。</li>
-<li>SD：1 位 / 4 位；SDR12、SDR25、SDR50 和 SDR104。</li>
+<li>SD：1 位 / 4 位；<span style="color: red; font-weight: bold; ">SDR12、SDR25、SDR50 和 SDR104。</span></li>
 </ul>
-<p>引导加载程序从 SD/eMMC 的固定地址加载用户应用镜像。为避免主引导记录（MBR）与用户应用镜像冲突，引导加载程序从 SD/eMMC 地址 4096（字节地址，块索引 8）加载镜像。</p>
-<h3 id="41-5-2-2-OTP-中的-SD-eMMC-引导配置"><a href="#41-5-2-2-OTP-中的-SD-eMMC-引导配置" class="headerlink" title="41.5.2.2 OTP 中的 SD/eMMC 引导配置"></a><strong>41.5.2.2 OTP 中的 SD/eMMC 引导配置</strong></h3><p>与 SD/eMMC 引导相关的配置分配在 BOOT_CFG2 和 BOOT_CFG3 OTP 字中，分配详情见表 1002。</p>
-<h4 id="表-1012-BOOT-CFG2-引导配置"><a href="#表-1012-BOOT-CFG2-引导配置" class="headerlink" title="表 1012. BOOT_CFG2 引导配置"></a><strong>表 1012. BOOT_CFG2 引导配置</strong></h4><table>
+<p>BootROM从 SD/eMMC 的<strong>固定地址</strong>加载用户应用镜像。<span style="color: red; font-weight: bold; ">为避免主引导记录（MBR）与用户应用镜像冲突，BootROM从 SD/eMMC 地址 4096（字节地址，块索引 8）加载镜像。</span></p>
+<h5 id="41-5-2-2-OTP-中的-SD-eMMC-引导配置"><a href="#41-5-2-2-OTP-中的-SD-eMMC-引导配置" class="headerlink" title="41.5.2.2 OTP 中的 SD/eMMC 引导配置"></a>41.5.2.2 OTP 中的 SD/eMMC 引导配置</h5><p>与 SD/eMMC 引导相关的配置分配在 <code>BOOT_CFG2</code> 和 <code>BOOT_CFG3</code> OTP 字中，分配详情见表 1002。</p>
+<p><strong>表 1012. BOOT_CFG2 引导配置</strong></p>
+<table>
 <thead>
 <tr>
 <th>字段名称</th>
@@ -1115,40 +1129,40 @@
 </thead>
 <tbody><tr>
 <td>SDHC_DEVICE_TYPE</td>
-<td>-</td>
-<td>连接到 SDHC 端口的设备类型： 0b - eMMC 设备 1b - SD 卡设备</td>
+<td><code>eMMC_DEV</code><br><code>SD_DEV</code></td>
+<td>连接到 SDHC 端口的设备类型： <br>0b - eMMC 设备 <br>1b - SD 卡设备</td>
 <td>0</td>
 <td>1</td>
-<td>-</td>
+<td></td>
 </tr>
 <tr>
 <td>SDHC_BUS_WIDTH</td>
 <td>-</td>
-<td>连接到 SDHC 的设备总线宽度： 00b - SD 卡使用 1 位数据总线，eMMC 使用 4 位 01b - SD 卡使用 4 位，eMMC 使用 8 位 10b - eMMC 使用 4 位 DDR 模式（需 SDHC_SPEED=HIGH） 11b - eMMC 使用 8 位 DDR 模式（需 SDHC_SPEED=HIGH）</td>
+<td>连接到 SDHC 的设备总线宽度： <br>00b - SD 卡使用 1 位数据总线，eMMC 使用 4 位 <br>01b - SD 卡使用 4 位，eMMC 使用 8 位<br> 10b - eMMC 使用 4 位 DDR 模式（需 <code>SDHC_SPEED</code>=HIGH） <br>11b - eMMC 使用 8 位 DDR 模式（需 <code>SDHC_SPEED</code>=HIGH）</td>
 <td>1</td>
 <td>2</td>
-<td>-</td>
+<td></td>
 </tr>
 <tr>
 <td>SDHC_SPEED</td>
 <td>-</td>
-<td>eMMC 设备和 SD 卡的速度等级： 00b - 正常速度（eMMC）/SDR12（SD） 01b - 高速（eMMC）/SDR25（SD） 10b - SDR50（SD，需 SDHC_BUS_WIDTH=SD_4B_MMC_8B） 11b - SDR104（SD，需 SDHC_BUS_WIDTH=SD_4B_MMC_8B）</td>
+<td>eMMC 设备和 SD 卡的速度等级： <br>00b - 正常速度（eMMC）/SDR12（SD） <br>01b - 高速（eMMC）/SDR25（SD） <br>10b - SDR50（SD，需 <code>SDHC_BUS_WIDTH</code>=<code>SD_4B_MMC_8B</code>）<br> 11b - SDR104（SD，需 <code>SDHC_BUS_WIDTH</code>=<code>SD_4B_MMC_8B</code>）</td>
 <td>3</td>
 <td>2</td>
-<td>-</td>
+<td></td>
 </tr>
 <tr>
 <td>SDHC_PWR_CYCLE_EN</td>
 <td>-</td>
-<td>通过 USDHC_RST 焊盘启用 SDHC 电源循环： 0b - 禁用 1b - 启用</td>
+<td>通过 <code>USDHC_RST</code> 焊盘启用 SDHC 电源循环： <br>0b - 禁用 <br>1b - 启用</td>
 <td>5</td>
 <td>1</td>
-<td>-</td>
+<td></td>
 </tr>
 <tr>
 <td>SDHC0_PWR_POL</td>
 <td>-</td>
-<td>SDHC0 端口电源使能信号极性： 0b - 高有效 1b - 低有效</td>
+<td>SDHC0 端口电源使能信号极性： <br>0b - 高有效 <br>1b - 低有效</td>
 <td>6</td>
 <td>1</td>
 <td>-</td>
@@ -1156,13 +1170,14 @@
 <tr>
 <td>SDHC1_PWR_POL</td>
 <td>-</td>
-<td>SDHC1 端口电源使能信号极性： 0b - 高有效 1b - 低有效</td>
+<td>SDHC1 端口电源使能信号极性： <br>0b - 高有效 <br>1b - 低有效</td>
 <td>7</td>
 <td>1</td>
 <td>-</td>
 </tr>
 </tbody></table>
-<h3 id="表-1012-BOOT-CFG2-引导配置（续）"><a href="#表-1012-BOOT-CFG2-引导配置（续）" class="headerlink" title="表 1012. BOOT_CFG2 引导配置（续）"></a><strong>表 1012. BOOT_CFG2 引导配置（续）</strong></h3><table>
+<p><strong>表 1012. BOOT_CFG2 引导配置（续）</strong></p>
+<table>
 <thead>
 <tr>
 <th>字段名称</th>
@@ -1176,7 +1191,7 @@
 <tbody><tr>
 <td>SDHC_PWR_CYCLE_WAIT</td>
 <td>-</td>
-<td>关闭 SDHC 设备电源后的等待时间： 00b - 20 毫秒 01b - 10 毫秒 10b - 5 毫秒 11b - 2.5 毫秒</td>
+<td>关闭 SDHC 设备电源后的等待时间： <br>00b - 20 毫秒 <br>01b - 10 毫秒 <br>10b - 5 毫秒 <br>11b - 2.5 毫秒</td>
 <td>8</td>
 <td>2</td>
 <td>-</td>
@@ -1184,7 +1199,7 @@
 <tr>
 <td>SDHC_PWR_STABLE_WAIT</td>
 <td>-</td>
-<td>启用 SDHC 设备电源后电源稳定等待时间： 0b - 5 毫秒 1b - 2.5 毫秒</td>
+<td>启用 SDHC 设备电源后电源稳定等待时间： <br>0b - 5 毫秒 <br>1b - 2.5 毫秒</td>
 <td>10</td>
 <td>1</td>
 <td>-</td>
@@ -1192,7 +1207,7 @@
 <tr>
 <td>SDHC0_CARD_VOLTAGE</td>
 <td>-</td>
-<td>通过 USDHC_VSELECT 选择 SDHC0 电压： 0b - 3.3V 1b - 1.8V</td>
+<td><span style="color: red; font-weight: bold; ">通过 <code>USDHC_VSELECT</code> 选择 SDHC0 电压：</span><br>0b - 3.3V <br>1b - 1.8V</td>
 <td>11</td>
 <td>1</td>
 <td>-</td>
@@ -1200,7 +1215,7 @@
 <tr>
 <td>SDHC1_CARD_VOLTAGE</td>
 <td>-</td>
-<td>通过 USDHC_VSELECT 选择 SDHC1 电压： 0b - 3.3V 1b - 1.8V</td>
+<td>通过 <code>USDHC_VSELECT</code> 选择 SDHC1 电压： <br>0b - 3.3V <br>1b - 1.8V</td>
 <td>12</td>
 <td>1</td>
 <td>-</td>
@@ -1208,7 +1223,7 @@
 <tr>
 <td>MMC_RESET_PRE_IDLE_STATE</td>
 <td>-</td>
-<td>启动引导模式前将 MMC 复位到预空闲状态： 0b - 复位到预空闲状态 1b - 不复位</td>
+<td>启动引导模式前将 MMC 复位到预空闲状态： <br>0b - 复位到预空闲状态 <br>1b - 不复位</td>
 <td>13</td>
 <td>1</td>
 <td>-</td>
@@ -1216,7 +1231,7 @@
 <tr>
 <td>SDHC_FASTBOOT_MODE</td>
 <td>-</td>
-<td>启用 eMMC 快速引导模式： 0b - 正常模式（传输模式） 1b - 引导模式</td>
+<td>启用 eMMC 快速引导模式： <br>0b - 正常模式（传输模式） <br>1b - 引导模式</td>
 <td>14</td>
 <td>1</td>
 <td>-</td>
@@ -1224,7 +1239,7 @@
 <tr>
 <td>SDHC_FASTBOOT_ACK_EN</td>
 <td>-</td>
-<td>eMMC 快速引导确认功能： 0b - 禁用引导模式确认 1b - 启用引导模式确认</td>
+<td>eMMC 快速引导确认功能： <br>0b - 禁用引导模式确认 <br>1b - 启用引导模式确认</td>
 <td>15</td>
 <td>1</td>
 <td>-</td>
@@ -1232,13 +1247,14 @@
 <tr>
 <td>SDHC_PAD</td>
 <td>-</td>
-<td>SDHC 焊盘设置： 0b - 默认 SDIOPADCTL 1b - SDIOPADCTL=val（val 为自定义值）</td>
+<td>SDHC 焊盘设置： <br>0b - 默认 <code>SDIOPADCTL</code> <br>1b - SDIOPADCTL=val（val 为自定义值）</td>
 <td>16</td>
 <td>1</td>
 <td>-</td>
 </tr>
 </tbody></table>
-<h4 id="表-1013-BOOT-CFG3-引导配置"><a href="#表-1013-BOOT-CFG3-引导配置" class="headerlink" title="表 1013. BOOT_CFG3 引导配置"></a><strong>表 1013. BOOT_CFG3 引导配置</strong></h4><table>
+<p><strong>表 1013. BOOT_CFG3 引导配置</strong></p>
+<table>
 <thead>
 <tr>
 <th>字段名称</th>
@@ -1252,7 +1268,7 @@
 <tbody><tr>
 <td>SDHC_DLL_TUNING_OVERRIDE_ENABLE</td>
 <td>-</td>
-<td>DLL 延迟调整覆盖使能： 0 - 默认（DLL 延迟起始 10，步长 2） 1 - 通过 SDHC_DLL_TUNING_START 和 SDHC_DLL_TUNING_STEP 覆盖</td>
+<td>DLL 延迟调整覆盖使能： <br>0 - 默认（DLL 延迟起始 10，步长 2） <br>1 - 通过 <code>SDHC_DLL_TUNING_START</code> 和 <code>SDHC_DLL_TUNING_STEP</code> 覆盖</td>
 <td>7</td>
 <td>1</td>
 <td>-</td>
@@ -1260,7 +1276,7 @@
 <tr>
 <td>SDHC_DLL_TUNING_START</td>
 <td>-</td>
-<td>DLL 延迟起始值（需 SDHC_DLL_TUNING_OVERRIDE_ENABLE=1）</td>
+<td>DLL 延迟起始值（需 <code>SDHC_DLL_TUNING_OVERRIDE_ENABLE</code>=1）</td>
 <td>8</td>
 <td>8</td>
 <td>-</td>
@@ -1268,14 +1284,17 @@
 <tr>
 <td>SDHC_DLL_TUNING_STEP</td>
 <td>-</td>
-<td>DLL 延迟步长值（需 SDHC_DLL_TUNING_OVERRIDE_ENABLE=1）： 0 - 步长 = 1 非 0 - 步长 = val</td>
+<td>DLL 延迟步长值（需 <code>SDHC_DLL_TUNING_OVERRIDE_ENABLE</code>=1）： 0 - 步长 = 1 <br>非 0 - 步长 = val</td>
 <td>16</td>
 <td>3</td>
 <td>-</td>
 </tr>
 </tbody></table>
-<h3 id="41-5-2-3-SD-eMMC-引导流程"><a href="#41-5-2-3-SD-eMMC-引导流程" class="headerlink" title="41.5.2.3 SD/eMMC 引导流程"></a><strong>41.5.2.3 SD/eMMC 引导流程</strong></h3><p>图 202 说明了 SD/eMMC 的简要引导流程。</p>
-</div><div class="article-licensing box"><div class="licensing-title"><p>RT600 BootROM RM解析 (3)</p><p><a href="https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm解析-3/">https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm解析-3/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Gavin</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2025-05-19</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-05-19</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NXP/">NXP</a><a class="link-muted mr-2" rel="tag" href="/tags/RT600/">RT600</a><a class="link-muted mr-2" rel="tag" href="/tags/BootROM/">BootROM</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-2/"><span class="level-item">RT600 BootROM RM解析 (2)</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="Gavin"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Gavin</p><p class="is-size-6 is-block">Embeded &amp; IC Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shanghai, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">136</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">46</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">50</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/dustofstars/" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/dustofstars/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#RT600-RM-CH41：RT6xx-非安全BootROM-3"><span class="level-left"><span class="level-item">1</span><span class="level-item">RT600 RM CH41：RT6xx 非安全BootROM (3)</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#41-4-引导模式"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">41.4 引导模式</span></span></a></li><li><a class="level is-mobile" href="#41-5-主引导模式"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">41.5 主引导模式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#41-5-1-FlexSPI-引导"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">41.5.1 FlexSPI 引导</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-4-2-OTP-中的-FlexSPI-重映射大小和引导镜像-1-偏移量配置"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">41.5.1.4.2 OTP 中的 FlexSPI 重映射大小和引导镜像 1 偏移量配置</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-4-3-双镜像乒乓引导"><span class="level-left"><span class="level-item">1.2.3</span><span class="level-item">41.5.1.4.3 双镜像乒乓引导</span></span></a></li><li><a class="level is-mobile" href="#图-191-FlexSPI-乒乓引导流程"><span class="level-left"><span class="level-item">1.2.4</span><span class="level-item">图 191. FlexSPI 乒乓引导流程</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-4-4-引导镜像版本"><span class="level-left"><span class="level-item">1.2.5</span><span class="level-item">41.5.1.4.4 引导镜像版本</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-5-为-RT6xx-设备配置-FlexSPI-NOR-设备"><span class="level-left"><span class="level-item">1.2.6</span><span class="level-item">41.5.1.5 为 RT6xx 设备配置 FlexSPI NOR 设备</span></span></a></li><li><a class="level is-mobile" href="#FlexSPI-NOR-闪存引导镜像编程"><span class="level-left"><span class="level-item">1.2.7</span><span class="level-item">FlexSPI NOR 闪存引导镜像编程</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-5-2-FlexSPI-NOR-闪存配置参数"><span class="level-left"><span class="level-item">1.2.8</span><span class="level-item">41.5.1.5.2 FlexSPI NOR 闪存配置参数</span></span></a></li><li><a class="level is-mobile" href="#表-1008-Option0-定义（续）"><span class="level-left"><span class="level-item">1.2.9</span><span class="level-item">表 1008. Option0 定义（续）</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-5-3-NOR-闪存配置、擦除和编程"><span class="level-left"><span class="level-item">1.2.10</span><span class="level-item">41.5.1.5.3 NOR 闪存配置、擦除和编程</span></span></a></li><li><a class="level is-mobile" href="#生成并编程-FlexSPI-NOR-FCB-到闪存"><span class="level-left"><span class="level-item">1.2.11</span><span class="level-item">生成并编程 FlexSPI NOR FCB 到闪存</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-5-4-典型-NOR-闪存配置参数"><span class="level-left"><span class="level-item">1.2.12</span><span class="level-item">41.5.1.5.4 典型 NOR 闪存配置参数</span></span></a></li><li><a class="level is-mobile" href="#表-1010-典型-NOR-闪存配置参数（闪存连接到-FlexSPI-端口-A）"><span class="level-left"><span class="level-item">1.2.13</span><span class="level-item">表 1010. 典型 NOR 闪存配置参数（闪存连接到 FlexSPI 端口 A）</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-5-5-连接到-FlexSPI-端口-B-的典型-NOR-闪存配置参数"><span class="level-left"><span class="level-item">1.2.14</span><span class="level-item">41.5.1.5.5 连接到 FlexSPI 端口 B 的典型 NOR 闪存配置参数</span></span></a></li><li><a class="level is-mobile" href="#41-5-1-6-为端口-B-连接的闪存启用八进制-DDR-模式"><span class="level-left"><span class="level-item">1.2.15</span><span class="level-item">41.5.1.6 为端口 B 连接的闪存启用八进制 DDR 模式</span></span></a></li><li><a class="level is-mobile" href="#41-5-2-SD-eMMC-引导"><span class="level-left"><span class="level-item">1.2.16</span><span class="level-item">41.5.2 SD/eMMC 引导</span></span></a></li><li><a class="level is-mobile" href="#41-5-2-2-OTP-中的-SD-eMMC-引导配置"><span class="level-left"><span class="level-item">1.2.17</span><span class="level-item">41.5.2.2 OTP 中的 SD/eMMC 引导配置</span></span></a></li><li><a class="level is-mobile" href="#表-1012-BOOT-CFG2-引导配置（续）"><span class="level-left"><span class="level-item">1.2.18</span><span class="level-item">表 1012. BOOT_CFG2 引导配置（续）</span></span></a></li><li><a class="level is-mobile" href="#41-5-2-3-SD-eMMC-引导流程"><span class="level-left"><span class="level-item">1.2.19</span><span class="level-item">41.5.2.3 SD/eMMC 引导流程</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/ARM/"><span class="level-start"><span class="level-item">ARM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/ARM/Boot/"><span class="level-start"><span class="level-item">Boot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ARM/MemoryMap/"><span class="level-start"><span class="level-item">MemoryMap</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/"><span class="level-start"><span class="level-item">IC验证</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/"><span class="level-start"><span class="level-item">漫游指南</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/"><span class="level-start"><span class="level-item">路科V0</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">IoT协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/BLE/"><span class="level-start"><span class="level-item">BLE</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/Thread/"><span class="level-start"><span class="level-item">Thread</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/ZigBee/"><span class="level-start"><span class="level-item">ZigBee</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/Leetcode/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">数据结构</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/NLP/PyTorch/"><span class="level-start"><span class="level-item">PyTorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/"><span class="level-start"><span class="level-item">NXP</span></span><span class="level-end"><span class="level-item tag">25</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/"><span class="level-start"><span class="level-item">KW38</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/GPIO%E4%B8%AD%E6%96%AD/"><span class="level-start"><span class="level-item">GPIO中断</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1024/"><span class="level-start"><span class="level-item">RT1024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="level-start"><span class="level-item">原理图</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1050/"><span class="level-start"><span class="level-item">RT1050</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1050/%E9%87%8E%E7%81%AB/"><span class="level-start"><span class="level-item">野火</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/"><span class="level-start"><span class="level-item">RT1060</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1060/binary/"><span class="level-start"><span class="level-item">binary</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT600/"><span class="level-start"><span class="level-item">RT600</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT600/BootROM/"><span class="level-start"><span class="level-item">BootROM</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/ReferenceManual/"><span class="level-start"><span class="level-item">ReferenceManual</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Plugins/"><span class="level-start"><span class="level-item">Plugins</span></span><span class="level-end"><span class="level-item tag">12</span></span></a><ul><li><a class="level is-mobile" href="/categories/Plugins/Analytics/"><span class="level-start"><span class="level-item">Analytics</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Comment/"><span class="level-start"><span class="level-item">Comment</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Donation/"><span class="level-start"><span class="level-item">Donation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Other/"><span class="level-start"><span class="level-item">Other</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Search/"><span class="level-start"><span class="level-item">Search</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Share/"><span class="level-start"><span class="level-item">Share</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Widgets/"><span class="level-start"><span class="level-item">Widgets</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/vim/"><span class="level-start"><span class="level-item">vim</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">总线协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/UART/"><span class="level-start"><span class="level-item">UART</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E5%AD%97IC/"><span class="level-start"><span class="level-item">数字IC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%8B%B1%E8%AF%AD/"><span class="level-start"><span class="level-item">英语</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ARM/"><span class="tag">ARM</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BLE/"><span class="tag">BLE</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Boot/"><span class="tag">Boot</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BootROM/"><span class="tag">BootROM</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DMA/"><span class="tag">DMA</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Demo/"><span class="tag">Demo</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/FLASH/"><span class="tag">FLASH</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO/"><span class="tag">GPIO</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO%E4%B8%AD%E6%96%AD/"><span class="tag">GPIO中断</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Getting-Started/"><span class="tag">Getting Started</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IC%E9%AA%8C%E8%AF%81/"><span class="tag">IC验证</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus-User-Guide/"><span class="tag">Icarus User Guide</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97/"><span class="tag">Icarus用户指南</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/KW38/"><span class="tag">KW38</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leetcode/"><span class="tag">Leetcode</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MemoryMap/"><span class="tag">MemoryMap</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NXP/"><span class="tag">NXP</span><span class="tag">28</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Numpy/"><span class="tag">Numpy</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PDF/"><span class="tag">PDF</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PyTorch/"><span class="tag">PyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RAM/"><span class="tag">RAM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ROM/"><span class="tag">ROM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT1050/"><span class="tag">RT1050</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT600/"><span class="tag">RT600</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReferenceManual/"><span class="tag">ReferenceManual</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/STL/"><span class="tag">STL</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/System-Verilog/"><span class="tag">System Verilog</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TIMER/"><span class="tag">TIMER</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Thread/"><span class="tag">Thread</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UART/"><span class="tag">UART</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UVM/"><span class="tag">UVM</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZigBee/"><span class="tag">ZigBee</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hardware/"><span class="tag">hardware</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/image/"><span class="tag">image</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pyTorch/"><span class="tag">pyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vector/"><span class="tag">vector</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vim/"><span class="tag">vim</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%AD%E6%96%AD/"><span class="tag">中断</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/"><span class="tag">二分查找</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="tag">代码随想录</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="tag">原理图</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2/"><span class="tag">数据探索</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="tag">数据结构</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E7%BB%84/"><span class="tag">数组</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%80%83%E7%A0%94%E8%8B%B1%E8%AF%AD100%E5%8F%A5/"><span class="tag">考研英语100句</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%8B%B1%E8%AF%AD/"><span class="tag">英语</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/"><span class="tag">设计流程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a><p class="is-size-7"><span>&copy; 2025 Gavin</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+<h5 id="41-5-2-3-SD-eMMC-引导流程"><a href="#41-5-2-3-SD-eMMC-引导流程" class="headerlink" title="41.5.2.3 SD/eMMC 引导流程"></a>41.5.2.3 SD/eMMC 引导流程</h5><p>图 202 说明了 SD/eMMC 的简要引导流程。</p>
+<style>.aqgnillyvxva{zoom:100%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-3/image-20250520143743354.png" class="aqgnillyvxva">
+
+<p><strong>图 202. SD/eMMC 引导流程</strong></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>RT600 BootROM RM解析 (3)</p><p><a href="https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm解析-3/">https://dustofstars.github.io/NXP/RT600/BootROM/rt600-bootrom-rm解析-3/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Gavin</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2025-05-19</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-05-19</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NXP/">NXP</a><a class="link-muted mr-2" rel="tag" href="/tags/RT600/">RT600</a><a class="link-muted mr-2" rel="tag" href="/tags/BootROM/">BootROM</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-4/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">RT600 BootROM RM解析 (4)</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-2/"><span class="level-item">RT600 BootROM RM解析 (2)</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="Gavin"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Gavin</p><p class="is-size-6 is-block">Embeded &amp; IC Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shanghai, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">137</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">46</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">50</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/dustofstars/" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/dustofstars/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#RT600-RM-CH41：RT6xx-非安全BootROM-3"><span class="level-left"><span class="level-item">1</span><span class="level-item">RT600 RM CH41：RT6xx 非安全BootROM (3)</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#41-4-引导模式"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">41.4 引导模式</span></span></a></li><li><a class="level is-mobile" href="#41-5-主引导模式"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">41.5 主引导模式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#41-5-1-FlexSPI-引导"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">41.5.1 FlexSPI 引导</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/ARM/"><span class="level-start"><span class="level-item">ARM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/ARM/Boot/"><span class="level-start"><span class="level-item">Boot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ARM/MemoryMap/"><span class="level-start"><span class="level-item">MemoryMap</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/"><span class="level-start"><span class="level-item">IC验证</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/"><span class="level-start"><span class="level-item">漫游指南</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/"><span class="level-start"><span class="level-item">路科V0</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">IoT协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/BLE/"><span class="level-start"><span class="level-item">BLE</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/Thread/"><span class="level-start"><span class="level-item">Thread</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/ZigBee/"><span class="level-start"><span class="level-item">ZigBee</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/Leetcode/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">数据结构</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/NLP/PyTorch/"><span class="level-start"><span class="level-item">PyTorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/"><span class="level-start"><span class="level-item">NXP</span></span><span class="level-end"><span class="level-item tag">26</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/"><span class="level-start"><span class="level-item">KW38</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/GPIO%E4%B8%AD%E6%96%AD/"><span class="level-start"><span class="level-item">GPIO中断</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1024/"><span class="level-start"><span class="level-item">RT1024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="level-start"><span class="level-item">原理图</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1050/"><span class="level-start"><span class="level-item">RT1050</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1050/%E9%87%8E%E7%81%AB/"><span class="level-start"><span class="level-item">野火</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/"><span class="level-start"><span class="level-item">RT1060</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1060/binary/"><span class="level-start"><span class="level-item">binary</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT600/"><span class="level-start"><span class="level-item">RT600</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT600/BootROM/"><span class="level-start"><span class="level-item">BootROM</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/ReferenceManual/"><span class="level-start"><span class="level-item">ReferenceManual</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Plugins/"><span class="level-start"><span class="level-item">Plugins</span></span><span class="level-end"><span class="level-item tag">12</span></span></a><ul><li><a class="level is-mobile" href="/categories/Plugins/Analytics/"><span class="level-start"><span class="level-item">Analytics</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Comment/"><span class="level-start"><span class="level-item">Comment</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Donation/"><span class="level-start"><span class="level-item">Donation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Other/"><span class="level-start"><span class="level-item">Other</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Search/"><span class="level-start"><span class="level-item">Search</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Share/"><span class="level-start"><span class="level-item">Share</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Widgets/"><span class="level-start"><span class="level-item">Widgets</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/vim/"><span class="level-start"><span class="level-item">vim</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">总线协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/UART/"><span class="level-start"><span class="level-item">UART</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E5%AD%97IC/"><span class="level-start"><span class="level-item">数字IC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%8B%B1%E8%AF%AD/"><span class="level-start"><span class="level-item">英语</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ARM/"><span class="tag">ARM</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BLE/"><span class="tag">BLE</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Boot/"><span class="tag">Boot</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BootROM/"><span class="tag">BootROM</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DMA/"><span class="tag">DMA</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Demo/"><span class="tag">Demo</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/FLASH/"><span class="tag">FLASH</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO/"><span class="tag">GPIO</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO%E4%B8%AD%E6%96%AD/"><span class="tag">GPIO中断</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Getting-Started/"><span class="tag">Getting Started</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IC%E9%AA%8C%E8%AF%81/"><span class="tag">IC验证</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus-User-Guide/"><span class="tag">Icarus User Guide</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97/"><span class="tag">Icarus用户指南</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/KW38/"><span class="tag">KW38</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leetcode/"><span class="tag">Leetcode</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MemoryMap/"><span class="tag">MemoryMap</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NXP/"><span class="tag">NXP</span><span class="tag">29</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Numpy/"><span class="tag">Numpy</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PDF/"><span class="tag">PDF</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PyTorch/"><span class="tag">PyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RAM/"><span class="tag">RAM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ROM/"><span class="tag">ROM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT1050/"><span class="tag">RT1050</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT600/"><span class="tag">RT600</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReferenceManual/"><span class="tag">ReferenceManual</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/STL/"><span class="tag">STL</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/System-Verilog/"><span class="tag">System Verilog</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TIMER/"><span class="tag">TIMER</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Thread/"><span class="tag">Thread</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UART/"><span class="tag">UART</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UVM/"><span class="tag">UVM</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZigBee/"><span class="tag">ZigBee</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hardware/"><span class="tag">hardware</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/image/"><span class="tag">image</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pyTorch/"><span class="tag">pyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vector/"><span class="tag">vector</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vim/"><span class="tag">vim</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%AD%E6%96%AD/"><span class="tag">中断</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/"><span class="tag">二分查找</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="tag">代码随想录</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="tag">原理图</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2/"><span class="tag">数据探索</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="tag">数据结构</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E7%BB%84/"><span class="tag">数组</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%80%83%E7%A0%94%E8%8B%B1%E8%AF%AD100%E5%8F%A5/"><span class="tag">考研英语100句</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%8B%B1%E8%AF%AD/"><span class="tag">英语</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/"><span class="tag">设计流程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a><p class="is-size-7"><span>&copy; 2025 Gavin</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
                     clipboard: true,
