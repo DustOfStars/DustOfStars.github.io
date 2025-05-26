@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>RT1060 eDMA 详解 (3) - DustOfStars</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="DustOfStars"><meta name="msapplication-TileImage" content="/img/favicon.png"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DustOfStars"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="RT1060 eDMA Part3 初始化 &amp;amp; 应用 第 6 章 增强型直接内存访问（eDMA） 初始化 &amp;amp; 应用 要点： ？？？"><meta property="og:type" content="blog"><meta property="og:title" content="RT1060 eDMA 详解 (3)"><meta property="og:url" content="https://dustofstars.github.io/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-3/"><meta property="og:site_name" content="DustOfStars"><meta property="og:description" content="RT1060 eDMA Part3 初始化 &amp;amp; 应用 第 6 章 增强型直接内存访问（eDMA） 初始化 &amp;amp; 应用 要点： ？？？"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://dustofstars.github.io/gallery/covers/RT1060_eDMA_BlockOverview.png"><meta property="article:published_time" content="2025-05-24T07:49:03.000Z"><meta property="article:modified_time" content="2025-05-24T07:49:03.000Z"><meta property="article:author" content="Gavin"><meta property="article:tag" content="NXP"><meta property="article:tag" content="eDMA"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://dustofstars.github.io/gallery/covers/RT1060_eDMA_BlockOverview.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://dustofstars.github.io/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-3/"},"headline":"RT1060 eDMA 详解 (3)","image":["https://dustofstars.github.io/gallery/covers/RT1060_eDMA_BlockOverview.png"],"datePublished":"2025-05-24T07:49:03.000Z","dateModified":"2025-05-24T07:49:03.000Z","author":{"@type":"Person","name":"Gavin"},"publisher":{"@type":"Organization","name":"DustOfStars","logo":{"@type":"ImageObject","url":"https://dustofstars.github.io/img/logo.png"}},"description":"RT1060 eDMA Part3 初始化 &amp; 应用 第 6 章 增强型直接内存访问（eDMA） 初始化 &amp; 应用 要点： ？？？"}</script><link rel="canonical" href="https://dustofstars.github.io/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-3/"><link rel="icon" href="/img/favicon.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
+<style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/gallery/covers/RT1060_eDMA_BlockOverview.png" alt="RT1060 eDMA 详解 (3)"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-24T07:49:03.000Z" title="5/24/2025, 7:49:03 AM">2025-05-24</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/">RT1060</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/eDMA/">eDMA</a></span><span class="level-item">1 小时读完 (大约7172个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT1060 eDMA 详解 (3)</h1><div class="content"><h1 id="RT1060-eDMA-Part3-初始化-应用"><a href="#RT1060-eDMA-Part3-初始化-应用" class="headerlink" title="RT1060 eDMA Part3 初始化 &amp; 应用"></a>RT1060 eDMA Part3 初始化 &amp; 应用</h1><blockquote>
+<p>第 6 章 增强型直接内存访问（eDMA） 初始化 &amp; 应用</p>
+<p>要点：</p>
+<p>？？？</p>
+</blockquote>
+<span id="more"></span>
+
+
+
+<h2 id="6-4-初始化-应用信息"><a href="#6-4-初始化-应用信息" class="headerlink" title="6.4 初始化 / 应用信息"></a>6.4 初始化 / 应用信息</h2><p>以下部分讨论 eDMA 的初始化和编程注意事项。</p>
+<h3 id="6-4-1-eDMA-初始化"><a href="#6-4-1-eDMA-初始化" class="headerlink" title="6.4.1 eDMA 初始化"></a>6.4.1 eDMA 初始化</h3><p>初始化 eDMA 的步骤如下：</p>
+<ol>
+<li>如果需要默认配置以外的设置，请写入控制寄存器（CR）。</li>
+<li>如果需要默认优先级以外的配置，请将通道优先级级别写入 DCHPRIn 寄存器。</li>
+<li>如果需要，在 EEI 寄存器中启用错误中断。</li>
+<li>为每个可能请求服务的通道写入 32 字节的传输控制描述符（TCD）。</li>
+<li>通过 ERQ 寄存器启用任何硬件服务请求。</li>
+<li>通过以下方式请求通道服务：
+・软件方式：设置 TCDn_CSR [START] 位
+・硬件方式：从设备断言其 eDMA 外设请求信号</li>
+</ol>
+<p>任何通道请求服务后，将根据编程模型中的仲裁和优先级级别选择一个通道执行。eDMA 引擎会将所选通道的整个 TCD（包括 TCD 控制和状态字段，如表 6-6 所示）读取到其内部地址路径模块中。
+表 6-6 TCD 控制和状态字段</p>
+<table>
+<thead>
+<tr>
+<th>TCD n_CSR 字段名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>START</td>
+<td>使用软件启动的 DMA 服务时，显式启动通道的控制位（硬件自动清除）</td>
+</tr>
+<tr>
+<td>ACTIVE</td>
+<td>状态位，指示通道当前正在执行</td>
+</tr>
+<tr>
+<td>DONE</td>
+<td>状态位，指示主循环完成（使用软件启动的 DMA 服务时由软件清除）</td>
+</tr>
+<tr>
+<td>DREQ</td>
+<td>使用硬件启动的 DMA 服务时，在主循环完成结束时禁用 DMA 请求的控制位</td>
+</tr>
+<tr>
+<td>BWC</td>
+<td>用于限制通道带宽控制的控制位</td>
+</tr>
+<tr>
+<td>ESG</td>
+<td>启用分散 / 聚集功能的控制位</td>
+</tr>
+<tr>
+<td>INTHALF</td>
+<td>主循环完成一半时启用中断的控制位</td>
+</tr>
+<tr>
+<td>INTMAJOR</td>
+<td>主循环完成时启用中断的控制位</td>
+</tr>
+</tbody></table>
+<p>读取 TCD 时，除非检测到配置错误，否则会在系统总线上启动第一次传输。从 TCDn_SADDR 定义的源地址到 TCDn_DADDR 定义的目标地址的传输将持续进行，直到传输完 TCDn_NBYTES 指定的字节数。</p>
+<p>传输完成后，eDMA 引擎会将本地的 TCDn_SADDR、TCDn_DADDR 和 TCDn_CITER 写回主 TCD 内存，并执行任何已启用的微循环通道链接（如果已启用）。如果主循环耗尽，将执行进一步的后处理，例如中断、主循环通道链接和分散 / 聚集操作（如果已启用）。</p>
+<p>下图显示了每个 DMA 请求如何在无需 CPU 干预的情况下启动一次微循环传输或迭代。每次微循环后可能发生 DMA 仲裁，并且允许一级微循环 DMA 抢占。主循环中的微循环次数由起始迭代计数（BITER）指定。
+图 6-5 多重循环迭代示例</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>源或目标内存</th>
+<th></th>
+<th></th>
+<th>当前主循环迭代计数（CITER）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DMA 请求</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>•</td>
+<td>微循环</td>
+<td></td>
+<td>3</td>
+<td></td>
+</tr>
+<tr>
+<td>• •</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DMA 请求</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>•</td>
+<td>微循环</td>
+<td>主循环</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td>•</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>•</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DMA 请求</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>•</td>
+<td>微循环</td>
+<td></td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>•</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>•</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>下图列出了内存数组术语以及 TCD 设置的相互关系。
+图 6-6 内存数组术语</p>
+<table>
+<thead>
+<tr>
+<th>xADDR:（起始地址）</th>
+<th>xSIZE:（一次数据传输的大小）</th>
+<th>微循环（微循环中的 NBYTES，通常与 xSIZE 值相同）</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>• • •</td>
+<td>偏移量（xOFF）：每次传输后添加到当前地址的字节数（通常与 xSIZE 相同）</td>
+<td></td>
+</tr>
+<tr>
+<td>• • • • • •</td>
+<td>• • • • • •</td>
+<td>每个 DMA 源（S）和目标（D）都有自己的：地址（xADDR）、大小（xSIZE）、偏移量（xOFF）、模（xMOD）、最后地址调整（xLAST），其中 x = S 或 D</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• • •</td>
+<td>最后一次微循环</td>
+<td>外设队列的大小和偏移量通常等于 NBYTES</td>
+</tr>
+<tr>
+<td>xLAST: 主循环后添加到当前地址的字节数（通常用于循环回退）</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="6-4-2-编程错误"><a href="#6-4-2-编程错误" class="headerlink" title="6.4.2 编程错误"></a>6.4.2 编程错误</h3><p>eDMA 会对传输控制描述符执行各种测试，以验证描述符数据的一致性。除通道优先级错误（ES [CPE]）外，大多数编程错误都会按通道报告。</p>
+<p>对于组错误或通道优先级错误以外的所有错误类型，导致错误的通道号会记录在错误状态寄存器（DMAx_ES）中。如果在问题通道下次激活之前未清除错误源，该错误将被再次检测和记录。</p>
+<p>通道优先级错误在某个组被选为活动组后在该组内识别。例如：</p>
+<ol>
+<li>eDMA 配置为固定组和固定通道仲裁模式。</li>
+<li>组 1 是最高优先级，且该组中的所有通道优先级唯一。</li>
+<li>组 0 是次高优先级，包含两个具有相同优先级的通道。</li>
+<li>如果组 1 有任何服务请求，这些请求将被执行。</li>
+<li>组 1 的请求全部完成后，组 0 将成为下一个活动组。</li>
+<li>如果组 0 有服务请求，则会选择组 0 中的一个未定义通道，并发生通道优先级错误。</li>
+<li>这种情况会持续，直到组 0 的所有请求被移除或更高优先级的组 1 请求进入。</li>
+</ol>
+<p>在这个序列中，对于第 2 项，仅当选定的通道通过 eDMA 外设请求信号请求服务时，eDMA 确认线才会断言。如果为所有通道启用了中断，用户将收到错误中断，但 ERR 寄存器的通道号和错误中断请求线可能错误，因为它们反映的是所选通道。组优先级错误是全局的，任何组中的请求都会导致组优先级错误。</p>
+<p>如果优先级级别不唯一，当任何通道请求服务时，将报告通道优先级错误。具有活动请求的最高通道 / 组优先级被选中，但仲裁会选择该优先级中编号最小的通道，并由 eDMA 引擎执行。硬件服务请求握手信号、错误中断和错误报告与所选通道相关联。</p>
+<h3 id="6-4-3-仲裁模式注意事项"><a href="#6-4-3-仲裁模式注意事项" class="headerlink" title="6.4.3 仲裁模式注意事项"></a>6.4.3 仲裁模式注意事项</h3><p>本节讨论 eDMA 的仲裁注意事项。</p>
+<h4 id="6-4-3-1-固定组仲裁，固定通道仲裁"><a href="#6-4-3-1-固定组仲裁，固定通道仲裁" class="headerlink" title="6.4.3.1 固定组仲裁，固定通道仲裁"></a>6.4.3.1 固定组仲裁，固定通道仲裁</h4><p>在这种模式下，选择最高优先级组中最高优先级通道的服务请求进行执行。如果 eDMA 编程为某组内的通道使用 “固定” 优先级，并且该组被分配为所有组中的最高 “固定” 优先级，则该组可以占用 eDMA 控制器的所有带宽。也就是说，如果控制器仲裁下一个 DMA 请求时，最高优先级组中至少有一个 DMA 请求挂起，其他组将不会被服务。这种情况的优点是需要快速服务的通道的延迟可以很小。抢占仅在这种情况下可用。</p>
+<h4 id="6-4-3-2-固定组仲裁，循环通道仲裁"><a href="#6-4-3-2-固定组仲裁，循环通道仲裁" class="headerlink" title="6.4.3.2 固定组仲裁，循环通道仲裁"></a>6.4.3.2 固定组仲裁，循环通道仲裁</h4><p>有请求的最高优先级组将被服务。如果更高优先级组中没有挂起的请求，则服务低优先级组。</p>
+<p>在每个组内，通道服务从最高通道号开始，循环到最低通道号，而不考虑组内分配的通道优先级级别。</p>
+<p>这种情况可能导致与 “固定组仲裁，固定通道仲裁” 中提到的相同带宽消耗问题，但最高优先级组中的所有通道都将被服务。最高优先级组的服务延迟较短，但随着组优先级降低，延迟可能会显著增加。</p>
+<h3 id="6-4-4-DMA-传输示例"><a href="#6-4-4-DMA-传输示例" class="headerlink" title="6.4.4 DMA 传输示例"></a>6.4.4 DMA 传输示例</h3><p>本节介绍如何使用 eDMA 执行 DMA 传输的示例。</p>
+<h4 id="6-4-4-1-单次请求"><a href="#6-4-4-1-单次请求" class="headerlink" title="6.4.4.1 单次请求"></a>6.4.4.1 单次请求</h4><p>要通过一次激活执行 n 字节数据的简单传输，将主循环设置为 1（TCDn_CITER = TCDn_BITER = 1）。通道服务请求被确认并选择通道执行后，数据传输开始。传输完成后，TCDn_CSR [DONE] 位被设置，如果启用了中断，则会生成中断。</p>
+<p>例如，以下 TCD 条目配置为传输 16 字节数据。eDMA 被编程为主循环一次迭代，每次迭代传输 16 字节。源内存有一个位于 0x1000 的 8 位内存端口，目标内存有一个位于 0x2000 的 32 位端口。地址偏移量按增量编程以匹配传输大小：源为 1 字节，目标为 4 字节。最终的源和目标地址被调整为返回其初始值。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">TCDn_CITER = TCDn_BITER = 1  </span><br><span class="line">TCDn_NBYTES = 16  </span><br><span class="line">TCDn_SADDR = 0x1000  </span><br><span class="line">TCDn_SOFF = 1  </span><br><span class="line">TCDn_ATTR[SSIZE] = 0  </span><br><span class="line">TCDn_SLAST = -16  </span><br><span class="line">TCDn_DADDR = 0x2000  </span><br><span class="line">TCDn_DOFF = 4  </span><br><span class="line">TCDn_ATTR[DSIZE] = 2  </span><br><span class="line">TCDn_DLAST_SGA = –16  </span><br><span class="line">TCDn_CSR[INTMAJOR] = 1  </span><br><span class="line">TCDn_CSR[START] = 1（应在初始化所有其他字段后最后写入）  </span><br><span class="line">所有其他TCDn字段 = 0  </span><br></pre></td></tr></tbody></table></figure>
+
+<p>这将生成以下事件序列：</p>
+<ol>
+<li>用户写入 TCDn_CSR [START] 位请求通道服务。</li>
+<li>通过仲裁选择通道进行服务。</li>
+<li>eDMA 引擎写入：TCDn_CSR [DONE] = 0，TCDn_CSR [START] = 0，TCDn_CSR [ACTIVE] = 1。</li>
+<li>eDMA 引擎从本地内存读取通道 TCD 数据到内部寄存器文件。</li>
+<li>源到目标的传输执行如下：
+a. 从地址 0x1000 读取字节，从 0x1001 读取字节，从 0x1002 读取字节，从 0x1003 读取字节。
+b. 向地址 0x2000 写入 32 位 ￫ 微循环第一次迭代。
+c. 从地址 0x1004 读取字节，从 0x1005 读取字节，从 0x1006 读取字节，从 0x1007 读取字节。
+d. 向地址 0x2004 写入 32 位 ￫ 微循环第二次迭代。
+e. 从地址 0x1008 读取字节，从 0x1009 读取字节，从 0x100A 读取字节，从 0x100B 读取字节。
+f. 向地址 0x2008 写入 32 位 ￫ 微循环第三次迭代。
+g. 从地址 0x100C 读取字节，从 0x100D 读取字节，从 0x100E 读取字节，从 0x100F 读取字节。
+h. 向地址 0x200C 写入 32 位 ￫ 微循环最后一次迭代 ￫ 主循环完成。</li>
+<li>eDMA 引擎写入：TCDn_SADDR = 0x1000，TCDn_DADDR = 0x2000，TCDn_CITER = 1（TCDn_BITER）。</li>
+<li>eDMA 引擎写入：TCDn_CSR [ACTIVE] = 0，TCDn_CSR [DONE] = 1，INT [n] = 1。</li>
+<li>通道退出，eDMA 进入空闲状态或服务下一个通道。</li>
+</ol>
+<h4 id="6-4-4-2-多次请求"><a href="#6-4-4-2-多次请求" class="headerlink" title="6.4.4.2 多次请求"></a>6.4.4.2 多次请求</h4><p>以下示例通过两次硬件请求传输 32 字节数据，其他方面与前一个示例相同。唯一变化的字段是主循环迭代计数和最终地址偏移量。eDMA 被编程为主循环两次迭代，每次迭代传输 16 字节。在 ERQ 寄存器中启用通道的硬件请求后，从设备发起通道服务请求。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TCDn_CITER = TCDn_BITER = 2  </span><br><span class="line">TCDn_SLAST = –32  </span><br><span class="line">TCDn_DLAST_SGA = –32  </span><br></pre></td></tr></tbody></table></figure>
+
+<p>这将生成以下事件序列：</p>
+<ol>
+<li>第一次硬件（即 eDMA 外设）请求通道服务。</li>
+<li>通过仲裁选择通道进行服务。</li>
+<li>eDMA 引擎写入：TCD_CSR [DONE] = 0，TCDn_CSR [START] = 0，TCDn_CSR [ACTIVE] = 1。</li>
+<li>eDMA 引擎从本地内存读取通道 TCDn 数据到内部寄存器文件。</li>
+<li>源到目标的传输执行如下：
+a. 从地址 0x1000 读取字节，从 0x1001 读取字节，从 0x1002 读取字节，从 0x1003 读取字节。
+b. 向地址 0x2000 写入 32 位 ￫ 微循环第一次迭代。
+c. 从地址 0x1004 读取字节，从 0x1005 读取字节，从 0x1006 读取字节，从 0x1007 读取字节。
+d. 向地址 0x2004 写入 32 位 ￫ 微循环第二次迭代。
+e. 从地址 0x1008 读取字节，从 0x1009 读取字节，从 0x100A 读取字节，从 0x100B 读取字节。
+f. 向地址 0x2008 写入 32 位 ￫ 微循环第三次迭代。
+g. 从地址 0x100C 读取字节，从 0x100D 读取字节，从 0x100E 读取字节，从 0x100F 读取字节。
+h. 向地址 0x200C 写入 32 位 ￫ 微循环最后一次迭代。</li>
+<li>eDMA 引擎写入：TCDn_SADDR = 0x1010，TCDn_DADDR = 0x2010，TCDn_CITER = 1。</li>
+<li>eDMA 引擎写入：TCDn_CSR [ACTIVE] = 0。</li>
+<li>通道退出 ￫ 主循环一次迭代。eDMA 进入空闲状态或服务下一个通道。</li>
+<li>第二次硬件（即 eDMA 外设）请求通道服务。</li>
+<li>通过仲裁选择通道进行服务。</li>
+<li>eDMA 引擎写入：TCDn_CSR [DONE] = 0，TCDn_CSR [START] = 0，TCDn_CSR [ACTIVE] = 1。</li>
+<li>eDMA 引擎从本地内存读取通道 TCD 数据到内部寄存器文件。</li>
+<li>源到目标的传输执行如下：
+a. 从地址 0x1010 读取字节，从 0x1011 读取字节，从 0x1012 读取字节，从 0x1013 读取字节。
+b. 向地址 0x2010 写入 32 位 ￫ 微循环第一次迭代。
+c. 从地址 0x1014 读取字节，从 0x1015 读取字节，从 0x1016 读取字节，从 0x1017 读取字节。
+d. 向地址 0x2014 写入 32 位 ￫ 微循环第二次迭代。
+e. 从地址 0x1018 读取字节，从 0x1019 读取字节，从 0x101A 读取字节，从 0x101B 读取字节。
+f. 向地址 0x2018 写入 32 位 ￫ 微循环第三次迭代。
+g. 从地址 0x101C 读取字节，从 0x101D 读取字节，从 0x101E 读取字节，从 0x101F 读取字节。
+h. 向地址 0x201C 写入 32 位 ￫ 微循环最后一次迭代 ￫ 主循环完成。</li>
+<li>eDMA 引擎写入：TCDn_SADDR = 0x1000，TCDn_DADDR = 0x2000，TCDn_CITER = 2（TCDn_BITER）。</li>
+<li>eDMA 引擎写入：TCDn_CSR [ACTIVE] = 0，TCDn_CSR [DONE] = 1，INT [n] = 1。</li>
+<li>通道退出 ￫ 主循环完成。eDMA 进入空闲状态或服务下一个通道。</li>
+</ol>
+<h4 id="6-4-4-3-使用模运算功能"><a href="#6-4-4-3-使用模运算功能" class="headerlink" title="6.4.4.3 使用模运算功能"></a>6.4.4.3 使用模运算功能</h4><p>eDMA 的模运算功能支持实现循环数据队列，其中队列大小为 2 的幂。TCD 中源和目标的 MOD 是一个 5 位字段，用于指定地址 + 偏移量计算后，哪些低位地址位会递增，而所有高位地址位保持原值。该字段设置为 0 时将禁用模运算功能。</p>
+<p>下表展示了如何根据 MOD 字段的设置指定传输地址。在此示例中，创建了一个循环缓冲区，地址会回绕到初始值，同时 28 个高位地址位（0x1234567x）保持原值。假设源地址设置为 0x12345670，偏移量设置为 4 字节，MOD 字段设置为 4，从而支持一个 2⁴字节（16 字节）大小的队列。
+表 6-7 模运算示例（续表见下页）</p>
+<table>
+<thead>
+<tr>
+<th>传输次数</th>
+<th>地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>0x12345670</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0x12345674</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0x12345678</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0x1234567C</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0x12345670</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0x12345674</td>
+</tr>
+</tbody></table>
+<h3 id="6-4-5-监控传输描述符状态"><a href="#6-4-5-监控传输描述符状态" class="headerlink" title="6.4.5 监控传输描述符状态"></a>6.4.5 监控传输描述符状态</h3><p>本节讨论如何监控 eDMA 状态。</p>
+<h4 id="6-4-5-1-测试微循环完成情况"><a href="#6-4-5-1-测试微循环完成情况" class="headerlink" title="6.4.5.1 测试微循环完成情况"></a>6.4.5.1 测试微循环完成情况</h4><p>使用软件启动的服务请求时，有两种方法可测试微循环是否完成。第一种方法是读取 TCDn_CITER 字段并检测其变化。另一种方法可从以下序列中推导：通过测试 TCDn_CSR [START] 和 TCDn_CSR [ACTIVE] 位的状态。当 TCDn_CSR [START] 位被设置后，若这两个位均读为 0，则表示微循环完成。轮询 TCDn_CSR [ACTIVE] 位可能不可靠，因为如果通道执行时间较短，可能会错过活动状态。</p>
+<p>对于软件激活的通道，TCD 状态位按以下序列变化：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>TCDn_CSR 位状态</th>
+<th></th>
+<th></th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>START</td>
+<td>ACTIVE</td>
+<td>DONE</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>通过软件请求通道服务</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>通道正在执行</td>
+</tr>
+<tr>
+<td>3a</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>通道已完成微循环并进入空闲状态</td>
+</tr>
+<tr>
+<td>3b</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>通道已完成主循环并进入空闲状态</td>
+</tr>
+</tbody></table>
+<p>使用硬件（外设）启动的服务请求时，测试微循环完成的最佳方法是读取 TCDn_CITER 字段并检测其变化。硬件请求和确认握手信号在编程模型中不可见。</p>
+<p>对于硬件激活的通道，TCD 状态位按以下序列变化：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>TCDn_CSR 位状态</th>
+<th></th>
+<th></th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>START</td>
+<td>ACTIVE</td>
+<td>DONE</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>通过硬件请求通道服务（外设请求有效）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>通道正在执行</td>
+</tr>
+<tr>
+<td>3a</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>通道已完成微循环并进入空闲状态</td>
+</tr>
+<tr>
+<td>3b</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>通道已完成主循环并进入空闲状态</td>
+</tr>
+</tbody></table>
+<p>对于两种激活类型，主循环完成状态均通过 TCDn_CSR [DONE] 位明确指示。无论通道如何激活，TCDn_CSR [START] 位在通道开始执行时自动清除。</p>
+<h4 id="6-4-5-2-读取活动通道的传输描述符"><a href="#6-4-5-2-读取活动通道的传输描述符" class="headerlink" title="6.4.5.2 读取活动通道的传输描述符"></a>6.4.5.2 读取活动通道的传输描述符</h4><p>当通道执行时，读取 TCDn_SADDR、TCDn_DADDR 和 TCDn_NBYTES 字段将返回真实值。这些真实值是 eDMA 引擎当前在内部寄存器文件中使用的值，而非该通道 TCD 本地内存中的值。随着传输进行而递减至 0 的地址（SADDR、DADDR）和字节数（NBYTES）可指示传输进度。所有其他值从 TCD 本地内存读取。</p>
+<h4 id="6-4-5-3-检查通道抢占状态"><a href="#6-4-5-3-检查通道抢占状态" class="headerlink" title="6.4.5.3 检查通道抢占状态"></a>6.4.5.3 检查通道抢占状态</h4><p>仅当同时为组仲裁和通道仲裁选择固定仲裁模式时，才支持抢占功能。抢占场景发生在以下情况：已启用抢占的通道正在运行时，更高优先级请求变为有效。当 eDMA 引擎未运行在固定组 + 固定通道仲裁模式下时，当前运行通道与待处理请求的相对优先级无法确定。选择循环仲裁模式时，通道和 / 或组优先级被视为相等（即持续轮换）。</p>
+<p>被抢占通道的 TCDn_CSR [ACTIVE] 位在整个抢占期间保持有效。被抢占通道会暂时挂起，直至抢占通道完成一次主循环迭代。如果全局 TCD 映射中同时设置了两个 TCDn_CSR [ACTIVE] 位，则表示高优先级通道正在主动抢占低优先级通道。</p>
+<h3 id="6-4-6-通道链接"><a href="#6-4-6-通道链接" class="headerlink" title="6.4.6 通道链接"></a>6.4.6 通道链接</h3><p>通道链接（或链式传输）是一种机制，其中一个通道设置另一个通道（或自身）的 TCDn_CSR [START] 位，从而为该通道发起服务请求。启用后，eDMA 引擎会在主循环或微循环完成时自动执行此操作。</p>
+<p>微循环通道链接在微循环完成（或主循环的一次迭代）时触发。TCDn_CITER [ELINK] 字段决定是否请求微循环链接。启用后，除最后一次迭代外，每次主循环迭代完成后都会进行通道链接。当主循环耗尽时，仅使用主循环通道链接字段来决定是否进行通道链接。例如，初始字段设置为：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">TCDn_CITER[ELINK] = 1  </span><br><span class="line">TCDn_CITER[LINKCH] = 0xC  </span><br><span class="line">TCDn_CITER[CITER] = 0x4  </span><br><span class="line">TCDn_CSR[MAJOR_ELINK] = 1  </span><br><span class="line">TCDn_CSR[MAJOR_LINKCH] = 0x3  </span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行流程如下：</p>
+<ol>
+<li>微循环完成 → 设置 TCD2_CSR [START] 位。</li>
+<li>微循环完成 → 设置 TCD2_CSR [START] 位。</li>
+<li>微循环完成 → 设置 TCD2_CSR [START] 位。</li>
+<li>微循环完成且主循环完成 → 设置 TCD3_CSR [START] 位。</li>
+</ol>
+<p>启用微循环链接（TCDn_CITER [ELINK] = 1）时，TCDn_CITER [CITER] 字段使用 9 位向量构成当前迭代计数。禁用微循环链接（TCDn_CITER [ELINK] = 0）时，TCDn_CITER [CITER] 字段使用 15 位向量构成当前迭代计数。与 TCDn_CITER [LINKCH] 字段相关的位会连接到 CITER 值，以扩展 CITER 的范围。</p>
+<p>注意：TCDn_CITER [ELINK] 位和 TCDn_BITER [ELINK] 位必须相等，否则会报告配置错误。CITER 和 BITER 的向量宽度必须相等，以计算主循环中途完成的中断点。</p>
+<p>下表总结了 DMA 通道如何在循环结束时链接到另一个 DMA 通道（即使用另一个通道的 TCD）。
+表 6-8 通道链接参数</p>
+<table>
+<thead>
+<tr>
+<th>期望的链接行为</th>
+<th>TCD 控制字段名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>微循环结束时链接</td>
+<td>CITER[ELINK]</td>
+<td>启用微循环完成时的通道间链接（当前迭代）</td>
+</tr>
+<tr>
+<td>CITER[LINKCH]</td>
+<td>微循环结束时链接的目标通道号（当前迭代）</td>
+<td></td>
+</tr>
+<tr>
+<td>主循环结束时链接</td>
+<td>CSR[MAJOR_ELINK]</td>
+<td>启用主循环完成时的通道间链接</td>
+</tr>
+<tr>
+<td>CSR[MAJOR_LINKCH]</td>
+<td>主循环结束时链接的目标通道号</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="6-4-7-动态编程"><a href="#6-4-7-动态编程" class="headerlink" title="6.4.7 动态编程"></a>6.4.7 动态编程</h3><p>本节提供在通道执行期间更改编程模型的推荐方法。</p>
+<h4 id="6-4-7-1-动态更改通道优先级"><a href="#6-4-7-1-动态更改通道优先级" class="headerlink" title="6.4.7.1 动态更改通道优先级"></a>6.4.7.1 动态更改通道优先级</h4><p>动态更改通道优先级级别的推荐方法有以下两种：</p>
+<ol>
+<li>切换到循环通道仲裁模式，更改通道优先级，然后切换回固定仲裁模式。</li>
+<li>禁用所有通道，更改通道优先级，然后启用相应的通道。</li>
+</ol>
+<h4 id="6-4-7-2-动态通道链接"><a href="#6-4-7-2-动态通道链接" class="headerlink" title="6.4.7.2 动态通道链接"></a>6.4.7.2 动态通道链接</h4><p>动态通道链接是指在通道执行期间设置 TCDn_CSR [MAJORELINK] 位（参见 TCD 结构示意图）。该字段在通道执行结束时从 TCD 本地内存读取，因此允许在通道执行期间启用该功能。</p>
+<p>由于可以在执行期间更改配置，因此需要一致性模型。例如，当尝试通过启用 TCDn_CSR [MAJORELINK] 位执行动态通道链接时，若同时 eDMA 引擎正在退出该通道，则编程模型中 TCDn_CSR [MAJORELINK] 位会被设置，但无法确定在通道退出前是否实际完成了链接。</p>
+<p>执行动态通道链接请求时，推荐以下一致性模型：</p>
+<ol>
+<li>向 TCDn_CSR [MAJORELINK] 写入 1。</li>
+<li>读回 TCDn_CSR [MAJORELINK]。</li>
+<li>测试 TCDn_CSR [MAJORELINK] 请求状态：
+・若 TCDn_CSR [MAJORELINK] = 1，表示动态链接尝试成功。
+・若 TCDn_CSR [MAJORELINK] = 0，表示动态链接尝试失败（通道已在退出中）。</li>
+</ol>
+<p>对于此请求，一旦通道的 TCD.done 位设置（表示主循环完成），TCD 本地内存控制器会强制将任何写入通道 TCD.word7 的 TCDn_CSR [MAJORELINK] 位清零。</p>
+<p>注意：必须在写入 TCDn_CSR [MAJORELINK] 之前清除 TCDn_CSR [DONE] 位。eDMA 引擎在通道开始执行后会自动清除 TCDn_CSR [DONE] 位。</p>
+<h4 id="6-4-7-3-动态分散-聚集"><a href="#6-4-7-3-动态分散-聚集" class="headerlink" title="6.4.7.3 动态分散 / 聚集"></a>6.4.7.3 动态分散 / 聚集</h4><p>分散 / 聚集是指自动将新 TCD 加载到通道中的过程。它使 DMA 通道能够使用多个 TCD，从而支持将 DMA 数据分散到多个目标或从多个源聚集数据。启用分散 / 聚集功能且通道完成主循环后，会从系统内存中获取新 TCD 并加载到 eDMA 编程模型中的该通道描述符位置，替换当前描述符。</p>
+<p>由于可以在执行期间更改配置，因此需要一致性模型。例如，当尝试通过启用 TCDn_CSR [ESG] 位执行动态分散 / 聚集操作时，若同时 eDMA 引擎正在退出该通道，则编程模型中 ESG 位会被设置，但无法确定在通道退出前是否实际处理了分散 / 聚集请求。</p>
+<p>以下子节介绍两种一致性模型方法。方法 1 的优点是可以通过一次读取同时获取 MAJORLINKCH 字段和 ESG 位。对于动态通道链接和分散 / 聚集请求，一旦通道的 TCD [DONE] 位设置（表示主循环完成），TCD 本地内存控制器会强制将任何写入通道 TCD word7 的 TCD MAJOR [ELINK] 和 ESG 位清零。</p>
+<p>注意：用户必须在写入 MAJORELINK 或 ESG 位之前清除 TCDn_CSR [DONE] 位。eDMA 引擎在通道开始执行后会自动清除 TCDn_CSR [DONE] 位。</p>
+<h5 id="6-4-7-3-1-方法-1（不使用主循环通道链接的通道）"><a href="#6-4-7-3-1-方法-1（不使用主循环通道链接的通道）" class="headerlink" title="6.4.7.3.1 方法 1（不使用主循环通道链接的通道）"></a>6.4.7.3.1 方法 1（不使用主循环通道链接的通道）</h5><p>对于不使用主循环通道链接的通道，此一致性模型可用于动态分散 / 聚集请求。</p>
+<p>当 TCDn_CSR [MAJORELINK] = 0 时，eDMA 不使用 TCDn_CSR [MAJORLINKCH] 字段。此时，MAJORLINKCH 可用于其他用途。此方法将 MAJORLINKCH 字段用作 TCD 标识（ID）。</p>
+<ol>
+<li>构建描述符时，为每个使用动态分散 / 聚集的通道对应的 TCD，在 TCDn_CSR [MAJORLINKCH] 中写入唯一的 TCD ID。</li>
+<li>向 TCDn_CSR [DREQ] 写入 1。
+若动态分散 / 聚集尝试失败，设置 DREQ 位可防止通道未来通过硬件激活。这将避免通道使用基于分散 / 聚集地址（在下一步写入）计算的目标地址（DADDR）执行，而非使用 DLAST_SGA 最终偏移量值。</li>
+<li>向 TCDn_DLASTSGA 寄存器写入分散 / 聚集地址。</li>
+<li>向 TCDn_CSR [ESG] 写入 1。</li>
+<li>读回 16 位 TCD 控制 / 状态字段。</li>
+<li>测试 TCDn_CSR 寄存器中的 ESG 请求状态和 MAJORLINKCH 值：<ul>
+<li>若 ESG = 1，表示动态链接尝试成功。</li>
+<li>若 ESG = 0 且 MAJORLINKCH（ID）未改变，表示动态链接尝试失败（通道已在退出中）。</li>
+<li>若 ESG = 0 且 MAJORLINKCH（ID）改变，表示动态链接尝试成功（新 TCD 的 ESG 值清除了 ESG 位）。</li>
+</ul>
+</li>
+</ol>
+<h5 id="6-4-7-3-2-方法-2（使用主循环通道链接的通道）"><a href="#6-4-7-3-2-方法-2（使用主循环通道链接的通道）" class="headerlink" title="6.4.7.3.2 方法 2（使用主循环通道链接的通道）"></a>6.4.7.3.2 方法 2（使用主循环通道链接的通道）</h5><p>对于使用主循环通道链接的通道，此一致性模型可用于动态分散 / 聚集请求。此方法将 TCD [DLAST_SGA] 字段用作 TCD 标识（ID）。</p>
+<ol>
+<li>向 TCDn_CSR [DREQ] 写入 1。
+若动态分散 / 聚集尝试失败，设置 TCDn_CSR [DREQ] 位可防止通道未来通过硬件激活。这将避免通道使用基于分散 / 聚集地址（在下一步写入）计算的目标地址（DADDR）执行，而非使用 DLAST_SGA 最终偏移量值。</li>
+<li>向 TCDn_DLAST_SGA 寄存器写入分散 / 聚集地址。</li>
+<li>向 TCDn_CSR [ESG] 写入 1。</li>
+<li>读回 TCDn_CSR [ESG]。</li>
+<li>测试 ESG 请求状态：<ul>
+<li>若 ESG = 1，表示动态链接尝试成功。</li>
+<li>若 ESG = 0，读取 32 位 TCDn_DLAST_SGA 字段：<ul>
+<li>若 ESG = 0 且 TCDn_DLAST_SGA 未改变，表示动态链接尝试失败（通道已在退出中）。</li>
+<li>若 ESG = 0 且 TCDn_DLAST_SGA 改变，表示动态链接尝试成功（新 TCD 的 ESG 值清除了 ESG 位）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="6-4-8-挂起-恢复具有活动硬件服务请求的-DMA-通道"><a href="#6-4-8-挂起-恢复具有活动硬件服务请求的-DMA-通道" class="headerlink" title="6.4.8 挂起 / 恢复具有活动硬件服务请求的 DMA 通道"></a>6.4.8 挂起 / 恢复具有活动硬件服务请求的 DMA 通道</h3><p>DMA 允许在无需 CPU 干预的情况下将数据从内存或外设寄存器传输到内存或外设寄存器的另一位置。配置并激活 DMA 和外设后，动态挂起外设服务请求的情况较为罕见。在此类场景中，禁用 DMA 硬件服务请求有特定限制。为确保一致性，必须遵循特定流程。本节提供当 DMA 由从模块（如串行外设接口（SPI）、ADC 或其他模块）触发时，如何一致地挂起和恢复 DMA 通道的指导。</p>
+<h4 id="6-4-8-1-挂起活动-DMA-通道"><a href="#6-4-8-1-挂起活动-DMA-通道" class="headerlink" title="6.4.8.1 挂起活动 DMA 通道"></a>6.4.8.1 挂起活动 DMA 通道</h4><p>挂起活动 DMA 通道的步骤如下：</p>
+<ol>
+<li>首先在外设端停止 DMA 服务请求。通过读取外设的相应寄存器，确认请求已禁用。</li>
+<li>检查 DMA 的硬件请求状态寄存器（DMA_HRSn），确保待挂起的 DMA 通道无服务请求。然后通过清除相应 DMA 通道的 ERQ 位，禁用硬件服务请求。</li>
+</ol>
+<h4 id="6-4-8-2-恢复-DMA-通道"><a href="#6-4-8-2-恢复-DMA-通道" class="headerlink" title="6.4.8.2 恢复 DMA 通道"></a>6.4.8.2 恢复 DMA 通道</h4><p>恢复 DMA 通道的步骤如下：</p>
+<ol>
+<li>通过设置相应的 ERQ 位，启用目标通道的 DMA 服务请求。</li>
+<li>在外设端启用 DMA 服务请求。</li>
+</ol>
+<p>例如，假设 SPI 被配置为主设备，当 SPI_TXFIFO 出现空槽时通过 DMA 服务请求传输数据。DMA 会在请求时将下一条命令和数据传输到 TXFIFO。若需挂起 DMA/SPI 传输循环并执行恢复操作，步骤如下：</p>
+<ol>
+<li>向 SPI_RSER [TFFF_RE] 写入 0，禁用源端的 DMA 服务请求。确认 SPI_RSER [TFFF_RE] 为 0。</li>
+<li>验证对应通道的 DMA_HRS [HRSn] 为 0，确保 SPI 未发起 DMA 服务请求。若不存在服务请求，通过清除通道的 ERQ 位禁用 DMA 通道；若存在服务请求，等待请求处理完成且 HRS 位读为 0。</li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>RT1060 eDMA 详解 (3)</p><p><a href="https://dustofstars.github.io/NXP/RT1060/eDMA/rt1060-edma-详解-3/">https://dustofstars.github.io/NXP/RT1060/eDMA/rt1060-edma-详解-3/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Gavin</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2025-05-24</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-05-24</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NXP/">NXP</a><a class="link-muted mr-2" rel="tag" href="/tags/eDMA/">eDMA</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/"><span class="level-item">RT1060 eDMA 详解 (2)</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="Gavin"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Gavin</p><p class="is-size-6 is-block">Embeded &amp; IC Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shanghai, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">143</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">47</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">51</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/dustofstars/" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/dustofstars/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#RT1060-eDMA-Part3-初始化-应用"><span class="level-left"><span class="level-item">1</span><span class="level-item">RT1060 eDMA Part3 初始化 &amp; 应用</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#6-4-初始化-应用信息"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">6.4 初始化 / 应用信息</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#6-4-1-eDMA-初始化"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">6.4.1 eDMA 初始化</span></span></a></li><li><a class="level is-mobile" href="#6-4-2-编程错误"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">6.4.2 编程错误</span></span></a></li><li><a class="level is-mobile" href="#6-4-3-仲裁模式注意事项"><span class="level-left"><span class="level-item">1.1.3</span><span class="level-item">6.4.3 仲裁模式注意事项</span></span></a></li><li><a class="level is-mobile" href="#6-4-4-DMA-传输示例"><span class="level-left"><span class="level-item">1.1.4</span><span class="level-item">6.4.4 DMA 传输示例</span></span></a></li><li><a class="level is-mobile" href="#6-4-5-监控传输描述符状态"><span class="level-left"><span class="level-item">1.1.5</span><span class="level-item">6.4.5 监控传输描述符状态</span></span></a></li><li><a class="level is-mobile" href="#6-4-6-通道链接"><span class="level-left"><span class="level-item">1.1.6</span><span class="level-item">6.4.6 通道链接</span></span></a></li><li><a class="level is-mobile" href="#6-4-7-动态编程"><span class="level-left"><span class="level-item">1.1.7</span><span class="level-item">6.4.7 动态编程</span></span></a></li><li><a class="level is-mobile" href="#6-4-8-挂起-恢复具有活动硬件服务请求的-DMA-通道"><span class="level-left"><span class="level-item">1.1.8</span><span class="level-item">6.4.8 挂起 / 恢复具有活动硬件服务请求的 DMA 通道</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/ARM/"><span class="level-start"><span class="level-item">ARM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/ARM/Boot/"><span class="level-start"><span class="level-item">Boot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ARM/MemoryMap/"><span class="level-start"><span class="level-item">MemoryMap</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/"><span class="level-start"><span class="level-item">IC验证</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/"><span class="level-start"><span class="level-item">漫游指南</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/"><span class="level-start"><span class="level-item">路科V0</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">IoT协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/BLE/"><span class="level-start"><span class="level-item">BLE</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/Thread/"><span class="level-start"><span class="level-item">Thread</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/ZigBee/"><span class="level-start"><span class="level-item">ZigBee</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/Leetcode/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">数据结构</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/NLP/PyTorch/"><span class="level-start"><span class="level-item">PyTorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/"><span class="level-start"><span class="level-item">NXP</span></span><span class="level-end"><span class="level-item tag">32</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/"><span class="level-start"><span class="level-item">KW38</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/GPIO%E4%B8%AD%E6%96%AD/"><span class="level-start"><span class="level-item">GPIO中断</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1024/"><span class="level-start"><span class="level-item">RT1024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="level-start"><span class="level-item">原理图</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1050/"><span class="level-start"><span class="level-item">RT1050</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1050/%E9%87%8E%E7%81%AB/"><span class="level-start"><span class="level-item">野火</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/"><span class="level-start"><span class="level-item">RT1060</span></span><span class="level-end"><span class="level-item tag">7</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1060/binary/"><span class="level-start"><span class="level-item">binary</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/eDMA/"><span class="level-start"><span class="level-item">eDMA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT600/"><span class="level-start"><span class="level-item">RT600</span></span><span class="level-end"><span class="level-item tag">7</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT600/BootROM/"><span class="level-start"><span class="level-item">BootROM</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/ReferenceManual/"><span class="level-start"><span class="level-item">ReferenceManual</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Plugins/"><span class="level-start"><span class="level-item">Plugins</span></span><span class="level-end"><span class="level-item tag">12</span></span></a><ul><li><a class="level is-mobile" href="/categories/Plugins/Analytics/"><span class="level-start"><span class="level-item">Analytics</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Comment/"><span class="level-start"><span class="level-item">Comment</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Donation/"><span class="level-start"><span class="level-item">Donation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Other/"><span class="level-start"><span class="level-item">Other</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Search/"><span class="level-start"><span class="level-item">Search</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Share/"><span class="level-start"><span class="level-item">Share</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Widgets/"><span class="level-start"><span class="level-item">Widgets</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/vim/"><span class="level-start"><span class="level-item">vim</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">总线协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/UART/"><span class="level-start"><span class="level-item">UART</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E5%AD%97IC/"><span class="level-start"><span class="level-item">数字IC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%8B%B1%E8%AF%AD/"><span class="level-start"><span class="level-item">英语</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ARM/"><span class="tag">ARM</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BLE/"><span class="tag">BLE</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Boot/"><span class="tag">Boot</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BootROM/"><span class="tag">BootROM</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DMA/"><span class="tag">DMA</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Demo/"><span class="tag">Demo</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/FLASH/"><span class="tag">FLASH</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO/"><span class="tag">GPIO</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO%E4%B8%AD%E6%96%AD/"><span class="tag">GPIO中断</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Getting-Started/"><span class="tag">Getting Started</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IC%E9%AA%8C%E8%AF%81/"><span class="tag">IC验证</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus-User-Guide/"><span class="tag">Icarus User Guide</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97/"><span class="tag">Icarus用户指南</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/KW38/"><span class="tag">KW38</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leetcode/"><span class="tag">Leetcode</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MemoryMap/"><span class="tag">MemoryMap</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NXP/"><span class="tag">NXP</span><span class="tag">35</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Numpy/"><span class="tag">Numpy</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PDF/"><span class="tag">PDF</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PyTorch/"><span class="tag">PyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RAM/"><span class="tag">RAM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ROM/"><span class="tag">ROM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT1050/"><span class="tag">RT1050</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT600/"><span class="tag">RT600</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReferenceManual/"><span class="tag">ReferenceManual</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/STL/"><span class="tag">STL</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/System-Verilog/"><span class="tag">System Verilog</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TIMER/"><span class="tag">TIMER</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Thread/"><span class="tag">Thread</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UART/"><span class="tag">UART</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UVM/"><span class="tag">UVM</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZigBee/"><span class="tag">ZigBee</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/eDMA/"><span class="tag">eDMA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hardware/"><span class="tag">hardware</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/image/"><span class="tag">image</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pyTorch/"><span class="tag">pyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vector/"><span class="tag">vector</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vim/"><span class="tag">vim</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%AD%E6%96%AD/"><span class="tag">中断</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/"><span class="tag">二分查找</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="tag">代码随想录</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="tag">原理图</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2/"><span class="tag">数据探索</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="tag">数据结构</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E7%BB%84/"><span class="tag">数组</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%80%83%E7%A0%94%E8%8B%B1%E8%AF%AD100%E5%8F%A5/"><span class="tag">考研英语100句</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%8B%B1%E8%AF%AD/"><span class="tag">英语</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/"><span class="tag">设计流程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a><p class="is-size-7"><span>&copy; 2025 Gavin</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
