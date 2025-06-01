@@ -57,7 +57,7 @@
 </blockquote>
 <p>在MCU BootUtility中，它显示从<code>0x6000_0000</code>到<code>0x6000_0200</code>之前，都是FDCB段。那么它的大小就是<code>512 Byte</code>.</p>
 <p>这里我们先不管，直接看对我们有用的部分。</p>
-<style>.lsgegxytctkq{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155429758.png" class="lsgegxytctkq">
+<style>.dlwlhoqogxhi{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155429758.png" class="dlwlhoqogxhi">
 
 
 
@@ -101,11 +101,11 @@
 </tr>
 </tbody></table>
 <h2 id="Image-Version"><a href="#Image-Version" class="headerlink" title="Image Version"></a>Image Version</h2><p>在Offset <code>0x600</code>的地方有个image版本号，用于双image的时候，还没用过。暂且不表。</p>
-<style>.xwifxqerobrt{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155738390.png" class="xwifxqerobrt">
+<style>.ednszrvndnmv{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155738390.png" class="ednszrvndnmv">
 
 
 
-<h2 id="IVT"><a href="#IVT" class="headerlink" title="IVT"></a>IVT</h2><style>.lzqeutqszwhk{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228161351059.png" class="lzqeutqszwhk">
+<h2 id="IVT"><a href="#IVT" class="headerlink" title="IVT"></a>IVT</h2><style>.myiuxlgebehf{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228161351059.png" class="myiuxlgebehf">
 
 <table>
 <thead>
@@ -147,7 +147,7 @@
 </tr>
 </tbody></table>
 <h2 id="Boot-Data"><a href="#Boot-Data" class="headerlink" title="Boot Data"></a>Boot Data</h2><p>根据IVT中 Offset <code>0x1010</code>的指引，找到 Boot Data的地址是：<code>0x6000_1020</code></p>
-<style>.tgxzdyncplpd{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162214452.png" class="tgxzdyncplpd">
+<style>.vkfdlxdcqmxs{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162214452.png" class="vkfdlxdcqmxs">
 
 <table>
 <thead>
@@ -176,7 +176,7 @@
 </tbody></table>
 <h2 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h2><p>终于到了光秃秃的image部分了~</p>
 <p>根据IVT中的指示，它是程序入口，地址是<code>0x6000_2000</code>!</p>
-<style>.erdarnjhcrlc{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162759478.png" class="erdarnjhcrlc">
+<style>.jlkoshqnpfum{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162759478.png" class="jlkoshqnpfum">
 
 <table>
 <thead>
