@@ -33,9 +33,9 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
-
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
 <style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
 </head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-11-30T13:32:20.000Z" title="11/30/2023, 1:32:20 PM">2023-11-30</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1050/">RT1050</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1050/%E9%87%8E%E7%81%AB/">野火</a></span><span class="level-item">8 分钟读完 (大约1196个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">野火RT1052开发板1创建环境</h1><div class="content"><h1 id="野火RT1052开发板1-–-NXP-MCU-Link-Pro-Keil-V5-编译环境创建"><a href="#野火RT1052开发板1-–-NXP-MCU-Link-Pro-Keil-V5-编译环境创建" class="headerlink" title="野火RT1052开发板1 – NXP MCU-Link Pro + Keil V5 编译环境创建"></a>野火RT1052开发板1 – NXP MCU-Link Pro + Keil V5 编译环境创建</h1><blockquote>
 <p>野火i.MX RT1052 EVK Pro是个很好的学习工具，野火不仅做了汉化，另外，把所有的Pin脚都做了引出，虽然是个老产品，但是一通百通所以这个系列准备使用野火的板子来入门，具体要更几篇待定…，但是尽量每一篇都有真东西，这是第一篇：使用NXP MCU-Link Pro + Keil V5，创建编译环境运行第一个demo。</p>
 </blockquote>
@@ -43,7 +43,7 @@
 
 
 
-<style>.tgiwdiwcekhw{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130220915920.png" class="tgiwdiwcekhw">
+<style>.vlwjrsnuqrzw{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130220915920.png" class="vlwjrsnuqrzw">
 
 <ul>
 <li>芯片Part Number： <strong>196pin</strong> 的工业级的 <code>MIMXRT1052CVL5B</code></li>
@@ -55,7 +55,7 @@
 <li>KEIL5 需要自己安装对应芯片的芯片包。直接去 keil 的官网下载：<a target="_blank" rel="noopener" href="http://www.keil.com/dd2/pack/">http://www.keil.com/dd2/pack/</a></li>
 <li>下载之后双击安装即可！</li>
 </ul>
-<style>.mxjppocptabm{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130221413145.png" class="mxjppocptabm">
+<style>.jnyylmsbxqhh{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130221413145.png" class="jnyylmsbxqhh">
 
 
 
@@ -66,12 +66,12 @@
 <p>然后，需要在project中手动增加这个编译器：</p>
 <ol>
 <li><p>Add another Arm Compiler Version to List：</p>
-<style>.cidgytsilvri{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130222156941.png" class="cidgytsilvri">
+<style>.dwgzxtcmwfja{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130222156941.png" class="dwgzxtcmwfja">
 </li>
 <li><p>在项目中改为这个编译器：</p>
 </li>
 </ol>
-<style>.shklwlfkazic{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130222240551.png" class="shklwlfkazic">
+<style>.mfkkjcoldraq{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130222240551.png" class="mfkkjcoldraq">
 
 
 
@@ -83,14 +83,14 @@
 <p>需要把这两个文件复制到Keil的安装目录下：**<u><em>C:\Keil_v5\ARM\Flash</em></u>**</p>
 <p><u><strong>====&gt; 到此为止，编译所需的软件基本整理完毕！==</strong></u></p>
 <h2 id="硬件连接"><a href="#硬件连接" class="headerlink" title="硬件连接"></a>硬件连接</h2><p>先把载板丢一边，看看这个核心板，核心板有一个供电口，一个SWD debug口，还有一个三线的UART接口。</p>
-<style>.jgwohjrslwwv{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130223734281.png" class="jgwohjrslwwv">
+<style>.dfspruveetgt{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130223734281.png" class="dfspruveetgt">
 
-<style>.cpzrfbyssfly{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130223748254.png" class="cpzrfbyssfly">
+<style>.xhuzqkpeibgw{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130223748254.png" class="xhuzqkpeibgw">
 
 <p>原装的DAP下载器不见了，刚好试试NXP更为强大的MCU-Link Pro ! 小试牛刀！</p>
 <h3 id="MCU-Link-Pro"><a href="#MCU-Link-Pro" class="headerlink" title="MCU-Link Pro"></a>MCU-Link Pro</h3><p>MCU-Link Pro的官方主页在这：<a target="_blank" rel="noopener" href="https://www.nxp.com.cn/design/software/development-software/mcuxpresso-software-and-tools-/mcu-link-pro-debug-probe:MCU-LINK-PRO">MCU-Link Pro硬件调试器 | NXP 半导体</a></p>
 <p>支持很多NXP产品的调试，而且可以方便的烧录CMSIS-DAP和JLink的固件，虽然贵点，但是相当于一颗更比两颗强，值了！</p>
-<style>.btrfhwtmyuxl{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130224325691.png" class="btrfhwtmyuxl">
+<style>.dhmlhnrkjseb{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130224325691.png" class="dhmlhnrkjseb">
 
 
 
@@ -100,21 +100,21 @@
 除了基本MCU-Link中的SWD调试、SWO分析和USB到UART桥接功能(VCOM)之外，MCU-LinkPro型号还增加了J-Link LITE固件选项、能量测量、模拟信号监视器、USB转SPI和I2C桥接功能，以及外设仿真的板载LPC804。
 MCU-Link Pro基于Arm® Cortex-M33®双核LPC55S69微控制器，并具有高速USB接口，提供低成本、高性能的调试。</p>
 </blockquote>
-<style>.hibtqgecffsd{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130225008405.png" class="hibtqgecffsd">
+<style>.zlwubsvnqomj{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130225008405.png" class="zlwubsvnqomj">
 
 <p>在这个用法中，我们主要用到J7连接板子，J19中的UART信号接出来到板子上：RX &lt;—&gt; TX  TX &lt;—&gt; RX</p>
-<style>.mbkixlfkdutb{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130225346948.png" class="mbkixlfkdutb">
+<style>.wieykdxrefvw{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130225346948.png" class="wieykdxrefvw">
 
 <h3 id="JTAG接口转接"><a href="#JTAG接口转接" class="headerlink" title="JTAG接口转接"></a>JTAG接口转接</h3><p>由于配备的cable是个小口，还需要一个小转大的转接板，因此，需要找个20PinJTAG口的定义，查阅这个链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/chenhuanqiangnihao/article/details/113835905">JTAG各类接口针脚定义、含义以及SWD接线方式_jtag接口定义_学海无涯_come on的博客-CSDN博客</a></p>
-<style>.lylnrpfvrmey{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130225730949.png" class="lylnrpfvrmey">
+<style>.ufdtcmxhwsjm{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130225730949.png" class="ufdtcmxhwsjm">
 
 <p>注意，方形焊盘都是1号Pin脚；</p>
-<style>.hhcadsnvcnsa{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130225915289.png" class="hhcadsnvcnsa">
+<style>.ptdghfobwpko{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130225915289.png" class="ptdghfobwpko">
 
 
 
 <p><strong>==—》至此，硬件连接部分搞定！==</strong></p>
-<h2 id="跑Demo！"><a href="#跑Demo！" class="headerlink" title="跑Demo！"></a>跑Demo！</h2><h3 id="先展示一下硬件连接"><a href="#先展示一下硬件连接" class="headerlink" title="先展示一下硬件连接"></a>先展示一下硬件连接</h3><style>.ebtfwzvvulso{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/%E7%A1%AC%E4%BB%B6%E8%BF%9E%E6%8E%A5.jpg" class="ebtfwzvvulso">
+<h2 id="跑Demo！"><a href="#跑Demo！" class="headerlink" title="跑Demo！"></a>跑Demo！</h2><h3 id="先展示一下硬件连接"><a href="#先展示一下硬件连接" class="headerlink" title="先展示一下硬件连接"></a>先展示一下硬件连接</h3><style>.tavclevdvwkn{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/%E7%A1%AC%E4%BB%B6%E8%BF%9E%E6%8E%A5.jpg" class="tavclevdvwkn">
 
 
 
@@ -127,18 +127,18 @@ MCU-Link Pro基于Arm® Cortex-M33®双核LPC55S69微控制器，并具有高速
 <p>1052-H1核心板测试代码\1052-H1测试程序</p>
 </blockquote>
 <p>先编译看看：</p>
-<style>.ywjhtnrridtk{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130232535899.png" class="ywjhtnrridtk">
+<style>.ynrqnilfgyrl{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130232535899.png" class="ynrqnilfgyrl">
 
 
 
 <p>🆗！</p>
 <p>再烧录进来：</p>
-<style>.pcefribmxvvr{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130232615101.png" class="pcefribmxvvr">
+<style>.idjejmkofeup{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/image-20231130232615101.png" class="idjejmkofeup">
 
 
 
 <p>看看使用VCOM的串口输出：</p>
-<style>.ucpwnqebobzu{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/shot.png" class="ucpwnqebobzu">
+<style>.sflgzxipqnjj{zoom:100%;}</style><img src="/NXP/RT1050/%E9%87%8E%E7%81%AB/%E9%87%8E%E7%81%ABrt1052%E5%BC%80%E5%8F%91%E6%9D%BF1%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83/shot.png" class="sflgzxipqnjj">
 
 
 

@@ -33,9 +33,9 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
-
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
 <style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
 </head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/gallery/covers/image%E9%87%8C%E6%9C%89%E4%BB%80%E4%B9%88.jpg" alt="RT1060 image里面有什么？"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-02-28T08:43:40.000Z" title="2/28/2025, 8:43:40 AM">2025-02-28</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/">RT1060</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/binary/">binary</a></span><span class="level-item">5 分钟读完 (大约821个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT1060 image里面有什么？</h1><div class="content"><h1 id="RT1060-image里面有什么？"><a href="#RT1060-image里面有什么？" class="headerlink" title="RT1060 image里面有什么？"></a>RT1060 image里面有什么？</h1><blockquote>
 <p>RT MCU 学习有一段时间了，刚好得空，在这篇文章里面，我们一起分析一个完整的image bin文件，它有哪些部分？分别是什么作用？哪些是不可或缺的？哪些是可选的？</p>
 </blockquote>
@@ -57,7 +57,7 @@
 </blockquote>
 <p>在MCU BootUtility中，它显示从<code>0x6000_0000</code>到<code>0x6000_0200</code>之前，都是FDCB段。那么它的大小就是<code>512 Byte</code>.</p>
 <p>这里我们先不管，直接看对我们有用的部分。</p>
-<style>.depdqxdmwbde{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155429758.png" class="depdqxdmwbde">
+<style>.cdcchciezbfu{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155429758.png" class="cdcchciezbfu">
 
 
 
@@ -101,11 +101,11 @@
 </tr>
 </tbody></table>
 <h2 id="Image-Version"><a href="#Image-Version" class="headerlink" title="Image Version"></a>Image Version</h2><p>在Offset <code>0x600</code>的地方有个image版本号，用于双image的时候，还没用过。暂且不表。</p>
-<style>.hcbefxkedbnk{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155738390.png" class="hcbefxkedbnk">
+<style>.pslcflecodri{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228155738390.png" class="pslcflecodri">
 
 
 
-<h2 id="IVT"><a href="#IVT" class="headerlink" title="IVT"></a>IVT</h2><style>.cymiyvsyhlpw{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228161351059.png" class="cymiyvsyhlpw">
+<h2 id="IVT"><a href="#IVT" class="headerlink" title="IVT"></a>IVT</h2><style>.uxelttffqpun{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228161351059.png" class="uxelttffqpun">
 
 <table>
 <thead>
@@ -147,7 +147,7 @@
 </tr>
 </tbody></table>
 <h2 id="Boot-Data"><a href="#Boot-Data" class="headerlink" title="Boot Data"></a>Boot Data</h2><p>根据IVT中 Offset <code>0x1010</code>的指引，找到 Boot Data的地址是：<code>0x6000_1020</code></p>
-<style>.yiejlagpprbn{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162214452.png" class="yiejlagpprbn">
+<style>.rheklzokobca{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162214452.png" class="rheklzokobca">
 
 <table>
 <thead>
@@ -176,7 +176,7 @@
 </tbody></table>
 <h2 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h2><p>终于到了光秃秃的image部分了~</p>
 <p>根据IVT中的指示，它是程序入口，地址是<code>0x6000_2000</code>!</p>
-<style>.gbuelventqhp{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162759478.png" class="gbuelventqhp">
+<style>.pgquyvgxdkak{zoom:100%;}</style><img src="/NXP/RT1060/binary/rt1060-image%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F/image-20250228162759478.png" class="pgquyvgxdkak">
 
 <table>
 <thead>

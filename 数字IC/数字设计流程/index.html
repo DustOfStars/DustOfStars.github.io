@@ -33,9 +33,9 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
-
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
 <style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
 </head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-05-06T07:48:22.000Z" title="5/6/2022, 7:48:22 AM">2022-05-06</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E6%95%B0%E5%AD%97IC/">数字IC</a></span><span class="level-item">10 分钟读完 (大约1476个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">数字设计流程</h1><div class="content"><h1 id="数字设计流程"><a href="#数字设计流程" class="headerlink" title="数字设计流程"></a>数字设计流程</h1><blockquote>
 <p>先放地址，来源于B站比特大陆相关的学习资料。 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1yY411P7SR?spm_id_from=333.999.0.0">链接</a></p>
 </blockquote>
@@ -51,7 +51,7 @@
 <li>预留研发调试时间；</li>
 </ul>
 <h2 id="二、-研发阶段"><a href="#二、-研发阶段" class="headerlink" title="二、 研发阶段"></a>二、 研发阶段</h2><h3 id="2-1-技术研讨方案制定"><a href="#2-1-技术研讨方案制定" class="headerlink" title="2.1 技术研讨方案制定"></a>2.1 技术研讨方案制定</h3><p>划分芯片的子系统和模块、软硬件工作的划分和规划、各个子系统也要有性能指标定义等。</p>
-<h3 id="2-2-详细设计"><a href="#2-2-详细设计" class="headerlink" title="2.2 详细设计"></a>2.2 详细设计</h3><style>.yqgsxhvrpecc{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%AD%A5%E9%AA%A4.png" class="yqgsxhvrpecc">
+<h3 id="2-2-详细设计"><a href="#2-2-详细设计" class="headerlink" title="2.2 详细设计"></a>2.2 详细设计</h3><style>.bckolyfndmly{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%AD%A5%E9%AA%A4.png" class="bckolyfndmly">
 
 <blockquote>
 <p>算法和硬件架构、硬件电路设计、功能验证都属于前端设计部分；</p>
@@ -64,14 +64,14 @@
 <li>输出： 软件参考模型</li>
 <li>过程： 架构人员使用Matlab、C++、System C、 System Verilog 等语言工具，完成芯片中数字部分的高层次算法或架构的分析和建模，为硬件提供正确的软件功能模型，更为重要的是，通过大量的高层次仿真和调试，为RTL实现提供总体性的设计指导。越是复杂的数字电路，这部分算法模型仿真越重要。</li>
 </ul>
-<style>.pdbltzqfklpx{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E7%AE%97%E6%B3%95%E5%92%8C%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.png" class="pdbltzqfklpx">
+<style>.klddjnjdijnx{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E7%AE%97%E6%B3%95%E5%92%8C%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.png" class="klddjnjdijnx">
 
 
 <h4 id="2-2-2-硬件电路设计"><a href="#2-2-2-硬件电路设计" class="headerlink" title="2.2.2 硬件电路设计"></a>2.2.2 硬件电路设计</h4><ul>
 <li>输入： 从架构拿到的软件参考模型</li>
 <li>输出： RTL代码、详细的设计文档、逻辑综合报告、语法检查报告</li>
 </ul>
-<style>.dwwurbhyfmed{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E7%A1%AC%E4%BB%B6%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1.png" class="dwwurbhyfmed">
+<style>.gzymvvwnkbny{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E7%A1%AC%E4%BB%B6%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1.png" class="gzymvvwnkbny">
 <ul>
 <li>spyglass: 时序校验、语法校验等</li>
 <li>Design Compiler： 预综合，观察时序面积功耗等是否达到要求；</li>
@@ -80,28 +80,28 @@
 <li>输入： 设计规格、设计代码、软件模型；</li>
 <li>输出： 代码覆盖率和功能覆盖率报告；</li>
 </ul>
-<style>.uzetndmmrbyh{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E5%8A%9F%E8%83%BD%E9%AA%8C%E8%AF%81.png" class="uzetndmmrbyh">
+<style>.mgeayerchjkt{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E5%8A%9F%E8%83%BD%E9%AA%8C%E8%AF%81.png" class="mgeayerchjkt">
 
 
 <h4 id="2-2-4-逻辑综合"><a href="#2-2-4-逻辑综合" class="headerlink" title="2.2.4 逻辑综合"></a>2.2.4 逻辑综合</h4><ul>
 <li>输入： RTL代码、工艺库、约束；</li>
 <li>输出： 网表、标准延迟文件SDF、工程文件(.ddc)、各类报告；</li>
 </ul>
-<style>.otimokoqvono{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E9%80%BB%E8%BE%91%E7%BB%BC%E5%90%88.png" class="otimokoqvono">
+<style>.jqeurzvosjxe{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E9%80%BB%E8%BE%91%E7%BB%BC%E5%90%88.png" class="jqeurzvosjxe">
 
 
 <h4 id="2-2-5-静态时序分析"><a href="#2-2-5-静态时序分析" class="headerlink" title="2.2.5 静态时序分析"></a>2.2.5 静态时序分析</h4><ul>
 <li>中端人员使用静态时序分析工具 Prime Time，从静态分析角度，保证设计中所有的路径，满足内部时序单元对建立时间和保持时间的要求。</li>
 <li>即无论起点是什么，信号都可以被及时的传递到该路径的终点，并且在电路正常工作所需的时间段内保持恒定；</li>
 </ul>
-<style>.qkfonmmqlxxx{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E9%9D%99%E6%80%81%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90.png" class="qkfonmmqlxxx">
+<style>.bhynunmbxehn{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E9%9D%99%E6%80%81%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90.png" class="bhynunmbxehn">
 
 <h4 id="2-2-6-一致性验证"><a href="#2-2-6-一致性验证" class="headerlink" title="2.2.6 一致性验证"></a>2.2.6 一致性验证</h4><ul>
 <li>输入： RTL代码、网表、约束；</li>
 <li>输出： match（两张图的节点是否一致）和verify（计算得到的两张图的功能是否一致）的报告；</li>
 <li>过程： RTL和网表都可以抽象成两幅图，由节点和边组成，中端人员使用Formality、Conformal工具进行一致性验证，采用类似于直接比较两幅图是否一致的方法，来确定网表是否正确。</li>
 </ul>
-<style>.qmcdpprfuqds{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E4%B8%80%E8%87%B4%E6%80%A7%E9%AA%8C%E8%AF%81.png" class="qmcdpprfuqds">
+<style>.bdxgbebmgbjd{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E4%B8%80%E8%87%B4%E6%80%A7%E9%AA%8C%E8%AF%81.png" class="bdxgbebmgbjd">
 
 
 <h4 id="2-2-7-布局布线"><a href="#2-2-7-布局布线" class="headerlink" title="2.2.7 布局布线"></a>2.2.7 布局布线</h4><ul>
@@ -110,14 +110,14 @@
 <li>时钟树综合（clock tree synthesis）： 简单说就是时钟的布线，因为时钟信号在数字电路的全局指挥最用，它的分布应该是对称式连接到各个寄存器单元的，从而时钟从一个时钟源到各个寄存器时，时钟延迟差异最小。这也是为什么时钟信号需要单独布线的原因。</li>
 <li>布线： 在满足工艺规则和布线层数限制、线宽、线间距限制和各线网可靠绝缘的电性能约束条件下，根据电路的连接关系，将各单元和I/O pad用互连线连接起来。</li>
 </ul>
-<style>.hepfgarywgdl{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E5%B8%83%E5%B1%80%E5%B8%83%E7%BA%BF.png" class="hepfgarywgdl">
+<style>.poicnyooufyd{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E5%B8%83%E5%B1%80%E5%B8%83%E7%BA%BF.png" class="poicnyooufyd">
 
 
 <h4 id="2-2-8-生成版图并验证"><a href="#2-2-8-生成版图并验证" class="headerlink" title="2.2.8 生成版图并验证"></a>2.2.8 生成版图并验证</h4><ul>
 <li>寄生参数提取： 由于导线本身存在电阻，相邻导线之间的互感，耦合电容在芯片内部会产生信号噪声，串扰和反射。这些效应会产生信号完整性的问题，导致信号电压波动和变化，如果严重就会导致信号失真错误。提取寄生参数进行再次分析验证，分析信号完整性是非常重要的。</li>
 <li>生成版图并验证： 对完成布线的物理版图进行功能和时序上的验证，大概包括以下方面： LVS（layout vs schematic）、 DRC（Design Rule Checking）、 ERC（Electrical Rule Checking）</li>
 </ul>
-<style>.oxloanpxbrvo{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E7%94%9F%E6%88%90%E7%89%88%E5%9B%BE%E5%B9%B6%E9%AA%8C%E8%AF%81.png" class="oxloanpxbrvo">
+<style>.fsnwwfiqmpsn{zoom:100%;}</style><img src="/%E6%95%B0%E5%AD%97IC/%E6%95%B0%E5%AD%97%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/%E7%94%9F%E6%88%90%E7%89%88%E5%9B%BE%E5%B9%B6%E9%AA%8C%E8%AF%81.png" class="fsnwwfiqmpsn">
 
 
 

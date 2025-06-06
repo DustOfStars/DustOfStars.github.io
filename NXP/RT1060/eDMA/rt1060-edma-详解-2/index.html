@@ -33,9 +33,9 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
-
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
 <style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
 </head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/gallery/covers/RT1060_eDMA_BlockOverview.png" alt="RT1060 eDMA 详解 (2)"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-24T07:10:02.000Z" title="5/24/2025, 7:10:02 AM">2025-05-24</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/">RT1060</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/eDMA/">eDMA</a></span><span class="level-item">19 分钟读完 (大约2905个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT1060 eDMA 详解 (2)</h1><div class="content"><h1 id="RT1060-eDMA-Part2-功能描述"><a href="#RT1060-eDMA-Part2-功能描述" class="headerlink" title="RT1060 eDMA Part2 功能描述"></a>RT1060 eDMA Part2 功能描述</h1><blockquote>
 <p>第 6 章 增强型直接内存访问（eDMA） Functional Description</p>
 <p>要点：</p>
@@ -68,7 +68,7 @@
 </tbody></table>
 <h3 id="6-3-2-eDMA-基本数据流"><a href="#6-3-2-eDMA-基本数据流" class="headerlink" title="6.3.2 eDMA 基本数据流"></a>6.3.2 eDMA 基本数据流</h3><p>数据传输的基本流程可分为三个阶段。
 如下图所示，第一阶段涉及通道激活：</p>
-<style>.owbshzfdwvab{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524151836491.png" class="owbshzfdwvab" alt="image-20250524151836491">
+<style>.lzwcismvolbl{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524151836491.png" class="lzwcismvolbl" alt="image-20250524151836491">
 
 <p><strong>图 6-2. eDMA operation, part 1</strong></p>
 <p>此示例使用 eDMA 外设请求信号的断言来为通道 n 请求服务。通过软件和 <code>TCDn_CSR[START]</code> 位激活通道的基本流程与外设请求相同。eDMA 请求输入信号在内部注册，然后路由通过 eDMA 引擎：</p>
@@ -79,12 +79,12 @@
 <li>接下来，访问 TCD 内存，<span style="color: red; font-weight: bold; ">从本地内存读取所需的描述符并加载到 eDMA 引擎的内部寄存器文件中。</span><strong><u>TCD 内存宽度为 64 位，以最小化获取激活通道描述符并将其加载到内部寄存器文件所需的时间。</u></strong></li>
 </ul>
 <p>下图说明了基本数据流的第二部分：</p>
-<style>.tlptlozluidl{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524152522740.png" class="tlptlozluidl" alt="image-20250524152522740">
+<style>.iheolnlkgmxt{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524152522740.png" class="iheolnlkgmxt" alt="image-20250524152522740">
 
 <p><strong>图 6-3. eDMA operation, part 2</strong></p>
 <p>与数据传输相关的模块（地址路径、数据路径和控制模块)按顺序执行所需的 源读取 和 目标写入 以<strong>执行数据移动</strong>。启动源读取，<span style="color: red;">获取的数据临时存储在数据路径模块中，直到在目标写入期间被选通到内部总线上。这种源读取 / 目标写入处理持续进行，直到 <code>minor byte count</code> 完成传输。</span></p>
 <p>小字节计数传输完成后，执行基本数据流的最后阶段。在此阶段，<span style="color: red; font-weight: bold; ">地址路径逻辑对相应 TCD 中的某些字段进行所需的更新，例如 SADDR、DADDR、CITER。</span>如果主迭代计数用尽，则执行附加操作。这些操作包括最终地址调整和将 <code>BITER</code> 字段重新加载到 <code>CITER</code> 中。此时还会触发可选的中断请求，并可能使用描述符中包含的<code>分散 / 聚集地址指针</code>（如果启用了<code>scatter/gather</code>）从内存中获取新的 TCD。TCD 内存的更新和中断请求的触发如下图所示：</p>
-<style>.lyvpkmkkuikj{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524153040151.png" class="lyvpkmkkuikj" alt="image-20250524153040151">
+<style>.xytjoufvadsv{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524153040151.png" class="xytjoufvadsv" alt="image-20250524153040151">
 
 <p><strong>图 6-4. eDMA operation, part 3</strong></p>
 <h3 id="6-3-3-故障报告和处理"><a href="#6-3-3-故障报告和处理" class="headerlink" title="6.3.3 故障报告和处理"></a>6.3.3 故障报告和处理</h3><p>通道错误在错误状态寄存器（<code>DMAx_ES</code>）中报告，可能由以下原因引起：</p>

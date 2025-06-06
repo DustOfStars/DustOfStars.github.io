@@ -33,58 +33,58 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
-
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
 <style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
 </head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-12-04T14:26:22.000Z" title="12/4/2023, 2:26:22 PM">2023-12-04</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1050/">RT1050</a></span><span class="level-item">3 分钟读完 (大约488个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT1050开发--第1节 ARM Cortex-M7体系结构</h1><div class="content"><h1 id="第一节-ARM-Cortex-M7体系结构"><a href="#第一节-ARM-Cortex-M7体系结构" class="headerlink" title="第一节 ARM Cortex-M7体系结构"></a>第一节 ARM Cortex-M7体系结构</h1><span id="more"></span>
 
 
 
 <blockquote>
-<style>.oojplehrethk{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204205936163.png" class="oojplehrethk">
+<style>.xutdwtbclrmq{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204205936163.png" class="xutdwtbclrmq">
 </blockquote>
 <hr>
-<h2 id="认识ARM"><a href="#认识ARM" class="headerlink" title="认识ARM"></a>认识ARM</h2><style>.flwidxhjiyuk{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210036757.png" class="flwidxhjiyuk">
+<h2 id="认识ARM"><a href="#认识ARM" class="headerlink" title="认识ARM"></a>认识ARM</h2><style>.bpvlcqbhqldr{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210036757.png" class="bpvlcqbhqldr">
 
 
 
-<h3 id="A系列-–-移动的王者"><a href="#A系列-–-移动的王者" class="headerlink" title="A系列 – 移动的王者"></a>A系列 – 移动的王者</h3><style>.ltuwnqcriklk{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210232296.png" class="ltuwnqcriklk">
+<h3 id="A系列-–-移动的王者"><a href="#A系列-–-移动的王者" class="headerlink" title="A系列 – 移动的王者"></a>A系列 – 移动的王者</h3><style>.jgufumlccqfn{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210232296.png" class="jgufumlccqfn">
 
 
 
-<h2 id="M系列-–-无处不在"><a href="#M系列-–-无处不在" class="headerlink" title="M系列 – 无处不在"></a>M系列 – 无处不在</h2><style>.oggmdwiqioaf{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210508859.png" class="oggmdwiqioaf">
+<h2 id="M系列-–-无处不在"><a href="#M系列-–-无处不在" class="headerlink" title="M系列 – 无处不在"></a>M系列 – 无处不在</h2><style>.eyxobsqtqxsx{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210508859.png" class="eyxobsqtqxsx">
 
-<style>.tmxekeuzgsxn{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210629438.png" class="tmxekeuzgsxn">
-
-
-
-<style>.xdbperjpqhen{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210816730.png" class="xdbperjpqhen">
-
-<hr>
-<h2 id="Cortex-M7介绍"><a href="#Cortex-M7介绍" class="headerlink" title="Cortex-M7介绍"></a>Cortex-M7介绍</h2><style>.qtywmwiobdzf{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210956321.png" class="qtywmwiobdzf">
-
-<h3 id="规格特点"><a href="#规格特点" class="headerlink" title="规格特点"></a>规格特点</h3><style>.szzftufzokby{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211218436.png" class="szzftufzokby">
+<style>.yxmpbjdvqkdq{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210629438.png" class="yxmpbjdvqkdq">
 
 
 
-<h3 id="对外接口"><a href="#对外接口" class="headerlink" title="对外接口"></a>对外接口</h3><style>.lsalouuylkvl{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211325476.png" class="lsalouuylkvl">
-
-
+<style>.zktbixuqwsbm{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210816730.png" class="zktbixuqwsbm">
 
 <hr>
-<h2 id="Cortex-M7-编程模型"><a href="#Cortex-M7-编程模型" class="headerlink" title="Cortex-M7 编程模型"></a>Cortex-M7 编程模型</h2><h3 id="运行模式"><a href="#运行模式" class="headerlink" title="运行模式"></a>运行模式</h3><style>.sjwmjkhvtoio{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211548215.png" class="sjwmjkhvtoio">
+<h2 id="Cortex-M7介绍"><a href="#Cortex-M7介绍" class="headerlink" title="Cortex-M7介绍"></a>Cortex-M7介绍</h2><style>.swogimugnhkf{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204210956321.png" class="swogimugnhkf">
+
+<h3 id="规格特点"><a href="#规格特点" class="headerlink" title="规格特点"></a>规格特点</h3><style>.ggbuquneppqp{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211218436.png" class="ggbuquneppqp">
+
+
+
+<h3 id="对外接口"><a href="#对外接口" class="headerlink" title="对外接口"></a>对外接口</h3><style>.zfcesftulpoc{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211325476.png" class="zfcesftulpoc">
+
+
+
+<hr>
+<h2 id="Cortex-M7-编程模型"><a href="#Cortex-M7-编程模型" class="headerlink" title="Cortex-M7 编程模型"></a>Cortex-M7 编程模型</h2><h3 id="运行模式"><a href="#运行模式" class="headerlink" title="运行模式"></a>运行模式</h3><style>.lfhlylhhmgiw{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211548215.png" class="lfhlylhhmgiw">
 
 <blockquote>
 <p>所有M系列都是这两个模式：线程模式 + 处理模式（中断模式）</p>
 <p>即：主程序都是在线程模式，中断处理函数都是处理模式，处理模式下拥有特权；</p>
 </blockquote>
 <hr>
-<h3 id="操作状态"><a href="#操作状态" class="headerlink" title="操作状态"></a>操作状态</h3><style>.xwhhcpjlnvdr{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211740877.png" class="xwhhcpjlnvdr">
+<h3 id="操作状态"><a href="#操作状态" class="headerlink" title="操作状态"></a>操作状态</h3><style>.fzsfkvbhxvai{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211740877.png" class="fzsfkvbhxvai">
 
 <blockquote>
 <p>即：一个运行，一个调试；</p>
 </blockquote>
-<h3 id="特权访问和非特权访问"><a href="#特权访问和非特权访问" class="headerlink" title="特权访问和非特权访问"></a>特权访问和非特权访问</h3><style>.ugpcifbjrrhi{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211828379.png" class="ugpcifbjrrhi">
+<h3 id="特权访问和非特权访问"><a href="#特权访问和非特权访问" class="headerlink" title="特权访问和非特权访问"></a>特权访问和非特权访问</h3><style>.tppocfhqvmdr{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204211828379.png" class="tppocfhqvmdr">
 
 <blockquote>
 <p>特权访问：即可以触碰到CPU所有的资源；非特权访问有些资源碰不到！</p>
@@ -92,9 +92,9 @@
 </blockquote>
 <hr>
 <h3 id="系统的地址映射"><a href="#系统的地址映射" class="headerlink" title="系统的地址映射"></a>系统的地址映射</h3><blockquote>
-<style>.xbjbgmhedeml{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204212206094.png" class="xbjbgmhedeml">
+<style>.ujvtquklaely{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204212206094.png" class="ujvtquklaely">
 </blockquote>
-<style>.mbxygkpdnclq{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204212237605.png" class="mbxygkpdnclq">
+<style>.vuqnoimqihdp{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204212237605.png" class="vuqnoimqihdp">
 
 <blockquote>
 <p>0x0000_0000 ~ 0xFFFF_FFFF  一共 4GB；</p>
@@ -107,9 +107,9 @@
 <p>外部私有外设总线；–》 M7内核的；</p>
 </blockquote>
 <h3 id="处理器的核心寄存器"><a href="#处理器的核心寄存器" class="headerlink" title="处理器的核心寄存器"></a>处理器的核心寄存器</h3><blockquote>
-<style>.ttvgehshyfyb{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204212830460.png" class="ttvgehshyfyb">
+<style>.tglnklnhmvek{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204212830460.png" class="tglnklnhmvek">
 </blockquote>
-<style>.ctbyrrbdreiu{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204212848276.png" class="ctbyrrbdreiu">
+<style>.gmglmmrpkqpt{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204212848276.png" class="gmglmmrpkqpt">
 
 <p>R13栈指针一个寄存器映射两个区域：<mark><strong><code>MSP</code></strong> 和 **<code>PSP</code>**；</mark></p>
 <blockquote>
@@ -117,11 +117,11 @@
 <p>FreeRTOS才会用到PSP进程栈指针；</p>
 </blockquote>
 <hr>
-<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><style>.mauyuvfylyko{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204213402264.png" class="mauyuvfylyko">
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><style>.xcoyrddrgcxl{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204213402264.png" class="xcoyrddrgcxl">
 
 
 
-<style>.dcnuokhdqvjn{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204213423024.png" class="dcnuokhdqvjn">
+<style>.edvhizcybwpk{zoom:100%;}</style><img src="/NXP/RT1050/rt1050%E5%BC%80%E5%8F%91-%E7%AC%AC1%E8%8A%82-arm-cortex-m7%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20231204213423024.png" class="edvhizcybwpk">
 
 
 
