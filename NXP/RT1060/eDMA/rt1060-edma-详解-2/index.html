@@ -68,7 +68,7 @@
 </tbody></table>
 <h3 id="6-3-2-eDMA-基本数据流"><a href="#6-3-2-eDMA-基本数据流" class="headerlink" title="6.3.2 eDMA 基本数据流"></a>6.3.2 eDMA 基本数据流</h3><p>数据传输的基本流程可分为三个阶段。
 如下图所示，第一阶段涉及通道激活：</p>
-<style>.sqihciunezwe{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524151836491.png" class="sqihciunezwe" alt="image-20250524151836491">
+<style>.ujlkrbktyiux{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524151836491.png" class="ujlkrbktyiux" alt="image-20250524151836491">
 
 <p><strong>图 6-2. eDMA operation, part 1</strong></p>
 <p>此示例使用 eDMA 外设请求信号的断言来为通道 n 请求服务。通过软件和 <code>TCDn_CSR[START]</code> 位激活通道的基本流程与外设请求相同。eDMA 请求输入信号在内部注册，然后路由通过 eDMA 引擎：</p>
@@ -79,12 +79,12 @@
 <li>接下来，访问 TCD 内存，<span style="color: red; font-weight: bold; ">从本地内存读取所需的描述符并加载到 eDMA 引擎的内部寄存器文件中。</span><strong><u>TCD 内存宽度为 64 位，以最小化获取激活通道描述符并将其加载到内部寄存器文件所需的时间。</u></strong></li>
 </ul>
 <p>下图说明了基本数据流的第二部分：</p>
-<style>.gddjuebhluyt{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524152522740.png" class="gddjuebhluyt" alt="image-20250524152522740">
+<style>.kwguxqqihxxn{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524152522740.png" class="kwguxqqihxxn" alt="image-20250524152522740">
 
 <p><strong>图 6-3. eDMA operation, part 2</strong></p>
 <p>与数据传输相关的模块（地址路径、数据路径和控制模块)按顺序执行所需的 源读取 和 目标写入 以<strong>执行数据移动</strong>。启动源读取，<span style="color: red;">获取的数据临时存储在数据路径模块中，直到在目标写入期间被选通到内部总线上。这种源读取 / 目标写入处理持续进行，直到 <code>minor byte count</code> 完成传输。</span></p>
 <p>小字节计数传输完成后，执行基本数据流的最后阶段。在此阶段，<span style="color: red; font-weight: bold; ">地址路径逻辑对相应 TCD 中的某些字段进行所需的更新，例如 SADDR、DADDR、CITER。</span>如果主迭代计数用尽，则执行附加操作。这些操作包括最终地址调整和将 <code>BITER</code> 字段重新加载到 <code>CITER</code> 中。此时还会触发可选的中断请求，并可能使用描述符中包含的<code>分散 / 聚集地址指针</code>（如果启用了<code>scatter/gather</code>）从内存中获取新的 TCD。TCD 内存的更新和中断请求的触发如下图所示：</p>
-<style>.botekxargdjl{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524153040151.png" class="botekxargdjl" alt="image-20250524153040151">
+<style>.wioqbbuyeshd{zoom:100%;}</style><img src="/NXP/RT1060/eDMA/rt1060-edma-%E8%AF%A6%E8%A7%A3-2/image-20250524153040151.png" class="wioqbbuyeshd" alt="image-20250524153040151">
 
 <p><strong>图 6-4. eDMA operation, part 3</strong></p>
 <h3 id="6-3-3-故障报告和处理"><a href="#6-3-3-故障报告和处理" class="headerlink" title="6.3.3 故障报告和处理"></a>6.3.3 故障报告和处理</h3><p>通道错误在错误状态寄存器（<code>DMAx_ES</code>）中报告，可能由以下原因引起：</p>
