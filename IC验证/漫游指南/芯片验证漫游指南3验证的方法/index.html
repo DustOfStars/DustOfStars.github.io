@@ -66,7 +66,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li><strong>通过内置的C代码进行数据正确性检查</strong>；</li>
 <li><strong>通过外置的参考模型或者其他检查器来进行信号一致性检查</strong>。</li>
 </ul>
-<style>.ciyrjvfotufu{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%AE%9A%E5%90%91%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png" class="ciyrjvfotufu">
+<style>.tubnrqjpmxwq{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%AE%9A%E5%90%91%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png" class="tubnrqjpmxwq">
 
 <p>有时我们考虑直接将第三方提供的可执行文件或二进制文件作为激励源交给存储器，这就省略了C代码编译的步骤，但这需要相应的运行环境兼容。</p>
 <p>将上述定向测试流程与实际项目进行对比，如图3.3所示，<strong>测试用例可以通过C代码交给处理器进行硬件行为的仿真检查。如果模块验证环境中缺少处理器，如何在这一级实现C代码的垂直复用（从模块级到芯片系统级）呢</strong>？</p>
@@ -75,7 +75,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li>将C代码交给转换器将其转换为文本命令格式；</li>
 <li>文本命令格式可以被总线翻译器识别进而转换为总线上的读写操作。</li>
 </ul>
-<style>.wwxidujxoxkw{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/C%E4%BB%A3%E7%A0%81%E7%9A%84%E5%9E%82%E7%9B%B4%E5%A4%8D%E7%94%A8%E6%96%B9%E6%A1%88.png" class="wwxidujxoxkw">
+<style>.plikkbjrlfqp{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/C%E4%BB%A3%E7%A0%81%E7%9A%84%E5%9E%82%E7%9B%B4%E5%A4%8D%E7%94%A8%E6%96%B9%E6%A1%88.png" class="plikkbjrlfqp">
 
 <p>上面的步骤中需要引入转换器实现复用，也可以考虑将转换器和总线翻译器通过标准的SystermVerilog C-DPI接口，从而实现良好的复用性。关于如何应用C-DPI接口，读者可以在17.1节获取更多的进行
 转换细节。</p>
@@ -83,7 +83,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <h1 id="1-2-随机测试"><a href="#1-2-随机测试" class="headerlink" title="1.2 随机测试"></a>1.2 随机测试</h1><p>与定向测试序列相对的是<strong>随机序列（random sequence）。随机序列通过预先定义的约束，每次随机产生合理的数值，通过激励产生器给出测试序列。图3.4可以说明，与定向测试相比，随机测试可以直接
 通过激励生成器发送测试序列</strong>。</p>
 <p>产生随机数的方法有很多种，并且有很多语言可以实现。但考虑到灵活地给随机绑定一些约束时，我们就需要特定的语言提供这样的属性，目前常用的语言有SystemVerilog和e语言。从图3.5来自Wilson2014年的调查数据来看，SystemVerilog的使用率大致已经上升到了75%左右。</p>
-<style>.coxpftwvecpi{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png" class="coxpftwvecpi">
+<style>.vxjrssbpqnip{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B.png" class="vxjrssbpqnip">
 
 <p><strong>约束实际上是决定随机激励能否符合接口协议的关键，也是朝向验证合理状态空间的关键。随机约束生成器一般通过静态约束或动态反馈约束给出每一轮的激励</strong>。从图3.6可以看出，在实际的验证环境中，往往有很多对随机约束起控制和反馈作用的因素，它们分别是：</p>
 <ul>
@@ -94,25 +94,25 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li>验证环境的配置参数。如果验证环境是可配置的，那么这些配置参数也可能会影响序列的产生。</li>
 <li><strong>验证环境中不同激励组件之间的同步通信</strong>。如果验证环境中包含多个激励组件，那么要实现这些随机组件之间的协同，就需要考虑通过同步通信（synchronization communication）来实现。</li>
 </ul>
-<style>.vqzkfrzfaswm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E9%9A%8F%E6%9C%BA%E7%BA%A6%E6%9D%9F%E7%9A%84%E6%8E%A7%E5%88%B6%E5%92%8C%E5%8F%8D%E9%A6%88%E5%9B%A0%E7%B4%A0.png" class="vqzkfrzfaswm">
+<style>.bqqjfwsdxcqf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E9%9A%8F%E6%9C%BA%E7%BA%A6%E6%9D%9F%E7%9A%84%E6%8E%A7%E5%88%B6%E5%92%8C%E5%8F%8D%E9%A6%88%E5%9B%A0%E7%B4%A0.png" class="bqqjfwsdxcqf">
 
 
 <h2 id="1-3-基于覆盖率驱动的随机验证"><a href="#1-3-基于覆盖率驱动的随机验证" class="headerlink" title="1.3 基于覆盖率驱动的随机验证"></a>1.3 基于覆盖率驱动的随机验证</h2><p>目前常用的一种随机验证方式是基于覆盖率驱动的，这种方式与3.1.2节提到的影响随机生成的因素<strong>“反馈的动态随机约束”一样，有着类似的反馈控制原理</strong>。从图3.7可以看出，<strong>与常用随机约束验证方式不同的一点是，覆盖率收集器在每次测试中都通过监视器来收集覆盖率（主要指功能覆盖率），将其与已有的覆盖率数据库进行合并，同时根据现有的覆盖率数据库为下一次随机约束给出反馈。这些反馈被用来进一步缩窄随机约束域，使其偏置产生一些序列，覆盖那些未知的功能测试点</strong>。</p>
-<style>.tewxyndajvxq{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%9F%BA%E4%BA%8E%E8%A6%86%E7%9B%96%E7%8E%87%E9%A9%B1%E5%8A%A8%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B.png" class="tewxyndajvxq">
+<style>.jegyngpnflpn{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%9F%BA%E4%BA%8E%E8%A6%86%E7%9B%96%E7%8E%87%E9%A9%B1%E5%8A%A8%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B.png" class="jegyngpnflpn">
 
 
 
 <h2 id="1-4-基于TLM的随机验证"><a href="#1-4-基于TLM的随机验证" class="headerlink" title="1.4 基于TLM的随机验证"></a>1.4 基于TLM的随机验证</h2><p>测试用例可以指定每一次激励的数据内容，也可以在较高层次上指定每一次激励数据包（data packet）的内容。我们在2.1节中介绍了通过TLM在产品定义早期对设计建立模型。<strong>在抽象层次上，TLM比硬件时序行为更高一级，被用来描述设计或验证环境。基于TLM的随机验证方式，指的是在随机环境中使用的最小颗粒是 TLM 级别的数据包。该激励数据包不止包含一个时钟周期给出的激励，而是在更长的时间范围内（一般为一次完整的数据操作，例如完整的数据读写或数据包传输）定义更多且有内在联系的数据</strong>。</p>
 <p>TLM验证带来的<strong>好处是，验证人员可以更便捷地描述一些测试场景，更贴近真实的用例</strong>。比如硅后系统测试和固件开发，是基于系统级别的，它们专注的并非单一模块的某一项功能，而是子系统或整个系统的复杂工作模式。从图3.8可以看到，TLM测试抽象级较高，需要由TLM2RTL激励生成器做进一步的转换。将TLM激励生成器进一步放大，可以看到它内部的一些转换模块，包括读写操作、复位操作、中断操作和其他操作。<strong>这些方法一般是根据TLM操作命令经过转换去调用的，我们将这样的激励生成器称为总线功能模型</strong>（BFM,Bus Functional Model）。</p>
 <p><strong>BFM的作用是将高抽象级的TLM命令转换为低抽象级的硬件端口时序</strong>。进一步看，在高抽象级到低抽象级的转换中，除了数据抽象度在降低外，激励所用的时间也在转换中被施加到待测接口上。因此，要完成一项 TLM 命令的转换，经常需要数十个甚至数百个时钟周期。</p>
-<style>.xdrukdmniaru{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%9F%BA%E4%BA%8ETLM%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B.png" class="xdrukdmniaru">
+<style>.ppbymcqiwivc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%9F%BA%E4%BA%8ETLM%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B.png" class="ppbymcqiwivc">
 
 <h2 id="1-5-断言检查"><a href="#1-5-断言检查" class="headerlink" title="1.5 断言检查"></a>1.5 断言检查</h2><p>影响验证产出的一个重要因素是<strong>如何准确地描述功能</strong>。如图3.9所示，清晰的描述可以帮助设计人员更方便地实现设计功能，验证人员也需要检查各种可能的行为是否符合预期。</p>
 <p>断言（assertion）提供了这样的特性，它善于针对某一特定的逻辑或时序进行预设，一旦设计的实际行为不符合断言的描述，则给出检查报告。</p>
-<style>.vavpukomhruk{zoom:100%;}</style>
+<style>.mvekjmroqesj{zoom:100%;}</style>
 
 <p>断言本身不限定于某一种语言或者工具，它的特性可以准确地描述出设计的预期行为。所以有多种实现断言的方法和工具，在过去的20年间，这些被业界支持的基于断言的验证方法和工具如图3.10所示。</p>
-<style>.fqcmtpkpfeqr{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E6%94%AF%E6%8C%81%E6%96%AD%E8%A8%80%E7%9A%84%E8%AF%AD%E8%A8%80%E5%92%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.png" class="fqcmtpkpfeqr">
+<style>.riodlwdnmgnb{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E6%94%AF%E6%8C%81%E6%96%AD%E8%A8%80%E7%9A%84%E8%AF%AD%E8%A8%80%E5%92%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.png" class="riodlwdnmgnb">
 
 <p>在这里，我们按照断言方法不同的运用将它们分为如下几类：</p>
 <ul>
@@ -140,7 +140,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li>输入限定。基于假设的输入限定可以通过断言来判断输入是否符合预期，这对错误源排查也有帮助。</li>
 <li>自定义断言。用来检查各个设计的细节，通常这些细节属于设计人员和验证人员关注的功能焦点。</li>
 </ul>
-<style>.pmxqhwnrsyxq{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E6%96%AD%E8%A8%80%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.png" class="pmxqhwnrsyxq">
+<style>.jutenhiqiwyd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E6%96%AD%E8%A8%80%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.png" class="jutenhiqiwyd">
 
 <p>从复用性来看，<strong>断言可以实现从模块级到子系统级再到芯片系统级的垂直复用</strong>。从图3.11可以看出，从单元1在模块级验证时插入的断言“数据进出”和“状态机”，在子系统级和芯片系统级两个环境都可以保持监测检查状态。这一点要<strong>归功于断言可以作为非综合模块被植入到设计中，或者通过绑定的形式嵌入到设计中（不影响设计结构）。在子系统中，新的断言部分“子系统集成”又可以用来检查从单元1与从单元2之间的集成关系，该检查在芯片系统中也可以保留下来</strong>。</p>
 <h1 id="2-静态检查"><a href="#2-静态检查" class="headerlink" title="2 静态检查"></a>2 静态检查</h1><p>与动态仿真相对应的是静态检查，它<strong>本身不需要仿真、波形激励，验证人员通过工具的辅助即可以发现设计中存在的问题</strong>。静态检查可细分出更多种类，它们关注的领域各不相同，我们将这些方法概括为：</p>
@@ -201,7 +201,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <h2 id="2-3-跨时钟域检查"><a href="#2-3-跨时钟域检查" class="headerlink" title="2.3 跨时钟域检查"></a>2.3 跨时钟域检查</h2><p>大多数复杂的设计都拥有不止一个时钟，<strong>多个时钟之间也常表现为异步的关系</strong>。<strong>设计中的不同功能模块如果被不同的时钟驱动，就会形成不同的时钟域（clock domain）</strong>。单一时钟域模块的设计方式和验证环境较为简单，而拥有多时钟域的硬件，其跨时钟域的逻辑通信就需要<strong>考虑同步问题</strong>。在这里，用来验证这些设计要求的过程称为跨时钟域检查。</p>
 <p>需要同步是因为考虑到不同时钟域的信号采样问题，当时钟域A的信号进入时钟域B被采样时，<strong>每个周期都有相对时钟B不同的延迟，这种随机性可能导致建立时间或保持时间无法满足，进而导致不可预期的功能失败</strong>。</p>
 <p>这种跨时钟域问题无法通过常规的验证方法来分析，例如动态仿真，也不能被静态时序分析（static timing analysis）判断出来。而这里通过静态的跨时钟域检查就可以分析这一问题。如图3.12所示，通过该方法，可以在早期的 RTL 阶段识别出跨时钟域的通信电路上是否有合适的同步处理，所以，跨时钟域检查（CDC）是为了保证所有信号都能得到正确的同步。目前支持CDC检查的商业工具有Spyglass和0-In（Mentor）等。</p>
-<style>.vpsvcgbioikv{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E8%B7%A8%E6%97%B6%E9%92%9F%E5%9F%9F%E6%A3%80%E6%9F%A5.png" class="vpsvcgbioikv">
+<style>.ftpryxintwyv{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E8%B7%A8%E6%97%B6%E9%92%9F%E5%9F%9F%E6%A3%80%E6%9F%A5.png" class="ftpryxintwyv">
 
 <h2 id="2-4-形式验证"><a href="#2-4-形式验证" class="headerlink" title="2.4 形式验证"></a>2.4 形式验证</h2><p>形式验证分为两种方式：</p>
 <ul>
@@ -209,24 +209,24 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li><strong>属性检查</strong>（PC,Property Check），又称为模型检查（MC,Model Check）。电路的行为通过验证语言来描述其属性（property），<strong>随后通过静态方式证明在所有状态空间下都满足该条件，否则举出反例</strong>（counter example）证明设计行为不符合属性描述（property description）。</li>
 </ul>
 <p>我们这里介绍属性检查，即通过验证语言（PSL、SVA）来描述设计行为，用断言（assertion）结合静态工具进行空间穷举，证明设计行为同属性描述保持一致。属性检查的流程通常如图3.13所示。</p>
-<style>.seuaoptmktkt{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%B1%9E%E6%80%A7%E6%A3%80%E6%9F%A5%E6%B5%81%E7%A8%8B.png" class="seuaoptmktkt">
+<style>.ghubyhvovyve{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%B1%9E%E6%80%A7%E6%A3%80%E6%9F%A5%E6%B5%81%E7%A8%8B.png" class="ghubyhvovyve">
 
 <p>在动态仿真验证中，我们是通过生成各种测试序列来访问设计中的状态（state）的，<strong>在理论上，所有可以跳转的设计状态总和被称为可及状态空间</strong>（reachable state space）。遍历可及状态空间的所有状态对动态仿真而言是非常大的挑战，这种通过访问状态、检查结果的方式，<strong>需要覆盖率反馈来衡量可及状态空间还有多少状态没有被访问</strong>。</p>
 <p><strong>动态仿真验证的方式实际上很难穷举所有可能的序列去完全覆盖可及状态空间，而形式验证可以通过数学方式来穷举出所有的状态空间，彻底验证设计</strong>。从图3.14可以看到，在仿真过程中，通过随机和覆盖率反馈的形式，可以产生不同的测试序列来访问状态空间，直到发现新的缺陷。这是一种实用的测试办法，但另一方面，动态仿真验证无法确定设计中不存在缺陷，因为图中其他隐藏缺陷依然存在尚未被探索到的状态空间内。</p>
-<style>.mcwqgudrxigy{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%8F%AF%E5%8F%8A%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4.png" class="mcwqgudrxigy">
+<style>.madpwyfvgikd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%8F%AF%E5%8F%8A%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4.png" class="madpwyfvgikd">
 
 <p>形式验证可以通过数学的方法遍历状态空间，进而证明设计行为符合属性描述。<strong>在遍历过程中，一旦遇到反例，形式验证工具便会停下来，报出反例情景，让用户核对错误是否属实，再考虑修改设计或者进一步约束属性使其更精确地描述设计行为</strong>。从图3.15中可以看到，在大量的状态空间中，形式验证工具只需要针对某一项属性描述举出反例，即可报告给验证人员，而并不需要穷举所有的反例。待设计缺陷被确认、修正之后，验证人员可以继续通过工具来对设计属性进行检查。</p>
-<style>.xgxfyredwkur{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81%E5%9C%A8%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E4%B8%AD%E5%AF%BB%E6%89%BE%E5%8F%8D%E4%BE%8B.png" class="xgxfyredwkur">
+<style>.jskjlvwkngbj{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81%E5%9C%A8%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E4%B8%AD%E5%AF%BB%E6%89%BE%E5%8F%8D%E4%BE%8B.png" class="jskjlvwkngbj">
 
 <p>像上面所讲的将属性描述（由断言构成）与设计结合进行一致性检查的方法，自提出到现在已超过20年了，期间有不同的商业工具提供支持，如OneSpin、0-In和Jasper等。图3.16概括了这些工具的发展历程。</p>
-<style>.ctqmmlprlpsm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81%E7%9A%84%E5%B7%A5%E5%85%B7%E5%92%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.png" class="ctqmmlprlpsm">
+<style>.zwucyoumhelt{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E5%BD%A2%E5%BC%8F%E9%AA%8C%E8%AF%81%E7%9A%84%E5%B7%A5%E5%85%B7%E5%92%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.png" class="zwucyoumhelt">
 
 
 <h1 id="3-开发环境"><a href="#3-开发环境" class="headerlink" title="3 开发环境"></a>3 开发环境</h1><p>介绍一下验证人员日常编码SV的开发环境。</p>
 <h2 id="3-1-Vim开发环境"><a href="#3-1-Vim开发环境" class="headerlink" title="3.1 Vim开发环境"></a>3.1 Vim开发环境</h2><h2 id="3-2-商业SV开发环境——DVT"><a href="#3-2-商业SV开发环境——DVT" class="headerlink" title="3.2 商业SV开发环境——DVT"></a>3.2 商业SV开发环境——DVT</h2><p>在语言编辑和调试的基础上，DVT的测试平台语义检查器（testbench linter）可以通过静态代码分析，发现不合适的语句、代码风格、无用语句、性能问题以及与OVM/UVM相悖的使用方式。它可以通过改进验证代码的可靠性和可维护性来协助验证人员更好地完成
 验证任务。与之相比，普通的编译器往往只会检查代码是否符合语言规范，不会给出代码可靠性和可维护性的报告，也无法进一步给出建议以使代码与方法学保持一致。此外，DVT自带的文档生成器可以用来从代码中的注释自动生成HTML文档。这种方式使得设计验证人员花费更少的精力便可得到一份结构良好的设计和验证文档，文档的内容包含类和成员介绍、继承树、设计结构、UML类图和验证框架等。</p>
 <h1 id="4-虚拟模型"><a href="#4-虚拟模型" class="headerlink" title="4 虚拟模型"></a>4 虚拟模型</h1><p>虚拟模型即<strong>高抽象级的硬件模型</strong>，软件模型可依赖虚拟模型在早期开发，并将反馈交给硬件设计。这种反馈在以往的瀑布模式开发周期中是无法实现的，因为软件的开发往往需要等到硬件设计制造完成之后才能展开。通过虚拟模型，硬件可以更早地获取软件反馈而对设计进行修改。这种硬件和软件更紧密的协作方式，可以体现更多的优势，比如利用虚拟模型获取的性能数据可以对硬件早期结构提供参考意见，或者判断硬件和软件的协同任务是否满足功耗目标。在目前多核的手机移动平台上，将不同的任务合理分配到多核上以取得更好性能的需求日益增长，这种软件层面的评估就可以在虚拟建模阶段完成。目前，我们<strong>通过多项虚拟建模的技术例如协同设计、协同仿真和验证，试图在早期发现设计缺陷，以便在相对容易实施的阶段完成这些缺陷的修改</strong>。如图3.17所示，通过这种将设计问题更早暴露出来的方式，可以达到芯片成功流片的目标，满足市场越来越紧迫的窗口需求。</p>
-<style>.xpupgjibkumi{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E8%99%9A%E6%8B%9F%E5%BB%BA%E6%A8%A1%E7%9A%84%E8%A6%81%E7%B4%A0.png" class="xpupgjibkumi">
+<style>.wdhhdgsnrysz{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E8%99%9A%E6%8B%9F%E5%BB%BA%E6%A8%A1%E7%9A%84%E8%A6%81%E7%B4%A0.png" class="wdhhdgsnrysz">
 
 <p>广义的虚拟建模包括一系列的验证技术，如仿真（simulation）、模拟（emulation）和FPGA，而目前的现状是，验证人员往往综合使用这些方法获得更好的效果。在这里，我们<strong>将虚拟模型限定于仿真（simulation），而将模拟和 FPGA 归类为硬件加速技术</strong>，我们将在3.5节详细介绍硬件加速技术。那么，虚拟建模的优点有哪些呢？</p>
 <ul>
@@ -276,7 +276,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li>易于操作。</li>
 </ul>
 <p>FPGA与模拟器在各方面的对比展示于表3.1中。</p>
-<style>.eqhwbumxilai{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/FPGA%E4%B8%8E%E6%A8%A1%E6%8B%9F%E5%99%A8%E7%9A%84%E6%AF%94%E8%BE%83.png" class="eqhwbumxilai">
+<style>.scfesitrhbkz{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/FPGA%E4%B8%8E%E6%A8%A1%E6%8B%9F%E5%99%A8%E7%9A%84%E6%AF%94%E8%BE%83.png" class="scfesitrhbkz">
 
 <p>目前业界的硬件加速标准并未达成一致，主流的三家公司实现硬件加速的具体技术也各有特点。我们在上面提到的模拟器（emulator），通过将设计逻辑映射到可编程单元的方式，主要有Veloce（Mentor）和 ZeBu（Synopsys）。Veloce 通过定制的可编程单元（非常类似于FPGA）、不同的内部连接网络结构以及透明的可调试电路实现其模拟器功能。平台上的每一块模拟器芯片都可用来模拟一部分的设计逻辑，而整个芯片的功能则通过集成各个模拟器芯片实现片间快速通信。ZeBu不一样的地方在于它直接采用FPGA，而且将透明的可调式电路技术和其他特性实现到FPGA中，多个FPGA进一步组成完整的模拟器功能。Cadence公司的仿真加速器（simulation accelerator）Palladium显得与众不同，作为独立的加速器平台，其内部包含数量巨大的简单处理器，每一块处理器又可以仿真一部分设计逻辑，将运算结果在它们之间传递。看起来，这些处理器的运算速度低于我们的桌面处理器，但由于成千上万个小的处理器并行工作，实际的仿真速率远超独立处理器的表现。同时，这些独立的小型处理器支持透明化的调试方式。</p>
 <p>模拟器的高速性能使得其有望同真实世界中的电路交流，但需要注意速率差异的问题。假设我们要设计一个USB器件，可能会将物理层的USB与模拟器相连，进而与计算机或其他器件相连。这时候，我们将模拟器与真实世界的应用器件连接，随之而来的问题是，真实世界的频率高于模拟器的频率。<strong>我们需要为它们之间的频率差异搭建降速同步的桥接（speed bridge），通过主动降低快速端的速度并缓存快速端的数据，适配两端的数据交换</strong>。</p>
@@ -300,7 +300,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li>效能缺口。传输和运算速率双双大幅提升，使得功耗迅速增长，但由于电池技术受限，使得功耗成为了瓶颈之一。</li>
 <li>算法复杂度缺口。传输速率超过运算速率的涨幅，需要更多的处理器来并行完成越来越复杂的算法。</li>
 </ul>
-<style>.lkylteuidizv{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E7%A7%BB%E5%8A%A8%E7%A1%AC%E4%BB%B6%E9%A2%86%E5%9F%9F%E7%9A%84%E6%8A%80%E6%9C%AF%E7%BC%BA%E5%8F%A3.png" class="lkylteuidizv">
+<style>.oqoecrpzsvrd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E7%A7%BB%E5%8A%A8%E7%A1%AC%E4%BB%B6%E9%A2%86%E5%9F%9F%E7%9A%84%E6%8A%80%E6%9C%AF%E7%BC%BA%E5%8F%A3.png" class="oqoecrpzsvrd">
 
 <p>上面讲述的技术缺口与目前硬件提升性能的方式大致保持吻合，接下来主要就如何解决效能缺口入手，讨论目前主流的效能验证方式。</p>
 <h2 id="6-1-功率和能量"><a href="#6-1-功率和能量" class="headerlink" title="6.1 功率和能量"></a>6.1 功率和能量</h2><p>首先我们引入基本的概念，功率和能量在日常器件效能讨论中经常会提起，它们是两个关联的术语。</p>
@@ -317,10 +317,10 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <p><em>静态功耗=V·I（漏电）</em></p>
 <p>静态功耗（或漏电功耗）则是晶体管在电路稳定时出现的漏电造成的功耗。</p>
 <h2 id="6-3-节能技术"><a href="#6-3-节能技术" class="headerlink" title="6.3 节能技术"></a>6.3 节能技术</h2><p>移动芯片节能（省电）技术是全方位的改进流程，从工艺制程到电路、封装到模块设计、SoC 设计、系统和应用软件开发，等等，整个环节都需要有效利用能量。表3.2是从芯片硬件和软件方面所采用的节能技术（省去工艺制程）。</p>
-<style>.osebrpkjkqrm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E7%A1%AC%E4%BB%B6%E5%92%8C%E8%BD%AF%E4%BB%B6%E9%87%87%E7%94%A8%E7%9A%84%E8%8A%82%E8%83%BD%E6%8A%80%E6%9C%AF.png" class="osebrpkjkqrm">
+<style>.iqcqfeydfshg{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E7%A1%AC%E4%BB%B6%E5%92%8C%E8%BD%AF%E4%BB%B6%E9%87%87%E7%94%A8%E7%9A%84%E8%8A%82%E8%83%BD%E6%8A%80%E6%9C%AF.png" class="iqcqfeydfshg">
 
 <p>与之前介绍过的硬件设计流程类似，节能的设计流程（见图3.19）也是从规划到实施最后到集成的。面对越来越复杂的系统，实用的方式还是从系统设计开始，逐步分解到电路设计，我们先从硬件层面考虑如何实现低功耗设计。</p>
-<style>.lwzxnofkiyaa{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E8%8A%82%E8%83%BD%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B.png" class="lwzxnofkiyaa">
+<style>.fkopviqhjctm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E8%8A%82%E8%83%BD%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B.png" class="fkopviqhjctm">
 
 <h2 id="6-4-效能验证"><a href="#6-4-效能验证" class="headerlink" title="6.4 效能验证"></a>6.4 效能验证</h2><p>这里主要针对硅前设计阶段进行效能验证，涉及的流程分为两部分：</p>
 <ul>
@@ -343,7 +343,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 </ul>
 <h2 id="6-5-功耗预测与优化"><a href="#6-5-功耗预测与优化" class="headerlink" title="6.5 功耗预测与优化"></a>6.5 功耗预测与优化</h2><p>一般我们期望尽早获取功耗的估测信息，而这一期望与芯片开发过程相悖，因为往往在流片以后的软件开发阶段测量出来的功耗是更准确的。但是，<strong>等到流片之后才去测量功耗，低功耗设计的成本就很大了</strong>，这是因为一方面这使我们试错的成本增加，另一方面产品效能优化迭代的周期也变长了。所以，我们希望在硅前设计阶段甚至规划阶段（TLM虚拟模型）估测出芯片功耗，分析出可以降低功耗的设计方法。这里，我们将目光落在RTL和门级阶段，通过现有的功耗设计平台，在早期进行功耗估算、低功耗设计、电源效率提升等事务。</p>
 <p>简而言之，目前使用这些工具都是为了查看、估算、分析和降低功耗，通过在 RTL级和门级功耗数据指标和报告，为设计和验证人员提供计算和跟踪功耗的方法。现有的功耗预测分析工具包括PowerArtist（Ansys）、Spyglass Power（Synopsys）、PrimeTime PX（Synopsys）和Redhawk（Ansys）等。我们通过对实际项目中不同工具的比较，提供如表3.3所示的建议。</p>
-<style>.msgqganxjood{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E4%B8%8D%E5%90%8C%E5%8A%9F%E8%80%97%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E7%9A%84%E6%AF%94%E8%BE%83.png" class="msgqganxjood">
+<style>.wxxrkgwyhorl{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E4%B8%8D%E5%90%8C%E5%8A%9F%E8%80%97%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E7%9A%84%E6%AF%94%E8%BE%83.png" class="wxxrkgwyhorl">
 
 <p>在硅前验证阶段，目前相对容易做到的是<strong>运用PA设计流程进行相应的RTL仿真和后端流程</strong>。通过仿真器进行 PA 仿真，在保证原有功能实现的情况下，进一步检查低功耗逻辑和断电控制功能。对于功耗预测与优化，有几点因素值得考虑：</p>
 <ul>
@@ -372,7 +372,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li><strong>线下分析</strong>（offline analysis）。将监视到的数据记录下来，通过线下的脚本分析，绘制出性能的波动曲线。</li>
 </ul>
 <h2 id="7-3-验证方法"><a href="#7-3-验证方法" class="headerlink" title="7.3 验证方法"></a>7.3 验证方法</h2><p>从性能验证流程来看，我们可以考虑参照微软的性能测试方法学流程（见图3.20），它包括以下步骤：</p>
-<style>.vcxtfpuqldkm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E5%AD%A6%E6%B5%81%E7%A8%8B.png" class="vcxtfpuqldkm">
+<style>.nrpiefzcctrh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E5%AD%A6%E6%B5%81%E7%A8%8B.png" class="nrpiefzcctrh">
 
 <ol>
 <li>构建验证环境：一般利用现有的功能验证环境，通过更新使其能够完成性能检测和分析的任务。</li>
@@ -416,7 +416,7 @@ simulation）: 最常见的验证方式——，是<strong>通过测试序列和
 <li>在动态仿真和硬件加速之间，可以通过软硬件协同验证的方式实现这两种技术的桥接。</li>
 <li>对于断言VIP，可以利用它完成形式验证，或者植入到动态仿真环境中。一些可以综合的断言VIP，也可以移植到硬件加速平台中继续完成验证任务。</li>
 </ul>
-<style>.anktsiyibbxi{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E4%B8%8D%E5%90%8C%E9%AA%8C%E8%AF%81%E6%96%B9%E6%B3%95%E4%B9%8B%E9%97%B4%E7%9A%84%E8%81%94%E7%B3%BB.png" class="anktsiyibbxi">
+<style>.tkownpuidjsu{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%973%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/%E4%B8%8D%E5%90%8C%E9%AA%8C%E8%AF%81%E6%96%B9%E6%B3%95%E4%B9%8B%E9%97%B4%E7%9A%84%E8%81%94%E7%B3%BB.png" class="tkownpuidjsu">
 
 <p>那么，如何基于这些项目实际中的桥接设计出可以合并的数据库和通用的验证平台就成为了关键。但对于这两点，目前三大工具厂商还缺乏一种完整的解决方案。例如，验证的覆盖率数据库如何在三种技术中实现互通和合并？如何定义出合理的结构完成形式验证平台到动态仿真平台的复用？什么样的动态仿真平台才可以顺利移植到硬件加速平台上？这些都还是有待解决的问题。</p>
 <h2 id="8-2-层次之间的纵向复用"><a href="#8-2-层次之间的纵向复用" class="headerlink" title="8.2 层次之间的纵向复用"></a>8.2 层次之间的纵向复用</h2><p>在不同验证层次之间进行复用，我们也会遇到实际的痛点。例如，随机约束的仿真方法（SystemVerilog,UVM/OVM或Specman/e）适合于模块级和子系统级验证，而定向测试方法（C/C++）则适用于子系统级和芯片系统级的验证过程。在这里，我们看到子系统级验证有两种可能的验证方法，我们需要考虑是选择其中一种还是两者兼具？如何实现模块级随机测试到子系统级随机测试的复用？如何实现子系统级定向测试到芯片系统级的定向测试复用？又比如，通过何种方式实现从随机约束测试到定向测试的复用？只有完成层次之间的垂直复用，验证的时间成本和人力成本才会降低，验证效率才会进一步提高。</p>
