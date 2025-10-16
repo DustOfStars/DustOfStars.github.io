@@ -92,7 +92,7 @@
 <td>3’b110</td>
 </tr>
 </tbody></table>
-<h3 id="41-6-2-恢复引导流程"><a href="#41-6-2-恢复引导流程" class="headerlink" title="41.6.2 恢复引导流程"></a>41.6.2 恢复引导流程</h3><style>.jqctsrdlhtil{zoom:100%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-4/image-20250520144643285.png" class="jqctsrdlhtil">
+<h3 id="41-6-2-恢复引导流程"><a href="#41-6-2-恢复引导流程" class="headerlink" title="41.6.2 恢复引导流程"></a>41.6.2 恢复引导流程</h3><style>.ysebyeslbbmi{zoom:100%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-4/image-20250520144643285.png" class="ysebyeslbbmi">
 <p><strong>图 203. 恢复引导流程</strong></p>
 <h2 id="41-7-Serial-Boot模式"><a href="#41-7-Serial-Boot模式" class="headerlink" title="41.7 Serial Boot模式"></a>41.7 Serial Boot模式</h2><h3 id="41-7-1-简介"><a href="#41-7-1-简介" class="headerlink" title="41.7.1 简介"></a>41.7.1 简介</h3><p>BootROM支持通过串行接口（例如 SPI 从机、UART）将镜像加载到片上 SRAM，然后引导至该镜像。支持的串行引导外设如下：</p>
 <ul>
@@ -108,7 +108,7 @@
 <li><code>Write-Memory</code></li>
 </ul>
 <p>更多详细信息请参见第 41.8 节。</p>
-<h3 id="41-7-2-串行引导流程"><a href="#41-7-2-串行引导流程" class="headerlink" title="41.7.2 串行引导流程"></a>41.7.2 串行引导流程</h3><style>.xefriuvwbwog{zoom:100%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-4/image-20250520145208912.png" class="xefriuvwbwog" alt="image-20250520145208912">
+<h3 id="41-7-2-串行引导流程"><a href="#41-7-2-串行引导流程" class="headerlink" title="41.7.2 串行引导流程"></a>41.7.2 串行引导流程</h3><style>.qyqifcxtgdgk{zoom:100%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-4/image-20250520145208912.png" class="qyqifcxtgdgk" alt="image-20250520145208912">
 
 <p><strong>图 204. 串行引导流程</strong></p>
 <h3 id="41-7-3-通过-UART-的串行引导"><a href="#41-7-3-通过-UART-的串行引导" class="headerlink" title="41.7.3 通过 UART 的串行引导"></a>41.7.3 通过 UART 的串行引导</h3><p>当选择 UART 接口作为串行引导接口时，BootROM使用 8-N-1 模式通过 UART 接口读取引导镜像。此模式涉及的命令如下：</p>
