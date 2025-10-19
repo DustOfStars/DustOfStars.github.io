@@ -608,7 +608,7 @@
 </tr>
 </tbody></table>
 <p>[1] 注：<span style="color: green;">SPI 闪存恢复引导引脚功能与 JTAG 边界扫描功能复用。为确保不会意外进入边界扫描模式，应使用弱下拉电阻（100 kohm）将 TRST 引脚外部拉低，以确保 SPI 闪存恢复引导操作正常。</span></p>
-<style>.jofbewgdbtqe{zoom:80%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-2/TopLevelBootFlow.png" class="jofbewgdbtqe" alt="TopLevelBootFlow">
+<style>.mkvwkqgqpqhc{zoom:80%;}</style><img src="/NXP/RT600/BootROM/rt600-bootrom-rm%E8%A7%A3%E6%9E%90-2/TopLevelBootFlow.png" class="mkvwkqgqpqhc" alt="TopLevelBootFlow">
 
 <p><strong>图 187. 顶层引导流程</strong></p>
 <p>图 187 显示了顶层引导流程。引导流程在复位释放后开始。CPU 时钟由 OTP 字段 <code>BOOT_CLK_SPEED</code> 决定，<span style="color: red; font-weight: bold; ">默认情况下为来自 IRC48M 时钟源的 48 MHz</span>。如果 <code>PRIMARY_BOOT_SRC</code> = 4b’0000，引导 ROM 将根据 <code>PRIMARY_BOOT_SRC</code> 或复位期间 ISP 引脚的状态确定引导模式。当 Cortex-M33 启动引导加载程序时，SWD 访问将被禁用，直到引导image开始执行或引导加载程序进入 ISP 模式。</p>
