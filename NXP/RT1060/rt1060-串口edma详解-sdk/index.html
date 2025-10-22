@@ -105,7 +105,7 @@
 <p>以下是LPUART EDMA传输的回调流程图:</p>
 <figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[EDMA传输开始] --&gt; B[EDMA传输完成中断]</span><br><span class="line">    B --&gt; C[LPUART_TransferEdmaHandleIRQ]</span><br><span class="line">    C --&gt; D{传输类型?}</span><br><span class="line">    D --&gt;|发送完成| E[LPUART_SendEDMACallback]</span><br><span class="line">    D --&gt;|接收完成| F[LPUART_ReceiveEDMACallback]</span><br><span class="line">    E --&gt; G[LPUART_UserCallback]</span><br><span class="line">    F --&gt; G</span><br><span class="line">    G --&gt;|TX完成| H[设置txBufferFull=false&lt;br&gt;txOnGoing=false]</span><br><span class="line">    G --&gt;|RX完成| I[设置rxBufferEmpty=false&lt;br&gt;rxOnGoing=false]</span><br></pre></td></tr></tbody></table></figure>
 
-<style>.jgvkrsdflpej{zoom:100%;}</style><img src="/NXP/RT1060/rt1060-%E4%B8%B2%E5%8F%A3edma%E8%AF%A6%E8%A7%A3-sdk/image-20241218231344599.png" class="jgvkrsdflpej">
+<style>.jzzymwrylcan{zoom:100%;}</style><img src="/NXP/RT1060/rt1060-%E4%B8%B2%E5%8F%A3edma%E8%AF%A6%E8%A7%A3-sdk/image-20241218231344599.png" class="jzzymwrylcan">
 
 <p><span style="color: blue; font-weight: bold;">所以整个调用链是:</span></p>
 <ol>
