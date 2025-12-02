@@ -1,0 +1,1 @@
+{"name":"GPIO10","description":"GPIO","groupName":"GPIO","prependToName":"","baseAddress":"0x401C8000","addressBlock":{"offset":"0","size":"0x90","usage":"registers"},"interrupts":[{"name":"GPIO10_Combined_0_31","value":71}],"registers":{},"derivedFrom":"GPIO1"}

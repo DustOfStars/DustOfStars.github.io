@@ -1,0 +1,1 @@
+{"name":"WDOG2","description":"WDOG","groupName":"WDOG","prependToName":"","baseAddress":"0x400D0000","addressBlock":{"offset":"0","size":"0xA","usage":"registers"},"interrupts":[{"name":"WDOG2","value":45}],"registers":{},"derivedFrom":"WDOG1"}

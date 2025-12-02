@@ -1,0 +1,1 @@
+{"name":"FLEXSPI2","description":"FlexSPI","groupName":"FlexSPI","prependToName":"","baseAddress":"0x402A4000","addressBlock":{"offset":"0","size":"0x300","usage":"registers"},"interrupts":[{"name":"FLEXSPI2","value":107}],"registers":{},"derivedFrom":"FLEXSPI"}

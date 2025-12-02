@@ -1,0 +1,1 @@
+{"name":"GPT2","description":"GPT","groupName":"GPT","prependToName":"","baseAddress":"0x401F0000","addressBlock":{"offset":"0","size":"0x28","usage":"registers"},"interrupts":[{"name":"GPT2","value":101}],"registers":{},"derivedFrom":"GPT1"}

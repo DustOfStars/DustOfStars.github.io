@@ -1,0 +1,1 @@
+{"name":"USDHC2","description":"uSDHC","groupName":"USDHC","prependToName":"","baseAddress":"0x402C4000","addressBlock":{"offset":"0","size":"0xD0","usage":"registers"},"interrupts":[{"name":"USDHC2","value":111}],"registers":{},"derivedFrom":"USDHC1"}

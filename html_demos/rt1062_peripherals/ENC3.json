@@ -1,0 +1,1 @@
+{"name":"ENC3","description":"QDC","groupName":"ENC","prependToName":"","baseAddress":"0x403D0000","addressBlock":{"offset":"0","size":"0x28","usage":"registers"},"interrupts":[{"name":"ENC3","value":131}],"registers":{},"derivedFrom":"ENC1"}

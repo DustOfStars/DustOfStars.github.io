@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RT1060 寄存器可视化工具</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入图标库 -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        /* 全局样式重置与基础设置 */
+        * { box-sizing: border-box; }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { 
+            background: #6b7280; border-radius: 4px; transition: background 0.2s; 
+        }
+        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+        
+        /* 动画效果 */
+        .reg-change { animation: flash 1s ease; }
+        @keyframes flash { 0%, 100% { background-color: transparent; } 50% { background-color: #fef3c7; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        
+        /* 卡片与元素交互 */
+        .bit-card { 
+            transition: all 0.2s ease; border-radius: 0.5rem; animation: fadeIn 0.3s ease-out; 
+        }
+        .bit-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .register-row { transition: all 0.2s ease; border-radius: 0.375rem; }
+        .register-row:hover { background-color: #f9fafb !important; transform: translateX(4px); }
+        
+        /* 框图相关样式 */
+        .peripheral-box { transition: all 0.3s ease; cursor: pointer; animation: fadeIn 0.5s ease-out; stroke-width: 2; stroke: #374151; }
+        .peripheral-box:hover { filter: brightness(1.1); transform: scale(1.05); animation: pulse 1.5s infinite; stroke: #2563eb; }
+        .peripheral-box.active { fill: #2563eb !important; filter: brightness(1.2); stroke: #1d4ed8; stroke-width: 3; }
+        .peripheral-label { font-size: 12px; text-anchor: middle; dominant-baseline: middle; font-family: 'Arial', sans-serif; fill: #1f2937; font-weight: 500; text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7); }
+        .interconnect { stroke: #888; stroke-width: 1.5; stroke-dasharray: 5,3; transition: all 0.3s ease; }
+        .interconnect:hover { stroke-width: 2.5; stroke: #6366f1; stroke-dasharray: 0; }
+        .mcu-component { stroke: #374151; stroke-width: 2; fill: #f0f0f0; transition: all 0.3s ease; filter: url(#dropshadow); }
+        .mcu-component:hover { filter: brightness(1.05) url(#dropshadow); }
+        .core-component { fill: #e6f7ff; stroke: #2563eb; stroke-width: 2; }
+        .memory-component { fill: #f6ffed; stroke: #10b981; stroke-width: 2; }
+        .peripheral-group { fill: #fff7e6; stroke: #f59e0b; stroke-width: 2; stroke-dasharray: 5,5; filter: url(#dropshadow); }
+        
+        /* 按钮样式 */
+        .view-toggle-btn { transition: all 0.3s ease; border: 2px solid transparent; }
+        .view-toggle-btn.active { background-color: #3b82f6; color: white; border-color: #1d4ed8; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3); }
+        .view-toggle-btn:hover:not(.active) { background-color: #eff6ff; border-color: #93c5fd; }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) { .peripheral-label { font-size: 10px; } #mcu-diagram { min-height: 500px; } }
+        @media (max-width: 768px) { #mcu-diagram { min-height: 400px; } .view-toggle-btn { padding: 0.5rem; font-size: 0.75rem; } }
+        
+        /* 状态指示与特殊效果 */
+        .status-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; animation: pulse 2s infinite; }
+        .status-active { background-color: #10b981; }
+        .status-loading { background-color: #f59e0b; }
+        
+        /* 标签与类别样式 */
+        .category-badge { 
+            padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; 
+            text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s ease; 
+        }
+        .category-comm { background-color: #dbeafe; color: #1e40af; }
+        .category-digital { background-color: #dcfce7; color: #166534; }
+        .category-analog { background-color: #ffedd5; color: #9a3412; }
+        .category-system { background-color: #f3e8ff; color: #6b21a8; }
+        .category-other { background-color: #f3f4f6; color: #374151; }
+        
+        /* 加载动画 */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* 地址显示样式 */
+        .addr-hex { font-family: 'Courier New', monospace; font-weight: 600; color: #7c3aed; }
+        .addr-dec { font-family: 'Courier New', monospace; color: #6b7280; font-size: 0.85rem; margin-left: 8px; }
+        
+        /* 寄存器表格样式增强 */
+        .reg-table th { background-color: #f8fafc; position: sticky; top: 0; z-index: 10; }
+        .reg-value { font-family: 'Courier New', monospace; font-weight: 600; }
+        
+        /* 位字段显示 */
+        .bit-field { 
+            position: relative; 
+            height: 32px; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 4px; 
+            overflow: hidden;
+        }
+        .bit-segment { 
+            position: absolute; 
+            height: 100%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 10px; 
+            font-weight: 600; 
+            font-family: 'Courier New', monospace; 
+            transition: all 0.2s ease;
+        }
+        .bit-segment:hover { opacity: 0.8; transform: scale(0.95); }
+        
+        /* 外设卡片选中状态 */
+        .peripheral-card.selected {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col h-screen overflow-hidden">
+    <!-- 顶部状态栏 -->
+    <header class="bg-blue-600 text-white py-3 px-4 flex items-center justify-between shadow-md">
+        <div class="flex items-center gap-3">
+            <i class="fa fa-microchip text-2xl"></i>
+            <h1 class="text-xl font-bold">RT1062 MCU 寄存器可视化工具</h1>
+            <span class="text-xs bg-blue-700 text-white px-2 py-1 rounded-md" id="device-info">
+                MIMXRT1062
+            </span>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- 视图切换按钮 -->
+            <div class="flex items-center gap-2">
+                <button id="block-diagram-view" class="view-toggle-btn active bg-white text-blue-600 px-3 py-1 rounded text-sm hover:bg-gray-100">
+                    <i class="fa fa-sitemap"></i> 框图视图
+                </button>
+                <button id="register-view" class="view-toggle-btn bg-gray-300 text-blue-600 px-3 py-1 rounded text-sm hover:bg-gray-100">
+                    <i class="fa fa-table"></i> 寄存器视图
+                </button>
+            </div>
+            <div class="flex items-center gap-2">
+                <label for="addr-jump">地址跳转：</label>
+                <input type="text" id="addr-jump" placeholder="输入寄存器地址（十六进制）" 
+                       class="px-2 py-1 rounded text-sm w-32 border-none search-input" />                
+                <button id="jump-btn" class="bg-white text-blue-600 px-2 py-1 rounded text-sm hover:bg-gray-100 btn-hover-effect">跳转</button>
+            </div>
+            <span id="update-status" class="text-sm bg-yellow-500 px-2 py-1 rounded-full flex items-center">
+                <span class="status-indicator status-loading"></span>
+                <span id="status-text">正在加载数据...</span>
+            </span>
+        </div>
+    </header>
+
+    <!-- 框图视图 -->
+    <div id="diagram-view" class="flex-1 overflow-auto bg-white p-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold flex items-center gap-2">
+                <i class="fa fa-sitemap"></i> RT1062 MCU 架构框图
+            </h2>
+            <div class="flex items-center gap-2">
+                <button id="zoom-in" class="bg-blue-600 text-white px-2 py-1 rounded text-sm hover:bg-blue-700 btn-hover-effect">
+                    <i class="fa fa-search-plus"></i> 放大
+                </button>
+                <button id="zoom-out" class="bg-blue-600 text-white px-2 py-1 rounded text-sm hover:bg-blue-700 btn-hover-effect">
+                    <i class="fa fa-search-minus"></i> 缩小
+                </button>
+                <button id="reset-zoom" class="bg-blue-600 text-white px-2 py-1 rounded text-sm hover:bg-blue-700 btn-hover-effect">
+                    <i class="fa fa-refresh"></i> 重置
+                </button>
+            </div>
+        </div>
+        
+        <!-- SVG容器 -->
+        <div class="relative w-full" style="min-height: 800px;">
+            <svg id="mcu-diagram" class="mx-auto border border-gray-200 rounded-lg shadow-lg" viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMid meet">
+                <!-- 背景网格 -->
+                <defs>
+                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+                    </pattern>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <filter id="dropshadow">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                        <feOffset dx="2" dy="2" result="offsetblur"/>
+                        <feComponentTransfer>
+                            <feFuncA type="linear" slope="0.5"/>
+                        </feComponentTransfer>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                
+                <!-- 主内容组（用于缩放和平移） -->
+                <g id="diagram-content">
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                    
+                    <!-- 系统标题 -->
+                <text x="700" y="40" class="peripheral-label font-bold" style="font-size: 20px; text-anchor: middle; fill: #2d3748;">MIMXRT1062 处理器系统架构</text>
+                
+                <!-- 核心系统区域 -->
+                <rect x="150" y="80" width="300" height="200" class="mcu-component" fill="#e6f0ff" stroke="#2563eb" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="300" y="110" class="peripheral-label font-bold" style="font-size: 16px;">核心系统</text>
+                
+                <!-- Cortex-M7 处理器 -->
+                <rect x="200" y="120" width="200" height="80" class="mcu-component core-component" fill="#3b82f6" stroke="#1e40af" stroke-width="2" rx="8" ry="8" filter="url(#glow)" />
+                <text x="300" y="150" class="peripheral-label font-bold" style="font-size: 14px; fill: white;">ARM Cortex-M7</text>
+                <text x="300" y="170" class="peripheral-label" style="font-size: 10px; fill: white;">600MHz / FPU / SIMD</text>
+                
+                <!-- 调试接口 -->
+                <rect x="200" y="220" width="90" height="50" class="mcu-component" fill="#64748b" stroke="#334155" stroke-width="1" rx="5" ry="5" />
+                <text x="245" y="245" class="peripheral-label" style="font-size: 10px; text-anchor: middle;">调试接口</text>
+                <text x="245" y="258" class="peripheral-label" style="font-size: 8px; text-anchor: middle;">JTAG/SWD</text>
+                
+                <!-- 系统控制 -->
+                <rect x="310" y="220" width="90" height="50" class="mcu-component" fill="#64748b" stroke="#334155" stroke-width="1" rx="5" ry="5" />
+                <text x="355" y="245" class="peripheral-label" style="font-size: 10px; text-anchor: middle;">系统控制</text>
+                <text x="355" y="258" class="peripheral-label" style="font-size: 8px; text-anchor: middle;">NVIC / Systick</text>
+                
+                <!-- 存储器系统区域 -->
+                <rect x="150" y="310" width="300" height="200" class="mcu-component" fill="#f0fdf4" stroke="#22c55e" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="300" y="340" class="peripheral-label font-bold" style="font-size: 16px;">存储器系统</text>
+                
+                <!-- SRAM -->
+                <rect x="200" y="360" width="200" height="60" class="mcu-component memory-component" fill="#34d399" stroke="#166534" stroke-width="2" rx="8" ry="8" />
+                <text x="300" y="385" class="peripheral-label font-bold" style="font-size: 12px; fill: white;">SRAM</text>
+                <text x="300" y="405" class="peripheral-label" style="font-size: 10px; fill: white;">1MB 片上存储器</text>
+                
+                <!-- Flash -->
+                <rect x="200" y="440" width="200" height="60" class="mcu-component memory-component" fill="#10b981" stroke="#166534" stroke-width="2" rx="8" ry="8" />
+                <text x="300" y="465" class="peripheral-label font-bold" style="font-size: 12px; fill: white;">Flash</text>
+                <text x="300" y="485" class="peripheral-label" style="font-size: 10px; fill: white;">512KB 片上存储器</text>
+                
+                <!-- 总线架构区域 -->
+                <rect x="500" y="80" width="800" height="720" class="mcu-component" fill="#fffbeb" stroke="#f59e0b" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="900" y="110" class="peripheral-label font-bold" style="font-size: 16px;">总线与外设</text>
+                
+                <!-- 主要总线 -->
+                <!-- AHB 总线 -->
+                <rect x="550" y="150" width="700" height="40" class="mcu-component" fill="#fbbf24" stroke="#d97706" stroke-width="2" rx="20" ry="20" />
+                <text x="900" y="175" class="peripheral-label font-bold" style="font-size: 14px; fill: white;">AHB 总线</text>
+                
+                <!-- IP 总线 -->
+                <rect x="550" y="250" width="700" height="40" class="mcu-component" fill="#f59e0b" stroke="#d97706" stroke-width="2" rx="20" ry="20" />
+                <text x="900" y="275" class="peripheral-label font-bold" style="font-size: 14px; fill: white;">IP 总线</text>
+                
+                <!-- APB 总线 -->
+                <rect x="550" y="350" width="700" height="40" class="mcu-component" fill="#d97706" stroke="#92400e" stroke-width="2" rx="20" ry="20" />
+                <text x="900" y="375" class="peripheral-label font-bold" style="font-size: 14px; fill: white;">APB 总线</text>
+                
+                <!-- 外设分组区域 -->
+                <!-- a. Interrupts, DMA Events, and XBAR Assignments -->
+                <rect x="550" y="420" width="300" height="120" class="mcu-component peripheral-group" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="700" y="450" class="peripheral-label font-bold" style="font-size: 14px;">中断与DMA事件</text>
+                
+                <!-- b. Chip IO -->
+                <rect x="900" y="420" width="300" height="120" class="mcu-component peripheral-group" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1050" y="450" class="peripheral-label font-bold" style="font-size: 14px;">芯片IO</text>
+                
+                <!-- c. Clock and Power Management -->
+                <rect x="550" y="560" width="300" height="120" class="mcu-component peripheral-group" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="700" y="590" class="peripheral-label font-bold" style="font-size: 14px;">时钟与电源管理</text>
+                
+                <!-- d. Security -->
+                <rect x="900" y="560" width="300" height="120" class="mcu-component peripheral-group" fill="#fee2e2" stroke="#ef4444" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1050" y="590" class="peripheral-label font-bold" style="font-size: 14px;">安全与加密</text>
+                
+                <!-- e. External Memory Controllers -->
+                <rect x="550" y="700" width="300" height="120" class="mcu-component peripheral-group" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="700" y="730" class="peripheral-label font-bold" style="font-size: 14px;">外部存储器控制器</text>
+                
+                <!-- f. ARM Cortex M7 Platform -->
+                <rect x="900" y="700" width="300" height="120" class="mcu-component peripheral-group" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1050" y="730" class="peripheral-label font-bold" style="font-size: 14px;">Cortex-M7平台</text>
+                
+                <!-- g. Display and Camera -->
+                <rect x="550" y="840" width="300" height="120" class="mcu-component peripheral-group" fill="#fce7f3" stroke="#ec4899" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="700" y="870" class="peripheral-label font-bold" style="font-size: 14px;">显示与摄像头</text>
+                
+                <!-- h. Audio -->
+                <rect x="900" y="840" width="300" height="120" class="mcu-component peripheral-group" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1050" y="870" class="peripheral-label font-bold" style="font-size: 14px;">音频</text>
+                
+                <!-- i. Connectivity -->
+                <rect x="1250" y="420" width="300" height="120" class="mcu-component peripheral-group" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1400" y="450" class="peripheral-label font-bold" style="font-size: 14px;">连接性</text>
+                
+                <!-- j. Low Speed Peripherals -->
+                <rect x="1250" y="560" width="300" height="120" class="mcu-component peripheral-group" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1400" y="590" class="peripheral-label font-bold" style="font-size: 14px;">低速外设</text>
+                
+                <!-- k. Timers -->
+                <rect x="1250" y="700" width="300" height="120" class="mcu-component peripheral-group" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1400" y="730" class="peripheral-label font-bold" style="font-size: 14px;">定时器</text>
+                
+                <!-- l. On chip Cross Triggers -->
+                <rect x="1250" y="840" width="300" height="120" class="mcu-component peripheral-group" fill="#e5e7eb" stroke="#4b5563" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1400" y="870" class="peripheral-label font-bold" style="font-size: 14px;">片上交叉触发器</text>
+                
+                <!-- m. Analog -->
+                <rect x="1250" y="980" width="300" height="120" class="mcu-component peripheral-group" fill="#fed7aa" stroke="#f97316" stroke-width="2" rx="10" ry="10" filter="url(#dropshadow)" />
+                <text x="1400" y="1010" class="peripheral-label font-bold" style="font-size: 14px;">模拟外设</text>
+                
+                <!-- 连接线 -->
+                <!-- 核心系统到 AHB 总线 -->
+                <line x1="450" y1="180" x2="550" y2="170" class="interconnect" stroke="#2563eb" stroke-width="3" stroke-dasharray="0" marker-end="url(#arrowhead)" />
+                <line x1="450" y1="170" x2="450" y2="180" class="interconnect" stroke="#2563eb" stroke-width="3" />
+                
+                <!-- 存储器到 AHB 总线 -->
+                <line x1="450" y1="400" x2="550" y2="190" class="interconnect" stroke="#22c55e" stroke-width="3" stroke-dasharray="0" marker-end="url(#arrowhead)" />
+                <line x1="450" y1="390" x2="450" y2="400" class="interconnect" stroke="#22c55e" stroke-width="3" />
+                
+                <!-- 总线间连接 -->
+                <line x1="900" y1="190" x2="900" y2="250" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)" />
+                <line x1="900" y1="290" x2="900" y2="350" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)" />
+                
+                <!-- 总线到外设区域连接 -->
+                <line x1="700" y1="390" x2="700" y2="420" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                <line x1="1050" y1="390" x2="1050" y2="420" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                <line x1="1400" y1="390" x2="1400" y2="420" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                
+                <line x1="700" y1="400" x2="700" y2="560" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                <line x1="1050" y1="400" x2="1050" y2="560" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                <line x1="1400" y1="400" x2="1400" y2="560" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                
+                <line x1="700" y1="400" x2="700" y2="700" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                <line x1="1050" y1="400" x2="1050" y2="700" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                <line x1="1400" y1="400" x2="1400" y2="700" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                
+                <line x1="700" y1="400" x2="700" y2="840" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                <line x1="1050" y1="400" x2="1050" y2="840" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                <line x1="1400" y1="400" x2="1400" y2="840" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                
+                <line x1="1400" y1="400" x2="1400" y2="980" class="interconnect" stroke="#d97706" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)" />
+                
+                <!-- 箭头标记 -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="currentColor" />
+                    </marker>
+                </defs>
+                
+                <!-- 外设将由JavaScript动态填充到这里 -->
+                <g id="peripherals-group"></g>
+            </g>
+        </svg>
+        </div>
+    </div>
+
+    <!-- 寄存器视图 -->
+    <div id="register-view-container" class="flex-1 overflow-hidden bg-white hidden">
+        <div class="flex h-full">
+            <!-- 左侧外设列表 -->
+            <div class="w-1/4 border-r border-gray-200 overflow-y-auto">
+                <div class="p-4 bg-gray-50 border-b border-gray-200">
+                    <h3 class="text-base font-semibold mb-3 flex items-center gap-2">
+                        <i class="fa fa-th-large"></i> 外设列表
+                    </h3>
+                    <div class="mb-3">
+                        <input type="text" id="peripheral-search" placeholder="搜索外设..." 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <button class="category-filter-btn px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700 active" data-category="all">全部</button>
+                        <button class="category-filter-btn px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700" data-category="comm">通信接口</button>
+                        <button class="category-filter-btn px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700" data-category="digital">数字外设</button>
+                        <button class="category-filter-btn px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700" data-category="analog">模拟外设</button>
+                        <button class="category-filter-btn px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700" data-category="system">系统控制</button>
+                    </div>
+                </div>
+                <div id="peripheral-list" class="p-2">
+                    <!-- 外设列表将由JavaScript动态填充 -->
+                    <div class="loading-indicator p-4 text-center">
+                        <div class="loading-spinner mx-auto mb-2"></div>
+                        <p class="text-sm text-gray-500">加载外设数据中...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧寄存器详情 -->
+            <div class="w-3/4 overflow-hidden flex flex-col">
+                <!-- 外设信息栏 -->
+                <div id="peripheral-info" class="p-4 bg-gray-50 border-b border-gray-200 hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-xl font-bold flex items-center gap-2" id="selected-peripheral-name">UART1</h3>
+                            <p class="text-gray-600 text-sm" id="selected-peripheral-desc">通用异步收发器 1</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center justify-end gap-2 mb-1">
+                                <span class="text-sm text-gray-600">基地址：</span>
+                                <span class="addr-hex" id="selected-peripheral-baseaddr">0x40184000</span>
+                            </div>
+                            <span class="category-badge category-comm" id="selected-peripheral-category">通信接口</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 寄存器列表 -->
+                <div id="register-details" class="flex-1 overflow-auto p-4">
+                    <div class="text-center p-10">
+                        <i class="fa fa-microchip text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">请从左侧选择一个外设以查看其寄存器</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 位字段详情模态框 -->
+    <div id="bit-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto">
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold" id="bit-modal-title">位字段详情</h3>
+                    <button id="close-bit-modal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6" id="bit-modal-content">
+                <!-- 位字段详情将由JavaScript动态填充 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 全局变量和配置 ====================
+        let mcuData = null;
+        let currentPeripheral = null;
+        let currentView = 'diagram';
+        let peripheralsData = {};
+        let currentFilter = 'all';
+        let isSearchActive = false;
+        
+        // 颜色映射
+        const categoryColors = {
+            'interrupts_events': '#4299e1',  // 蓝色
+            'chip_io': '#38bdf8',            // 亮蓝色
+            'clock_power': '#22c55e',        // 绿色
+            'security': '#ef4444',           // 红色
+            'external_memory': '#f59e0b',    // 橙色
+            'cortex_m7_platform': '#8b5cf6', // 紫色
+            'display_camera': '#ec4899',     // 粉色
+            'audio': '#10b981',              // 浅绿色
+            'connectivity': '#3b82f6',       // 蓝色
+            'low_speed': '#60a5fa',          // 浅蓝色
+            'timers': '#fbbf24',             // 黄色
+            'cross_triggers': '#6b7280',     // 灰色
+            'analog': '#fb923c'              // 橙色
+        };
+        
+        // ==================== 数据加载函数 ====================
+        
+        // 主数据加载函数
+        async function loadMCUData() {
+            console.log('开始加载MCU数据...');
+            updateStatus('正在加载数据...', 'loading');
+            
+            try {
+                // 加载真实数据
+                await loadRealData();
+                
+                // 渲染UI
+                renderPeripheralList();
+                renderPeripheralsInDiagram();
+                setupEventListeners();
+                
+                console.log('数据加载完成');
+                updateStatus('数据加载成功', 'success');
+                
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                updateStatus('加载数据失败', 'error');
+                
+                // 显示错误信息
+                document.getElementById('peripheral-list').innerHTML = `
+                    <div class="p-4 text-center">
+                        <div class="text-red-500 mb-2"><i class="fa fa-exclamation-triangle"></i> 数据加载失败</div>
+                        <p class="text-sm text-gray-600">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 加载真实数据
+        async function loadRealData() {
+            console.log('加载真实数据...');
+            
+            try {
+                // 1. 首先加载peripheral_index.json
+                const indexResponse = await fetch('rt1062_peripherals/peripheral_index.json');
+                if (!indexResponse.ok) {
+                    throw new Error(`无法加载外设索引文件: ${indexResponse.status}`);
+                }
+                
+                const peripheralIndex = await indexResponse.json();
+                console.log(`加载了外设索引，包含 ${peripheralIndex.length} 个外设`);
+                
+                // 构建MCU数据结构（基于RM分类）
+                mcuData = {
+                    device: 'MIMXRT1062',
+                    categories: {
+                        'interrupts_events': [],    // a. Interrupts, DMA Events, and XBAR Assignments
+                        'chip_io': [],               // b. Chip IO
+                        'clock_power': [],           // c. Clock and Power Management
+                        'security': [],              // d. SNVS SRC Fusemap OCOTP_CTRL
+                        'external_memory': [],       // e. External Memory Controllers
+                        'cortex_m7_platform': [],    // f. ARM Cortex M7 Platform
+                        'display_camera': [],        // g. Display and Camera
+                        'audio': [],                 // h. Audio
+                        'connectivity': [],          // i. Connectivity
+                        'low_speed': [],             // j. Low Speed Peripherals
+                        'timers': [],                // k. Timers
+                        'cross_triggers': [],        // l. On chip Cross Triggers
+                        'analog': []                 // m. Analog
+                    }
+                };
+                
+                // 2. 依次加载每个外设的JSON文件
+                const loadedPeripherals = [];
+                
+                for (const peripheralInfo of peripheralIndex) {
+                    try {
+                        const peripheralResponse = await fetch(`rt1062_peripherals/${peripheralInfo.filename}`);
+                        if (!peripheralResponse.ok) {
+                            console.warn(`无法加载外设文件 ${peripheralInfo.filename}: ${peripheralResponse.status}`);
+                            continue;
+                        }
+                        
+                        const peripheralData = await peripheralResponse.json();
+                        
+                        // 创建外设对象
+                        const peripheral = {
+                            name: peripheralInfo.name,
+                            desc: peripheralInfo.description,
+                            baseAddr: parseInt(peripheralInfo.baseAddress, 16),
+                            category: categorizePeripheral(peripheralInfo.name, peripheralInfo.description),
+                            registers: convertRegistersToArray(peripheralData.registers, parseInt(peripheralInfo.baseAddress, 16))
+                        };
+                        
+                        // 添加到对应的分类
+                        mcuData.categories[peripheral.category].push(peripheral);
+                        peripheralsData[peripheral.name] = peripheral;
+                        loadedPeripherals.push(peripheral.name);
+                        
+                    } catch (error) {
+                        console.warn(`加载外设 ${peripheralInfo.name} 失败:`, error);
+                    }
+                }
+                
+                console.log(`成功加载 ${loadedPeripherals.length} 个外设:`, loadedPeripherals);
+                
+            } catch (error) {
+                console.error('加载真实数据失败:', error);
+                throw error;
+            }
+        }
+        
+        // 将JSON格式的寄存器对象转换为数组
+        function convertRegistersToArray(registersObj, baseAddr) {
+            if (!registersObj) return [];
+            
+            const registersArray = [];
+            
+            for (const regName in registersObj) {
+                const regData = registersObj[regName];
+                const offset = parseInt(regData.addressOffset, 16);
+                
+                // 转换位字段
+                let bits = [];
+                if (regData.fields) {
+                    for (const fieldName in regData.fields) {
+                        const field = regData.fields[fieldName];
+                        bits.push({
+                            name: fieldName,
+                            desc: field.description || fieldName,
+                            pos: field.bitOffset || 0,
+                            width: field.bitWidth || 1,
+                            readOnly: field.access === 'read-only'
+                        });
+                    }
+                }
+                
+                // 如果没有位字段，生成默认的
+                if (bits.length === 0) {
+                    bits = generateBitsForRegister(regName);
+                }
+                
+                registersArray.push({
+                    name: regName,
+                    desc: regData.description || regName,
+                    offset: offset,
+                    addr: baseAddr + offset,
+                    resetValue: parseInt(regData.resetValue || "0", 16),
+                    size: regData.size || 32,
+                    access: regData.access || 'read-write',
+                    bits: bits
+                });
+            }
+            
+            // 按偏移地址排序
+            registersArray.sort((a, b) => a.offset - b.offset);
+            
+            return registersArray;
+        }
+        
+        // 生成寄存器的位字段
+        function generateBitsForRegister(regName) {
+            const bits = [];
+            for (let i = 0; i < 32; i++) {
+                bits.push({
+                    name: `BIT${i}`,
+                    desc: `Bit ${i}`,
+                    pos: i,
+                    width: 1,
+                    readOnly: false
+                });
+            }
+            return bits;
+        }
+        
+        // 根据外设名称和描述分类
+        function categorizePeripheral(name, description) {
+            const nameLower = name.toLowerCase();
+            const descLower = (description || '').toLowerCase();
+            
+            // a. Interrupts, DMA Events, and XBAR Assignments
+            if (nameLower.includes('dma') || nameLower.includes('dmamux') || 
+                nameLower.includes('nvic') || nameLower.includes('interrupt')) {
+                return 'interrupts_events';
+            }
+            
+            // b. Chip IO
+            if (nameLower.includes('gpio') || nameLower.includes('iomuxc') || 
+                nameLower.includes('pin') || nameLower.includes('pad')) {
+                return 'chip_io';
+            }
+            
+            // c. Clock and Power Management
+            if (nameLower.includes('ccm') || nameLower.includes('xtalosc') || 
+                nameLower.includes('pmu') || nameLower.includes('gpc') || 
+                nameLower.includes('dcdc') || nameLower.includes('tempmon') ||
+                nameLower.includes('power') || nameLower.includes('clock')) {
+                return 'clock_power';
+            }
+            
+            // d. SNVS SRC Fusemap OCOTP_CTRL
+            if (nameLower.includes('snvs') || nameLower.includes('src') || 
+                nameLower.includes('ocotp') || nameLower.includes('fusemap')) {
+                return 'security';
+            }
+            
+            // e. External Memory Controllers
+            if (nameLower.includes('semc') || nameLower.includes('usdhc') || 
+                nameLower.includes('flexspi')) {
+                return 'external_memory';
+            }
+            
+            // f. ARM Cortex M7 Platform
+            if (nameLower.includes('nic-301') || nameLower.includes('ocram') || 
+                nameLower.includes('flexram') || nameLower.includes('aipstz') ||
+                nameLower.includes('mcm') || nameLower.includes('mpu') ||
+                nameLower.includes('romc')) {
+                return 'cortex_m7_platform';
+            }
+            
+            // g. Display and Camera
+            if (nameLower.includes('csi') || nameLower.includes('lcdif') || 
+                nameLower.includes('pxp') || nameLower.includes('display') ||
+                nameLower.includes('camera')) {
+                return 'display_camera';
+            }
+            
+            // h. Audio
+            if (nameLower.includes('sai') || nameLower.includes('mqs') || 
+                nameLower.includes('spdif') || nameLower.includes('audio')) {
+                return 'audio';
+            }
+            
+            // i. Connectivity
+            if (nameLower.includes('enet') || nameLower.includes('usb') || 
+                nameLower.includes('usb-phy') || nameLower.includes('phy')) {
+                return 'connectivity';
+            }
+            
+            // j. Low Speed Peripherals
+            if (nameLower.includes('flexcan') || nameLower.includes('canfd') || 
+                nameLower.includes('kpp') || nameLower.includes('lpi2c') || 
+                nameLower.includes('lpspi') || nameLower.includes('lpuart') ||
+                nameLower.includes('flexio')) {
+                return 'low_speed';
+            }
+            
+            // k. Timers
+            if (nameLower.includes('gpt') || nameLower.includes('pit') || 
+                nameLower.includes('tmr') || nameLower.includes('pwm') || 
+                nameLower.includes('qdc') || nameLower.includes('wdog') ||
+                nameLower.includes('ewm') || nameLower.includes('timer')) {
+                return 'timers';
+            }
+            
+            // l. On chip Cross Triggers
+            if (nameLower.includes('xbara') || nameLower.includes('xbarb') || 
+                nameLower.includes('aoi')) {
+                return 'cross_triggers';
+            }
+            
+            // m. Analog
+            if (nameLower.includes('acmp') || nameLower.includes('adc') || 
+                nameLower.includes('adc_etc') || nameLower.includes('tsc') ||
+                nameLower.includes('analog') || nameLower.includes('cmp')) {
+                return 'analog';
+            }
+            
+            return 'low_speed'; // 默认归为低速外设
+        }
+        
+        // ==================== UI渲染函数 ====================
+        
+        // 渲染外设列表
+        function renderPeripheralList() {
+            const peripheralListEl = document.getElementById('peripheral-list');
+            if (!peripheralListEl) return;
+            
+            const searchTerm = document.getElementById('peripheral-search')?.value.toLowerCase() || '';
+            const activeCategory = currentFilter;
+            
+            // 清空列表
+            peripheralListEl.innerHTML = '';
+            
+            // 检查是否有数据
+            if (!mcuData || !mcuData.categories) {
+                peripheralListEl.innerHTML = `
+                    <div class="p-4 text-center">
+                        <p class="text-gray-500">没有外设数据</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 收集所有外设
+            const allPeripherals = [];
+            for (const category in mcuData.categories) {
+                const peripherals = mcuData.categories[category];
+                peripherals.forEach(p => {
+                    p.category = category;
+                    allPeripherals.push(p);
+                });
+            }
+            
+            // 过滤外设
+            const filteredPeripherals = allPeripherals.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(searchTerm) || 
+                                     p.desc.toLowerCase().includes(searchTerm);
+                const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
+                return matchesSearch && matchesCategory;
+            });
+            
+            // 排序外设
+            filteredPeripherals.sort((a, b) => a.name.localeCompare(b.name));
+            
+            // 渲染过滤后的外设
+            if (filteredPeripherals.length === 0) {
+                peripheralListEl.innerHTML = `
+                    <div class="p-4 text-center text-gray-500 text-sm">
+                        未找到匹配的外设
+                    </div>
+                `;
+                return;
+            }
+            
+            const peripheralGrid = document.createElement('div');
+            peripheralGrid.className = 'grid grid-cols-1 gap-2';
+            
+            filteredPeripherals.forEach(peripheral => {
+                const peripheralCard = document.createElement('div');
+                peripheralCard.className = 'p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer transition-all duration-200 peripheral-card';
+                peripheralCard.dataset.peripheral = peripheral.name;
+                peripheralCard.dataset.category = peripheral.category;
+                
+                const categoryClass = `category-${peripheral.category}`;
+                
+                peripheralCard.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <div class="font-medium">${peripheral.name}</div>
+                            <div class="text-xs text-gray-500 truncate mt-1">${peripheral.desc}</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="category-badge ${categoryClass}">${getCategoryName(peripheral.category)}</span>
+                            <div class="text-xs text-gray-500 mt-1">
+                                <span class="addr-hex">0x${peripheral.baseAddr.toString(16).padStart(8, '0')}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 添加点击事件
+                peripheralCard.addEventListener('click', () => {
+                    // 移除其他卡片的选中状态
+                    document.querySelectorAll('.peripheral-card').forEach(card => {
+                        card.classList.remove('selected');
+                    });
+                    // 添加当前卡片的选中状态
+                    peripheralCard.classList.add('selected');
+                    
+                    selectPeripheral(peripheral);
+                });
+                
+                peripheralGrid.appendChild(peripheralCard);
+            });
+            
+            peripheralListEl.appendChild(peripheralGrid);
+        }
+        
+        // 选择外设
+        function selectPeripheral(peripheral) {
+            currentPeripheral = peripheral;
+            
+            // 更新外设信息栏
+            document.getElementById('selected-peripheral-name').textContent = peripheral.name;
+            document.getElementById('selected-peripheral-desc').textContent = peripheral.desc;
+            document.getElementById('selected-peripheral-baseaddr').textContent = 
+                `0x${peripheral.baseAddr.toString(16).padStart(8, '0')}`;
+            
+            // 更新类别徽章
+            const categoryBadge = document.getElementById('selected-peripheral-category');
+            categoryBadge.className = `category-badge category-${peripheral.category}`;
+            categoryBadge.textContent = getCategoryName(peripheral.category);
+            
+            // 显示外设信息栏
+            document.getElementById('peripheral-info').classList.remove('hidden');
+            
+            // 渲染寄存器详情
+            renderRegisters(peripheral.registers);
+        }
+        
+        // 渲染寄存器
+        function renderRegisters(registers) {
+            const registerDetailsEl = document.getElementById('register-details');
+            if (!registerDetailsEl) return;
+            
+            if (!registers || registers.length === 0) {
+                registerDetailsEl.innerHTML = `
+                    <div class="text-center p-10">
+                        <p class="text-gray-500">该外设没有可用的寄存器信息</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 清空现有内容
+            registerDetailsEl.innerHTML = '';
+            
+            // 创建寄存器表格
+            const tableContainer = document.createElement('div');
+            tableContainer.className = 'overflow-x-auto';
+            
+            const table = document.createElement('table');
+            table.className = 'w-full border-collapse reg-table';
+            
+            // 表头
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">寄存器名称</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">偏移地址</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">物理地址</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">复位值</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">描述</th>
+                </tr>
+            `;
+            
+            // 表体
+            const tbody = document.createElement('tbody');
+            tbody.className = 'bg-white divide-y divide-gray-200';
+            
+            registers.forEach((register, index) => {
+                const tr = document.createElement('tr');
+                tr.className = `register-row ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`;
+                
+                tr.innerHTML = `
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="font-medium text-gray-900">${register.name}</div>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="addr-hex">0x${register.offset.toString(16).padStart(4, '0')}</span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="addr-hex">0x${register.addr.toString(16).padStart(8, '0')}</span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="reg-value">0x${register.resetValue.toString(16).padStart(8, '0')}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-sm text-gray-500">${register.desc}</div>
+                    </td>
+                `;
+                
+                // 添加点击事件以展开寄存器位字段
+                tr.addEventListener('click', () => {
+                    renderRegisterBits(register);
+                });
+                
+                tbody.appendChild(tr);
+            });
+            
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            tableContainer.appendChild(table);
+            registerDetailsEl.appendChild(tableContainer);
+        }
+        
+        // 渲染寄存器位字段
+        function renderRegisterBits(register) {
+            const registerDetailsEl = document.getElementById('register-details');
+            if (!registerDetailsEl) return;
+            
+            // 清空并添加返回按钮
+            registerDetailsEl.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">${register.name} 位字段</h3>
+                    <button id="back-to-registers" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-sm">
+                        <i class="fa fa-arrow-left"></i> 返回寄存器列表
+                    </button>
+                </div>
+                <div class="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                    <div class="flex flex-wrap gap-4">
+                        <div>
+                            <span class="text-sm text-gray-600">寄存器地址：</span>
+                            <span class="addr-hex">0x${register.addr.toString(16).padStart(8, '0')}</span>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">偏移地址：</span>
+                            <span class="addr-hex">0x${register.offset.toString(16).padStart(4, '0')}</span>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">复位值：</span>
+                            <span class="reg-value">0x${register.resetValue.toString(16).padStart(8, '0')}</span>
+                        </div>
+                        <div class="text-sm text-gray-600">${register.desc}</div>
+                    </div>
+                </div>
+            `;
+            
+            // 添加返回按钮事件
+            document.getElementById('back-to-registers').addEventListener('click', () => {
+                renderRegisters(currentPeripheral?.registers);
+            });
+            
+            // 创建位字段可视化
+            const bitsContainer = document.createElement('div');
+            bitsContainer.className = 'mb-6';
+            bitsContainer.innerHTML = `
+                <h4 class="text-md font-medium mb-3">位字段分布</h4>
+                <div class="bit-field mb-4" id="bit-visualization"></div>
+                <div class="grid grid-cols-8 gap-3" id="bit-details"></div>
+            `;
+            
+            registerDetailsEl.appendChild(bitsContainer);
+            
+            // 渲染位可视化
+            const bitVisualizationEl = document.getElementById('bit-visualization');
+            const bitDetailsEl = document.getElementById('bit-details');
+            
+            // 按位置排序位字段（从高位到低位）
+            const sortedBits = [...register.bits].sort((a, b) => b.pos - a.pos);
+            
+            // 渲染位可视化条
+            sortedBits.forEach(bit => {
+                const segment = document.createElement('div');
+                segment.className = 'bit-segment';
+        const highestBit = bit.pos + bit.width - 1;
+        segment.style.left = `${(31 - highestBit) * (100/32)}%`;
+        segment.style.width = `${bit.width * (100/32)}%`;
+                segment.style.backgroundColor = categoryColors[currentPeripheral?.category || 'other'] + '80';
+                segment.style.color = '#333';
+                segment.textContent = bit.name;
+                segment.title = `${bit.desc} (位 ${bit.pos})`;
+                
+                // 添加点击事件以显示详情
+                segment.addEventListener('click', () => {
+                    showBitDetailModal(bit, register);
+                });
+                
+                bitVisualizationEl.appendChild(segment);
+            });
+            
+            // 渲染位详情网格
+            sortedBits.forEach(bit => {
+                const bitCard = document.createElement('div');
+                bitCard.className = 'bit-card p-3 border border-gray-200 rounded-md';
+                
+                bitCard.innerHTML = `
+                    <div class="text-sm font-medium mb-1">${bit.name}</div>
+                    <div class="text-xs text-gray-500 mb-1">位 ${bit.pos}-${bit.pos + bit.width - 1} (${bit.width}位)</div>
+                    <div class="text-xs text-gray-600">${bit.desc}</div>
+                `;
+                
+                // 添加点击事件
+                bitCard.addEventListener('click', () => {
+                    showBitDetailModal(bit, register);
+                });
+                
+                bitDetailsEl.appendChild(bitCard);
+            });
+        }
+        
+        // 在框图中渲染外设
+        function renderPeripheralsInDiagram() {
+            const svg = document.getElementById('mcu-diagram');
+            if (!svg) return;
+            
+            // 获取或创建外设组
+            let peripheralsGroup = svg.querySelector('#peripherals-group');
+            if (!peripheralsGroup) {
+                peripheralsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                peripheralsGroup.setAttribute('id', 'peripherals-group');
+                svg.appendChild(peripheralsGroup);
+            } else {
+                // 清空之前的外设
+                while (peripheralsGroup.firstChild) {
+                    peripheralsGroup.removeChild(peripheralsGroup.firstChild);
+                }
+            }
+            
+            // 根据RM分类渲染外设
+            const interruptsEventsPeripherals = mcuData.categories.interrupts_events || [];
+            renderCategoryPeripherals(peripheralsGroup, interruptsEventsPeripherals, 580, 480, 80, 40, 90, 3);
+            
+            const chipIOPeripherals = mcuData.categories.chip_io || [];
+            renderCategoryPeripherals(peripheralsGroup, chipIOPeripherals, 930, 480, 80, 40, 90, 3);
+            
+            const clockPowerPeripherals = mcuData.categories.clock_power || [];
+            renderCategoryPeripherals(peripheralsGroup, clockPowerPeripherals, 580, 590, 80, 40, 90, 3);
+            
+            const securityPeripherals = mcuData.categories.security || [];
+            renderCategoryPeripherals(peripheralsGroup, securityPeripherals, 930, 590, 80, 40, 90, 3);
+            
+            const externalMemoryPeripherals = mcuData.categories.external_memory || [];
+            renderCategoryPeripherals(peripheralsGroup, externalMemoryPeripherals, 580, 730, 80, 40, 90, 3);
+            
+            const cortexM7PlatformPeripherals = mcuData.categories.cortex_m7_platform || [];
+            renderCategoryPeripherals(peripheralsGroup, cortexM7PlatformPeripherals, 930, 730, 80, 40, 90, 3);
+            
+            const displayCameraPeripherals = mcuData.categories.display_camera || [];
+            renderCategoryPeripherals(peripheralsGroup, displayCameraPeripherals, 580, 870, 80, 40, 90, 3);
+            
+            const audioPeripherals = mcuData.categories.audio || [];
+            renderCategoryPeripherals(peripheralsGroup, audioPeripherals, 930, 870, 80, 40, 90, 3);
+            
+            const connectivityPeripherals = mcuData.categories.connectivity || [];
+            renderCategoryPeripherals(peripheralsGroup, connectivityPeripherals, 1280, 480, 80, 40, 90, 3);
+            
+            const lowSpeedPeripherals = mcuData.categories.low_speed || [];
+            renderCategoryPeripherals(peripheralsGroup, lowSpeedPeripherals, 1280, 590, 80, 40, 90, 3);
+            
+            const timersPeripherals = mcuData.categories.timers || [];
+            renderCategoryPeripherals(peripheralsGroup, timersPeripherals, 1280, 730, 80, 40, 90, 3);
+            
+            const crossTriggersPeripherals = mcuData.categories.cross_triggers || [];
+            renderCategoryPeripherals(peripheralsGroup, crossTriggersPeripherals, 1280, 870, 80, 40, 90, 3);
+            
+            const analogPeripherals = mcuData.categories.analog || [];
+            renderCategoryPeripherals(peripheralsGroup, analogPeripherals, 1280, 1010, 80, 40, 90, 3);
+        }
+        
+        // 在指定位置渲染一类外设
+        function renderCategoryPeripherals(parent, peripherals, startX, startY, width, height, gap, maxPerRow = 3) {
+            if (!peripherals || peripherals.length === 0) return;
+            
+            // 对外设按名称排序，确保显示一致
+            const sortedPeripherals = [...peripherals].sort((a, b) => a.name.localeCompare(b.name));
+            
+            // 根据外设数量动态调整每行列数，确保所有外设都能显示
+            let adjustedMaxPerRow = maxPerRow;
+            let totalRows = Math.ceil(sortedPeripherals.length / adjustedMaxPerRow);
+            
+            // 如果行数太多，增加每行的列数
+            while (totalRows > 3 && adjustedMaxPerRow < 5) {
+                adjustedMaxPerRow++;
+                totalRows = Math.ceil(sortedPeripherals.length / adjustedMaxPerRow);
+            }
+            
+            // 渲染所有外设，不再限制数量
+            sortedPeripherals.forEach((peripheral, index) => { 
+                const row = Math.floor(index / adjustedMaxPerRow);
+                const col = index % adjustedMaxPerRow;
+                const x = startX + col * (width + gap);
+                const y = startY + row * (height + gap);
+                
+                // 创建外设组
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.className = 'peripheral-box';
+                g.setAttribute('id', `peripheral-${peripheral.name.toLowerCase()}`);
+                g.setAttribute('data-peripheral-id', peripheral.name);
+                g.setAttribute('data-peripheral-baseaddr', `0x${peripheral.baseAddr.toString(16).padStart(8, '0')}`);
+                g.setAttribute('title', `${peripheral.name}: ${peripheral.desc}\nBase Address: 0x${peripheral.baseAddr.toString(16).padStart(8, '0')}`);
+                
+                // 创建光晕效果用于高亮
+                const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                glow.setAttribute('cx', x + width / 2);
+                glow.setAttribute('cy', y + height / 2);
+                glow.setAttribute('r', width / 2 + 5);
+                glow.setAttribute('fill', 'none');
+                glow.setAttribute('stroke', categoryColors[peripheral.category] || '#94a3b8');
+                glow.setAttribute('stroke-width', '0');
+                glow.setAttribute('filter', 'blur(3px)');
+                glow.setAttribute('class', 'peripheral-glow');
+                
+                // 创建矩形
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', x);
+                rect.setAttribute('y', y);
+                rect.setAttribute('width', width);
+                rect.setAttribute('height', height);
+                
+                // 检查是否是同一外设的不同实例（如ADC1和ADC2）
+                const baseName = peripheral.name.replace(/[0-9]+$/, ''); // 移除末尾的数字
+                const isSamePeripheral = sortedPeripherals.some(p => 
+                    p.name.replace(/[0-9]+$/, '') === baseName && p.name !== peripheral.name
+                );
+                
+                // 如果是同一外设的不同实例，使用相同的颜色但略微调整亮度
+                if (isSamePeripheral) {
+                    const color = categoryColors[peripheral.category] || '#94a3b8';
+                    // 为不同实例生成略微不同的色调
+                    const matchResult = peripheral.name.match(/[0-9]+$/);
+                    const instanceNumber = matchResult ? parseInt(matchResult[0]) : 1;
+                    const hueOffset = (instanceNumber - 1) * 10; // 每增加一个实例，色相偏移10度
+                    rect.setAttribute('fill', `${color}aa`); // 使用相同颜色但增加透明度
+                } else {
+                    rect.setAttribute('fill', categoryColors[peripheral.category] || '#94a3b8');
+                }
+                
+                rect.setAttribute('stroke', '#333');
+                rect.setAttribute('stroke-width', '1');
+                rect.setAttribute('rx', 5);
+                rect.setAttribute('ry', 5);
+                
+                // 创建文本
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x + width / 2);
+                text.setAttribute('y', y + height / 2 + 4); // 微调以居中
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-size', '10px');
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = peripheral.name;
+                
+                // 添加到组（注意顺序：光晕在底层）
+                g.appendChild(glow);
+                g.appendChild(rect);
+                g.appendChild(text);
+                
+                // 添加到父元素
+                parent.appendChild(g);
+                
+                // 添加鼠标悬停效果
+                g.addEventListener('mouseenter', () => {
+                    rect.setAttribute('fill-opacity', '0.8');
+                    rect.setAttribute('filter', 'brightness(1.1)');
+                    glow.setAttribute('stroke-width', '2');
+                });
+                
+                g.addEventListener('mouseleave', () => {
+                    rect.setAttribute('fill-opacity', '1');
+                    rect.setAttribute('filter', 'none');
+                    glow.setAttribute('stroke-width', '0');
+                });
+                
+                // 添加点击事件
+                g.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    // 移除所有外设的选中状态
+                    document.querySelectorAll('.peripheral-box').forEach(box => {
+                        box.querySelector('rect').setAttribute('stroke-width', '1');
+                    });
+                    
+                    // 设置当前外设为选中状态
+                    rect.setAttribute('stroke-width', '3');
+                    rect.setAttribute('stroke', '#1d4ed8');
+                    
+                    // 切换到寄存器视图并选择外设
+                    switchToRegisterView();
+                    selectPeripheral(peripheral);
+                    
+                    // 显示外设详情提示
+                    showNotification(`已选择外设: ${peripheral.name}`, 'success');
+                });
+            });
+        }
+        
+        // ==================== 辅助函数 ====================
+        
+        // 获取类别名称
+        function getCategoryName(category) {
+            const categoryNames = {
+                'interrupts_events': '中断与DMA事件',
+                'chip_io': '芯片IO',
+                'clock_power': '时钟与电源管理',
+                'security': '安全与加密',
+                'external_memory': '外部存储器控制器',
+                'cortex_m7_platform': 'Cortex-M7平台',
+                'display_camera': '显示与摄像头',
+                'audio': '音频',
+                'connectivity': '连接性',
+                'low_speed': '低速外设',
+                'timers': '定时器',
+                'cross_triggers': '片上交叉触发器',
+                'analog': '模拟外设',
+                'comm': '通信接口',
+                'digital': '数字外设',
+                'system': '系统控制',
+                'other': '其他'
+            };
+            return categoryNames[category] || '未知';
+        }
+        
+        // 显示位字段详情模态框
+        function showBitDetailModal(bit, register) {
+            const modal = document.getElementById('bit-detail-modal');
+            const modalTitle = document.getElementById('bit-modal-title');
+            const modalContent = document.getElementById('bit-modal-content');
+            
+            // 设置模态框标题
+            modalTitle.textContent = `${register.name} - ${bit.name}`;
+            
+            // 设置模态框内容
+            modalContent.innerHTML = `
+                <div class="space-y-4">
+                    <div class="p-3 bg-gray-50 rounded-md">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-600">寄存器：</span>
+                                <span class="font-medium">${register.name}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">位名称：</span>
+                                <span class="font-medium">${bit.name}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">位位置：</span>
+                                <span class="font-medium">${bit.pos}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">位宽度：</span>
+                                <span class="font-medium">${bit.width}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">地址：</span>
+                                <span class="addr-hex">0x${register.addr.toString(16).padStart(8, '0')}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">访问权限：</span>
+                                <span class="font-medium">${bit.readOnly ? '只读' : '读写'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-md font-medium mb-2">位描述</h4>
+                        <p class="text-sm text-gray-600">${bit.desc}</p>
+                    </div>
+                </div>
+            `;
+            
+            // 显示模态框
+            modal.classList.remove('hidden');
+        }
+        
+        // 显示通知提示
+        function showNotification(message, type = 'info') {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            
+            // 设置样式和内容
+            const bgColor = {
+                'info': 'bg-blue-600',
+                'success': 'bg-green-600',
+                'warning': 'bg-yellow-500',
+                'error': 'bg-red-600'
+            }[type] || 'bg-blue-600';
+            
+            notification.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg transform transition-all duration-500 translate-y-0 opacity-0 fixed bottom-4 right-4 z-50 flex items-center gap-3`;
+            notification.innerHTML = `
+                <i class="fa fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                <span>${message}</span>
+                <button class="ml-2 text-white opacity-70 hover:opacity-100"><i class="fa fa-times"></i></button>
+            `;
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 显示动画
+            setTimeout(() => {
+                notification.classList.remove('translate-y-0', 'opacity-0');
+                notification.classList.add('translate-y-[-20px]', 'opacity-100');
+            }, 10);
+            
+            // 自动关闭
+            const timeoutId = setTimeout(() => {
+                notification.classList.remove('translate-y-[-20px]', 'opacity-100');
+                notification.classList.add('translate-y-0', 'opacity-0');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+            
+            // 点击关闭按钮
+            notification.querySelector('button').addEventListener('click', () => {
+                clearTimeout(timeoutId);
+                notification.classList.remove('translate-y-[-20px]', 'opacity-100');
+                notification.classList.add('translate-y-0', 'opacity-0');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            });
+        }
+        
+        // 更新状态指示器
+        function updateStatus(text, type = 'loading') {
+            const statusEl = document.getElementById('update-status');
+            const statusTextEl = document.getElementById('status-text');
+            const statusIndicatorEl = statusEl?.querySelector('.status-indicator');
+            
+            if (!statusEl || !statusTextEl) return;
+            
+            statusTextEl.textContent = text;
+            
+            if (type === 'success') {
+                statusEl.className = 'text-sm bg-green-500 px-2 py-1 rounded-full flex items-center';
+                if (statusIndicatorEl) {
+                    statusIndicatorEl.className = 'status-indicator status-active';
+                }
+            } else if (type === 'error') {
+                statusEl.className = 'text-sm bg-red-500 px-2 py-1 rounded-full flex items-center';
+                if (statusIndicatorEl) {
+                    statusIndicatorEl.className = 'status-indicator status-active';
+                }
+            } else {
+                statusEl.className = 'text-sm bg-yellow-500 px-2 py-1 rounded-full flex items-center';
+                if (statusIndicatorEl) {
+                    statusIndicatorEl.className = 'status-indicator status-loading';
+                }
+            }
+        }
+        
+        // ==================== 视图切换函数 ====================
+        
+        // 切换到寄存器视图
+        function switchToRegisterView() {
+            currentView = 'register';
+            
+            // 更新UI状态
+            document.getElementById('block-diagram-view').classList.remove('active');
+            document.getElementById('register-view').classList.add('active');
+            document.getElementById('diagram-view').classList.add('hidden');
+            document.getElementById('register-view-container').classList.remove('hidden');
+        }
+        
+        // 切换到框图视图
+        function switchToDiagramView() {
+            currentView = 'diagram';
+            
+            // 更新UI状态
+            document.getElementById('register-view').classList.remove('active');
+            document.getElementById('block-diagram-view').classList.add('active');
+            document.getElementById('register-view-container').classList.add('hidden');
+            document.getElementById('diagram-view').classList.remove('hidden');
+        }
+        
+        // ==================== 事件处理函数 ====================
+        
+        // 处理地址跳转
+        function handleAddressJump() {
+            const addrInput = document.getElementById('addr-jump').value.trim();
+            if (!addrInput) return;
+            
+            try {
+                // 解析十六进制地址
+                let address = 0;
+                if (addrInput.startsWith('0x')) {
+                    address = parseInt(addrInput, 16);
+                } else {
+                    address = parseInt(addrInput, 16); // 尝试作为十六进制解析
+                }
+                
+                if (isNaN(address)) {
+                    throw new Error('无效的地址');
+                }
+                
+                // 在所有寄存器中查找匹配的地址
+                let foundRegister = null;
+                let foundPeripheral = null;
+                
+                for (const category in mcuData.categories) {
+                    const peripherals = mcuData.categories[category];
+                    for (const peripheral of peripherals) {
+                        for (const register of peripheral.registers) {
+                            if (register.addr === address) {
+                                foundRegister = register;
+                                foundPeripheral = peripheral;
+                                break;
+                            }
+                        }
+                        if (foundRegister) break;
+                    }
+                    if (foundRegister) break;
+                }
+                
+                if (foundRegister && foundPeripheral) {
+                    // 切换到寄存器视图并选择外设
+                    switchToRegisterView();
+                    selectPeripheral(foundPeripheral);
+                    
+                    // 高亮显示找到的寄存器
+                    setTimeout(() => {
+                        const rows = document.querySelectorAll('.register-row');
+                        rows.forEach(row => {
+                            if (row.querySelector('.font-medium')?.textContent === foundRegister.name) {
+                                row.classList.add('bg-blue-50');
+                                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                
+                                // 为行添加弹跳动画
+                                row.animate([
+                                    { transform: 'translateY(0)' },
+                                    { transform: 'translateY(-10px)' },
+                                    { transform: 'translateY(0)' }
+                                ], {
+                                    duration: 500,
+                                    iterations: 1
+                                });
+                                
+                                // 点击该寄存器以显示其位字段
+                                row.click();
+                                
+                                // 显示成功通知
+                                showNotification(`已找到寄存器: ${foundRegister.name}`, 'success');
+                            }
+                        });
+                    }, 100);
+                } else {
+                    showNotification(`未找到地址 0x${address.toString(16).padStart(8, '0')} 对应的寄存器`, 'error');
+                }
+            } catch (error) {
+                showNotification('请输入有效的十六进制地址', 'error');
+            }
+        }
+        
+        // ==================== 事件监听器设置 ====================
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 视图切换按钮
+            document.getElementById('block-diagram-view').addEventListener('click', switchToDiagramView);
+            document.getElementById('register-view').addEventListener('click', switchToRegisterView);
+            
+            // 外设搜索
+            const searchInput = document.getElementById('peripheral-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    isSearchActive = searchInput.value.length > 0;
+                    renderPeripheralList();
+                });
+            }
+            
+            // 类别过滤
+            document.querySelectorAll('.category-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // 移除所有按钮的active类
+                    document.querySelectorAll('.category-filter-btn').forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.remove('bg-blue-100');
+                        b.classList.add('bg-gray-100');
+                    });
+                    
+                    // 添加当前按钮的active类
+                    btn.classList.add('active');
+                    btn.classList.remove('bg-gray-100');
+                    btn.classList.add('bg-blue-100');
+                    
+                    // 更新当前过滤器
+                    currentFilter = btn.dataset.category;
+                    
+                    // 重新渲染外设列表
+                    renderPeripheralList();
+                });
+            });
+            
+            // 地址跳转
+            document.getElementById('jump-btn').addEventListener('click', handleAddressJump);
+            const addrJumpInput = document.getElementById('addr-jump');
+            if (addrJumpInput) {
+                addrJumpInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleAddressJump();
+                });
+            }
+            
+            // 模态框关闭按钮
+            document.getElementById('close-bit-modal').addEventListener('click', () => {
+                document.getElementById('bit-detail-modal').classList.add('hidden');
+            });
+            
+            // 点击模态框外部关闭
+            document.getElementById('bit-detail-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('bit-detail-modal')) {
+                    document.getElementById('bit-detail-modal').classList.add('hidden');
+                }
+            });
+            
+            // 放大缩小按钮和拖拽功能
+            const zoomInBtn = document.getElementById('zoom-in');
+            const zoomOutBtn = document.getElementById('zoom-out');
+            const resetZoomBtn = document.getElementById('reset-zoom');
+            const diagramContent = document.getElementById('diagram-content');
+            
+            // 初始化变换状态
+            let currentScale = 1;
+            let currentTranslateX = 0;
+            let currentTranslateY = 0;
+            let isDragging = false;
+            let startX, startY;
+            
+            // 更新变换
+            function updateTransform() {
+                diagramContent.setAttribute('transform', `translate(${currentTranslateX}, ${currentTranslateY}) scale(${currentScale})`);
+            }
+            
+            if (zoomInBtn) {
+                zoomInBtn.addEventListener('click', () => {
+                    currentScale = Math.min(currentScale + 0.1, 2);
+                    updateTransform();
+                });
+            }
+            
+            if (zoomOutBtn) {
+                zoomOutBtn.addEventListener('click', () => {
+                    currentScale = Math.max(currentScale - 0.1, 0.5);
+                    updateTransform();
+                });
+            }
+            
+            if (resetZoomBtn) {
+                resetZoomBtn.addEventListener('click', () => {
+                    currentScale = 1;
+                    currentTranslateX = 0;
+                    currentTranslateY = 0;
+                    updateTransform();
+                });
+            }
+            
+            // 鼠标滚轮缩放
+            const svgContainer = document.getElementById('mcu-diagram').parentElement;
+            svgContainer.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                
+                // 计算缩放中心
+                const rect = svgContainer.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                // 保存当前鼠标位置对应的SVG坐标
+                const svg = document.getElementById('mcu-diagram');
+                const point = svg.createSVGPoint();
+                point.x = mouseX;
+                point.y = mouseY;
+                const transformedPoint = point.matrixTransform(diagramContent.getScreenCTM().inverse());
+                
+                // 应用缩放
+                const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+                currentScale = Math.max(0.5, Math.min(currentScale * zoomFactor, 2));
+                
+                // 调整平移以保持鼠标位置不变
+                currentTranslateX = mouseX - (transformedPoint.x * currentScale);
+                currentTranslateY = mouseY - (transformedPoint.y * currentScale);
+                
+                updateTransform();
+            });
+            
+            // 鼠标拖拽平移
+            svgContainer.addEventListener('mousedown', (e) => {
+                // 只在按下左键且没有按下Ctrl/Cmd键时启用拖拽
+                if (e.button === 0 && !e.ctrlKey && !e.metaKey) {
+                    isDragging = true;
+                    startX = e.clientX - currentTranslateX;
+                    startY = e.clientY - currentTranslateY;
+                    svgContainer.style.cursor = 'grabbing';
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    currentTranslateX = e.clientX - startX;
+                    currentTranslateY = e.clientY - startY;
+                    updateTransform();
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    svgContainer.style.cursor = 'default';
+                }
+            });
+            
+            // 触摸支持
+            let lastTouchDistance = 0;
+            let lastTouchCenterX = 0;
+            let lastTouchCenterY = 0;
+            
+            svgContainer.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    // 双指缩放
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    lastTouchCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                    lastTouchCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                }
+            });
+            
+            svgContainer.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                
+                if (e.touches.length === 1) {
+                    // 单指拖动
+                    if (!isDragging) {
+                        isDragging = true;
+                        startX = e.touches[0].clientX - currentTranslateX;
+                        startY = e.touches[0].clientY - currentTranslateY;
+                    }
+                    currentTranslateX = e.touches[0].clientX - startX;
+                    currentTranslateY = e.touches[0].clientY - startY;
+                    updateTransform();
+                } else if (e.touches.length === 2) {
+                    // 双指缩放
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                    const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                    
+                    // 计算缩放因子
+                    const scaleFactor = distance / lastTouchDistance;
+                    const newScale = Math.max(0.5, Math.min(currentScale * scaleFactor, 2));
+                    
+                    if (newScale !== currentScale) {
+                        // 计算平移调整以保持缩放中心
+                        const svg = document.getElementById('mcu-diagram');
+                        const point = svg.createSVGPoint();
+                        point.x = centerX;
+                        point.y = centerY;
+                        const transformedPoint = point.matrixTransform(diagramContent.getScreenCTM().inverse());
+                        
+                        currentScale = newScale;
+                        
+                        currentTranslateX = centerX - (transformedPoint.x * currentScale);
+                        currentTranslateY = centerY - (transformedPoint.y * currentScale);
+                        
+                        updateTransform();
+                    }
+                    
+                    lastTouchDistance = distance;
+                    lastTouchCenterX = centerX;
+                    lastTouchCenterY = centerY;
+                }
+            });
+            
+            svgContainer.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+            
+            // 键盘快捷键
+            document.addEventListener('keydown', (e) => {
+                // Ctrl/Cmd + F: 聚焦搜索框
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    const searchInput = document.getElementById('peripheral-search');
+                    if (searchInput) {
+                        searchInput.focus();
+                    }
+                }
+                
+                // Escape: 关闭模态框
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('bit-detail-modal');
+                    if (modal && !modal.classList.contains('hidden')) {
+                        modal.classList.add('hidden');
+                    }
+                }
+                
+                // Ctrl/Cmd + Z: 重置缩放
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                    e.preventDefault();
+                    const svg = document.getElementById('mcu-diagram');
+                    if (svg && svg.hasAttribute('transform')) {
+                        svg.removeAttribute('transform');
+                    }
+                }
+            });
+        }
+        
+        // ==================== 应用初始化 ====================
+        
+        // 初始化应用
+        async function initializeApp() {
+            console.log('初始化RT1062寄存器可视化工具...');
+            
+            try {
+                // 加载数据
+                await loadMCUData();
+                
+                // 更新设备信息
+                const deviceInfoEl = document.getElementById('device-info');
+                if (deviceInfoEl && mcuData) {
+                    let peripheralCount = 0;
+                    for (const category in mcuData.categories) {
+                        peripheralCount += mcuData.categories[category].length;
+                    }
+                    deviceInfoEl.textContent = `${mcuData.device} (${peripheralCount} 外设)`;
+                }
+                
+                console.log('应用初始化完成');
+                
+            } catch (error) {
+                console.error('应用初始化失败:', error);
+                updateStatus('应用初始化失败', 'error');
+            }
+        }
+        
+        // DOM加载完成后初始化应用
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>

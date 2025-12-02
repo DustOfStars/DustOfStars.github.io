@@ -1,0 +1,1 @@
+{"name":"SAI3","description":"SAI","groupName":"SAI","prependToName":"","baseAddress":"0x4038C000","addressBlock":{"offset":"0","size":"0xE4","usage":"registers"},"interrupts":[{"name":"SAI3_RX","value":58},{"name":"SAI3_TX","value":59}],"registers":{},"derivedFrom":"SAI2"}

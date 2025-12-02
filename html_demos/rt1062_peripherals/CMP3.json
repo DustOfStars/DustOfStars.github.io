@@ -1,0 +1,1 @@
+{"name":"CMP3","description":"High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)","groupName":"ACMP","prependToName":"CMP3_","baseAddress":"0x40094010","addressBlock":{"offset":"0","size":"0x6","usage":"registers"},"interrupts":[{"name":"ACMP3","value":125}],"registers":{},"derivedFrom":"CMP1"}

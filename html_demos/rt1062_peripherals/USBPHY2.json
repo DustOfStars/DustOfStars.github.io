@@ -1,0 +1,1 @@
+{"name":"USBPHY2","description":"USBPHY Register Reference Index","groupName":"USBPHY","prependToName":"USBPHY2_","baseAddress":"0x400DA000","addressBlock":{"offset":"0","size":"0x84","usage":"registers"},"interrupts":[{"name":"USB_PHY2","value":66}],"registers":{},"derivedFrom":"USBPHY1"}

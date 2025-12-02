@@ -1,0 +1,1 @@
+{"name":"LPUART4","description":"LPUART","groupName":"LPUART","prependToName":"","baseAddress":"0x40190000","addressBlock":{"offset":"0","size":"0x30","usage":"registers"},"interrupts":[{"name":"LPUART4","value":23}],"registers":{},"derivedFrom":"LPUART1"}

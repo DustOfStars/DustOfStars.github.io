@@ -1,0 +1,1 @@
+{"name":"PWM3","description":"PWM","groupName":"PWM","prependToName":"","baseAddress":"0x403E4000","addressBlock":{"offset":"0","size":"0x196","usage":"registers"},"interrupts":[{"name":"PWM3_0","value":142},{"name":"PWM3_1","value":143},{"name":"PWM3_2","value":144},{"name":"PWM3_3","value":145},{"name":"PWM3_FAULT","value":146}],"registers":{},"derivedFrom":"PWM1"}

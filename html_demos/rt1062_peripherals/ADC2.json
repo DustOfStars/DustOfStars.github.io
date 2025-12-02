@@ -1,0 +1,1 @@
+{"name":"ADC2","description":"Analog-to-Digital Converter","groupName":"ADC","prependToName":"ADC2_","baseAddress":"0x400C8000","addressBlock":{"offset":"0","size":"0x5C","usage":"registers"},"interrupts":[{"name":"ADC2","value":68}],"registers":{},"derivedFrom":"ADC1"}

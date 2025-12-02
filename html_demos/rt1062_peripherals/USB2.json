@@ -1,0 +1,1 @@
+{"name":"USB2","description":"USB","groupName":"USB","prependToName":"USB_","baseAddress":"0x402E0200","addressBlock":{"offset":"0","size":"0x1E0","usage":"registers"},"interrupts":[{"name":"USB_OTG2","value":112}],"registers":{},"derivedFrom":"USB1"}

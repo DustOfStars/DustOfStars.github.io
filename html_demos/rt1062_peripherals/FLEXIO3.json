@@ -1,0 +1,1 @@
+{"name":"FLEXIO3","description":"FLEXIO","groupName":"FLEXIO","prependToName":"","baseAddress":"0x42020000","addressBlock":{"offset":"0","size":"0x7A0","usage":"registers"},"interrupts":[{"name":"FLEXIO3","value":156}],"registers":{},"derivedFrom":"FLEXIO2"}

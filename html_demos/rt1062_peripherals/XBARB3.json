@@ -1,0 +1,1 @@
+{"name":"XBARB3","description":"Crossbar Switch","groupName":"XBARA","prependToName":"XBARB3_","baseAddress":"0x403C4000","addressBlock":{"offset":"0","size":"0x10","usage":"registers"},"interrupts":[],"registers":{},"derivedFrom":"XBARB2"}

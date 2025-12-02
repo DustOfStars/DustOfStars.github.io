@@ -1,0 +1,1 @@
+{"name":"CAN2","description":"FLEXCAN","groupName":"CAN","prependToName":"FLEXCAN2_","baseAddress":"0x401D4000","addressBlock":{"offset":"0","size":"0x9E4","usage":"registers"},"interrupts":[{"name":"CAN2","value":37}],"registers":{},"derivedFrom":"CAN1"}

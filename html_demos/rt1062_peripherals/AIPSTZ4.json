@@ -1,0 +1,1 @@
+{"name":"AIPSTZ4","description":"AIPSTZ Control Registers","groupName":"AIPSTZ","prependToName":"AIPSTZ4_","baseAddress":"0x4037C000","addressBlock":{"offset":"0","size":"0x54","usage":"registers"},"interrupts":[],"registers":{},"derivedFrom":"AIPSTZ1"}

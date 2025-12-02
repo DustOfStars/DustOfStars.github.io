@@ -1,0 +1,1 @@
+{"name":"ENET2","description":"ENET","groupName":"ENET","prependToName":"","baseAddress":"0x402D4000","addressBlock":{"offset":"0","size":"0x628","usage":"registers"},"interrupts":[{"name":"ENET2","value":152},{"name":"ENET2_1588_Timer","value":153}],"registers":{},"derivedFrom":"ENET"}

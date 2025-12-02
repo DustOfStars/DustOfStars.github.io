@@ -1,0 +1,1 @@
+{"name":"GPIO5","description":"GPIO","groupName":"GPIO","prependToName":"","baseAddress":"0x400C0000","addressBlock":{"offset":"0","size":"0x90","usage":"registers"},"interrupts":[{"name":"GPIO5_Combined_0_15","value":88},{"name":"GPIO5_Combined_16_31","value":89}],"registers":{},"derivedFrom":"GPIO1"}

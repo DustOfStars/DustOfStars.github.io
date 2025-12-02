@@ -1,0 +1,1 @@
+{"name":"TMR4","description":"TMR","groupName":"TMR","prependToName":"","baseAddress":"0x401E8000","addressBlock":{"offset":"0","size":"0x7A","usage":"registers"},"interrupts":[{"name":"TMR4","value":136}],"registers":{},"derivedFrom":"TMR1"}

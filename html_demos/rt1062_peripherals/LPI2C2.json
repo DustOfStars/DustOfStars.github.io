@@ -1,0 +1,1 @@
+{"name":"LPI2C2","description":"LPI2C","groupName":"LPI2C","prependToName":"","baseAddress":"0x403F4000","addressBlock":{"offset":"0","size":"0x174","usage":"registers"},"interrupts":[{"name":"LPI2C2","value":29}],"registers":{},"derivedFrom":"LPI2C1"}

@@ -1,0 +1,1 @@
+{"name":"LPSPI4","description":"LPSPI","groupName":"LPSPI","prependToName":"","baseAddress":"0x403A0000","addressBlock":{"offset":"0","size":"0x78","usage":"registers"},"interrupts":[{"name":"LPSPI4","value":35}],"registers":{},"derivedFrom":"LPSPI1"}

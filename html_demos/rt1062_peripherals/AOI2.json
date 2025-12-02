@@ -1,0 +1,1 @@
+{"name":"AOI2","description":"AOI","groupName":"AOI","prependToName":"","baseAddress":"0x403B8000","addressBlock":{"offset":"0","size":"0x10","usage":"registers"},"interrupts":[],"registers":{},"derivedFrom":"AOI1"}
