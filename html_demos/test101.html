@@ -117,6 +117,21 @@
             background-color: #dbeafe;
             border-color: #3b82f6;
         }
+        
+        /* 合并外设样式 */
+        .merged-peripheral {
+            filter: url(#dropshadow);
+        }
+        
+        .merged-peripheral-text {
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .instance-count {
+            font-size: 8px;
+            fill: #f0f0f0;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col h-screen overflow-hidden">
@@ -544,7 +559,8 @@
                             desc: peripheralInfo.description,
                             baseAddr: parseInt(peripheralInfo.baseAddress, 16),
                             category: categorizePeripheral(peripheralInfo.name, peripheralInfo.description),
-                            registers: convertRegistersToArray(peripheralData.registers, parseInt(peripheralInfo.baseAddress, 16))
+                            registers: convertRegistersToArray(peripheralData.registers, parseInt(peripheralInfo.baseAddress, 16)),
+                            originalName: peripheralInfo.name  // 保存原始名称
                         };
                         
                         // 添加到对应的分类
@@ -979,9 +995,9 @@
             sortedBits.forEach(bit => {
                 const segment = document.createElement('div');
                 segment.className = 'bit-segment';
-        const highestBit = bit.pos + bit.width - 1;
-        segment.style.left = `${(31 - highestBit) * (100/32)}%`;
-        segment.style.width = `${bit.width * (100/32)}%`;
+                const highestBit = bit.pos + bit.width - 1;
+                segment.style.left = `${(31 - highestBit) * (100/32)}%`;
+                segment.style.width = `${bit.width * (100/32)}%`;
                 segment.style.backgroundColor = categoryColors[currentPeripheral?.category || 'other'] + '80';
                 segment.style.color = '#333';
                 segment.textContent = bit.name;
@@ -1015,7 +1031,17 @@
             });
         }
         
-        // 在框图中渲染外设
+        // 获取外设的基本名称（去掉数字后缀）
+        function getBasePeripheralName(name) {
+            // 匹配末尾的数字，如UART1, ADC2等
+            const match = name.match(/^([a-zA-Z_]+)(\d+)$/);
+            if (match) {
+                return match[1]; // 返回基本名称部分
+            }
+            return name; // 如果没有数字后缀，返回原名称
+        }
+        
+        // 在框图中渲染外设（合并相同IP类型的外设）
         function renderPeripheralsInDiagram() {
             const svg = document.getElementById('mcu-diagram');
             if (!svg) return;
@@ -1033,66 +1059,100 @@
                 }
             }
             
-            // 根据RM分类渲染外设
-            const interruptsEventsPeripherals = mcuData.categories.interrupts_events || [];
-            renderCategoryPeripherals(peripheralsGroup, interruptsEventsPeripherals, 580, 480, 80, 40, 90, 3);
+            // 根据RM分类和起始位置渲染外设
+            const categoryPositions = {
+                'interrupts_events': { x: 580, y: 480, maxPerRow: 3 },
+                'chip_io': { x: 930, y: 480, maxPerRow: 3 },
+                'clock_power': { x: 580, y: 620, maxPerRow: 3 },
+                'security': { x: 930, y: 620, maxPerRow: 2 },
+                'external_memory': { x: 580, y: 760, maxPerRow: 2 },
+                'cortex_m7_platform': { x: 930, y: 760, maxPerRow: 3 },
+                'display_camera': { x: 580, y: 900, maxPerRow: 2 },
+                'audio': { x: 930, y: 900, maxPerRow: 2 },
+                'connectivity': { x: 1280, y: 480, maxPerRow: 3 },
+                'low_speed': { x: 1280, y: 620, maxPerRow: 4 },
+                'timers': { x: 1280, y: 760, maxPerRow: 4 },
+                'cross_triggers': { x: 1280, y: 900, maxPerRow: 2 },
+                'analog': { x: 1280, y: 1040, maxPerRow: 3 }
+            };
             
-            const chipIOPeripherals = mcuData.categories.chip_io || [];
-            renderCategoryPeripherals(peripheralsGroup, chipIOPeripherals, 930, 480, 80, 40, 90, 3);
-            
-            const clockPowerPeripherals = mcuData.categories.clock_power || [];
-            renderCategoryPeripherals(peripheralsGroup, clockPowerPeripherals, 580, 590, 80, 40, 90, 3);
-            
-            const securityPeripherals = mcuData.categories.security || [];
-            renderCategoryPeripherals(peripheralsGroup, securityPeripherals, 930, 590, 80, 40, 90, 3);
-            
-            const externalMemoryPeripherals = mcuData.categories.external_memory || [];
-            renderCategoryPeripherals(peripheralsGroup, externalMemoryPeripherals, 580, 730, 80, 40, 90, 3);
-            
-            const cortexM7PlatformPeripherals = mcuData.categories.cortex_m7_platform || [];
-            renderCategoryPeripherals(peripheralsGroup, cortexM7PlatformPeripherals, 930, 730, 80, 40, 90, 3);
-            
-            const displayCameraPeripherals = mcuData.categories.display_camera || [];
-            renderCategoryPeripherals(peripheralsGroup, displayCameraPeripherals, 580, 870, 80, 40, 90, 3);
-            
-            const audioPeripherals = mcuData.categories.audio || [];
-            renderCategoryPeripherals(peripheralsGroup, audioPeripherals, 930, 870, 80, 40, 90, 3);
-            
-            const connectivityPeripherals = mcuData.categories.connectivity || [];
-            renderCategoryPeripherals(peripheralsGroup, connectivityPeripherals, 1280, 480, 80, 40, 90, 3);
-            
-            const lowSpeedPeripherals = mcuData.categories.low_speed || [];
-            renderCategoryPeripherals(peripheralsGroup, lowSpeedPeripherals, 1280, 590, 80, 40, 90, 3);
-            
-            const timersPeripherals = mcuData.categories.timers || [];
-            renderCategoryPeripherals(peripheralsGroup, timersPeripherals, 1280, 730, 80, 40, 90, 3);
-            
-            const crossTriggersPeripherals = mcuData.categories.cross_triggers || [];
-            renderCategoryPeripherals(peripheralsGroup, crossTriggersPeripherals, 1280, 870, 80, 40, 90, 3);
-            
-            const analogPeripherals = mcuData.categories.analog || [];
-            renderCategoryPeripherals(peripheralsGroup, analogPeripherals, 1280, 1010, 80, 40, 90, 3);
+            // 渲染每个分类的外设（合并相同IP类型）
+            for (const [category, position] of Object.entries(categoryPositions)) {
+                const peripherals = mcuData.categories[category] || [];
+                if (peripherals.length > 0) {
+                    // 合并相同IP类型的外设
+                    const mergedPeripherals = mergeSimilarPeripherals(peripherals);
+                    
+                    // 渲染合并后的外设
+                    renderCategoryPeripherals(
+                        peripheralsGroup,
+                        mergedPeripherals,
+                        peripherals, // 传入原始外设列表用于查找实例
+                        position.x,
+                        position.y,
+                        90,  // width
+                        45,  // height
+                        15,  // gap
+                        position.maxPerRow,
+                        category
+                    );
+                }
+            }
         }
         
-        // 在指定位置渲染一类外设
-        function renderCategoryPeripherals(parent, peripherals, startX, startY, width, height, gap, maxPerRow = 3) {
-            if (!peripherals || peripherals.length === 0) return;
+        // 合并相同IP类型的外设
+        function mergeSimilarPeripherals(peripherals) {
+            const mergedMap = new Map();
+            
+            peripherals.forEach(peripheral => {
+                const baseName = getBasePeripheralName(peripheral.name);
+                
+                if (!mergedMap.has(baseName)) {
+                    // 创建合并的外设对象
+                    mergedMap.set(baseName, {
+                        name: baseName + 'x', // 添加x后缀表示多个实例
+                        baseName: baseName,
+                        instances: [peripheral],
+                        category: peripheral.category,
+                        desc: peripheral.desc,
+                        baseAddr: peripheral.baseAddr, // 使用第一个实例的基地址
+                        instanceCount: 1
+                    });
+                } else {
+                    // 添加到现有合并组
+                    const merged = mergedMap.get(baseName);
+                    merged.instances.push(peripheral);
+                    merged.instanceCount++;
+                    
+                    // 按名称排序实例，确保第一个实例是IPName0
+                    merged.instances.sort((a, b) => a.name.localeCompare(b.name));
+                    
+                    // 更新基地址为第一个实例（IPName0）
+                    if (merged.instances.length > 0) {
+                        const firstInstance = merged.instances[0];
+                        if (firstInstance.name.endsWith('0') || firstInstance.name === baseName) {
+                            merged.baseAddr = firstInstance.baseAddr;
+                        }
+                    }
+                }
+            });
+            
+            return Array.from(mergedMap.values());
+        }
+        
+        // 在指定位置渲染一类外设（合并后的）
+        function renderCategoryPeripherals(parent, mergedPeripherals, originalPeripherals, startX, startY, width, height, gap, maxPerRow = 3, category) {
+            if (!mergedPeripherals || mergedPeripherals.length === 0) return;
             
             // 对外设按名称排序，确保显示一致
-            const sortedPeripherals = [...peripherals].sort((a, b) => a.name.localeCompare(b.name));
+            const sortedPeripherals = [...mergedPeripherals].sort((a, b) => a.baseName.localeCompare(b.baseName));
             
-            // 根据外设数量动态调整每行列数，确保所有外设都能显示
-            let adjustedMaxPerRow = maxPerRow;
-            let totalRows = Math.ceil(sortedPeripherals.length / adjustedMaxPerRow);
+            // 根据外设数量动态调整每行列数
+            let adjustedMaxPerRow = Math.min(maxPerRow, Math.ceil(Math.sqrt(sortedPeripherals.length)));
+            const totalRows = Math.ceil(sortedPeripherals.length / adjustedMaxPerRow);
             
-            // 如果行数太多，增加每行的列数
-            while (totalRows > 3 && adjustedMaxPerRow < 5) {
-                adjustedMaxPerRow++;
-                totalRows = Math.ceil(sortedPeripherals.length / adjustedMaxPerRow);
-            }
-            
-            // 渲染所有外设，不再限制数量
-            sortedPeripherals.forEach((peripheral, index) => { 
+            // 渲染所有外设
+            sortedPeripherals.forEach((mergedPeripheral, index) => {
                 const row = Math.floor(index / adjustedMaxPerRow);
                 const col = index % adjustedMaxPerRow;
                 const x = startX + col * (width + gap);
@@ -1100,22 +1160,12 @@
                 
                 // 创建外设组
                 const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                g.className = 'peripheral-box';
-                g.setAttribute('id', `peripheral-${peripheral.name.toLowerCase()}`);
-                g.setAttribute('data-peripheral-id', peripheral.name);
-                g.setAttribute('data-peripheral-baseaddr', `0x${peripheral.baseAddr.toString(16).padStart(8, '0')}`);
-                g.setAttribute('title', `${peripheral.name}: ${peripheral.desc}\nBase Address: 0x${peripheral.baseAddr.toString(16).padStart(8, '0')}`);
-                
-                // 创建光晕效果用于高亮
-                const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                glow.setAttribute('cx', x + width / 2);
-                glow.setAttribute('cy', y + height / 2);
-                glow.setAttribute('r', width / 2 + 5);
-                glow.setAttribute('fill', 'none');
-                glow.setAttribute('stroke', categoryColors[peripheral.category] || '#94a3b8');
-                glow.setAttribute('stroke-width', '0');
-                glow.setAttribute('filter', 'blur(3px)');
-                glow.setAttribute('class', 'peripheral-glow');
+                g.className = 'peripheral-box merged-peripheral';
+                g.setAttribute('id', `peripheral-${mergedPeripheral.baseName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`);
+                g.setAttribute('data-peripheral-base', mergedPeripheral.baseName);
+                g.setAttribute('data-instance-count', mergedPeripheral.instanceCount);
+                g.setAttribute('data-baseaddr', `0x${mergedPeripheral.baseAddr.toString(16).padStart(8, '0')}`);
+                g.setAttribute('title', `${mergedPeripheral.baseName}x (${mergedPeripheral.instanceCount}个实例)\n点击查看${mergedPeripheral.baseName}0的寄存器`);
                 
                 // 创建矩形
                 const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -1124,58 +1174,55 @@
                 rect.setAttribute('width', width);
                 rect.setAttribute('height', height);
                 
-                // 检查是否是同一外设的不同实例（如ADC1和ADC2）
-                const baseName = peripheral.name.replace(/[0-9]+$/, ''); // 移除末尾的数字
-                const isSamePeripheral = sortedPeripherals.some(p => 
-                    p.name.replace(/[0-9]+$/, '') === baseName && p.name !== peripheral.name
-                );
-                
-                // 如果是同一外设的不同实例，使用相同的颜色但略微调整亮度
-                if (isSamePeripheral) {
-                    const color = categoryColors[peripheral.category] || '#94a3b8';
-                    // 为不同实例生成略微不同的色调
-                    const matchResult = peripheral.name.match(/[0-9]+$/);
-                    const instanceNumber = matchResult ? parseInt(matchResult[0]) : 1;
-                    const hueOffset = (instanceNumber - 1) * 10; // 每增加一个实例，色相偏移10度
-                    rect.setAttribute('fill', `${color}aa`); // 使用相同颜色但增加透明度
-                } else {
-                    rect.setAttribute('fill', categoryColors[peripheral.category] || '#94a3b8');
-                }
-                
+                // 设置颜色
+                const color = categoryColors[category] || '#94a3b8';
+                rect.setAttribute('fill', color);
                 rect.setAttribute('stroke', '#333');
                 rect.setAttribute('stroke-width', '1');
-                rect.setAttribute('rx', 5);
-                rect.setAttribute('ry', 5);
+                rect.setAttribute('rx', 6);
+                rect.setAttribute('ry', 6);
+                rect.setAttribute('class', 'peripheral-rect');
                 
-                // 创建文本
+                // 创建主文本
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', x + width / 2);
-                text.setAttribute('y', y + height / 2 + 4); // 微调以居中
+                text.setAttribute('y', y + height / 2 - 5);
                 text.setAttribute('fill', 'white');
-                text.setAttribute('font-size', '10px');
+                text.setAttribute('font-size', '11px');
                 text.setAttribute('text-anchor', 'middle');
                 text.setAttribute('font-weight', 'bold');
-                text.textContent = peripheral.name;
+                text.setAttribute('class', 'merged-peripheral-text');
+                text.textContent = mergedPeripheral.name;
                 
-                // 添加到组（注意顺序：光晕在底层）
-                g.appendChild(glow);
+                // 创建实例数量文本
+                const instanceText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                instanceText.setAttribute('x', x + width / 2);
+                instanceText.setAttribute('y', y + height / 2 + 8);
+                instanceText.setAttribute('fill', '#f0f0f0');
+                instanceText.setAttribute('font-size', '8px');
+                instanceText.setAttribute('text-anchor', 'middle');
+                instanceText.setAttribute('class', 'instance-count');
+                instanceText.textContent = `${mergedPeripheral.instanceCount}个实例`;
+                
+                // 添加到组
                 g.appendChild(rect);
                 g.appendChild(text);
+                g.appendChild(instanceText);
                 
                 // 添加到父元素
                 parent.appendChild(g);
                 
                 // 添加鼠标悬停效果
                 g.addEventListener('mouseenter', () => {
-                    rect.setAttribute('fill-opacity', '0.8');
-                    rect.setAttribute('filter', 'brightness(1.1)');
-                    glow.setAttribute('stroke-width', '2');
+                    rect.setAttribute('fill', adjustColor(color, -20)); // 变暗
+                    rect.setAttribute('stroke-width', '2');
+                    rect.setAttribute('stroke', '#1d4ed8');
                 });
                 
                 g.addEventListener('mouseleave', () => {
-                    rect.setAttribute('fill-opacity', '1');
-                    rect.setAttribute('filter', 'none');
-                    glow.setAttribute('stroke-width', '0');
+                    rect.setAttribute('fill', color);
+                    rect.setAttribute('stroke-width', '1');
+                    rect.setAttribute('stroke', '#333');
                 });
                 
                 // 添加点击事件
@@ -1183,22 +1230,68 @@
                     e.stopPropagation();
                     
                     // 移除所有外设的选中状态
-                    document.querySelectorAll('.peripheral-box').forEach(box => {
-                        box.querySelector('rect').setAttribute('stroke-width', '1');
+                    document.querySelectorAll('.peripheral-rect').forEach(r => {
+                        r.setAttribute('stroke-width', '1');
+                        r.setAttribute('stroke', '#333');
                     });
                     
                     // 设置当前外设为选中状态
                     rect.setAttribute('stroke-width', '3');
                     rect.setAttribute('stroke', '#1d4ed8');
                     
-                    // 切换到寄存器视图并选择外设
-                    switchToRegisterView();
-                    selectPeripheral(peripheral);
+                    // 找到该合并外设的第一个实例（IPName0）
+                    let targetPeripheral = null;
                     
-                    // 显示外设详情提示
-                    showNotification(`已选择外设: ${peripheral.name}`, 'success');
+                    // 首先尝试找到IPName0
+                    const targetName = mergedPeripheral.baseName + '0';
+                    targetPeripheral = originalPeripherals.find(p => p.name === targetName);
+                    
+                    // 如果没找到，使用该组的第一个实例
+                    if (!targetPeripheral && mergedPeripheral.instances && mergedPeripheral.instances.length > 0) {
+                        targetPeripheral = mergedPeripheral.instances[0];
+                    }
+                    
+                    // 如果还没有，尝试在原始外设中查找
+                    if (!targetPeripheral) {
+                        // 查找名称以基本名称开头的第一个外设
+                        targetPeripheral = originalPeripherals.find(p => 
+                            p.name.startsWith(mergedPeripheral.baseName)
+                        );
+                    }
+                    
+                    if (targetPeripheral) {
+                        // 切换到寄存器视图并选择外设
+                        switchToRegisterView();
+                        selectPeripheral(targetPeripheral);
+                        
+                        // 显示外设详情提示
+                        showNotification(`已选择外设: ${targetPeripheral.name} (${mergedPeripheral.name}的第一个实例)`, 'success');
+                    } else {
+                        showNotification(`无法找到${mergedPeripheral.name}的实例`, 'error');
+                    }
                 });
             });
+        }
+        
+        // 颜色调整辅助函数
+        function adjustColor(hexColor, amount) {
+            // 将十六进制颜色转换为RGB
+            let color = hexColor;
+            if (color.startsWith('#')) {
+                color = color.substring(1);
+            }
+            
+            const r = parseInt(color.substr(0, 2), 16);
+            const g = parseInt(color.substr(2, 2), 16);
+            const b = parseInt(color.substr(4, 2), 16);
+            
+            // 调整亮度
+            const newR = Math.max(0, Math.min(255, r + amount));
+            const newG = Math.max(0, Math.min(255, g + amount));
+            const newB = Math.max(0, Math.min(255, b + amount));
+            
+            // 转换回十六进制
+            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
         }
         
         // ==================== 辅助函数 ====================
@@ -1206,19 +1299,19 @@
         // 获取类别名称
         function getCategoryName(category) {
             const categoryNames = {
-                'interrupts_events': '中断与DMA事件',
+                'interrupts_events': '中断与DMA',
                 'chip_io': '芯片IO',
-                'clock_power': '时钟与电源管理',
-                'security': '安全与加密',
-                'external_memory': '外部存储器控制器',
-                'cortex_m7_platform': 'Cortex-M7平台',
-                'display_camera': '显示与摄像头',
+                'clock_power': '时钟电源',
+                'security': '安全',
+                'external_memory': '外部存储',
+                'cortex_m7_platform': 'Cortex-M7',
+                'display_camera': '显示摄像头',
                 'audio': '音频',
                 'connectivity': '连接性',
                 'low_speed': '低速外设',
                 'timers': '定时器',
-                'cross_triggers': '片上交叉触发器',
-                'analog': '模拟外设',
+                'cross_triggers': '交叉触发器',
+                'analog': '模拟',
                 'comm': '通信接口',
                 'digital': '数字外设',
                 'system': '系统控制',
