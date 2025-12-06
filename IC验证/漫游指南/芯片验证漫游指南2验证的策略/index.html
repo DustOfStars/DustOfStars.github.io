@@ -55,7 +55,7 @@
 <li>时间边界：不同的开发子过程之间顺序执行，几乎没有交叠的空间来缩短整体的项目交付时间。</li>
 <li>组织边界：开发小组之间的交流发生在上一个过程结束、下一个过程开始时，这引入了额外的沟通成本;</li>
 </ul>
-<style>.pvuwylxlccys{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E4%BC%A0%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B.png" class="pvuwylxlccys">
+<style>.bnrbftwferfp{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E4%BC%A0%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B.png" class="bnrbftwferfp">
 
 <h2 id="1-3-ESL系统设计流程"><a href="#1-3-ESL系统设计流程" class="headerlink" title="1.3 ESL系统设计流程"></a>1.3 ESL系统设计流程</h2><p>图2.2为ESL系统设计流程。为了模糊或者融合这种边界，ESL开发流程通过建立虚拟原型（virtual prototype），又称TLM模型，使参与到系统开发的各小组做<strong>并行开发</strong>。之所以有这种魔力，是因为 TLM 模型不再是一种无法被硬件开发和软件开发利用的抽象描述，而是一种更早期开发的软件模型。在ESL开发的协助下，其余的开发流程可以更早地与系统设计一块进行开发，从整体上看，这种方式有助于缩短芯片开发的时间。除此之外，ESL在前期产品定义的阶段有相对可量化的模型，有助于早期评估产品的功能、性能是否满足客户要求，也能减轻一些低配置性能的风险以及降低过多设计的成本。</p>
 <p>这是为什么呢？原因有以下几点：</p>
@@ -65,7 +65,7 @@
 <li>正由于可以在芯片结构的定义阶段快速做出性能评估，系统结构人员才可以及时地做出资源调整来满足用户的需求。否则，尽管芯片可能是低缺陷率的，但如果它的执行速度不够快、功耗过高，那么仍然无法满足客户的要求。</li>
 <li>过度设计的结构就像给一只袜子缀上水钻一样没有必要。客户给的报价摆在那里，你的设计过度，不但意味着成本的增长，也意味着更高的复杂度和风险。</li>
 </ul>
-<style>.lgyzjnegutas{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/ESL%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E6%96%B9%E5%BC%8F.png" class="lgyzjnegutas">
+<style>.jnebiegschts{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/ESL%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E6%96%B9%E5%BC%8F.png" class="jnebiegschts">
 
 <p>ESL和TLM对系统模型的要求使得需要有一门语言具备这些特性：</p>
 <ul>
@@ -77,10 +77,10 @@
 </ul>
 <p>这样的语言就是接下来要介绍的SystemC。SystemC是可以满足TLM模型开发的一种语言。严格来讲，它本身不是一种语言，而是建立在C++之上的一种类库（class library）。SystemC语言可以用来描述系统级别的硬件行为，而这一点恰是其他语言无法满足的。2006年，SystemC被IEEE收入IEEE 1666标准，它本身也易于学习，具有C++/Java基础和硬件设计概念的人使用起来都不需要太多的学习成本。</p>
 <h2 id="1-4-语言的抽象级比较"><a href="#1-4-语言的抽象级比较" class="headerlink" title="1.4 语言的抽象级比较"></a>1.4 语言的抽象级比较</h2><p>不同的硬件领域使用到的建模语言都有它们各自适合的抽象级，图2.3指出了各个语言擅长的抽象级领域。从左至右，<strong>VHDL和Verilog主要用做RTL仿真和数字电路的综合</strong>，也用来在早期搭建一些验证平台。SystemVerilog/Vera/e是用来做功能验证语言的，其中包括了它们的随机约束重要特性，同时可以发现，SystemVerilog 本身可以用来描述硬件做 RTL仿真和门级综合。在此之上，<strong>SystemC 更偏向于系统层，它在结构层面上可以做更高抽象级的描述，虽然本身无法描述电路的综合网表，但它能够作为虚拟平台为上层软件开发做准备</strong>。MATLAB在信号处理上面被用来作为描述和算法验证。</p>
-<style>.qmeupmlrhhah{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E4%B8%8D%E5%90%8C%E7%A1%AC%E4%BB%B6%E7%9B%B8%E5%85%B3%E8%AF%AD%E8%A8%80%E7%9A%84%E6%8A%BD%E8%B1%A1%E7%BA%A7%E6%AF%94%E8%BE%83.png" class="qmeupmlrhhah">
+<style>.hvsvxsmlqbao{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E4%B8%8D%E5%90%8C%E7%A1%AC%E4%BB%B6%E7%9B%B8%E5%85%B3%E8%AF%AD%E8%A8%80%E7%9A%84%E6%8A%BD%E8%B1%A1%E7%BA%A7%E6%AF%94%E8%BE%83.png" class="hvsvxsmlqbao">
 
 <h2 id="1-5-传统的系统集成视角"><a href="#1-5-传统的系统集成视角" class="headerlink" title="1.5 传统的系统集成视角"></a>1.5 传统的系统集成视角</h2><p>前面已经提到，传统的瀑布开发模型（见图2.4）无法让硬件人员和软件人员在系统结构定义早期参与其中。硬件的设计和验证人员需等待系统定义完成之后，才能将功能描述文档分别翻译出来，建立可综合模型和参考模型。软件人员只有在硬件流片以后才真正开始进行软件开发，尽管目前的FPGA有着比硬件更快的仿真优势，但无论从时间还是从速度来看，它仍然不是理想的软件开发平台。虽然FPGA等硬件加速工具对硅后系统测试有积极意义，但因介入较晚，加上基于速度层面的考量，其对软件系统层开发的贡献依然存在局限性。</p>
-<style>.tsotsrnwjsbg{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E7%80%91%E5%B8%83%E5%BC%80%E5%8F%91%E6%A8%A1%E5%9E%8B.png" class="tsotsrnwjsbg">
+<style>.mkfwcquholjz{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E7%80%91%E5%B8%83%E5%BC%80%E5%8F%91%E6%A8%A1%E5%9E%8B.png" class="mkfwcquholjz">
 
 <h2 id="1-6-ESL系统集成视角"><a href="#1-6-ESL系统集成视角" class="headerlink" title="1.6 ESL系统集成视角"></a>1.6 ESL系统集成视角</h2><p>新型的ESL系统开发方式（见图2.5）在系统定义阶段建立TLM模型。这一模型的建立对系统人员、硬件设计人员、验证人员和软件开发人员有显著帮助：</p>
 <ul>
@@ -96,12 +96,12 @@
 <li>当 TLM 模型被验证环境复用时，要求 TLM 与验证环境之间保持标准接口（TLM interface），以便于TLM模型的插拔。</li>
 <li>软件开发需在完整的系统层面进行，因此当TLM协助软件开发时，TLM子模块要被尽早地集成到一起，作为整体系统为软件开发所用。TLM 模型需要具备标准接口，以便更快地实现系统集成。</li>
 </ul>
-<style>.sukrmnptxvjh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/ESL%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E6%96%B9%E5%BC%8F.png" class="sukrmnptxvjh">
+<style>.cfbmoydjgrtf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/ESL%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E6%96%B9%E5%BC%8F.png" class="cfbmoydjgrtf">
 
 
 <p>目前常见的设计流程仍然是瀑布开发方式或类 ESL 开发方式。类 ESL 开发指的是开发流程并没有完全遵循上述流程，而是在一些地方引入TLM建模。在图2.6中，由于系统人员的技能限制，项目开发需要额外引入虚拟建模团队。虚拟建模团队服务的主要对象是软件开发一方，他们与硬件设计、验证团队的沟通会较少。这种类ESL的开发可能有多种组合，但需要警惕的是，在方便软件开发早期进入项目时，TLM模型应该与系统定义保持绝对的一致性，从而为硬件和软件方提供模型和代码参考。</p>
 <p>从图2.6来看，这种类ESL的方式是存在风险的，因为虚拟建模团队从系统定义到TLM模型的过程存在二次翻译。如果翻译不准确、存在疏漏，可以想象，基于 TLM 模型的软件开发不会那么容易被移植到真正的硬件系统上，因为硬件本身也是二次翻译的。所以，理想的合作边界应该如图2.7所示，虚拟建模首先和系统定义保持原义的一致性，硬件和软件则可以将TLM模型视为功能描述的一致性翻译，然后各自在TLM模型上进行开发。</p>
-<style>.drjxodvmgwwc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/ESL%E5%BC%80%E5%8F%91%E6%B2%9F%E9%80%9A%E5%85%85%E5%88%86.png" class="drjxodvmgwwc">
+<style>.mocyxmvbrvvr{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/ESL%E5%BC%80%E5%8F%91%E6%B2%9F%E9%80%9A%E5%85%85%E5%88%86.png" class="mocyxmvbrvvr">
 
 <h1 id="2-验证的层次"><a href="#2-验证的层次" class="headerlink" title="2. 验证的层次"></a>2. 验证的层次</h1><p>从系统定义阶段开始，我们将芯片系统划分为子系统，进而将每个子系统划分为不同的功能模块，直到划分为复杂度合适的模块。到设计阶段，按照自底向上的方式开始做硬件设计和集成。从定义阶段到设计阶段，再到后端部分，整个硅前的流程都是将芯片按照层次划分的，<strong>一般称为芯片系统级（chip level /system level）、子系统级（sub-system level）和模块级（module level /unit level）</strong>。</p>
 <p>这种层次划分的方式对于芯片开发有哪些好处呢？</p>
@@ -111,7 +111,7 @@
 <li>从设计和验证角度出发，合适的复杂度模块有助于估计工作量和人员分配。设计最终是通过模块化来集成的，而验证环境在模块化后可方便地在更高层的环境中复用。</li>
 <li>对于后端，在进行了合理的区域划分后，模块和芯片系统可以并行进行后续的物理设计流程。设计模块在每个阶段进行相关的设计检查，集成后的芯片系统最终进行设计检查并通过流片要求。</li>
 </ul>
-<style>.kzyxlrfmmxfk{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E6%89%8B%E6%9C%BA%E9%80%9A%E4%BF%A1%E8%8A%AF%E7%89%87%E7%BB%93%E6%9E%84%E7%A4%BA%E4%BE%8B.png" class="kzyxlrfmmxfk">
+<style>.ptykfngamekc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E6%89%8B%E6%9C%BA%E9%80%9A%E4%BF%A1%E8%8A%AF%E7%89%87%E7%BB%93%E6%9E%84%E7%A4%BA%E4%BE%8B.png" class="ptykfngamekc">
 
 <p>如果我们是在为一款手机设计通信芯片，如图2.8显示，一开始的系统定义阶段可能要规划出这么多的功能模块，还需考虑模块的性能因素。每一款芯片都包括多个子系统，每个子系统包含多个功能模块。从图1.3中的这款手机通信芯片结构来看，它包括的子系统有：</p>
 <ul>
@@ -182,7 +182,7 @@
 </ul>
 <p>通过表2.1来更好地理解不同验证层次的侧重、性能和
 使用方法。选择一个合适的验证层次，通过在不同层次分配不同的功能验证点，是最终迈向验证完备性的一项必备技能。</p>
-<style>.ekjbbxucjwew{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E4%B8%8D%E5%90%8C%E9%AA%8C%E8%AF%81%E5%B1%82%E6%AC%A1%E7%9A%84%E4%BE%A7%E9%87%8D%E3%80%81%E6%80%A7%E8%83%BD%E5%92%8C%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.png" class="ekjbbxucjwew">
+<style>.xnvfpluvpnor{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E4%B8%8D%E5%90%8C%E9%AA%8C%E8%AF%81%E5%B1%82%E6%AC%A1%E7%9A%84%E4%BE%A7%E9%87%8D%E3%80%81%E6%80%A7%E8%83%BD%E5%92%8C%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.png" class="xnvfpluvpnor">
 
 <h1 id="3-验证的透明度"><a href="#3-验证的透明度" class="headerlink" title="3. 验证的透明度"></a>3. 验证的透明度</h1><p>可以按照激励的生成方式和检查的功能点分布将验证划分为三种基本方式：</p>
 <ul>
@@ -193,7 +193,7 @@
 <p>接下来，我们逐一解释这三种不同透明度的验证特征。</p>
 <h2 id="3-1-黑盒验证"><a href="#3-1-黑盒验证" class="headerlink" title="3.1 黑盒验证"></a>3.1 黑盒验证</h2><p>如果验证人员对设计的细节缺乏认识，那么黑盒验证是一种合适的方式。因为验证环境只需要将激励给入设计的外部接口，检查设计的另一侧输出就足够了。测试成功与否只是根据一个输入是否得到一个正确的输出去判断，验证环境本身不会关注设计的内部。</p>
 <p>图2.9是黑盒验证的结构。</p>
-<style>.lynuilissvec{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E9%BB%91%E7%9B%92%E9%AA%8C%E8%AF%81%E7%BB%93%E6%9E%84.png" class="lynuilissvec">
+<style>.dlgwshqdwaie{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E9%BB%91%E7%9B%92%E9%AA%8C%E8%AF%81%E7%BB%93%E6%9E%84.png" class="dlgwshqdwaie">
 
 <p>从图2.9可以看到，激励生成器（stimulator）只负责给设计灌入激励，监视器（monitor）和检查器（checker）只查看和比较输出信号。<strong>黑盒验证的一个缺点是缺少设计的透明度和激励的可控性</strong>，由此带来的问题包括：</p>
 <ul>
@@ -225,7 +225,7 @@
 的开关来跑回归测试的策略，便于发现问题后快速定位到新打开的开关一侧；另外，白盒检查点的开关有优先级，如果验证人员足够专业，在他的代码或者文档中会对这些白盒开关给出说明和重要性排列。文档说明有助于新的验证人员按照优先级的高低来打开不同的开关。</li>
 </ul>
 <p>所以，灰盒验证不但可以继承黑盒验证和白盒验证的优势，而且对验证环境在新项目中的复用有明显优势。</p>
-<style>.bejcqmsvrswm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E9%BB%91%E7%9B%92%E3%80%81%E7%99%BD%E7%9B%92%E5%92%8C%E7%81%B0%E7%9B%92%E7%9A%84%E9%AA%8C%E8%AF%81%E7%89%B9%E7%82%B9.png" class="bejcqmsvrswm">
+<style>.ixeuzqvnnjfc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E9%BB%91%E7%9B%92%E3%80%81%E7%99%BD%E7%9B%92%E5%92%8C%E7%81%B0%E7%9B%92%E7%9A%84%E9%AA%8C%E8%AF%81%E7%89%B9%E7%82%B9.png" class="ixeuzqvnnjfc">
 
 <p>最后，我们通过表2.2来总结黑盒验证、白盒验证和灰盒验证的特点。可以看出，灰盒验证可以<strong>最好地平衡设计增量和验证复用</strong>。在设计阶段，如果验证人员有充分的经验来实现灰盒验证环境，清晰划分黑盒部分和白盒部分，那么在后续的项目中，灰盒验证的良好复用性和灵活性会给模块的集成带来便利。在高度集成化的今天，我们对设计复用性的考量，是从整个设计交付包（design delivery package）出发的，包括之前提到的设计包、验证包、文档包、回归测试包和覆盖率包等。</p>
 <p>无论设计人员还是验证人员，都需要从各自的角度考虑复用性，全盘考虑设计的整个流程。设计交付只有能带来更好的“用户体验”，缩短集成时间（设计和验证），这才是好的设计和验证方式。</p>
@@ -257,11 +257,11 @@
 <li>用户自定义颗粒层。</li>
 </ul>
 <p>从激励生成器提供的方法继承和封装入手，可以将这些颗粒层的关系表现为，<strong>基本颗粒层提供基本颗粒生成方法，而在其上，高级颗粒层和宏颗粒层做了深入的封装，帮助建立数据包（packet）和帧（frame）的概念。用户也可以依赖基本颗粒层，根据实际场景的需要实现自定义颗粒层，以方便特定场景的激励控制。序列的颗粒层次如图2.11所示</strong>。</p>
-<style>.insfbipavsud{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E5%BA%8F%E5%88%97%E7%9A%84%E9%A2%97%E7%B2%92%E5%B1%82%E6%AC%A1.png" class="insfbipavsud">
+<style>.wwtmpsjlndnq{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E5%BA%8F%E5%88%97%E7%9A%84%E9%A2%97%E7%B2%92%E5%B1%82%E6%AC%A1.png" class="wwtmpsjlndnq">
 
 <p>我们以一个商业总线验证IP为例。该验证IP包具有基本颗粒层和高级颗粒层来生成不同级别的测试序列，在一些情况下，验证IP也提供宏颗粒层的定义来满足更高规模的数据传输。这里的抽象级<strong>指的是从时序和数据量传输的角度出发，越高的抽象级越不关注底层的时序而更重视数据的传输量，也是 TLM（Transaction Level Model）含义的延伸。当验证人员不能从已有的各种颗粒层中生成自己期望的测试序列时，便可以利用已有的基本颗粒层和高级颗粒层来构建自己的颗粒层</strong>。</p>
 <h2 id="4-3-可控性"><a href="#4-3-可控性" class="headerlink" title="4.3 可控性"></a>4.3 可控性</h2><p>可控性（controllability）是从对不同颗粒层的控制角度出发的。按照序列颗粒度的划分，对应的可控性评估如表2.3所示。</p>
-<style>.qvhxqhkbiejc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E5%BA%8F%E5%88%97%E7%9A%84%E9%A2%97%E7%B2%92%E5%B1%82%E6%AC%A1.png" class="qvhxqhkbiejc">
+<style>.lsgklsugbtrq{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E5%BA%8F%E5%88%97%E7%9A%84%E9%A2%97%E7%B2%92%E5%B1%82%E6%AC%A1.png" class="lsgklsugbtrq">
 
 <p>在<strong>功能验证周期的初期阶段，应从基本颗粒层中选择激励方法，这有利于我们在接口的基本功能中调节测试不同的总线传输情况</strong>，这里的验证点<strong>侧重于协议功能和时序检查</strong>。随着设计趋于稳定，我们逐渐选择高级颗粒层和宏颗粒层，将验证精力<strong>转移到数据量的一致性传输和性能评估</strong>上，而这两层的颗粒控制性没有像基本颗粒层那样细致到可以调节每一个参数变量，它们会同验证重点保持一致，主要提供跟数据量有关的可约束参数。</p>
 <h2 id="4-4-组件独立性"><a href="#4-4-组件独立性" class="headerlink" title="4.4 组件独立性"></a>4.4 组件独立性</h2><p>将一个设计的边界信号划分为不同的接口类型，并创建出对应的接口验证组件之后，我们就应该考虑各个组件之间的独立性了。<strong>组件的独立性（component independency）实际上也是协调性的基本保障，因为有了独立性，各个组件之间才会最大程度地不受其他组件的制约，同时又可以通过有效的通信机制实现组件之间的同步协调</strong>。我们接下来看看实现组件独立性需要考虑的因素：</p>
@@ -289,7 +289,7 @@
 <li>模块在芯片系统级的应用角色。</li>
 </ul>
 <p>不同的检查层次，可以考虑采用不同的检查方法，如表2.4所示。</p>
-<style>.hioqcgctlvxh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E4%B8%8D%E5%90%8C%E5%B1%82%E6%AC%A1%E7%9A%84%E6%A3%80%E6%9F%A5%E6%96%B9%E6%B3%95.png" class="hioqcgctlvxh">
+<style>.aobuojbvoyij{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E4%B8%8D%E5%90%8C%E5%B1%82%E6%AC%A1%E7%9A%84%E6%A3%80%E6%9F%A5%E6%96%B9%E6%B3%95.png" class="aobuojbvoyij">
 
 <p>从表2.4可以看出，<strong>经常使用的方法有监测器（monitor）、断言（assertion）、参考模型（reference model）、比较器（comparator/scoreboard）、定向测试和形式验证等</strong>。接下来，我们简要分析不同检查方法的要点，关于这些方法的更多介绍，读者可以在8.6节详细了解。</p>
 <p>一般而言，<strong>监测器（monitor）是必备的组件，它便于我们观察硬件信号。所以，在各个层次都可以找到监测器的身影</strong>。查看设计内部信号另外一个可行办法是使用 SystemVerilog绑定（bind）的特性。由于监测器可能被置入到各种方法中，我们需要从复用的角度，在构建监测器的时候考虑如下因素：</p>
@@ -313,7 +313,7 @@
 <li>运行环境（runtime environment）；</li>
 <li>验证管理（verification management）。</li>
 </ul>
-<style>.qbqexnwuaaed{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E9%AA%8C%E8%AF%81%E7%8E%AF%E5%A2%83%E7%9A%84%E8%A6%81%E7%B4%A0.png" class="qbqexnwuaaed">
+<style>.ffiwlwipmawj{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/%E8%8A%AF%E7%89%87%E9%AA%8C%E8%AF%81%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%972%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AD%96%E7%95%A5/%E9%AA%8C%E8%AF%81%E7%8E%AF%E5%A2%83%E7%9A%84%E8%A6%81%E7%B4%A0.png" class="ffiwlwipmawj">
 
 
 <h2 id="6-1-验证平台"><a href="#6-1-验证平台" class="headerlink" title="6.1 验证平台"></a>6.1 验证平台</h2><p>验证平台是验证人员日常工作的对象。在建立或复用验证框架时，主要考虑激励分类和检查方法两部分，这两部分直接影响验证平台的框架。</p>
