@@ -1,0 +1,387 @@
+:root {
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --bg-color: #f1f5f9;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+
+    /* Functional Colors for Bits */
+    --bit-color-1: #60a5fa;
+    --bit-color-2: #34d399;
+    --bit-color-3: #f472b6;
+    --bit-color-4: #a78bfa;
+    --bit-color-5: #fbbf24;
+    --bit-color-reserved: #e2e8f0;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.breadcrumb {
+    display: flex;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.breadcrumb span {
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.breadcrumb span:hover {
+    color: var(--primary-color);
+}
+
+.breadcrumb span.active {
+    color: var(--text-main);
+    font-weight: 600;
+    cursor: default;
+    pointer-events: none;
+    /* Disable hover/click for active */
+}
+
+/* --- DASHBOARD: Interactive Block Diagram --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.system-section {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.system-section h2 {
+    font-size: 1.1rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--bg-color);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.module-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.module-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.module-card:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
+    background: white;
+    z-index: 10;
+}
+
+.module-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.module-card:hover::after {
+    opacity: 1;
+}
+
+/* --- INSTANCE LIST VIEW --- */
+.instance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    animation: slideUp 0.3s ease-out;
+}
+
+.instance-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.instance-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+}
+
+.instance-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+}
+
+.instance-details {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-family: var(--font-mono);
+}
+
+/* --- REGISTER LIST VIEW (Table) --- */
+.params-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-top: 1rem;
+}
+
+.params-table th {
+    background: #f8fafc;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.params-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.register-row {
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.register-row:hover {
+    background-color: #f1f5f9;
+}
+
+.reg-name {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.reg-desc {
+    color: var(--text-main);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- REGISTER DETAIL VIEW (Visualizer) --- */
+.detail-header {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.visualizer-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.bit-scale {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    padding: 0 2px;
+}
+
+.bit-bar {
+    display: flex;
+    height: 48px;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    border: 1px solid var(--border-color);
+}
+
+.bit-block {
+    height: 100%;
+    position: relative;
+    /* For tooltip positioning if needed via CSS, though using title currently */
+    transition: all 0.2s;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.6);
+    user-select: none;
+}
+
+.bit-block:last-child {
+    border-right: none;
+}
+
+.bit-block:hover {
+    transform: scaleY(1.15);
+    /* Nice pop effect */
+    z-index: 10;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.bit-block.reserved {
+    background: var(--bit-color-reserved);
+    background-image: repeating-linear-gradient(45deg,
+            transparent,
+            transparent 5px,
+            rgba(0, 0, 0, 0.02) 5px,
+            rgba(0, 0, 0, 0.02) 10px);
+    cursor: default;
+}
+
+.bit-block.reserved:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Bit colors generated dynamically, but base classes helpers */
+.bit-color-0 {
+    background: #bae6fd;
+}
+
+/* sky-200 */
+.bit-color-1 {
+    background: #a7f3d0;
+}
+
+/* emerald-200 */
+.bit-color-2 {
+    background: #fbcfe8;
+}
+
+/* pink-200 */
+.bit-color-3 {
+    background: #ddd6fe;
+}
+
+/* violet-200 */
+.bit-color-4 {
+    background: #fde68a;
+}
+
+/* amber-200 */
+
+/* Field Details Table */
+.field-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.field-table tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.1s;
+}
+
+.field-table tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Highlight effect linked to visualizer */
+.field-table tr.highlighted {
+    background-color: #eff6ff;
+}
+
+
+/* Animations */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.view-section {
+    display: none;
+    animation: slideUp 0.3s ease-out;
+}
+
+.view-section.active {
+    display: block;
+}

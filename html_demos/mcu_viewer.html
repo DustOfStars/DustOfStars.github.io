@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i.MX RT1062 Peripheral Explorer (Visual)</title>
+    <link rel="stylesheet" href="viewer_style.css">
+    <!-- Load bundled data -->
+    <script src="mcu_data.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div>
+                <h1>i.MX RT1062 Visual Explorer</h1>
+                <div id="breadcrumb" class="breadcrumb">
+                    <span class="active">System Dashboard</span>
+                </div>
+            </div>
+            <div id="loading-indicator" style="display:none; color: var(--text-muted);">Loading Data...</div>
+        </header>
+
+        <main id="app">
+            <!-- 1. Interactive Dashboard (Block Diagram Replacement) -->
+            <section id="view-dashboard" class="view-section active">
+                <div class="dashboard-grid" id="dashboard-grid">
+                    <!-- Sections connected to System, Analog, etc. will go here via JS -->
+                </div>
+
+                <h3 style="color:var(--text-muted); font-size:0.9rem; text-transform:uppercase; margin-top:3rem;">All
+                    Peripheral Groups</h3>
+                <div id="group-grid" class="module-grid" style="margin-top:1rem;">
+                    <!-- Fallback list of groups -->
+                </div>
+            </section>
+
+            <!-- 2. Instance List View -->
+            <section id="view-instances" class="view-section">
+                <h2 id="group-title" style="margin-bottom: 1.5rem; font-size:1.8rem;">Group Name</h2>
+                <div id="instance-list" class="instance-grid">
+                    <!-- Javascript will populate this -->
+                </div>
+            </section>
+
+            <!-- 3. Register List (Table) View -->
+            <section id="view-registers" class="view-section">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
+                    <div>
+                        <h2 id="peripheral-title" style="margin: 0; font-size:1.8rem;">Peripheral Name</h2>
+                        <div id="peripheral-desc" style="color: var(--text-muted); margin-top:0.5rem;"></div>
+                    </div>
+                    <span id="peripheral-base"
+                        style="font-family: var(--font-mono); background:#e2e8f0; padding:0.25rem 0.5rem; border-radius:4px; font-size:0.875rem;">Base:
+                        0x00000000</span>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%">Register</th>
+                                <th style="width: 15%">Offset</th>
+                                <th style="width: 60%">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="register-table-body">
+                            <!-- Registers go here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 4. Register Detail View (Single Register + Visualizer) -->
+            <section id="view-register-detail" class="view-section">
+                <div class="detail-header">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+                        <h2 id="detail-reg-name"
+                            style="margin:0; font-family:var(--font-mono); color:var(--primary-color);">REG_NAME</h2>
+                        <span id="detail-reg-offset"
+                            style="font-family:var(--font-mono); color:var(--text-muted);">Offset: 0x00</span>
+                    </div>
+                    <p id="detail-reg-desc" style="margin:0; color:var(--text-main);">Description text...</p>
+                    <div style="margin-top:1rem; font-size:0.875rem; color:var(--text-muted);">
+                        Access: <strong id="detail-reg-access">R/W</strong> |
+                        Reset: <strong id="detail-reg-reset">0x00000000</strong>
+                    </div>
+                </div>
+
+                <!-- 32-bit Visualizer -->
+                <div class="visualizer-container">
+                    <div class="bit-scale">
+                        <span>31</span><span>28</span><span>24</span><span>20</span><span>16</span><span>12</span><span>8</span><span>4</span><span>0</span>
+                    </div>
+                    <div id="bit-visualizer" class="bit-bar">
+                        <!-- JS generated blocks -->
+                    </div>
+                </div>
+
+                <!-- Field Table -->
+                <h3 style="margin-top:2rem;">Bit Fields</h3>
+                <div
+                    style="background:white; border-radius:var(--radius-lg); border:1px solid var(--border-color); overflow:hidden;">
+                    <table class="field-table" style="width:100%;">
+                        <thead style="background:#f8fafc; border-bottom:1px solid var(--border-color);">
+                            <tr>
+                                <th style="padding:1rem; text-align:left; font-size:0.8rem; width:15%;">Bits</th>
+                                <th style="padding:1rem; text-align:left; font-size:0.8rem; width:25%;">Field Name</th>
+                                <th style="padding:1rem; text-align:left; font-size:0.8rem;">Description & Values</th>
+                            </tr>
+                        </thead>
+                        <tbody id="field-table-body">
+                            <!-- Field details -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="viewer_app.js"></script>
+</body>
+
+</html>
