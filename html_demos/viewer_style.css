@@ -23,6 +23,13 @@
     --radius-lg: 0.75rem;
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    --chip-bg: #1e293b;
+    /* Slate 800 */
+    --trace-color: #cbd5e1;
+    /* Slate 300 */
+    --electron-color: #0ea5e9;
+    /* Sky 500 */
 }
 
 body {
@@ -76,6 +83,164 @@ h1 {
     cursor: default;
     pointer-events: none;
     /* Disable hover/click for active */
+}
+
+/* --- CHIP VISUALIZATION STAGE --- */
+.chip-stage {
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    /* For 3D zoom effect */
+    transition: all 0.5s ease-in-out;
+}
+
+.chip-stage.zoomed-out {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.chip-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.chip-container:hover {
+    transform: scale(1.05) translateY(-5px);
+}
+
+/* SVG Traces */
+.traces-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.trace-path {
+    fill: none;
+    stroke: var(--trace-color);
+    stroke-width: 2;
+    opacity: 0.3;
+}
+
+.electron {
+    fill: var(--electron-color);
+    filter: drop-shadow(0 0 4px var(--electron-color));
+}
+
+/* Chip Body */
+.chip-body {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px;
+    height: 160px;
+    background: var(--chip-bg);
+    border-radius: 4px;
+    z-index: 2;
+    box-shadow:
+        0 20px 25px -5px rgb(0 0 0 / 0.5),
+        0 10px 10px -5px rgb(0 0 0 / 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+    /* Subtle inner light */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #94a3b8;
+    /* Slate 400 */
+    font-family: var(--font-mono);
+    border: 1px solid #334155;
+    transition: box-shadow 0.3s;
+}
+
+.chip-container:hover .chip-body {
+    box-shadow:
+        0 25px 50px -12px rgba(59, 130, 246, 0.25),
+        /* Blue glow */
+        0 0 0 2px rgba(59, 130, 246, 0.5);
+    /* Blue border highlight */
+    color: white;
+}
+
+.chip-logo {
+    font-weight: 900;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.chip-model {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.chip-pin-1 {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    width: 8px;
+    height: 8px;
+    background: #475569;
+    border-radius: 50%;
+}
+
+.click-hint {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+}
+
+.chip-container:hover .click-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- DASHBOARD SUBSYSTEMS (Hidden by default) --- */
+.dashboard-content {
+    transition: opacity 0.5s ease-in-out;
+}
+
+.dashboard-content.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.back-to-chip-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.back-to-chip-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 /* --- DASHBOARD: Interactive Block Diagram --- */

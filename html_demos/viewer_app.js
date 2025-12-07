@@ -108,6 +108,26 @@ const App = {
         this.updateBreadcrumb();
     },
 
+    enterSystem() {
+        const stage = document.getElementById('chip-stage');
+        const content = document.getElementById('dashboard-content');
+
+        stage.classList.add('zoomed-out');
+        setTimeout(() => {
+            content.classList.remove('hidden');
+        }, 300); // Wait for zoom out start
+    },
+
+    exitSystem() {
+        const stage = document.getElementById('chip-stage');
+        const content = document.getElementById('dashboard-content');
+
+        content.classList.add('hidden');
+        setTimeout(() => {
+            stage.classList.remove('zoomed-out');
+        }, 200);
+    },
+
     updateBreadcrumb() {
         const bc = this.ui.breadcrumb;
         bc.innerHTML = '';

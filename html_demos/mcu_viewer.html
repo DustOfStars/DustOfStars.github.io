@@ -25,14 +25,62 @@
         <main id="app">
             <!-- 1. Interactive Dashboard (Block Diagram Replacement) -->
             <section id="view-dashboard" class="view-section active">
-                <div class="dashboard-grid" id="dashboard-grid">
-                    <!-- Sections connected to System, Analog, etc. will go here via JS -->
+                <!-- Chip Visualization Stage -->
+                <div id="chip-stage" class="chip-stage">
+                    <div class="chip-container" onclick="App.enterSystem()">
+                        <!-- PCB Traces (SVG Background) -->
+                        <svg class="traces-svg" viewBox="0 0 400 400">
+                            <!-- Left Traces -->
+                            <path class="trace-path" d="M0,100 L100,100 L120,120" />
+                            <path class="trace-path" d="M0,300 L100,300 L120,280" />
+                            <path class="trace-path" d="M0,200 L120,200" />
+
+                            <!-- Right Traces -->
+                            <path class="trace-path" d="M400,100 L300,100 L280,120" />
+                            <path class="trace-path" d="M400,300 L300,300 L280,280" />
+                            <path class="trace-path" d="M400,200 L280,200" />
+
+                            <!-- Top Traces -->
+                            <path class="trace-path" d="M200,0 L200,120" />
+
+                            <!-- Bottom Traces -->
+                            <path class="trace-path" d="M200,400 L200,280" />
+
+                            <!-- Animated Electrons -->
+                            <circle class="electron" r="2">
+                                <animateMotion dur="2s" repeatCount="indefinite" path="M0,100 L100,100 L120,120" />
+                            </circle>
+                            <circle class="electron" r="2">
+                                <animateMotion dur="3s" repeatCount="indefinite" path="M400,300 L300,300 L280,280" />
+                            </circle>
+                            <circle class="electron" r="2">
+                                <animateMotion dur="2.5s" repeatCount="indefinite" path="M200,0 L200,120" />
+                            </circle>
+                        </svg>
+
+                        <!-- The Chip Package -->
+                        <div class="chip-body">
+                            <div class="chip-logo">NXP</div>
+                            <div class="chip-model">i.MX RT1062</div>
+                            <div class="chip-pin-1"></div>
+                        </div>
+
+                        <div class="click-hint">Click to Explore</div>
+                    </div>
                 </div>
 
-                <h3 style="color:var(--text-muted); font-size:0.9rem; text-transform:uppercase; margin-top:3rem;">All
-                    Peripheral Groups</h3>
-                <div id="group-grid" class="module-grid" style="margin-top:1rem;">
-                    <!-- Fallback list of groups -->
+                <!-- Subsystem Grid (Initially Hidden) -->
+                <div class="dashboard-content hidden" id="dashboard-content">
+                    <button class="back-to-chip-btn" onclick="App.exitSystem()">← Back to Chip</button>
+                    <div class="dashboard-grid" id="dashboard-grid">
+                        <!-- Sections connected to System, Analog, etc. will go here via JS -->
+                    </div>
+
+                    <h3 style="color:var(--text-muted); font-size:0.9rem; text-transform:uppercase; margin-top:3rem;">
+                        All Peripheral Groups</h3>
+                    <div id="group-grid" class="module-grid" style="margin-top:1rem;">
+                        <!-- Fallback list of groups -->
+                    </div>
                 </div>
             </section>
 
