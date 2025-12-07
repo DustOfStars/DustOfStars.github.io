@@ -62,6 +62,79 @@
             box-sizing: border-box;
         }
 
+        /* Search Box */
+        #mcu-viewer-root .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto;
+            /* Push to right if in flex container */
+            margin-right: 1rem;
+        }
+
+        #mcu-viewer-root .search-input {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            color: var(--text-main);
+            background: var(--card-bg);
+            outline: none;
+            transition: border-color 0.2s;
+            width: 180px;
+        }
+
+        #mcu-viewer-root .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        #mcu-viewer-root .search-input.error {
+            border-color: #ef4444;
+            animation: shake 0.3s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        #mcu-viewer-root .search-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        #mcu-viewer-root .search-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
         /* Header overrides */
         #mcu-viewer-root h1 {
             font-size: 1.5rem;
@@ -571,6 +644,11 @@
                     <span class="active">System Dashboard</span>
                 </div>
             </div>
+
+            <div class="search-box">
+                <input type="text" id="address-search" class="search-input" placeholder="Addr (e.g. 0x400AC000)">
+                <button id="search-btn" class="search-btn">Go</button>
+            </div>
             <div id="loading-indicator" style="display:none; color: var(--text-muted);">Loading Data...</div>
         </header>
 
@@ -729,6 +807,9 @@
             currentPeripheral: null,
             currentRegister: null,
 
+            // Search State
+            cachedAddressMap: null, // Cache for search performance
+
             // UI Cache
             ui: {},
 
@@ -777,6 +858,10 @@
                         regDesc: get('detail-reg-desc'),
                         regAccess: get('detail-reg-access'),
                         regReset: get('detail-reg-reset')
+                    },
+                    inputs: {
+                        search: get('address-search'),
+                        searchBtn: get('search-btn')
                     }
                 };
             },
@@ -788,6 +873,20 @@
                         this.navigate(e.target.dataset.target);
                     }
                 });
+
+                if (this.ui.inputs.searchBtn) {
+                    this.ui.inputs.searchBtn.addEventListener('click', () => this.handleSearch());
+                }
+
+                if (this.ui.inputs.search) {
+                    this.ui.inputs.search.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') this.handleSearch();
+                        // Remove error class on input
+                        if (this.ui.inputs.search.classList.contains('error')) {
+                            this.ui.inputs.search.classList.remove('error');
+                        }
+                    });
+                }
             },
 
             processData() {
@@ -1075,6 +1174,72 @@
                     };
                 }
                 return div;
+            },
+
+            /* --- SEARCH FUNCTIONALITY --- */
+            handleSearch() {
+                const query = this.ui.inputs.search.value.trim();
+                if (!query) return;
+
+                // Normalize input: handle 0x prefix or raw hex
+                // We want to compare numbers.
+                let targetAddr = parseInt(query, 16);
+
+                if (isNaN(targetAddr)) {
+                    this.showSearchError();
+                    return;
+                }
+
+                const result = this.findRegisterByAddress(targetAddr);
+
+                if (result) {
+                    // Navigate to it
+                    this.currentGroup = result.group;
+                    this.currentPeripheral = result.peripheral;
+                    this.currentRegister = result.register;
+
+                    // Render Context (so back buttons work)
+                    // We need to render the registers list for this peripheral first so the "Registers" view is populated
+                    this.renderRegisters(result.peripheral);
+
+                    // Render Detail
+                    this.renderDetail(result.register);
+                    this.navigate('detail');
+                    this.ui.inputs.search.value = ''; // Clear search
+                } else {
+                    this.showSearchError();
+                }
+            },
+
+            showSearchError() {
+                this.ui.inputs.search.classList.add('error');
+                setTimeout(() => {
+                    this.ui.inputs.search.classList.remove('error');
+                }, 1000);
+            },
+
+            findRegisterByAddress(targetAddr) {
+                for (const periphName in this.data) {
+                    const periph = this.data[periphName];
+                    const base = parseInt(periph.baseAddress, 16);
+
+                    if (!periph.registers) continue;
+
+                    for (const reg of periph.registers) {
+                        const offset = Number(reg.addressOffset);
+                        const absAddr = base + offset;
+
+                        if (absAddr === targetAddr) {
+                            const groupName = periph.groupName || "Other";
+                            return {
+                                group: groupName,
+                                peripheral: periph,
+                                register: reg
+                            };
+                        }
+                    }
+                }
+                return null;
             }
         };
 
