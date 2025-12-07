@@ -613,6 +613,12 @@
                     </div>
                 </div>
 
+                <!-- Block Diagram Reference -->
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <img src="RT1060BlockDiagram.png" alt="i.MX RT1060 Block Diagram"
+                        style="max-width: 100%; height: auto; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-color);">
+                </div>
+
                 <!-- Subsystem Grid -->
                 <div class="dashboard-content hidden" id="dashboard-content">
                     <button class="back-to-chip-btn" onclick="MCUViewer.exitSystem()">← Back to Chip</button>
@@ -699,10 +705,10 @@
          */
 
         const P_CATEGORIES = {
-            "Core": ["SystemControl", "NVIC", "MPU", "STIR", "SCB", "FPU"],
-            "System": ["CCM", "CCM_ANALOG", "IOMUXC", "IOMUXC_GPR", "SNVS", "SRC", "GPC", "PMU", "TEMPMON", "XTALOSC24M", "OCOTP", "BEE", "DCP", "TRNG"],
+            "Core": ["SystemControl", "NVIC", "MPU", "STIR", "SCB", "FPU", "CM7_MCM"],
+            "System": ["CCM", "CCM_ANALOG", "IOMUXC", "IOMUXC_GPR", "SNVS", "SRC", "GPC", "PMU", "TEMPMON", "XTALOSC24M", "OCOTP", "BEE", "DCP", "TRNG", "AIPSTZ", "CSU", "DCDC", "PGC", "TSC"],
             "Memory": ["SEMC", "FLEXSPI", "FLEXSPI2", "FLEXRAM", "ROMC"],
-            "DMA": ["DMA0", "DMAMUX"],
+            "DMA": ["DMA0", "DMAMUX", "DMA"],
             "Analog": ["ADC", "ADC_ETC", "CMP", "AOI", "XBARA", "XBARB", "ACMP"],
             "Timers": ["GPT", "PIT", "TMR", "PWM", "ENC", "EWM", "WDOG", "RTWDOG"],
             "Display & Graphics": ["LCDIF", "PXP", "CSI"],
@@ -808,6 +814,8 @@
                 stage.classList.add('zoomed-out');
                 setTimeout(() => {
                     content.classList.remove('hidden');
+                    // Auto-scroll to dashboard content for better visibility
+                    content.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 300);
             },
 
