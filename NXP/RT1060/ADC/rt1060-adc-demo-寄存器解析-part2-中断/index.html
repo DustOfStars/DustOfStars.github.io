@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>RT1060 ADC demo 寄存器解析_Part2 中断 - DustOfStars</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="DustOfStars"><meta name="msapplication-TileImage" content="/img/favicon.png"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DustOfStars"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="i.MX RT1060 下的 ADC 开发实战：从 HAL 库到寄存器级驱动在嵌入式开发中，官方提供的 HAL (Hardware Abstraction Layer) 库虽然使用方便，但有时为了追求极致的性能、更小的代码体积，或者仅仅是为了“知其所以然”，我们需要深入底层，直接操作寄存器。 本文将以 NXP i.MX RT1060 的 ADC 中断例程为例，深入剖析 ADC 外设的工作原理、寄存"><meta property="og:type" content="blog"><meta property="og:title" content="RT1060 ADC demo 寄存器解析_Part2 中断"><meta property="og:url" content="https://dustofstars.github.io/NXP/RT1060/ADC/rt1060-adc-demo-%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90-part2-%E4%B8%AD%E6%96%AD/"><meta property="og:site_name" content="DustOfStars"><meta property="og:description" content="i.MX RT1060 下的 ADC 开发实战：从 HAL 库到寄存器级驱动在嵌入式开发中，官方提供的 HAL (Hardware Abstraction Layer) 库虽然使用方便，但有时为了追求极致的性能、更小的代码体积，或者仅仅是为了“知其所以然”，我们需要深入底层，直接操作寄存器。 本文将以 NXP i.MX RT1060 的 ADC 中断例程为例，深入剖析 ADC 外设的工作原理、寄存"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://dustofstars.github.io/gallery/covers/RT1060_ADC_demo_%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90_Part2.png"><meta property="article:published_time" content="2025-12-15T03:15:01.000Z"><meta property="article:modified_time" content="2025-12-15T03:15:02.000Z"><meta property="article:author" content="Gavin"><meta property="article:tag" content="NXP"><meta property="article:tag" content="ADC"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://dustofstars.github.io/gallery/covers/RT1060_ADC_demo_%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90_Part2.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://dustofstars.github.io/NXP/RT1060/ADC/rt1060-adc-demo-%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90-part2-%E4%B8%AD%E6%96%AD/"},"headline":"RT1060 ADC demo 寄存器解析_Part2 中断","image":["https://dustofstars.github.io/gallery/covers/RT1060_ADC_demo_%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90_Part2.png"],"datePublished":"2025-12-15T03:15:01.000Z","dateModified":"2025-12-15T03:15:02.000Z","author":{"@type":"Person","name":"Gavin"},"publisher":{"@type":"Organization","name":"DustOfStars","logo":{"@type":"ImageObject","url":"https://dustofstars.github.io/img/logo.png"}},"description":"i.MX RT1060 下的 ADC 开发实战：从 HAL 库到寄存器级驱动在嵌入式开发中，官方提供的 HAL (Hardware Abstraction Layer) 库虽然使用方便，但有时为了追求极致的性能、更小的代码体积，或者仅仅是为了“知其所以然”，我们需要深入底层，直接操作寄存器。 本文将以 NXP i.MX RT1060 的 ADC 中断例程为例，深入剖析 ADC 外设的工作原理、寄存"}</script><link rel="canonical" href="https://dustofstars.github.io/NXP/RT1060/ADC/rt1060-adc-demo-%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90-part2-%E4%B8%AD%E6%96%AD/"><link rel="icon" href="/img/favicon.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
+<style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/gallery/covers/RT1060_ADC_demo_%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90_Part2.png" alt="RT1060 ADC demo 寄存器解析_Part2 中断"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-12-15T03:15:01.000Z" title="12/15/2025, 3:15:01 AM">2025-12-15</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NXP/">NXP</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/">RT1060</a><span> / </span><a class="link-muted" href="/categories/NXP/RT1060/ADC/">ADC</a></span><span class="level-item">16 分钟读完 (大约2444个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">RT1060 ADC demo 寄存器解析_Part2 中断</h1><div class="content"><h1 id="i-MX-RT1060-下的-ADC-开发实战：从-HAL-库到寄存器级驱动"><a href="#i-MX-RT1060-下的-ADC-开发实战：从-HAL-库到寄存器级驱动" class="headerlink" title="i.MX RT1060 下的 ADC 开发实战：从 HAL 库到寄存器级驱动"></a>i.MX RT1060 下的 ADC 开发实战：从 HAL 库到寄存器级驱动</h1><p>在嵌入式开发中，官方提供的 HAL (Hardware Abstraction Layer) 库虽然使用方便，但有时为了追求极致的性能、更小的代码体积，或者仅仅是为了“知其所以然”，我们需要深入底层，直接操作寄存器。</p>
+<p>本文将以 NXP i.MX RT1060 的 ADC 中断例程为例，深入剖析 ADC 外设的工作原理、寄存器配置细节，并演示如何将官方 SDK 的 HAL 库代码重构为直接操作寄存器的高效代码。</p>
+<span id="more"></span>
+
+
+<h2 id="1-工程概述与逻辑架构"><a href="#1-工程概述与逻辑架构" class="headerlink" title="1. 工程概述与逻辑架构"></a>1. 工程概述与逻辑架构</h2><h3 id="1-1-功能描述"><a href="#1-1-功能描述" class="headerlink" title="1.1 功能描述"></a>1.1 功能描述</h3><p>该 Demo 演示了一个 12-bit SAR ADC 在<strong>软件触发</strong>模式下的基础功能：</p>
+<ul>
+<li><strong>交互方式</strong>：通过串口终端 (Debug Console) 交互。</li>
+<li><strong>工作流</strong>：用户按下任意键 -&gt; 触发一次 ADC 转换 -&gt; ADC 转换完成触发中断 -&gt; 在 ISR 中读取数据 -&gt; 串口打印结果。</li>
+<li><strong>核心价值</strong>：展示了从触发到中断读取的完整闭环。</li>
+</ul>
+<h3 id="1-2-逻辑时序图-UML"><a href="#1-2-逻辑时序图-UML" class="headerlink" title="1.2 逻辑时序图 (UML)"></a>1.2 逻辑时序图 (UML)</h3><p>为了理清代码并未直接展现的硬件交互流程，我们绘制了如下的时序图：</p>
+<pre class="mermaid">sequenceDiagram
+    participant User as 用户 (Terminal)
+    participant Main as 主程序 (Main Loop)
+    participant Register as 寄存器接口
+    participant ADC_HW as ADC 硬件核心
+    participant ISR as 中断服务程序
+
+    Note over Main, ADC_HW: === 初始化阶段 ===
+    Main-&gt;&gt;Register: 配置 CFG (时钟/模式) &amp; GC (功能)
+    Main-&gt;&gt;Register: 写入 GC[CAL] 启动自校准
+    ADC_HW--&gt;&gt;Register: 校准完成自动清零 CAL
+    Main-&gt;&gt;Register: 检查 GS[CALF] 确认成功
+
+    Note over User, ISR: === 运行时循环 ===
+    loop Every Conversion
+        Main-&gt;&gt;User: "Press any key..."
+        User-&gt;&gt;Main: 按键输入
+        Main-&gt;&gt;Main: 清除软件标志位 Flag = false
+        
+        Main-&gt;&gt;Register: 写入 HC0[ADCH] (通道号)
+        Note right of Main: 关键：写入 HC0 立即启动软件触发转换
+        
+        ADC_HW-&gt;&gt;ADC_HW: 采样 &amp; 转换 (Sampling)
+        ADC_HW--&gt;&gt;ISR: 完成中断 (COCO Interrupt)
+        
+        activate ISR
+        ISR-&gt;&gt;Register: 读取 R0 寄存器
+        Note right of ISR: 关键：读取 R0 自动清除 COCO 标志
+        ISR-&gt;&gt;Main: 置位 Flag = true
+        deactivate ISR
+        
+        Main-&gt;&gt;Main: 退出等待循环
+        Main-&gt;&gt;User: 打印采样值
+    end</pre>
+
+
+
+<style>.rnukwvklftih{zoom:150%;}</style><img src="/NXP/RT1060/ADC/rt1060-adc-demo-%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90-part2-%E4%B8%AD%E6%96%AD/image-20251215111301810.png" class="rnukwvklftih">
+
+
+
+<hr>
+<h2 id="2-核心寄存器深度解析"><a href="#2-核心寄存器深度解析" class="headerlink" title="2. 核心寄存器深度解析"></a>2. 核心寄存器深度解析</h2><p>要脱离 HAL 库，必须读懂 Datasheet。RT1060 的 ADC 主要由以下几个关键寄存器控制：</p>
+<h3 id="2-1-ADCx-CFG-Configuration-Register-全局大脑"><a href="#2-1-ADCx-CFG-Configuration-Register-全局大脑" class="headerlink" title="2.1 ADCx_CFG (Configuration Register) - 全局大脑"></a>2.1 ADCx_CFG (Configuration Register) - 全局大脑</h3><p>这是配置 ADC 基础属性的地方。</p>
+<ul>
+<li><strong>ADICLK (Input Clock)</strong>: 设置为 <code>11b</code> (Asynchronous Clock)。选用<strong>异步时钟</strong>让 ADC 可以在 CPU 总线时钟停止时继续运行（低功耗场景）。</li>
+<li><strong>MODE (Resolution)</strong>: 设置为 <code>10b</code> (12-bit)。输出范围 0-4095。</li>
+<li><strong>ADTRG (Trigger)</strong>: 设置为 <code>0</code> (Software Trigger)。这是本例程的核心，如果不配置为软件触发，写入命令寄存器将无效。</li>
+<li><strong>ADIV (Divider)</strong>: 时钟分频，通常设为 0 (不分频) 以获得最快采样速度。</li>
+</ul>
+<h3 id="2-2-ADCx-GC-General-Control-功能开关"><a href="#2-2-ADCx-GC-General-Control-功能开关" class="headerlink" title="2.2 ADCx_GC (General Control) - 功能开关"></a>2.2 ADCx_GC (General Control) - 功能开关</h3><ul>
+<li><strong>CAL (Calibration)</strong>: 写 1 启动硬件自校准。</li>
+<li><strong>ADACKEN (Asynchronous Clock Output)</strong>: 必须置 1。因为我们在 CFG 中选择了异步时钟作为源，所以这里必须打开它。</li>
+</ul>
+<h3 id="2-3-ADCx-HCn-Heap-Command-Control-发令枪"><a href="#2-3-ADCx-HCn-Heap-Command-Control-发令枪" class="headerlink" title="2.3 ADCx_HCn (Heap Command/Control) - 发令枪"></a>2.3 ADCx_HCn (Heap Command/Control) - 发令枪</h3><p>RT1060 有多个 HC 寄存器 (HC0-HC7)，但在软件触发模式下，通常只用 <strong>HC0</strong>。</p>
+<ul>
+<li><strong>写入动作</strong>：<strong>这是最关键的一点</strong>。在软件触发模式下，向 <code>HC0</code> 写入通道号的操作，等同于按下了“启动按钮”。</li>
+<li><strong>ADCH (Channel)</strong>: 写入目标通道号。</li>
+<li><strong>AIEN (Interrupt Enable)</strong>: 置 1 则转换完成后触发中断。</li>
+</ul>
+<h3 id="2-4-ADCx-R0-Data-Result-终点"><a href="#2-4-ADCx-R0-Data-Result-终点" class="headerlink" title="2.4 ADCx_R0 (Data Result) - 终点"></a>2.4 ADCx_R0 (Data Result) - 终点</h3><ul>
+<li>读取该寄存器获得 12-bit 结果。</li>
+<li><strong>隐含操作</strong>：读取 <code>R0</code> 会自动清除状态寄存器 (<code>HS</code>) 中的“转换完成标志” (<code>COCO</code>)。</li>
+</ul>
+<hr>
+<h2 id="3-从-HAL-到寄存器的代码重构实战"><a href="#3-从-HAL-到寄存器的代码重构实战" class="headerlink" title="3. 从 HAL 到寄存器的代码重构实战"></a>3. 从 HAL 到寄存器的代码重构实战</h2><p>我们将对比 NXP SDK 的 HAL 实现与我们重构后的寄存器实现。本例中，我们将完整的 HAL 调用替换为了直接的指针操作。</p>
+<h3 id="3-1-初始化配置-Initialization"><a href="#3-1-初始化配置-Initialization" class="headerlink" title="3.1 初始化配置 (Initialization)"></a>3.1 初始化配置 (Initialization)</h3><p><strong>HAL 方式:</strong></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">adc_config_t</span> adcConfigStruct;</span><br><span class="line">ADC_GetDefaultConfig(&amp;adcConfigStruct);</span><br><span class="line">adcConfigStruct.clockSource = kADC_ClockSourceAD; </span><br><span class="line">adcConfigStruct.resolution = kADC_Resolution12Bit;</span><br><span class="line">ADC_Init(DEMO_ADC_BASE, &amp;adcConfigStruct);</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>寄存器方式 (重构后):</strong>
+我们直接操作 <code>CFG</code> 和 <code>GC</code> 寄存器，代码更加直观且无函数调用开销。</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint32_t</span> tmp32;</span><br><span class="line"><span class="comment">/* 配置 CFG 寄存器 */</span></span><br><span class="line"><span class="comment">/* 保留 AVGS (硬件平均) 设置，清除 ADTRG (设为软件触发) */</span></span><br><span class="line">tmp32 = DEMO_ADC_BASE-&gt;CFG &amp; (ADC_CFG_AVGS_MASK | ADC_CFG_ADTRG_MASK);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 这里的宏定义直接对应寄存器位域 */</span></span><br><span class="line">tmp32 |= ADC_CFG_REFSEL(kADC_ReferenceVoltageSourceAlt0) | </span><br><span class="line">         ADC_CFG_ADSTS(kADC_SamplePeriod2or12Clocks) |</span><br><span class="line">         ADC_CFG_ADICLK(kADC_ClockSourceAD) |  <span class="comment">// 异步时钟源</span></span><br><span class="line">         ADC_CFG_ADIV(kADC_ClockDriver1) | </span><br><span class="line">         ADC_CFG_MODE(kADC_Resolution12Bit);   <span class="comment">// 12位分辨率</span></span><br><span class="line"></span><br><span class="line">DEMO_ADC_BASE-&gt;CFG = tmp32;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 配置 GC 寄存器 */</span></span><br><span class="line">tmp32 = DEMO_ADC_BASE-&gt;GC &amp; ~(ADC_GC_ADCO_MASK | ADC_GC_ADACKEN_MASK);</span><br><span class="line">tmp32 |= ADC_GC_ADACKEN_MASK; <span class="comment">// 使能异步时钟输出</span></span><br><span class="line">DEMO_ADC_BASE-&gt;GC = tmp32;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 再次确认关闭硬件触发 */</span></span><br><span class="line">DEMO_ADC_BASE-&gt;CFG &amp;= ~ADC_CFG_ADTRG_MASK;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-2-硬件自校准-Auto-Calibration"><a href="#3-2-硬件自校准-Auto-Calibration" class="headerlink" title="3.2 硬件自校准 (Auto-Calibration)"></a>3.2 硬件自校准 (Auto-Calibration)</h3><p>HAL 库的 <code>ADC_DoAutoCalibration</code> 内部逻辑较为复杂，隐藏了状态查询细节。重写后我们可以清晰看到校准的完整握手流程：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 1. 清除旧的校准失败标志 */</span></span><br><span class="line">DEMO_ADC_BASE-&gt;GS = ADC_GS_CALF_MASK; </span><br><span class="line"></span><br><span class="line"><span class="comment">/* 2. 启动校准 (写入 GC 寄存器的 CAL 位) */</span></span><br><span class="line">DEMO_ADC_BASE-&gt;GC |= ADC_GC_CAL_MASK; </span><br><span class="line"></span><br><span class="line"><span class="comment">/* 3. 阻塞等待硬件清除 CAL 位 (表示校准结束) */</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">0U</span> != (DEMO_ADC_BASE-&gt;GC &amp; ADC_GC_CAL_MASK))</span><br><span class="line">{</span><br><span class="line">    <span class="comment">/* 可选：检查中途是否失败 */</span></span><br><span class="line">    <span class="keyword">if</span> (DEMO_ADC_BASE-&gt;GS &amp; ADC_GS_CALF_MASK) <span class="keyword">break</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 4. 结果验证 */</span></span><br><span class="line"><span class="keyword">if</span> (DEMO_ADC_BASE-&gt;HS &amp; (<span class="number">1UL</span> &lt;&lt; <span class="number">0U</span>)) {</span><br><span class="line">    <span class="comment">/* 虚拟读取 R0 以清除 COCO 标志，复位状态机 */</span></span><br><span class="line">    (<span class="type">void</span>)DEMO_ADC_BASE-&gt;R[<span class="number">0</span>];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-3-触发转换与中断读取"><a href="#3-3-触发转换与中断读取" class="headerlink" title="3.3 触发转换与中断读取"></a>3.3 触发转换与中断读取</h3><p>这是主循环中最频繁执行的代码段。</p>
+<p><strong>寄存器方式启动转换:</strong></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 准备命令字：通道号 + 中断使能位</span></span><br><span class="line"><span class="type">uint32_t</span> tmpHC = ADC_HC_ADCH(DEMO_ADC_USER_CHANNEL);</span><br><span class="line">tmpHC |= ADC_HC_AIEN_MASK; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入 HC0，硬件立即启动转换</span></span><br><span class="line">DEMO_ADC_BASE-&gt;HC[DEMO_ADC_CHANNEL_GROUP] = tmpHC;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>中断服务程序 (ISR):</strong></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">EXAMPLE_ADC_IRQHandler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">    g_AdcConversionDoneFlag = <span class="literal">true</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 直接读取数据寄存器 R[0]</span></span><br><span class="line">    <span class="comment">// 这一步既获取了数据，又清除了硬件中断标志</span></span><br><span class="line">    g_AdcConversionValue = DEMO_ADC_BASE-&gt;R[DEMO_ADC_CHANNEL_GROUP];</span><br><span class="line">    </span><br><span class="line">    g_AdcInterruptCounter++;</span><br><span class="line">    SDK_ISR_EXIT_BARRIER;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>通过这次重构，我们不仅缩减了代码的 Flash 占用（移除了庞大的 fsl_adc.c 依赖），更重要的是彻底掌握了：</p>
+<ol>
+<li><strong>触发机制</strong>：<span style="color: green; font-weight: bold; ">明确了“写 HC0”就是“软件触发”的本质。</span></li>
+<li><strong>标志位管理</strong>：理解了读取数据寄存器与清除状态标志的硬件联动关系。</li>
+<li><strong>时钟构建</strong>：理解了异步时钟源配置与 GC 控制寄存器的依赖关系。</li>
+</ol>
+<p>这种寄存器级别的掌控力，在进行高性能电机控制、电源管理等对 ADC 采样时序要求极高的应用中，是必不可少的核心能力。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>本工程针对 <strong>i.MX RT1060 ADC (12-bit SAR)</strong> 外设。以下是核心用到的寄存器及其位域分析。</p>
+<h3 id="1-ADCx-CFG-Configuration-Register"><a href="#1-ADCx-CFG-Configuration-Register" class="headerlink" title="1. ADCx_CFG (Configuration Register)"></a>1. ADCx_CFG (Configuration Register)</h3><p>用于设置 ADC 的工作模式、时钟源和采样时间。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Bit(s)</th>
+<th align="left">Field Name</th>
+<th align="left">Description in Project</th>
+<th align="left">Value Analysis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>1-0</strong></td>
+<td align="left"><strong>ADICLK</strong></td>
+<td align="left">Input Clock Select</td>
+<td align="left"><code>11b</code> (kADC_ClockSourceAD) - 选择<strong>异步时钟</strong> (Asynchronous Clock)。这允许 ADC 在总线时钟停止时（如低功耗模式）继续运行。</td>
+</tr>
+<tr>
+<td align="left"><strong>3-2</strong></td>
+<td align="left"><strong>MODE</strong></td>
+<td align="left">Conversion Mode Selection</td>
+<td align="left"><code>10b</code> (kADC_Resolution12Bit) - <strong>12位分辨率</strong>。结果范围 0-4095。</td>
+</tr>
+<tr>
+<td align="left"><strong>4</strong></td>
+<td align="left"><strong>ADLSMP</strong></td>
+<td align="left">Long Sample Time Configuration</td>
+<td align="left"><code>0</code> (Short Sample) - 使用短采样时间。</td>
+</tr>
+<tr>
+<td align="left"><strong>6-5</strong></td>
+<td align="left"><strong>ADIV</strong></td>
+<td align="left">Clock Divide Select</td>
+<td align="left"><code>00b</code> (Divide by 1) - 输入时钟不分频。</td>
+</tr>
+<tr>
+<td align="left"><strong>7</strong></td>
+<td align="left"><strong>ADLPC</strong></td>
+<td align="left">Low-Power Configuration</td>
+<td align="left"><code>0</code> - 普通功耗模式 (Hard block not in low power)。</td>
+</tr>
+<tr>
+<td align="left"><strong>13</strong></td>
+<td align="left"><strong>ADTRG</strong></td>
+<td align="left">Conversion Trigger Select</td>
+<td align="left"><code>0</code> - <strong>软件触发</strong> (Software Trigger)。这是本工程的关键，转换由写入 <code>HC</code> 寄存器启动。</td>
+</tr>
+<tr>
+<td align="left"><strong>16</strong></td>
+<td align="left"><strong>OVWREN</strong></td>
+<td align="left">Data Overwrite Enable</td>
+<td align="left"><code>0</code> - 禁止覆写。如果旧数据未读，新数据不会覆盖它（这是通常的安全做法，虽然在中断模式下通常能及时读取）。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="2-ADCx-GC-General-Control-Register"><a href="#2-ADCx-GC-General-Control-Register" class="headerlink" title="2. ADCx_GC (General Control Register)"></a>2. ADCx_GC (General Control Register)</h3><p>用于控制校准、DMA请求和异步时钟输出。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Bit(s)</th>
+<th align="left">Field Name</th>
+<th align="left">Description in Project</th>
+<th align="left">Value Analysis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>0</strong></td>
+<td align="left"><strong>ADACKEN</strong></td>
+<td align="left">Asynchronous Clock Output Enable</td>
+<td align="left"><code>1</code> - <strong>使能</strong>。因为 CFG[ADICLK] 选择了 ADACK，所以必须开启此位以产生时钟。</td>
+</tr>
+<tr>
+<td align="left"><strong>1</strong></td>
+<td align="left"><strong>DMAEN</strong></td>
+<td align="left">DMA Enable</td>
+<td align="left"><code>0</code> - 关闭 DMA。本工程使用中断 (Interrupt) 方式搬运数据，而非 DMA。</td>
+</tr>
+<tr>
+<td align="left"><strong>5</strong></td>
+<td align="left"><strong>ADCO</strong></td>
+<td align="left">Continuous Conversion Enable</td>
+<td align="left"><code>0</code> - <strong>单次转换</strong> (One-shot)。每次触发只进行一次转换。</td>
+</tr>
+<tr>
+<td align="left"><strong>7</strong></td>
+<td align="left"><strong>CAL</strong></td>
+<td align="left">Calibration Func</td>
+<td align="left"><code>1</code> (Momentary) - 写入 1 启动自校准流程。校准结束后硬件自动清零。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="3-ADCx-GS-General-Status-Register"><a href="#3-ADCx-GS-General-Status-Register" class="headerlink" title="3. ADCx_GS (General Status Register)"></a>3. ADCx_GS (General Status Register)</h3><p>用于指示 ADC 模块的全局状态（非特定通道）。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Bit(s)</th>
+<th align="left">Field Name</th>
+<th align="left">Description in Project</th>
+<th align="left">Value Analysis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>1</strong></td>
+<td align="left"><strong>CALF</strong></td>
+<td align="left">Calibration Failed Flag</td>
+<td align="left">用于 <code>ADC_DoAutoCalibration</code> 函数中。如果校准失败，此位会被置 1。程序需检查此位确保校准成功。</td>
+</tr>
+<tr>
+<td align="left"><strong>2</strong></td>
+<td align="left"><strong>ADACT</strong></td>
+<td align="left">Conversion Active</td>
+<td align="left">指示转换是否正在进行中。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="4-ADCx-HCn-Control-Register-for-Channel-n"><a href="#4-ADCx-HCn-Control-Register-for-Channel-n" class="headerlink" title="4. ADCx_HCn (Control Register for Channel n)"></a>4. ADCx_HCn (Control Register for Channel n)</h3><p><strong>重要</strong>：在 RT 芯片中，通常有 <code>HC0</code> 到 <code>HC7</code>。对于软件触发，通常只使用 <strong><code>HC0</code><strong>。
+写入此寄存器是</strong>启动软件转换的触发器</strong>。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Bit(s)</th>
+<th align="left">Field Name</th>
+<th align="left">Description in Project</th>
+<th align="left">Value Analysis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>4-0</strong></td>
+<td align="left"><strong>ADCH</strong></td>
+<td align="left">Input Channel Select</td>
+<td align="left">设置为 <code>DEMO_ADC_USER_CHANNEL</code>。选择物理模拟通道引脚。</td>
+</tr>
+<tr>
+<td align="left"><strong>7</strong></td>
+<td align="left"><strong>AIEN</strong></td>
+<td align="left">Interrupt Enable</td>
+<td align="left"><code>1</code> - <strong>开启中断</strong>。当转换完成 (COCO) 时，产生中断请求。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="5-ADCx-Rn-Data-Result-Register"><a href="#5-ADCx-Rn-Data-Result-Register" class="headerlink" title="5. ADCx_Rn (Data Result Register)"></a>5. ADCx_Rn (Data Result Register)</h3><p>保存转换结果。在此工程中主要关注 <code>R0</code>（对应 <code>HC0</code>）。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Bit(s)</th>
+<th align="left">Field Name</th>
+<th align="left">Description in Project</th>
+<th align="left">Value Analysis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>11-0</strong></td>
+<td align="left"><strong>D</strong></td>
+<td align="left">Data (Result)</td>
+<td align="left">12位转换结果数据。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>注意</strong>：读取 <code>Rn</code> 寄存器也是清除该通道 <code>HS</code> (Status) 寄存器中 <code>COCO</code> (Conversion Complete) 标志位的标准方法。</p>
+</blockquote>
+<hr>
+<h3 id="6-ADCx-HS-Status-Register"><a href="#6-ADCx-HS-Status-Register" class="headerlink" title="6. ADCx_HS (Status Register)"></a>6. ADCx_HS (Status Register)</h3><p>通道状态寄存器。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Bit(s)</th>
+<th align="left">Field Name</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>0</strong></td>
+<td align="left"><strong>COCO0</strong></td>
+<td align="left">Conversion Complete Flag 0。当 <code>R0</code> 数据准备好时置 1。读取 <code>R0</code> 后自动清零。</td>
+</tr>
+</tbody></table>
+</div><div class="article-licensing box"><div class="licensing-title"><p>RT1060 ADC demo 寄存器解析_Part2 中断</p><p><a href="https://dustofstars.github.io/NXP/RT1060/ADC/rt1060-adc-demo-寄存器解析-part2-中断/">https://dustofstars.github.io/NXP/RT1060/ADC/rt1060-adc-demo-寄存器解析-part2-中断/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Gavin</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2025-12-15</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-12-15</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NXP/">NXP</a><a class="link-muted mr-2" rel="tag" href="/tags/ADC/">ADC</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/NXP/RT1060/ADC/rt1060-adc-demo-%E5%AF%84%E5%AD%98%E5%99%A8%E8%A7%A3%E6%9E%90-part1/"><span class="level-item">RT1060 ADC demo 寄存器解析_Part1</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="Gavin"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Gavin</p><p class="is-size-6 is-block">Embeded &amp; IC Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shanghai, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">147</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">51</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">54</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/dustofstars/" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/dustofstars/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#i-MX-RT1060-下的-ADC-开发实战：从-HAL-库到寄存器级驱动"><span class="level-left"><span class="level-item">1</span><span class="level-item">i.MX RT1060 下的 ADC 开发实战：从 HAL 库到寄存器级驱动</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-工程概述与逻辑架构"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">1. 工程概述与逻辑架构</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-1-功能描述"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">1.1 功能描述</span></span></a></li><li><a class="level is-mobile" href="#1-2-逻辑时序图-UML"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">1.2 逻辑时序图 (UML)</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-核心寄存器深度解析"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">2. 核心寄存器深度解析</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#2-1-ADCx-CFG-Configuration-Register-全局大脑"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">2.1 ADCx_CFG (Configuration Register) - 全局大脑</span></span></a></li><li><a class="level is-mobile" href="#2-2-ADCx-GC-General-Control-功能开关"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">2.2 ADCx_GC (General Control) - 功能开关</span></span></a></li><li><a class="level is-mobile" href="#2-3-ADCx-HCn-Heap-Command-Control-发令枪"><span class="level-left"><span class="level-item">1.2.3</span><span class="level-item">2.3 ADCx_HCn (Heap Command/Control) - 发令枪</span></span></a></li><li><a class="level is-mobile" href="#2-4-ADCx-R0-Data-Result-终点"><span class="level-left"><span class="level-item">1.2.4</span><span class="level-item">2.4 ADCx_R0 (Data Result) - 终点</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-从-HAL-到寄存器的代码重构实战"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">3. 从 HAL 到寄存器的代码重构实战</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-1-初始化配置-Initialization"><span class="level-left"><span class="level-item">1.3.1</span><span class="level-item">3.1 初始化配置 (Initialization)</span></span></a></li><li><a class="level is-mobile" href="#3-2-硬件自校准-Auto-Calibration"><span class="level-left"><span class="level-item">1.3.2</span><span class="level-item">3.2 硬件自校准 (Auto-Calibration)</span></span></a></li><li><a class="level is-mobile" href="#3-3-触发转换与中断读取"><span class="level-left"><span class="level-item">1.3.3</span><span class="level-item">3.3 触发转换与中断读取</span></span></a></li></ul></li><li><a class="level is-mobile" href="#4-总结"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">4. 总结</span></span></a></li><li><a class="level is-mobile" href="#附录"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">附录</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-ADCx-CFG-Configuration-Register"><span class="level-left"><span class="level-item">1.5.1</span><span class="level-item">1. ADCx_CFG (Configuration Register)</span></span></a></li><li><a class="level is-mobile" href="#2-ADCx-GC-General-Control-Register"><span class="level-left"><span class="level-item">1.5.2</span><span class="level-item">2. ADCx_GC (General Control Register)</span></span></a></li><li><a class="level is-mobile" href="#3-ADCx-GS-General-Status-Register"><span class="level-left"><span class="level-item">1.5.3</span><span class="level-item">3. ADCx_GS (General Status Register)</span></span></a></li><li><a class="level is-mobile" href="#4-ADCx-HCn-Control-Register-for-Channel-n"><span class="level-left"><span class="level-item">1.5.4</span><span class="level-item">4. ADCx_HCn (Control Register for Channel n)</span></span></a></li><li><a class="level is-mobile" href="#5-ADCx-Rn-Data-Result-Register"><span class="level-left"><span class="level-item">1.5.5</span><span class="level-item">5. ADCx_Rn (Data Result Register)</span></span></a></li><li><a class="level is-mobile" href="#6-ADCx-HS-Status-Register"><span class="level-left"><span class="level-item">1.5.6</span><span class="level-item">6. ADCx_HS (Status Register)</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/ARM/"><span class="level-start"><span class="level-item">ARM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/ARM/Boot/"><span class="level-start"><span class="level-item">Boot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ARM/MemoryMap/"><span class="level-start"><span class="level-item">MemoryMap</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/"><span class="level-start"><span class="level-item">IC验证</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97/"><span class="level-start"><span class="level-item">漫游指南</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/"><span class="level-start"><span class="level-item">路科V0</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">IoT协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/BLE/"><span class="level-start"><span class="level-item">BLE</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/Thread/"><span class="level-start"><span class="level-item">Thread</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/IoT%E5%8D%8F%E8%AE%AE/ZigBee/"><span class="level-start"><span class="level-item">ZigBee</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/Leetcode/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">数据结构</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/NLP/PyTorch/"><span class="level-start"><span class="level-item">PyTorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/"><span class="level-start"><span class="level-item">NXP</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/"><span class="level-start"><span class="level-item">KW38</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/KW38/GPIO%E4%B8%AD%E6%96%AD/"><span class="level-start"><span class="level-item">GPIO中断</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1024/"><span class="level-start"><span class="level-item">RT1024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="level-start"><span class="level-item">原理图</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1050/"><span class="level-start"><span class="level-item">RT1050</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1050/%E9%87%8E%E7%81%AB/"><span class="level-start"><span class="level-item">野火</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/"><span class="level-start"><span class="level-item">RT1060</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1060/ADC/"><span class="level-start"><span class="level-item">ADC</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/SAI/"><span class="level-start"><span class="level-item">SAI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/binary/"><span class="level-start"><span class="level-item">binary</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/RT1060/eDMA/"><span class="level-start"><span class="level-item">eDMA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT1170/"><span class="level-start"><span class="level-item">RT1170</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT1170/FreeMaster/"><span class="level-start"><span class="level-item">FreeMaster</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/RT600/"><span class="level-start"><span class="level-item">RT600</span></span><span class="level-end"><span class="level-item tag">7</span></span></a><ul><li><a class="level is-mobile" href="/categories/NXP/RT600/BootROM/"><span class="level-start"><span class="level-item">BootROM</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/NXP/ReferenceManual/"><span class="level-start"><span class="level-item">ReferenceManual</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/NXP/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Plugins/"><span class="level-start"><span class="level-item">Plugins</span></span><span class="level-end"><span class="level-item tag">12</span></span></a><ul><li><a class="level is-mobile" href="/categories/Plugins/Analytics/"><span class="level-start"><span class="level-item">Analytics</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Comment/"><span class="level-start"><span class="level-item">Comment</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Donation/"><span class="level-start"><span class="level-item">Donation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Other/"><span class="level-start"><span class="level-item">Other</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Search/"><span class="level-start"><span class="level-item">Search</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Plugins/Share/"><span class="level-start"><span class="level-item">Share</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Widgets/"><span class="level-start"><span class="level-item">Widgets</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">嵌入式基础</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/vim/"><span class="level-start"><span class="level-item">vim</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">总线协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%80%BB%E7%BA%BF%E5%8D%8F%E8%AE%AE/UART/"><span class="level-start"><span class="level-item">UART</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E5%AD%97IC/"><span class="level-start"><span class="level-item">数字IC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%8B%B1%E8%AF%AD/"><span class="level-start"><span class="level-item">英语</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ADC/"><span class="tag">ADC</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ARM/"><span class="tag">ARM</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BLE/"><span class="tag">BLE</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Boot/"><span class="tag">Boot</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BootROM/"><span class="tag">BootROM</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DMA/"><span class="tag">DMA</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Demo/"><span class="tag">Demo</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/FLASH/"><span class="tag">FLASH</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/FreeMaster/"><span class="tag">FreeMaster</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO/"><span class="tag">GPIO</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GPIO%E4%B8%AD%E6%96%AD/"><span class="tag">GPIO中断</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Getting-Started/"><span class="tag">Getting Started</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IC%E9%AA%8C%E8%AF%81/"><span class="tag">IC验证</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus-User-Guide/"><span class="tag">Icarus User Guide</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97/"><span class="tag">Icarus用户指南</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/KW38/"><span class="tag">KW38</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leetcode/"><span class="tag">Leetcode</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MemoryMap/"><span class="tag">MemoryMap</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NXP/"><span class="tag">NXP</span><span class="tag">39</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Numpy/"><span class="tag">Numpy</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PDF/"><span class="tag">PDF</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PyTorch/"><span class="tag">PyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RAM/"><span class="tag">RAM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ROM/"><span class="tag">ROM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT1050/"><span class="tag">RT1050</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RT600/"><span class="tag">RT600</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReferenceManual/"><span class="tag">ReferenceManual</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/SAI/"><span class="tag">SAI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/STL/"><span class="tag">STL</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/System-Verilog/"><span class="tag">System Verilog</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TIMER/"><span class="tag">TIMER</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Thread/"><span class="tag">Thread</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UART/"><span class="tag">UART</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UVM/"><span class="tag">UVM</span><span class="tag">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZigBee/"><span class="tag">ZigBee</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/eDMA/"><span class="tag">eDMA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hardware/"><span class="tag">hardware</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/image/"><span class="tag">image</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pyTorch/"><span class="tag">pyTorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vector/"><span class="tag">vector</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vim/"><span class="tag">vim</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%AD%E6%96%AD/"><span class="tag">中断</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/"><span class="tag">二分查找</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="tag">代码随想录</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%9F%E7%90%86%E5%9B%BE/"><span class="tag">原理图</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2/"><span class="tag">数据探索</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="tag">数据结构</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E7%BB%84/"><span class="tag">数组</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%80%83%E7%A0%94%E8%8B%B1%E8%AF%AD100%E5%8F%A5/"><span class="tag">考研英语100句</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%8B%B1%E8%AF%AD/"><span class="tag">英语</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/"><span class="tag">设计流程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a><p class="is-size-7"><span>&copy; 2025 Gavin</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
