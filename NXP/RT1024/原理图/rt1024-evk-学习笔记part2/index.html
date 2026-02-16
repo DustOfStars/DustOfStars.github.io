@@ -107,7 +107,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="关键电源管理"><a href="#关键电源管理" class="headerlink" title="关键电源管理"></a>关键电源管理</h2><style>.oqluukeirmny{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223180155208.png" class="oqluukeirmny">
+<h2 id="关键电源管理"><a href="#关键电源管理" class="headerlink" title="关键电源管理"></a>关键电源管理</h2><style>.hhuxjwuffdzu{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223180155208.png" class="hhuxjwuffdzu">
 
 <h3 id="SD-Card-Power-Switch"><a href="#SD-Card-Power-Switch" class="headerlink" title="SD Card Power Switch"></a>SD Card Power Switch</h3><ul>
 <li><p>电源路径：</p>
@@ -135,7 +135,7 @@
 </li>
 </ul>
 <hr>
-<style>.ulkbyislnuep{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223180059053.png" class="ulkbyislnuep">
+<style>.vsbyhrokwyoa{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223180059053.png" class="vsbyhrokwyoa">
 
 <h3 id="3V3-LDO-for-SNVS"><a href="#3V3-LDO-for-SNVS" class="headerlink" title="3V3 LDO for SNVS"></a>3V3 LDO for SNVS</h3><blockquote>
 <p>这部分电路是 <strong>3.3V LDO（低压差稳压器）电源电路</strong>，用于为 <strong>SNVS（安全非易失性存储器供电域）</strong> 提供稳定的 3.3V 电压（<code>VLDO_3V3</code>）。</p>
@@ -172,7 +172,7 @@
 <li><p>组成分压网络，用于将输出电压分压后反馈到 <strong>FB</strong> 引脚。</p>
 </li>
 <li><p>分压电路的电压关系为：</p>
-<style>.prvecjhrwawj{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223180947687.png" class="prvecjhrwawj"></li>
+<style>.tthiwdylbxkr{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223180947687.png" class="tthiwdylbxkr"></li>
 </ul>
 </li>
 </ul>
@@ -196,16 +196,16 @@
 </li>
 </ol>
 <h3 id="SNVS"><a href="#SNVS" class="headerlink" title="SNVS"></a>SNVS</h3><p>在上面的输出<code>VLDO_3V3</code>，刚好就用于SNVS，产生<code>VDD_SNVS_3V3</code>,最终连接到MCU的引脚<code>VDD_SNVS_IN</code>:</p>
-<style>.uqklldxaldzx{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223184723149.png" class="uqklldxaldzx">
+<style>.amjcrtxvnxfq{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223184723149.png" class="amjcrtxvnxfq">
 
 <hr>
 <h3 id="NVCC-SD"><a href="#NVCC-SD" class="headerlink" title="NVCC_SD <SD3.0>"></a>NVCC_SD &lt;SD3.0&gt;</h3><blockquote>
 <p>会根据 输入的 <code>SD0_VSELECT</code>信号，决定输出的<code>NVCC_SD</code>电压是1.8V或者3.3V，默认情况下是3.3V！</p>
 </blockquote>
-<style>.ewuvdlpdlmtq{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223190241734.png" class="ewuvdlpdlmtq">
+<style>.wvipkeriwjvr{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223190241734.png" class="wvipkeriwjvr">
 
 <hr>
-<h2 id="核心电源域"><a href="#核心电源域" class="headerlink" title="核心电源域"></a>核心电源域</h2><style>.zbnaqgkyqbjh{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223182050938.png" class="zbnaqgkyqbjh">
+<h2 id="核心电源域"><a href="#核心电源域" class="headerlink" title="核心电源域"></a>核心电源域</h2><style>.sktmrweufigt{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223182050938.png" class="sktmrweufigt">
 
 <h3 id="VDDHIGH-NVCC-xxx"><a href="#VDDHIGH-NVCC-xxx" class="headerlink" title="VDDHIGH/NVCC_xxx"></a>VDDHIGH/NVCC_xxx</h3><p>VDDHIGH/NVCC电源管理电路：</p>
 <ol>
@@ -298,7 +298,7 @@
 </li>
 </ol>
 <hr>
-<style>.irrkfyygsaqg{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223192811426.png" class="irrkfyygsaqg">
+<style>.urkwblnehlca{zoom:100%;}</style><img src="/NXP/RT1024/%E5%8E%9F%E7%90%86%E5%9B%BE/rt1024-evk-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0part2/image-20241223192811426.png" class="urkwblnehlca">
 
 <ul>
 <li>此外，先有 <code>MCU_DCDC_IN_3V3</code>, 然后才有 <code>MCU_DCDC_IN</code>。 <code>DCDC_LP</code> 引脚输出<code>DCDC_OUT</code>,供<code>VDD_SOC_IN</code>使用；</li>
