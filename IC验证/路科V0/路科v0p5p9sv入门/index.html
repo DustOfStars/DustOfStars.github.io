@@ -36,138 +36,138 @@
   </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0">
 <style>.not-gallery-item { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .not-gallery-item > span { position: relative; z-index: 10; }  .not-gallery-item img, .not-gallery-item .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .not-gallery-item img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .not-gallery-item-fallback { color: inherit; } .not-gallery-item-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="DustOfStars" type="application/atom+xml">
-</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-05-09T08:22:23.000Z" title="5/9/2022, 8:22:23 AM">2022-05-09</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/IC%E9%AA%8C%E8%AF%81/">IC验证</a><span> / </span><a class="link-muted" href="/categories/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/">路科V0</a></span><span class="level-item">1 分钟读完 (大约188个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">路科V0P5P9SV入门</h1><div class="content"><h1 id="SV以及UVM概述"><a href="#SV以及UVM概述" class="headerlink" title="SV以及UVM概述"></a>SV以及UVM概述</h1><style>.eymkprqdmjtq{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/SV%E8%AF%AD%E8%A8%80%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7.png" class="eymkprqdmjtq">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="DustOfStars" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-05-09T08:22:23.000Z" title="5/9/2022, 8:22:23 AM">2022-05-09</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/IC%E9%AA%8C%E8%AF%81/">IC验证</a><span> / </span><a class="link-muted" href="/categories/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/">路科V0</a></span><span class="level-item">1 分钟读完 (大约188个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">路科V0P5P9SV入门</h1><div class="content"><h1 id="SV以及UVM概述"><a href="#SV以及UVM概述" class="headerlink" title="SV以及UVM概述"></a>SV以及UVM概述</h1><style>.xisyrnmuadhn{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/SV%E8%AF%AD%E8%A8%80%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7.png" class="xisyrnmuadhn">
 
 <span id="more"></span>
 
 
 
 <p>UVM类库地图 ：</p>
-<style>.hvtsbtzytljp{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/UVM%E7%B1%BB%E5%BA%93%E5%9C%B0%E5%9B%BE.png" class="hvtsbtzytljp">
+<style>.ivgiedfxwtce{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/UVM%E7%B1%BB%E5%BA%93%E5%9C%B0%E5%9B%BE.png" class="ivgiedfxwtce">
 
 <p>UVM常用的十大类：</p>
-<style>.klbeldnvrukm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/UVM%E5%8D%81%E5%A4%A7%E7%B1%BB.png" class="klbeldnvrukm">
+<style>.yejvwvipidca{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/UVM%E5%8D%81%E5%A4%A7%E7%B1%BB.png" class="yejvwvipidca">
 
 
 <h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><ul>
-<li>Verilog的数据类型：<style>.fqllweyrbgoo{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/verilog%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" class="fqllweyrbgoo">
+<li>Verilog的数据类型：<style>.vwjdofsplxoj{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/verilog%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" class="vwjdofsplxoj">
 <ul>
 <li>线网类型：</li>
-<li><style>.wxlkxpqnkgcw{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/verilog%E7%9A%84%E7%BA%BF%E7%BD%91%E7%B1%BB%E5%9E%8B.png" class="wxlkxpqnkgcw"></li>
+<li><style>.rcduxsxxyois{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/verilog%E7%9A%84%E7%BA%BF%E7%BD%91%E7%B1%BB%E5%9E%8B.png" class="rcduxsxxyois"></li>
 <li>变量类型：</li>
-<li><style>.faggtbpwrpkd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/verilog%E7%9A%84%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B.png" class="faggtbpwrpkd"></li>
+<li><style>.pyelyoxsvyzn{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/verilog%E7%9A%84%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B.png" class="pyelyoxsvyzn"></li>
 </ul>
 </li>
 <li>SV新添加的数据类型：<ul>
-<li><style>.vdicwgflrggq{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/SV%E6%96%B0%E6%B7%BB%E5%8A%A0%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" class="vdicwgflrggq">
+<li><style>.pdvmpbjsmcbj{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/SV%E6%96%B0%E6%B7%BB%E5%8A%A0%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" class="pdvmpbjsmcbj">
 <ul>
-<li><style>.ejiogwrtcyuj{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%9B%9B%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" class="ejiogwrtcyuj"></li>
-<li><style>.ikuyxzllosdp{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%9B%9B%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B2.png" class="ikuyxzllosdp"></li>
-<li><style>.avsjhbzdmeuk{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%9B%9B%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B3.png" class="avsjhbzdmeuk"></li>
+<li><style>.htyboamjouyi{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%9B%9B%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" class="htyboamjouyi"></li>
+<li><style>.myloicmplbdd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%9B%9B%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B2.png" class="myloicmplbdd"></li>
+<li><style>.yodpxhqmmmjd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%9B%9B%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B3.png" class="yodpxhqmmmjd"></li>
 </ul>
 </li>
-<li><style>.dxhcurcqmosj{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E4%BA%8C%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" class="dxhcurcqmosj"></li>
-<li><style>.asjlhguhubju{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E4%BA%8C%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B2.png" class="asjlhguhubju"></li>
-<li><style>.dsgmiuddklws{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9C%89%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%97%A0%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B.png" class="dsgmiuddklws"></li>
-<li><style>.yudlqdofrdkd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9C%89%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%97%A0%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B2.png" class="yudlqdofrdkd"></li>
-<li><style>.yecekafrqcdh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E4%BB%BF%E7%9C%9F%E8%A1%8C%E4%B8%BA.png" class="yecekafrqcdh"></li>
-<li><style>.ksxnycscytnb{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E4%BB%BF%E7%9C%9F%E8%A1%8C%E4%B8%BA2.png" class="ksxnycscytnb"></li>
-<li><style>.sjiyqnqixljz{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B.png" class="sjiyqnqixljz"></li>
+<li><style>.mztxansvnkxg{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E4%BA%8C%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" class="mztxansvnkxg"></li>
+<li><style>.vukqgrtzsogl{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E4%BA%8C%E5%80%BC%E9%80%BB%E8%BE%91%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B2.png" class="vukqgrtzsogl"></li>
+<li><style>.csmohdlqdybx{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9C%89%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%97%A0%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B.png" class="csmohdlqdybx"></li>
+<li><style>.vyoaliijunqo{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9C%89%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%97%A0%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B2.png" class="vyoaliijunqo"></li>
+<li><style>.bwfckpljdscl{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E4%BB%BF%E7%9C%9F%E8%A1%8C%E4%B8%BA.png" class="bwfckpljdscl"></li>
+<li><style>.fbxljkormqjf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E4%BB%BF%E7%9C%9F%E8%A1%8C%E4%B8%BA2.png" class="fbxljkormqjf"></li>
+<li><style>.eupldteztbvh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B.png" class="eupldteztbvh"></li>
 </ul>
 </li>
 </ul>
 <h1 id="自定义类型"><a href="#自定义类型" class="headerlink" title="自定义类型"></a>自定义类型</h1><p>SV的自定义类型：</p>
 <ul>
-<li><style>.udpyxvvatsnj{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B.png" class="udpyxvvatsnj"></li>
-<li><style>.rslawodgjprr{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B2.png" class="rslawodgjprr"></li>
-<li><style>.vdxozngbstcn{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B3.png" class="vdxozngbstcn"></li>
+<li><style>.nfilbkbqbulq{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B.png" class="nfilbkbqbulq"></li>
+<li><style>.elupmqiozkyx{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B2.png" class="elupmqiozkyx"></li>
+<li><style>.pvdpvjjxcyad{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B3.png" class="pvdpvjjxcyad"></li>
 </ul>
 <p>枚举类型：</p>
 <ul>
-<li><style>.dogwnevyuqjh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B.png" class="dogwnevyuqjh"></li>
+<li><style>.irjfndlffonb{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B.png" class="irjfndlffonb"></li>
 <li>verilog实现枚举 <ul>
-<li><style>.tpwpfeosaoyx{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%AE%9E%E4%BE%8B.png" class="tpwpfeosaoyx"></li>
+<li><style>.ldoocukdddgw{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%AE%9E%E4%BE%8B.png" class="ldoocukdddgw"></li>
 </ul>
 </li>
 <li>SV实现枚举：<ul>
-<li><style>.tmbpipnovqoh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%AE%9E%E4%BE%8B2.png" class="tmbpipnovqoh"></li>
+<li><style>.cvbhgqshgwiw{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%AE%9E%E4%BE%8B2.png" class="cvbhgqshgwiw"></li>
 </ul>
 </li>
 <li>定义枚举值：<ul>
-<li><style>.czxkiywnhsgf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E5%80%BC.png" class="czxkiywnhsgf"></li>
+<li><style>.zrdcoldjhvlg{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E5%80%BC.png" class="zrdcoldjhvlg"></li>
 </ul>
 </li>
 <li>自定义枚举类型：<ul>
-<li><style>.wvtpjfjepqwk{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B.png" class="wvtpjfjepqwk"></li>
+<li><style>.fqfquumbwtxn{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B.png" class="fqfquumbwtxn"></li>
 </ul>
 </li>
 <li>枚举类型赋值：<ul>
-<li><style>.cfxscdgrrkjp{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E8%B5%8B%E5%80%BC.png" class="cfxscdgrrkjp"></li>
+<li><style>.cxmjibeetady{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E8%B5%8B%E5%80%BC.png" class="cxmjibeetady"></li>
 </ul>
 </li>
 </ul>
 <p>结构体类型：</p>
 <ul>
-<li><style>.blswysyjphox{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B.png" class="blswysyjphox"></li>
-<li><style>.soqhambkikxx{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B2.png" class="soqhambkikxx"></li>
-<li><style>.ripmhinlrisl{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B3.png" class="ripmhinlrisl"></li>
-<li><style>.dmxngiujvjjf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B4.png" class="dmxngiujvjjf"></li>
+<li><style>.vniwvwonwhgy{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B.png" class="vniwvwonwhgy"></li>
+<li><style>.eiigeptsdgvm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B2.png" class="eiigeptsdgvm"></li>
+<li><style>.hlulxrvjhhvm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B3.png" class="hlulxrvjhhvm"></li>
+<li><style>.ufongrbvldyo{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B4.png" class="ufongrbvldyo"></li>
 </ul>
 <h1 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h1><p>SV中的字符串类型：</p>
 <ul>
-<li><style>.hdsmymvdmkfh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B.png" class="hdsmymvdmkfh"></li>
-<li><style>.relvyxpcrvuu{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B2.png" class="relvyxpcrvuu"></li>
+<li><style>.olsonssclggh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B.png" class="olsonssclggh"></li>
+<li><style>.qhsaxwwtflkc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B2.png" class="qhsaxwwtflkc"></li>
 </ul>
 <p>字符串类型的常见使用方式：</p>
 <ul>
-<li><style>.gqyxutgrlrwh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F.png" class="gqyxutgrlrwh"></li>
-<li><style>.skytpuliyltd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%86%85%E5%BB%BA%E6%96%B9%E6%B3%95.png" class="skytpuliyltd"></li>
-<li><style>.gkqgzxdhhmqc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F2.png" class="gkqgzxdhhmqc"></li>
-<li><style>.cjppqyyfajyf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F3.png" class="cjppqyyfajyf"></li>
+<li><style>.wxjlzqobnewh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F.png" class="wxjlzqobnewh"></li>
+<li><style>.xkydsjcyhqew{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%86%85%E5%BB%BA%E6%96%B9%E6%B3%95.png" class="xkydsjcyhqew"></li>
+<li><style>.hoxfgecuavdi{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F2.png" class="hoxfgecuavdi"></li>
+<li><style>.mtcrhtwxbpfb{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F3.png" class="mtcrhtwxbpfb"></li>
 </ul>
 <h1 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h1><ul>
-<li><style>.xnilkognfrll{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3.png" class="xnilkognfrll"></li>
-<li><style>.otpcrlafkhyd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A32.png" class="otpcrlafkhyd"></li>
-<li><style>.qbralijgmomo{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A33.png" class="qbralijgmomo"></li>
+<li><style>.jjjcuejkrekv{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3.png" class="jjjcuejkrekv"></li>
+<li><style>.nqbmmukylfxw{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A32.png" class="nqbmmukylfxw"></li>
+<li><style>.ubexopqdvgdm{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A33.png" class="ubexopqdvgdm"></li>
 <li>verilog无接口代码：<ul>
-<li><style>.nvlhpcytqfnp{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/verilog%E6%97%A0%E6%8E%A5%E5%8F%A3.png" class="nvlhpcytqfnp"></li>
+<li><style>.qdxydmvwjuit{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/verilog%E6%97%A0%E6%8E%A5%E5%8F%A3.png" class="qdxydmvwjuit"></li>
 </ul>
 </li>
 <li>接口的优势：<ul>
-<li><style>.kehpaqepjidp{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BC%98%E5%8A%BF.png" class="kehpaqepjidp"></li>
+<li><style>.ehbigqymssjr{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BC%98%E5%8A%BF.png" class="ehbigqymssjr"></li>
 </ul>
 </li>
 <li>SV接口代码：<ul>
-<li><style>.ynjdthdvthxd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/SV%E6%9C%89%E6%8E%A5%E5%8F%A3.png" class="ynjdthdvthxd"></li>
+<li><style>.qbdwjbzvjnky{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/SV%E6%9C%89%E6%8E%A5%E5%8F%A3.png" class="qbdwjbzvjnky"></li>
 </ul>
 </li>
 <li>接口的内容：<ul>
-<li><style>.udwqiebvenyh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%86%85%E5%AE%B9.png" class="udwqiebvenyh"></li>
-<li><style>.mxgxrhwxtsqs{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%86%85%E5%AE%B92.png" class="mxgxrhwxtsqs"></li>
+<li><style>.upajnoejmjtb{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%86%85%E5%AE%B9.png" class="upajnoejmjtb"></li>
+<li><style>.vwtrhyxwvtam{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%86%85%E5%AE%B92.png" class="vwtrhyxwvtam"></li>
 </ul>
 </li>
 <li>接口的声明：<ul>
-<li><style>.nnqlqsboopkd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%A3%B0%E6%98%8E.png" class="nnqlqsboopkd"></li>
+<li><style>.mlkctlbkldhv{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%A3%B0%E6%98%8E.png" class="mlkctlbkldhv"></li>
 </ul>
 </li>
 <li>接口的例化：<ul>
-<li><style>.rsjfhjbtmrdf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BE%8B%E5%8C%96.png" class="rsjfhjbtmrdf"></li>
-<li><style>.cbnbbimmslmf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BE%8B%E5%8C%962.png" class="cbnbbimmslmf"></li>
-<li><style>.usljmuncdvft{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BE%8B%E5%8C%963.png" class="usljmuncdvft"></li>
+<li><style>.khdenojewoqc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BE%8B%E5%8C%96.png" class="khdenojewoqc"></li>
+<li><style>.bkbhvjkxnigd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BE%8B%E5%8C%962.png" class="bkbhvjkxnigd"></li>
+<li><style>.prbryotetlot{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BE%8B%E5%8C%963.png" class="prbryotetlot"></li>
 </ul>
 </li>
 <li>modport:<ul>
-<li><style>.ioeehabdcokf{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/modport.png" class="ioeehabdcokf"></li>
-<li><style>.rqbunndunkhc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/modport2.png" class="rqbunndunkhc"></li>
+<li><style>.mvhjlkujczqh{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/modport.png" class="mvhjlkujczqh"></li>
+<li><style>.wilwjvgvmuhz{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/modport2.png" class="wilwjvgvmuhz"></li>
 </ul>
 </li>
 <li>接口在验证中的应用：<ul>
-<li><style>.qbgaexonboty{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E5%9C%A8%E9%AA%8C%E8%AF%81%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.png" class="qbgaexonboty"></li>
+<li><style>.xtqkxabxlmvd{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%8E%A5%E5%8F%A3%E5%9C%A8%E9%AA%8C%E8%AF%81%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.png" class="xtqkxabxlmvd"></li>
 </ul>
 </li>
 <li>总结：<ul>
-<li><style>.mfncrygdbxrg{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%80%BB%E7%BB%93.png" class="mfncrygdbxrg"></li>
-<li><style>.vtopjjwcuwft{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%80%BB%E7%BB%932.png" class="vtopjjwcuwft"></li>
+<li><style>.dvbdiamnosmc{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%80%BB%E7%BB%93.png" class="dvbdiamnosmc"></li>
+<li><style>.aqcpfqnidnqi{zoom:100%;}</style><img src="/IC%E9%AA%8C%E8%AF%81/%E8%B7%AF%E7%A7%91V0/%E8%B7%AF%E7%A7%91v0p5p9sv%E5%85%A5%E9%97%A8/%E6%80%BB%E7%BB%932.png" class="aqcpfqnidnqi"></li>
 </ul>
 </li>
 </ul>
