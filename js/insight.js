@@ -27,18 +27,33 @@ function loadInsight(config, translation) {
     return result;
   }
 
+  // The search content is plain text, so escape it before showing it as HTML
+  function escapeHTML(text) {
+    return text.replace(/[&<>"']/g, (char) => {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+    });
+  }
+
+  function escapeRegExp(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
   function findAndHighlight(text, matches, maxlen) {
-    if (!Array.isArray(matches) || !matches.length || !text) {
-      return maxlen ? text.slice(0, maxlen) : text;
+    if (!text) {
+      return text;
     }
-    const testText = text.toLowerCase();
+    if (!Array.isArray(matches) || !matches.length) {
+      return escapeHTML(maxlen ? text.slice(0, maxlen) : text);
+    }
     const indices = matches
       .map((match) => {
-        const index = testText.indexOf(match.toLowerCase());
-        if (!match || index === -1) {
+        // Match the original text case-insensitively, as the lowercase of some characters, such as
+        // "İ", is longer, and its indices would not fit the original text
+        const found = match ? new RegExp(escapeRegExp(match), 'i').exec(text) : null;
+        if (!found) {
           return null;
         }
-        return [index, index + match.length];
+        return [found.index, found.index + found[0].length];
       })
       .filter((match) => {
         return match !== null;
@@ -48,7 +63,7 @@ function loadInsight(config, translation) {
       });
 
     if (!indices.length) {
-      return text;
+      return escapeHTML(maxlen ? text.slice(0, maxlen) : text);
     }
 
     let result = '';
@@ -61,17 +76,21 @@ function loadInsight(config, translation) {
 
     for (let i = 0; i < ranges.length; i++) {
       const range = ranges[i];
-      result += text.slice(last, Math.min(range[0], sumRange[0] + maxlen));
+      result += escapeHTML(
+        text.slice(last, maxlen ? Math.min(range[0], sumRange[0] + maxlen) : range[0]),
+      );
       if (maxlen && range[0] >= sumRange[0] + maxlen) {
         break;
       }
-      result += '<em>' + text.slice(range[0], range[1]) + '</em>';
+      result += '<em>' + escapeHTML(text.slice(range[0], range[1])) + '</em>';
       last = range[1];
       if (i === ranges.length - 1) {
         if (maxlen) {
-          result += text.slice(range[1], Math.min(text.length, sumRange[0] + maxlen + 1));
+          result += escapeHTML(
+            text.slice(range[1], Math.min(text.length, sumRange[0] + maxlen + 1)),
+          );
         } else {
-          result += text.slice(range[1]);
+          result += escapeHTML(text.slice(range[1]));
         }
       }
     }
@@ -80,14 +99,14 @@ function loadInsight(config, translation) {
   }
 
   function searchItem(icon, title, slug, preview, url) {
-    title = title != null && title !== '' ? title : translation.untitled;
+    title = title != null && title !== '' ? title : escapeHTML(translation.untitled);
     const subtitle = slug
       ? '<span class="searchbox-result-title-secondary">(' + slug + ')</span>'
       : '';
 
-    return `<a class="searchbox-result-item" href="${url}">
+    return `<a class="searchbox-result-item" href="${escapeHTML(url)}">
             <span class="searchbox-result-icon">
-                <i class="fa fa-${icon}" />
+                <i class="fa fa-${icon}"></i>
             </span>
             <span class="searchbox-result-content">
                 <span class="searchbox-result-title">
@@ -188,15 +207,22 @@ function loadInsight(config, translation) {
   function weight(keywords, obj, fields, weights) {
     let value = 0;
     parseKeywords(keywords).forEach((keyword) => {
-      const pattern = new RegExp(keyword, 'img'); // Global, Multi-line, Case-insensitive
       fields.forEach((field, index) => {
         if (Object.prototype.hasOwnProperty.call(obj, field)) {
-          const matches = obj[field].match(pattern);
-          value += matches ? matches.length * weights[index] : 0;
+          value += countMatches(obj[field].toLowerCase(), keyword) * weights[index];
         }
       });
     });
     return value;
+  }
+
+  // Count the occurrences of a lowercase keyword, which is plain text, not a regular expression
+  function countMatches(text, keyword) {
+    let count = 0;
+    for (let i = text.indexOf(keyword); i !== -1; i = text.indexOf(keyword, i + keyword.length)) {
+      count++;
+    }
+    return count;
   }
 
   function weightFactory(keywords) {
@@ -216,38 +242,30 @@ function loadInsight(config, translation) {
     };
   }
 
+  // Weigh each matching item once, instead of in every comparison of the sort
+  function topItems(items, filter, weigh) {
+    return items
+      .filter(filter)
+      .map((item) => {
+        return { item, weight: weigh(item) };
+      })
+      .sort((a, b) => {
+        return b.weight - a.weight;
+      })
+      .slice(0, 5)
+      .map((result) => {
+        return result.item;
+      });
+  }
+
   function search(json, keywords) {
     const weights = weightFactory(keywords);
     const filters = filterFactory(keywords);
-    const posts = json.posts;
-    const pages = json.pages;
-    const tags = json.tags;
-    const categories = json.categories;
     return {
-      posts: posts
-        .filter(filters.post)
-        .sort((a, b) => {
-          return weights.post(b) - weights.post(a);
-        })
-        .slice(0, 5),
-      pages: pages
-        .filter(filters.page)
-        .sort((a, b) => {
-          return weights.page(b) - weights.page(a);
-        })
-        .slice(0, 5),
-      categories: categories
-        .filter(filters.category)
-        .sort((a, b) => {
-          return weights.category(b) - weights.category(a);
-        })
-        .slice(0, 5),
-      tags: tags
-        .filter(filters.tag)
-        .sort((a, b) => {
-          return weights.tag(b) - weights.tag(a);
-        })
-        .slice(0, 5),
+      posts: topItems(json.posts, filters.post, weights.post),
+      pages: topItems(json.pages, filters.page, weights.page),
+      categories: topItems(json.categories, filters.category, weights.category),
+      tags: topItems(json.tags, filters.tag, weights.tag),
     };
   }
 
@@ -287,6 +305,39 @@ function loadInsight(config, translation) {
     scrollTo($($items[nextPosition]));
   }
 
+  let opener = null;
+
+  function open() {
+    if (!$main.hasClass('show')) {
+      opener = document.activeElement;
+      $main.addClass('show');
+    }
+    $input.focus();
+  }
+
+  // Return the focus to the element that opened the search box, unless it moved elsewhere
+  function close(restoreFocus = true) {
+    $main.removeClass('show');
+    if (restoreFocus && opener && document.contains(opener)) {
+      opener.focus();
+    }
+    opener = null;
+  }
+
+  // Open the search box with "/" (unless typing in a field) or Ctrl/Cmd+K
+  function isSearchShortcut(e) {
+    if (e.altKey) {
+      return false;
+    }
+    if (e.ctrlKey || e.metaKey) {
+      return !e.shiftKey && typeof e.key === 'string' && e.key.toLowerCase() === 'k';
+    }
+    // e.key is "/" whatever keys type it on the keyboard layout, so do not check e.shiftKey
+    const target = e.target;
+    const typing = target.isContentEditable || /^(input|textarea|select)$/i.test(target.tagName);
+    return e.key === '/' && !typing;
+  }
+
   function gotoLink($item) {
     if ($item && $item.length) {
       location.href = $item.attr('href');
@@ -306,10 +357,7 @@ function loadInsight(config, translation) {
 
   let touch = false;
   $(document)
-    .on('click focus', '.navbar-main .search', () => {
-      $main.addClass('show');
-      $main.find('.searchbox-input').focus();
-    })
+    .on('click', '.navbar-main .search', open)
     .on('click touchend', '.searchbox-result-item', function (e) {
       if (e.type !== 'click' && !touch) {
         return;
@@ -325,14 +373,25 @@ function loadInsight(config, translation) {
       setTimeout(() => {
         $('.navbar-main').css('pointer-events', 'auto');
       }, 400);
-      $main.removeClass('show');
+      close();
       touch = false;
     })
+    .on('focusin', (e) => {
+      // Close the search box when the focus moves to the rest of the page, e.g., by Tab
+      if ($main.hasClass('show') && !$main[0].contains(e.target)) {
+        close(false);
+      }
+    })
     .on('keydown', (e) => {
+      if (isSearchShortcut(e)) {
+        e.preventDefault();
+        open();
+        return;
+      }
       if (!$main.hasClass('show')) return;
       switch (e.keyCode) {
         case 27: // ESC
-          $main.removeClass('show');
+          close();
           break;
         case 38: // UP
           selectItemByDiff(-1);

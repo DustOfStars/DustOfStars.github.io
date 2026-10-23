@@ -10970,6 +10970,206 @@ a.article-nav-next span {
 .navbar-main .navbar-item.is-active {
   background-color: transparent;
 }
+.navbar-main button.navbar-item {
+  border: none;
+  background: none;
+  font: inherit;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+.navbar-main button.navbar-item:focus,
+.navbar-main button.navbar-item:hover {
+  background-color: #fafafa;
+  color: #3273dc;
+}
+.navbar-main .navbar-toggle {
+  display: none;
+}
+.navbar-main .navbar-toggle[aria-expanded="true"] {
+  color: #3273dc;
+}
+.navbar-main.is-collapsed .navbar-menu {
+  flex-wrap: wrap;
+  flex-shrink: 1;
+  min-width: 0;
+}
+.navbar-main.is-collapsed .navbar-toggle {
+  display: flex;
+}
+.navbar-main.is-collapsed .navbar-start {
+  display: none;
+  order: 1;
+  flex-basis: 100%;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding-bottom: 0.5rem;
+}
+.navbar-main.is-collapsed .navbar-start .navbar-item {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+}
+.navbar-main.is-collapsed.is-open .navbar-start {
+  display: flex;
+}
+.navbar-main .navbar-item.has-dropdown {
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+}
+.navbar-main .navbar-item.has-dropdown .navbar-link {
+  display: flex;
+  align-items: center;
+  margin: 0 0;
+  padding: 1.25rem 0.75rem;
+  border: none;
+  background-color: transparent;
+  font: inherit;
+  line-height: 1.5;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+.navbar-main .navbar-item.has-dropdown .navbar-link::after {
+  position: static;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.4em;
+  height: 0.4em;
+  margin: 0 0 0 0.5em;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  border-radius: 0;
+  transform: translateY(-25%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+.navbar-main .navbar-item.has-dropdown .navbar-link[aria-expanded="true"]::after {
+  transform: translateY(25%) rotate(225deg);
+}
+.navbar-main .navbar-item.has-dropdown .navbar-link:hover {
+  color: #3273dc;
+}
+.navbar-main .navbar-item.has-dropdown .navbar-link.is-active {
+  color: #3273dc;
+}
+@media (prefers-reduced-motion: reduce) {
+  .navbar-main .navbar-item.has-dropdown .navbar-link::after {
+    transition: none;
+  }
+}
+.navbar-main .navbar-dropdown {
+  display: none;
+  position: static;
+  min-width: 0;
+  padding: 0;
+  font-size: inherit;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.navbar-main .navbar-dropdown a.navbar-item:hover {
+  color: #3273dc;
+}
+.navbar-main .navbar-dropdown a.navbar-item.is-active {
+  background-color: transparent;
+  color: #3273dc;
+}
+.navbar-main:not(.is-scripted) .navbar-item.has-dropdown:hover .navbar-dropdown,
+.navbar-main:not(.is-scripted) .navbar-item.has-dropdown:focus-within .navbar-dropdown {
+  display: flex;
+}
+.navbar-main.is-scripted.is-measuring .navbar-dropdown {
+  display: none !important;
+}
+.navbar-main.is-scripted:not(.is-scrolling) .navbar-container,
+.navbar-main.is-scripted:not(.is-scrolling) .navbar-menu {
+  overflow: visible;
+}
+.navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown {
+  position: absolute;
+  top: 100%;
+  left: -0.25rem;
+  z-index: 20;
+  min-width: max(100%, 10rem);
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  margin-top: 0.25rem;
+  padding: 0.5rem 0;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05), 0 0 1px rgba(0,0,0,0.1);
+}
+.navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 0.25rem;
+}
+.navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown .navbar-item {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown a.navbar-item:hover {
+  background-color: #f5f5f5;
+  color: #4a4a4a;
+}
+.navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown a.navbar-item.is-active {
+  color: #3273dc;
+}
+.navbar-main.is-scripted:not(.is-collapsed) .navbar-link[aria-expanded="true"] + .navbar-dropdown {
+  display: block;
+}
+.navbar-main.is-scripted:not(.is-collapsed).is-dropdown-open {
+  z-index: 100;
+}
+@media (hover: hover) and (pointer: fine) {
+  .navbar-main.is-scripted:not(.is-collapsed):hover {
+    z-index: 100;
+  }
+  .navbar-main.is-scripted:not(.is-collapsed) .navbar-item.has-dropdown:not(.is-hover-closed):hover .navbar-dropdown {
+    display: block;
+  }
+}
+.navbar-main.is-collapsed .navbar-start .navbar-item.has-dropdown {
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+.navbar-main.is-collapsed .navbar-start .navbar-item.has-dropdown .navbar-link {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+}
+.navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 0.25rem;
+}
+.navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item {
+  padding: 0.25rem 0.75rem;
+  color: #616161;
+}
+.navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item:hover {
+  color: #3273dc;
+}
+.navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item.is-active {
+  color: #3273dc;
+}
+@media screen and (min-width: 1088px) {
+  .navbar-main.is-collapsed .navbar-brand {
+    align-self: flex-start;
+  }
+  .navbar-main.is-collapsed .navbar-toggle {
+    margin-left: auto;
+  }
+  .navbar-main.is-collapsed .navbar-end {
+    margin-left: 0;
+  }
+}
 @media screen and (max-width: 1087px) {
   .navbar-main .navbar-menu {
     justify-content: center;
@@ -11258,6 +11458,25 @@ figure.highlight.folded .highlight-body {
 }
 figure.highlight .copy {
   opacity: 0.7;
+  padding: 0 0.75em;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+figure.highlight .copy:hover,
+figure.highlight .copy:focus-visible,
+figure.highlight .copy.is-copied {
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  figure.highlight .copy {
+    transition: opacity 0.2s ease;
+  }
+  figure.highlight:not(:hover):not(:focus-within) .copy:not(.is-copied) {
+    opacity: 0;
+  }
 }
 figure.highlight pre,
 figure.highlight table tr:hover {
@@ -11524,7 +11743,9 @@ figure.highlight.foldable div.level-left {
 #back-to-top {
   position: fixed;
   opacity: 0;
-  outline: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
   padding: 8px 0;
   line-height: 24px;
   border-radius: 4px;
@@ -11539,6 +11760,10 @@ figure.highlight.foldable div.level-left {
 }
 #back-to-top.rise-up {
   transform: translateY(0);
+}
+#back-to-top:focus-visible {
+  outline: 2px solid #3273dc;
+  outline-offset: 2px;
 }
 .gallery-item .caption {
   color: #7a7a7a;
@@ -11675,5 +11900,1082 @@ figure.highlight.foldable div.level-left {
 @media screen and (max-width: 768px) {
   .section {
     padding: 1.5rem 1rem;
+  }
+}
+@media screen and (max-width: 1087px) {
+  input,
+  select,
+  textarea,
+  .input,
+  .textarea,
+  .select select,
+  .searchbox input {
+    font-size: 16px;
+  }
+}
+.navbar-logo picture,
+.footer-logo picture {
+  display: contents;
+}
+@media (prefers-color-scheme: dark) {
+  html:where([data-appearance="auto"]) {
+    color-scheme: dark;
+    background-color: #17181c;
+  }
+  :where(html[data-appearance="auto"]) body {
+    color: #d4d6db;
+  }
+  :where(html[data-appearance="auto"]) ::selection {
+    background: rgba(110,160,240,0.35);
+  }
+  :where(html[data-appearance="auto"]) a {
+    color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) a:hover {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) .link-muted:hover {
+    color: #6ea0f0 !important;
+  }
+  :where(html[data-appearance="auto"]) strong,
+  :where(html[data-appearance="auto"]) table th,
+  :where(html[data-appearance="auto"]) .title,
+  :where(html[data-appearance="auto"]) .card-header-title,
+  :where(html[data-appearance="auto"]) .label {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) .subtitle,
+  :where(html[data-appearance="auto"]) .card,
+  :where(html[data-appearance="auto"]) .box {
+    color: #d4d6db;
+  }
+  :where(html[data-appearance="auto"]) .subtitle strong {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) hr {
+    background-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) code {
+    color: #f37a92;
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) pre {
+    color: #d4d6db;
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) .has-text-grey,
+  :where(html[data-appearance="auto"]) .has-text-grey-light,
+  :where(html[data-appearance="auto"]) .has-text-grey-dark,
+  :where(html[data-appearance="auto"]) .article-licensing .licensing-title a {
+    color: #a3a6ad !important;
+  }
+  :where(html[data-appearance="auto"]) .card,
+  :where(html[data-appearance="auto"]) .box,
+  :where(html[data-appearance="auto"]) .footer,
+  :where(html[data-appearance="auto"]) .navbar,
+  :where(html[data-appearance="auto"]) .navbar-menu {
+    background-color: #1f2026;
+  }
+  :where(html[data-appearance="auto"]) .card,
+  :where(html[data-appearance="auto"]) .box {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  :where(html[data-appearance="auto"]) .card-footer,
+  :where(html[data-appearance="auto"]) .card-footer-item:not(:last-child) {
+    border-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .menu-label {
+    color: #a3a6ad;
+  }
+  :where(html[data-appearance="auto"]) .menu-list a {
+    color: #d4d6db;
+  }
+  :where(html[data-appearance="auto"]) .menu-list a:hover {
+    color: #eceef1;
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) .menu-list a.is-active {
+    color: #8db6f6;
+    background-color: rgba(110,160,240,0.14);
+  }
+  :where(html[data-appearance="auto"]) .menu-list li ul {
+    border-left-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .tag:not(body) {
+    color: #d4d6db;
+    background-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .button {
+    color: #eceef1;
+    background-color: #272930;
+    border-color: #464952;
+  }
+  :where(html[data-appearance="auto"]) .button:hover,
+  :where(html[data-appearance="auto"]) .button.is-hovered,
+  :where(html[data-appearance="auto"]) .button:focus,
+  :where(html[data-appearance="auto"]) .button.is-focused,
+  :where(html[data-appearance="auto"]) .button:active,
+  :where(html[data-appearance="auto"]) .button.is-active {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) .button:hover,
+  :where(html[data-appearance="auto"]) .button.is-hovered {
+    border-color: #696e7b;
+  }
+  :where(html[data-appearance="auto"]) .button:focus,
+  :where(html[data-appearance="auto"]) .button.is-focused {
+    border-color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) .button.is-text {
+    color: #d4d6db;
+    background-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .button[disabled],
+  :where(html[data-appearance="auto"]) fieldset[disabled] .button {
+    background-color: #1f2026;
+    border-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .button.is-light,
+  :where(html[data-appearance="auto"]) article.article .article-more {
+    color: #eceef1;
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) .button.is-light:hover,
+  :where(html[data-appearance="auto"]) article.article .article-more:hover,
+  :where(html[data-appearance="auto"]) .button.is-light.is-hovered,
+  :where(html[data-appearance="auto"]) article.article .article-more.is-hovered,
+  :where(html[data-appearance="auto"]) .button.is-light:focus,
+  :where(html[data-appearance="auto"]) article.article .article-more:focus,
+  :where(html[data-appearance="auto"]) .button.is-light.is-focused,
+  :where(html[data-appearance="auto"]) article.article .article-more.is-focused {
+    color: #eceef1;
+    background-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .button.is-light:active,
+  :where(html[data-appearance="auto"]) article.article .article-more:active,
+  :where(html[data-appearance="auto"]) .button.is-light.is-active,
+  :where(html[data-appearance="auto"]) article.article .article-more.is-active {
+    color: #eceef1;
+    background-color: #3c3e48;
+  }
+  :where(html[data-appearance="auto"]) .button.is-transparent {
+    color: inherit;
+    background: transparent;
+    border-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .donate[data-type="afdian"]:hover,
+  :where(html[data-appearance="auto"]) .donate[data-type="afdian"]:focus,
+  :where(html[data-appearance="auto"]) .donate[data-type="afdian"]:active {
+    color: #fff;
+    border-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .donate[data-type="alipay"]:hover,
+  :where(html[data-appearance="auto"]) .donate[data-type="alipay"]:focus,
+  :where(html[data-appearance="auto"]) .donate[data-type="alipay"]:active {
+    color: #fff;
+    border-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .donate[data-type="buymeacoffee"]:hover,
+  :where(html[data-appearance="auto"]) .donate[data-type="buymeacoffee"]:focus,
+  :where(html[data-appearance="auto"]) .donate[data-type="buymeacoffee"]:active {
+    color: rgba(0,0,0,0.7);
+    border-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .donate[data-type="paypal"]:hover,
+  :where(html[data-appearance="auto"]) .donate[data-type="paypal"]:focus,
+  :where(html[data-appearance="auto"]) .donate[data-type="paypal"]:active {
+    color: rgba(0,0,0,0.7);
+    border-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .donate[data-type="patreon"]:hover,
+  :where(html[data-appearance="auto"]) .donate[data-type="patreon"]:focus,
+  :where(html[data-appearance="auto"]) .donate[data-type="patreon"]:active {
+    color: #fff;
+    border-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .donate[data-type="wechat"]:hover,
+  :where(html[data-appearance="auto"]) .donate[data-type="wechat"]:focus,
+  :where(html[data-appearance="auto"]) .donate[data-type="wechat"]:active {
+    color: #fff;
+    border-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .input,
+  :where(html[data-appearance="auto"]) .textarea,
+  :where(html[data-appearance="auto"]) .select select {
+    color: #eceef1;
+    background-color: #17181c;
+    border-color: #464952;
+  }
+  :where(html[data-appearance="auto"]) .input::placeholder,
+  :where(html[data-appearance="auto"]) .textarea::placeholder,
+  :where(html[data-appearance="auto"]) .select select::placeholder {
+    color: #a3a6ad;
+  }
+  :where(html[data-appearance="auto"]) .navbar-main {
+    box-shadow: 0 1px 0 #30323a, 0 4px 10px rgba(0,0,0,0.3);
+  }
+  :where(html[data-appearance="auto"]) .navbar-item,
+  :where(html[data-appearance="auto"]) .navbar-link,
+  :where(html[data-appearance="auto"]) .navbar-main button.navbar-item,
+  :where(html[data-appearance="auto"]) .navbar-main .navbar-item.has-dropdown .navbar-link {
+    color: #d4d6db;
+  }
+  :where(html[data-appearance="auto"]) a.navbar-item:focus,
+  :where(html[data-appearance="auto"]) .navbar-link:focus,
+  :where(html[data-appearance="auto"]) .navbar-main button.navbar-item:focus,
+  :where(html[data-appearance="auto"]) a.navbar-item:focus-within,
+  :where(html[data-appearance="auto"]) .navbar-link:focus-within,
+  :where(html[data-appearance="auto"]) .navbar-main button.navbar-item:focus-within,
+  :where(html[data-appearance="auto"]) a.navbar-item:hover,
+  :where(html[data-appearance="auto"]) .navbar-link:hover,
+  :where(html[data-appearance="auto"]) .navbar-main button.navbar-item:hover {
+    color: #6ea0f0;
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) .navbar-brand a.navbar-item:focus,
+  :where(html[data-appearance="auto"]) .navbar-brand a.navbar-item:hover {
+    background-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) a.navbar-item.is-active,
+  :where(html[data-appearance="auto"]) .navbar-link.is-active,
+  :where(html[data-appearance="auto"]) .navbar-main .navbar-toggle[aria-expanded="true"],
+  :where(html[data-appearance="auto"]) .navbar-main .navbar-item.has-dropdown .navbar-link:hover,
+  :where(html[data-appearance="auto"]) .navbar-main .navbar-item.has-dropdown .navbar-link.is-active,
+  :where(html[data-appearance="auto"]) .navbar-main .navbar-dropdown a.navbar-item:hover,
+  :where(html[data-appearance="auto"]) .navbar-main .navbar-dropdown a.navbar-item.is-active {
+    color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) .navbar-dropdown a.navbar-item:focus,
+  :where(html[data-appearance="auto"]) .navbar-dropdown a.navbar-item:hover {
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) .navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown {
+    background-color: #272930;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px #30323a;
+  }
+  :where(html[data-appearance="auto"]) .navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown a.navbar-item:hover {
+    color: #eceef1;
+    background-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown a.navbar-item.is-active {
+    color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) .navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item {
+    color: #a3a6ad;
+  }
+  :where(html[data-appearance="auto"]) .navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item:hover,
+  :where(html[data-appearance="auto"]) .navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item.is-active {
+    color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) .content h1,
+  :where(html[data-appearance="auto"]) .content h2,
+  :where(html[data-appearance="auto"]) .content h3,
+  :where(html[data-appearance="auto"]) .content h4,
+  :where(html[data-appearance="auto"]) .content h5,
+  :where(html[data-appearance="auto"]) .content h6 {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) .content blockquote {
+    background-color: #272930;
+    border-left-color: #464952;
+  }
+  :where(html[data-appearance="auto"]) .content table td,
+  :where(html[data-appearance="auto"]) .content table th {
+    border-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .content table th,
+  :where(html[data-appearance="auto"]) .content table thead td,
+  :where(html[data-appearance="auto"]) .content table thead th,
+  :where(html[data-appearance="auto"]) .content table tfoot td,
+  :where(html[data-appearance="auto"]) .content table tfoot th {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) .table {
+    color: #d4d6db;
+    background-color: transparent;
+  }
+  :where(html[data-appearance="auto"]) .table td,
+  :where(html[data-appearance="auto"]) .table th {
+    border-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .table th,
+  :where(html[data-appearance="auto"]) .table thead td,
+  :where(html[data-appearance="auto"]) .table thead th,
+  :where(html[data-appearance="auto"]) .table tfoot td,
+  :where(html[data-appearance="auto"]) .table tfoot th {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) .table.is-hoverable tbody tr:not(.is-selected):hover,
+  :where(html[data-appearance="auto"]) .table.is-striped tbody tr:not(.is-selected):nth-child(even) {
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) .message {
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) .message-body {
+    color: #d4d6db;
+    border-color: #464952;
+  }
+  :where(html[data-appearance="auto"]) .message.is-white {
+    background-color: rgba(255,255,255,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-white .message-body {
+    color: #d4d6db;
+    border-color: #fff;
+  }
+  :where(html[data-appearance="auto"]) .message.is-black {
+    background-color: rgba(10,10,10,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-black .message-body {
+    color: #d4d6db;
+    border-color: #0a0a0a;
+  }
+  :where(html[data-appearance="auto"]) .message.is-light {
+    background-color: rgba(245,245,245,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-light .message-body {
+    color: #d4d6db;
+    border-color: #f5f5f5;
+  }
+  :where(html[data-appearance="auto"]) .message.is-dark {
+    background-color: rgba(54,54,54,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-dark .message-body {
+    color: #d4d6db;
+    border-color: #363636;
+  }
+  :where(html[data-appearance="auto"]) .message.is-primary {
+    background-color: rgba(50,115,220,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-primary .message-body {
+    color: #d4d6db;
+    border-color: #3273dc;
+  }
+  :where(html[data-appearance="auto"]) .message.is-link {
+    background-color: rgba(50,115,220,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-link .message-body {
+    color: #d4d6db;
+    border-color: #3273dc;
+  }
+  :where(html[data-appearance="auto"]) .message.is-info {
+    background-color: rgba(50,152,220,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-info .message-body {
+    color: #d4d6db;
+    border-color: #3298dc;
+  }
+  :where(html[data-appearance="auto"]) .message.is-success {
+    background-color: rgba(72,199,116,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-success .message-body {
+    color: #d4d6db;
+    border-color: #48c774;
+  }
+  :where(html[data-appearance="auto"]) .message.is-warning {
+    background-color: rgba(255,221,87,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-warning .message-body {
+    color: #d4d6db;
+    border-color: #ffdd57;
+  }
+  :where(html[data-appearance="auto"]) .message.is-danger {
+    background-color: rgba(241,70,104,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-danger .message-body {
+    color: #d4d6db;
+    border-color: #f14668;
+  }
+  :where(html[data-appearance="auto"]) .message.is-grey-lightest {
+    background-color: rgba(237,237,237,0.12);
+  }
+  :where(html[data-appearance="auto"]) .message.is-grey-lightest .message-body {
+    color: #d4d6db;
+    border-color: #ededed;
+  }
+  :where(html[data-appearance="auto"]) .tabs a {
+    color: #d4d6db;
+    border-bottom-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .tabs a:hover {
+    color: #eceef1;
+    border-bottom-color: #a3a6ad;
+  }
+  :where(html[data-appearance="auto"]) .tabs ul {
+    border-bottom-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .tabs li.is-active a {
+    color: #6ea0f0;
+    border-bottom-color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) .breadcrumb a {
+    color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) .breadcrumb a:hover,
+  :where(html[data-appearance="auto"]) .breadcrumb li.is-active a {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) article.media,
+  :where(html[data-appearance="auto"]) article.media .media-content,
+  :where(html[data-appearance="auto"]) article.article .article-meta,
+  :where(html[data-appearance="auto"]) article.article .article-tags,
+  :where(html[data-appearance="auto"]) .post-navigation,
+  :where(html[data-appearance="auto"]) .gallery-item .caption {
+    color: #a3a6ad;
+  }
+  :where(html[data-appearance="auto"]) article.media a:hover {
+    color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) .article-licensing {
+    background: #272930;
+  }
+  :where(html[data-appearance="auto"]) .article-licensing:after {
+    opacity: 0.05;
+  }
+  :where(html[data-appearance="auto"]) figure.highlight figcaption,
+  :where(html[data-appearance="auto"]) figure.highlight .gutter {
+    background: rgba(255,255,255,0.05);
+  }
+  :where(html[data-appearance="auto"]) .pagination-previous,
+  :where(html[data-appearance="auto"]) .pagination-next,
+  :where(html[data-appearance="auto"]) .pagination-link {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) .pagination-previous:hover,
+  :where(html[data-appearance="auto"]) .pagination-next:hover,
+  :where(html[data-appearance="auto"]) .pagination-link:hover {
+    color: #6ea0f0;
+  }
+  :where(html[data-appearance="auto"]) .pagination .pagination-link,
+  :where(html[data-appearance="auto"]) .pagination .pagination-previous,
+  :where(html[data-appearance="auto"]) .pagination .pagination-next {
+    background: #1f2026;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  :where(html[data-appearance="auto"]) .pagination .pagination-link a,
+  :where(html[data-appearance="auto"]) .pagination .pagination-previous a,
+  :where(html[data-appearance="auto"]) .pagination .pagination-next a {
+    color: #eceef1;
+  }
+  :where(html[data-appearance="auto"]) .pagination .pagination-link.is-current {
+    background: #3273dc;
+  }
+  :where(html[data-appearance="auto"]) .pagination .pagination-link.is-current a {
+    color: #fff;
+  }
+  :where(html[data-appearance="auto"]) .pagination-ellipsis {
+    color: #a3a6ad;
+  }
+  :where(html[data-appearance="auto"]) .timeline {
+    border-left-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .timeline .media:before {
+    background: #464952;
+  }
+  :where(html[data-appearance="auto"]) .timeline .media:last-child:after {
+    background: #1f2026;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-container {
+    background-color: #1f2026;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px #30323a;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-header,
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-input {
+    color: #eceef1;
+    background: #272930;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-close:hover {
+    background: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-close:active {
+    background: #3c3e48;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-body,
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-result-section {
+    border-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-result-section header,
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-result-title-secondary,
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-result-item:not(:active):not(.active) .searchbox-result-preview {
+    color: #a3a6ad;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-result-item:not(.disabled):not(.active):not(:active):hover {
+    background-color: #272930;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-result-item em {
+    background: rgba(255,221,87,0.3);
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-pagination .searchbox-pagination-link {
+    background-color: #272930;
+    box-shadow: none;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-pagination .searchbox-pagination-item.disabled .searchbox-pagination-link,
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-pagination .searchbox-pagination-item:not(.active):not(.disabled) .searchbox-pagination-link:hover {
+    background-color: #30323a;
+  }
+  :where(html[data-appearance="auto"]) .searchbox .searchbox-pagination .searchbox-pagination-item.active .searchbox-pagination-link {
+    background-color: #3273dc;
+  }
+  :where(html[data-appearance="auto"]) .donate .qrcode {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px #30323a;
+  }
+  :where(html[data-appearance="auto"]) .cc-window {
+    color: #d4d6db !important;
+    background-color: #1f2026 !important;
+  }
+  :where(html[data-appearance="auto"]) .cc-window.cc-banner {
+    background-color: #1f2026 !important;
+  }
+}
+@media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  html:where([data-appearance="auto"])::-webkit-scrollbar-track,
+  :where(html[data-appearance="auto"]) ::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.04);
+    box-shadow: none;
+  }
+  html:where([data-appearance="auto"])::-webkit-scrollbar-thumb,
+  :where(html[data-appearance="auto"]) ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.16);
+    box-shadow: none;
+  }
+  html:where([data-appearance="auto"])::-webkit-scrollbar-thumb:hover,
+  :where(html[data-appearance="auto"]) ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.28);
+  }
+}
+@media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  :where(html[data-appearance="auto"]) .widget.card#toc {
+    background-color: #272930;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px #30323a;
+  }
+}
+html:where([data-appearance="dark"]) {
+  color-scheme: dark;
+  background-color: #17181c;
+}
+:where(html[data-appearance="dark"]) body {
+  color: #d4d6db;
+}
+:where(html[data-appearance="dark"]) ::selection {
+  background: rgba(110,160,240,0.35);
+}
+:where(html[data-appearance="dark"]) a {
+  color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) a:hover {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) .link-muted:hover {
+  color: #6ea0f0 !important;
+}
+:where(html[data-appearance="dark"]) strong,
+:where(html[data-appearance="dark"]) table th,
+:where(html[data-appearance="dark"]) .title,
+:where(html[data-appearance="dark"]) .card-header-title,
+:where(html[data-appearance="dark"]) .label {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) .subtitle,
+:where(html[data-appearance="dark"]) .card,
+:where(html[data-appearance="dark"]) .box {
+  color: #d4d6db;
+}
+:where(html[data-appearance="dark"]) .subtitle strong {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) hr {
+  background-color: #30323a;
+}
+:where(html[data-appearance="dark"]) code {
+  color: #f37a92;
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) pre {
+  color: #d4d6db;
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) .has-text-grey,
+:where(html[data-appearance="dark"]) .has-text-grey-light,
+:where(html[data-appearance="dark"]) .has-text-grey-dark,
+:where(html[data-appearance="dark"]) .article-licensing .licensing-title a {
+  color: #a3a6ad !important;
+}
+:where(html[data-appearance="dark"]) .card,
+:where(html[data-appearance="dark"]) .box,
+:where(html[data-appearance="dark"]) .footer,
+:where(html[data-appearance="dark"]) .navbar,
+:where(html[data-appearance="dark"]) .navbar-menu {
+  background-color: #1f2026;
+}
+:where(html[data-appearance="dark"]) .card,
+:where(html[data-appearance="dark"]) .box {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+}
+:where(html[data-appearance="dark"]) .card-footer,
+:where(html[data-appearance="dark"]) .card-footer-item:not(:last-child) {
+  border-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .menu-label {
+  color: #a3a6ad;
+}
+:where(html[data-appearance="dark"]) .menu-list a {
+  color: #d4d6db;
+}
+:where(html[data-appearance="dark"]) .menu-list a:hover {
+  color: #eceef1;
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) .menu-list a.is-active {
+  color: #8db6f6;
+  background-color: rgba(110,160,240,0.14);
+}
+:where(html[data-appearance="dark"]) .menu-list li ul {
+  border-left-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .tag:not(body) {
+  color: #d4d6db;
+  background-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .button {
+  color: #eceef1;
+  background-color: #272930;
+  border-color: #464952;
+}
+:where(html[data-appearance="dark"]) .button:hover,
+:where(html[data-appearance="dark"]) .button.is-hovered,
+:where(html[data-appearance="dark"]) .button:focus,
+:where(html[data-appearance="dark"]) .button.is-focused,
+:where(html[data-appearance="dark"]) .button:active,
+:where(html[data-appearance="dark"]) .button.is-active {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) .button:hover,
+:where(html[data-appearance="dark"]) .button.is-hovered {
+  border-color: #696e7b;
+}
+:where(html[data-appearance="dark"]) .button:focus,
+:where(html[data-appearance="dark"]) .button.is-focused {
+  border-color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) .button.is-text {
+  color: #d4d6db;
+  background-color: transparent;
+}
+:where(html[data-appearance="dark"]) .button[disabled],
+:where(html[data-appearance="dark"]) fieldset[disabled] .button {
+  background-color: #1f2026;
+  border-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .button.is-light,
+:where(html[data-appearance="dark"]) article.article .article-more {
+  color: #eceef1;
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) .button.is-light:hover,
+:where(html[data-appearance="dark"]) article.article .article-more:hover,
+:where(html[data-appearance="dark"]) .button.is-light.is-hovered,
+:where(html[data-appearance="dark"]) article.article .article-more.is-hovered,
+:where(html[data-appearance="dark"]) .button.is-light:focus,
+:where(html[data-appearance="dark"]) article.article .article-more:focus,
+:where(html[data-appearance="dark"]) .button.is-light.is-focused,
+:where(html[data-appearance="dark"]) article.article .article-more.is-focused {
+  color: #eceef1;
+  background-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .button.is-light:active,
+:where(html[data-appearance="dark"]) article.article .article-more:active,
+:where(html[data-appearance="dark"]) .button.is-light.is-active,
+:where(html[data-appearance="dark"]) article.article .article-more.is-active {
+  color: #eceef1;
+  background-color: #3c3e48;
+}
+:where(html[data-appearance="dark"]) .button.is-transparent {
+  color: inherit;
+  background: transparent;
+  border-color: transparent;
+}
+:where(html[data-appearance="dark"]) .donate[data-type="afdian"]:hover,
+:where(html[data-appearance="dark"]) .donate[data-type="afdian"]:focus,
+:where(html[data-appearance="dark"]) .donate[data-type="afdian"]:active {
+  color: #fff;
+  border-color: transparent;
+}
+:where(html[data-appearance="dark"]) .donate[data-type="alipay"]:hover,
+:where(html[data-appearance="dark"]) .donate[data-type="alipay"]:focus,
+:where(html[data-appearance="dark"]) .donate[data-type="alipay"]:active {
+  color: #fff;
+  border-color: transparent;
+}
+:where(html[data-appearance="dark"]) .donate[data-type="buymeacoffee"]:hover,
+:where(html[data-appearance="dark"]) .donate[data-type="buymeacoffee"]:focus,
+:where(html[data-appearance="dark"]) .donate[data-type="buymeacoffee"]:active {
+  color: rgba(0,0,0,0.7);
+  border-color: transparent;
+}
+:where(html[data-appearance="dark"]) .donate[data-type="paypal"]:hover,
+:where(html[data-appearance="dark"]) .donate[data-type="paypal"]:focus,
+:where(html[data-appearance="dark"]) .donate[data-type="paypal"]:active {
+  color: rgba(0,0,0,0.7);
+  border-color: transparent;
+}
+:where(html[data-appearance="dark"]) .donate[data-type="patreon"]:hover,
+:where(html[data-appearance="dark"]) .donate[data-type="patreon"]:focus,
+:where(html[data-appearance="dark"]) .donate[data-type="patreon"]:active {
+  color: #fff;
+  border-color: transparent;
+}
+:where(html[data-appearance="dark"]) .donate[data-type="wechat"]:hover,
+:where(html[data-appearance="dark"]) .donate[data-type="wechat"]:focus,
+:where(html[data-appearance="dark"]) .donate[data-type="wechat"]:active {
+  color: #fff;
+  border-color: transparent;
+}
+:where(html[data-appearance="dark"]) .input,
+:where(html[data-appearance="dark"]) .textarea,
+:where(html[data-appearance="dark"]) .select select {
+  color: #eceef1;
+  background-color: #17181c;
+  border-color: #464952;
+}
+:where(html[data-appearance="dark"]) .input::placeholder,
+:where(html[data-appearance="dark"]) .textarea::placeholder,
+:where(html[data-appearance="dark"]) .select select::placeholder {
+  color: #a3a6ad;
+}
+:where(html[data-appearance="dark"]) .navbar-main {
+  box-shadow: 0 1px 0 #30323a, 0 4px 10px rgba(0,0,0,0.3);
+}
+:where(html[data-appearance="dark"]) .navbar-item,
+:where(html[data-appearance="dark"]) .navbar-link,
+:where(html[data-appearance="dark"]) .navbar-main button.navbar-item,
+:where(html[data-appearance="dark"]) .navbar-main .navbar-item.has-dropdown .navbar-link {
+  color: #d4d6db;
+}
+:where(html[data-appearance="dark"]) a.navbar-item:focus,
+:where(html[data-appearance="dark"]) .navbar-link:focus,
+:where(html[data-appearance="dark"]) .navbar-main button.navbar-item:focus,
+:where(html[data-appearance="dark"]) a.navbar-item:focus-within,
+:where(html[data-appearance="dark"]) .navbar-link:focus-within,
+:where(html[data-appearance="dark"]) .navbar-main button.navbar-item:focus-within,
+:where(html[data-appearance="dark"]) a.navbar-item:hover,
+:where(html[data-appearance="dark"]) .navbar-link:hover,
+:where(html[data-appearance="dark"]) .navbar-main button.navbar-item:hover {
+  color: #6ea0f0;
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) .navbar-brand a.navbar-item:focus,
+:where(html[data-appearance="dark"]) .navbar-brand a.navbar-item:hover {
+  background-color: transparent;
+}
+:where(html[data-appearance="dark"]) a.navbar-item.is-active,
+:where(html[data-appearance="dark"]) .navbar-link.is-active,
+:where(html[data-appearance="dark"]) .navbar-main .navbar-toggle[aria-expanded="true"],
+:where(html[data-appearance="dark"]) .navbar-main .navbar-item.has-dropdown .navbar-link:hover,
+:where(html[data-appearance="dark"]) .navbar-main .navbar-item.has-dropdown .navbar-link.is-active,
+:where(html[data-appearance="dark"]) .navbar-main .navbar-dropdown a.navbar-item:hover,
+:where(html[data-appearance="dark"]) .navbar-main .navbar-dropdown a.navbar-item.is-active {
+  color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) .navbar-dropdown a.navbar-item:focus,
+:where(html[data-appearance="dark"]) .navbar-dropdown a.navbar-item:hover {
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) .navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown {
+  background-color: #272930;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px #30323a;
+}
+:where(html[data-appearance="dark"]) .navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown a.navbar-item:hover {
+  color: #eceef1;
+  background-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .navbar-main.is-scripted:not(.is-collapsed) .navbar-dropdown a.navbar-item.is-active {
+  color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) .navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item {
+  color: #a3a6ad;
+}
+:where(html[data-appearance="dark"]) .navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item:hover,
+:where(html[data-appearance="dark"]) .navbar-main.is-collapsed .navbar-start .navbar-link[aria-expanded="true"] + .navbar-dropdown a.navbar-item.is-active {
+  color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) .content h1,
+:where(html[data-appearance="dark"]) .content h2,
+:where(html[data-appearance="dark"]) .content h3,
+:where(html[data-appearance="dark"]) .content h4,
+:where(html[data-appearance="dark"]) .content h5,
+:where(html[data-appearance="dark"]) .content h6 {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) .content blockquote {
+  background-color: #272930;
+  border-left-color: #464952;
+}
+:where(html[data-appearance="dark"]) .content table td,
+:where(html[data-appearance="dark"]) .content table th {
+  border-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .content table th,
+:where(html[data-appearance="dark"]) .content table thead td,
+:where(html[data-appearance="dark"]) .content table thead th,
+:where(html[data-appearance="dark"]) .content table tfoot td,
+:where(html[data-appearance="dark"]) .content table tfoot th {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) .table {
+  color: #d4d6db;
+  background-color: transparent;
+}
+:where(html[data-appearance="dark"]) .table td,
+:where(html[data-appearance="dark"]) .table th {
+  border-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .table th,
+:where(html[data-appearance="dark"]) .table thead td,
+:where(html[data-appearance="dark"]) .table thead th,
+:where(html[data-appearance="dark"]) .table tfoot td,
+:where(html[data-appearance="dark"]) .table tfoot th {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) .table.is-hoverable tbody tr:not(.is-selected):hover,
+:where(html[data-appearance="dark"]) .table.is-striped tbody tr:not(.is-selected):nth-child(even) {
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) .message {
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) .message-body {
+  color: #d4d6db;
+  border-color: #464952;
+}
+:where(html[data-appearance="dark"]) .message.is-white {
+  background-color: rgba(255,255,255,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-white .message-body {
+  color: #d4d6db;
+  border-color: #fff;
+}
+:where(html[data-appearance="dark"]) .message.is-black {
+  background-color: rgba(10,10,10,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-black .message-body {
+  color: #d4d6db;
+  border-color: #0a0a0a;
+}
+:where(html[data-appearance="dark"]) .message.is-light {
+  background-color: rgba(245,245,245,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-light .message-body {
+  color: #d4d6db;
+  border-color: #f5f5f5;
+}
+:where(html[data-appearance="dark"]) .message.is-dark {
+  background-color: rgba(54,54,54,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-dark .message-body {
+  color: #d4d6db;
+  border-color: #363636;
+}
+:where(html[data-appearance="dark"]) .message.is-primary {
+  background-color: rgba(50,115,220,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-primary .message-body {
+  color: #d4d6db;
+  border-color: #3273dc;
+}
+:where(html[data-appearance="dark"]) .message.is-link {
+  background-color: rgba(50,115,220,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-link .message-body {
+  color: #d4d6db;
+  border-color: #3273dc;
+}
+:where(html[data-appearance="dark"]) .message.is-info {
+  background-color: rgba(50,152,220,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-info .message-body {
+  color: #d4d6db;
+  border-color: #3298dc;
+}
+:where(html[data-appearance="dark"]) .message.is-success {
+  background-color: rgba(72,199,116,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-success .message-body {
+  color: #d4d6db;
+  border-color: #48c774;
+}
+:where(html[data-appearance="dark"]) .message.is-warning {
+  background-color: rgba(255,221,87,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-warning .message-body {
+  color: #d4d6db;
+  border-color: #ffdd57;
+}
+:where(html[data-appearance="dark"]) .message.is-danger {
+  background-color: rgba(241,70,104,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-danger .message-body {
+  color: #d4d6db;
+  border-color: #f14668;
+}
+:where(html[data-appearance="dark"]) .message.is-grey-lightest {
+  background-color: rgba(237,237,237,0.12);
+}
+:where(html[data-appearance="dark"]) .message.is-grey-lightest .message-body {
+  color: #d4d6db;
+  border-color: #ededed;
+}
+:where(html[data-appearance="dark"]) .tabs a {
+  color: #d4d6db;
+  border-bottom-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .tabs a:hover {
+  color: #eceef1;
+  border-bottom-color: #a3a6ad;
+}
+:where(html[data-appearance="dark"]) .tabs ul {
+  border-bottom-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .tabs li.is-active a {
+  color: #6ea0f0;
+  border-bottom-color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) .breadcrumb a {
+  color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) .breadcrumb a:hover,
+:where(html[data-appearance="dark"]) .breadcrumb li.is-active a {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) article.media,
+:where(html[data-appearance="dark"]) article.media .media-content,
+:where(html[data-appearance="dark"]) article.article .article-meta,
+:where(html[data-appearance="dark"]) article.article .article-tags,
+:where(html[data-appearance="dark"]) .post-navigation,
+:where(html[data-appearance="dark"]) .gallery-item .caption {
+  color: #a3a6ad;
+}
+:where(html[data-appearance="dark"]) article.media a:hover {
+  color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) .article-licensing {
+  background: #272930;
+}
+:where(html[data-appearance="dark"]) .article-licensing:after {
+  opacity: 0.05;
+}
+:where(html[data-appearance="dark"]) figure.highlight figcaption,
+:where(html[data-appearance="dark"]) figure.highlight .gutter {
+  background: rgba(255,255,255,0.05);
+}
+:where(html[data-appearance="dark"]) .pagination-previous,
+:where(html[data-appearance="dark"]) .pagination-next,
+:where(html[data-appearance="dark"]) .pagination-link {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) .pagination-previous:hover,
+:where(html[data-appearance="dark"]) .pagination-next:hover,
+:where(html[data-appearance="dark"]) .pagination-link:hover {
+  color: #6ea0f0;
+}
+:where(html[data-appearance="dark"]) .pagination .pagination-link,
+:where(html[data-appearance="dark"]) .pagination .pagination-previous,
+:where(html[data-appearance="dark"]) .pagination .pagination-next {
+  background: #1f2026;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+}
+:where(html[data-appearance="dark"]) .pagination .pagination-link a,
+:where(html[data-appearance="dark"]) .pagination .pagination-previous a,
+:where(html[data-appearance="dark"]) .pagination .pagination-next a {
+  color: #eceef1;
+}
+:where(html[data-appearance="dark"]) .pagination .pagination-link.is-current {
+  background: #3273dc;
+}
+:where(html[data-appearance="dark"]) .pagination .pagination-link.is-current a {
+  color: #fff;
+}
+:where(html[data-appearance="dark"]) .pagination-ellipsis {
+  color: #a3a6ad;
+}
+:where(html[data-appearance="dark"]) .timeline {
+  border-left-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .timeline .media:before {
+  background: #464952;
+}
+:where(html[data-appearance="dark"]) .timeline .media:last-child:after {
+  background: #1f2026;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-container {
+  background-color: #1f2026;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px #30323a;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-header,
+:where(html[data-appearance="dark"]) .searchbox .searchbox-input {
+  color: #eceef1;
+  background: #272930;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-close:hover {
+  background: #30323a;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-close:active {
+  background: #3c3e48;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-body,
+:where(html[data-appearance="dark"]) .searchbox .searchbox-result-section {
+  border-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-result-section header,
+:where(html[data-appearance="dark"]) .searchbox .searchbox-result-title-secondary,
+:where(html[data-appearance="dark"]) .searchbox .searchbox-result-item:not(:active):not(.active) .searchbox-result-preview {
+  color: #a3a6ad;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-result-item:not(.disabled):not(.active):not(:active):hover {
+  background-color: #272930;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-result-item em {
+  background: rgba(255,221,87,0.3);
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-pagination .searchbox-pagination-link {
+  background-color: #272930;
+  box-shadow: none;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-pagination .searchbox-pagination-item.disabled .searchbox-pagination-link,
+:where(html[data-appearance="dark"]) .searchbox .searchbox-pagination .searchbox-pagination-item:not(.active):not(.disabled) .searchbox-pagination-link:hover {
+  background-color: #30323a;
+}
+:where(html[data-appearance="dark"]) .searchbox .searchbox-pagination .searchbox-pagination-item.active .searchbox-pagination-link {
+  background-color: #3273dc;
+}
+:where(html[data-appearance="dark"]) .donate .qrcode {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px #30323a;
+}
+:where(html[data-appearance="dark"]) .cc-window {
+  color: #d4d6db !important;
+  background-color: #1f2026 !important;
+}
+:where(html[data-appearance="dark"]) .cc-window.cc-banner {
+  background-color: #1f2026 !important;
+}
+@media screen and (min-width: 1088px) {
+  html:where([data-appearance="dark"])::-webkit-scrollbar-track,
+  :where(html[data-appearance="dark"]) ::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.04);
+    box-shadow: none;
+  }
+  html:where([data-appearance="dark"])::-webkit-scrollbar-thumb,
+  :where(html[data-appearance="dark"]) ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.16);
+    box-shadow: none;
+  }
+  html:where([data-appearance="dark"])::-webkit-scrollbar-thumb:hover,
+  :where(html[data-appearance="dark"]) ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.28);
+  }
+}
+@media screen and (max-width: 768px) {
+  :where(html[data-appearance="dark"]) .widget.card#toc {
+    background-color: #272930;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px #30323a;
   }
 }
